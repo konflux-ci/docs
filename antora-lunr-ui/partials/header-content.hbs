@@ -1,0 +1,32 @@
+<header class="header" role="banner">
+  <nav class="navbar">
+        <div class="navbar-brand">
+          <div class="navbar-item">
+            <button class="navbar-burger" data-target="topbar-nav">
+              <span></span>
+              <span></span>
+              <span></span>
+            </button>
+            <img src="{{uiRootPath}}/img/logo.png" class="navbar-logo" alt="App Studio logo">
+            <a href="{{site.url}}/">{{site.title}}</a>
+          </div>
+        </div>
+    <div id="topbar-nav" class="navbar-menu">
+      <div class="navbar-end">
+              <div class="button"><a href="https://konflux-ci.github.io/docs/" target="_blank">Home</a></div>
+              <div class="button"><a href="https://github.com/konflux-ci/docs/issues/new" target="_blank">Raise an
+                  issue</a></div>
+        {{#if env.SITE_SEARCH_PROVIDER}}
+        <div class="navbar-item search hide-for-print">
+          <div id="search-field" class="field">
+            <input id="search-input" type="text" placeholder="Search the docs"{{#if page.home}} autofocus{{/if}}>
+            <label class="filter checkbox">
+              <input type="checkbox" data-facet-filter="component:{{page.component.name}}"> In this project
+            </label>
+          </div>
+        </div>
+        {{/if}}
+      </div>
+    </div>
+  </nav>
+</header>
