@@ -22,7 +22,6 @@ runtime:
 site:
   title: Konflux-CI Documentation
   url: https://konflux-ci.github.io/doc
-  start_page: Documentation::index.adoc
   robots: allow
 content:
   sources:

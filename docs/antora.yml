@@ -1,6 +1,6 @@
 ---
-name: Documentation
-version: main
+name: ROOT
+version: ~
 nav:
 - modules/ROOT/nav-root.adoc
 
