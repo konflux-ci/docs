@@ -1,0 +1,2 @@
+# docs
+Konflux-ci documentation
