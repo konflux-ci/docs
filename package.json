@@ -1,0 +1,18 @@
+{
+  "devDependencies": {
+    "@antora/collector-extension": "^1.0.0-alpha.3",
+    "@antora/lunr-extension": "^1.0.0-alpha.8",
+    "antora": "^3.1.7"
+  },
+  "overrides": {
+    "glob-parent": "6.0.2"
+  },
+  "scripts": {
+    "build": "antora generate --clean --fetch antora-playbook.yml",
+    "preview:netlify": "netlify deploy --dir public"
+  },
+  "engines": {
+    "node": "18"
+  }
+}
+  

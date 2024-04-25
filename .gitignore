@@ -1,0 +1,35 @@
+# gitignore for HAC BS documentation git repository
+
+# HAC BS documentation is stored in adoc (AsciiDoc) format. Typically the
+# adoc is converting into HTML to verify syntax while writing the files,
+# but the HTML file should not be stored in git since the HTML files will
+# likely get out of sync with the source (adoc) files. Web browsers will read adoc and convert into HTML when displaying the contents.
+
+**/*.html
+
+# Python object files
+*.py[cod]
+
+# vim swap files
+[._]*.s[a-v][a-z]
+[._]*.sw[a-p]
+[._]s[a-rt-v][a-z]
+[._]ss[a-gi-z]
+[._]sw[a-p]
+
+# vim temporary files
+*~
+
+# tmp dir
+tmp/
+
+# Antora working directories
+node_modules/
+build/
+public/
+.idea/
+.cache
+
+# Netlify deploy output from preview workflow
+deploy.json
+.DS_Store

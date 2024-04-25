@@ -1,0 +1,142 @@
+.toolbar .edit-this-page a {
+    color: white !important;
+}
+
+.edit-this-page {
+    background-color: #050b48;
+    border-radius: 0.5rem;
+    color: white;
+    padding: 10px 21px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 18px;
+    margin: 4px 2px;
+    cursor: pointer;
+    display: inline-block !important;
+}
+
+.navbar .button {
+    display: inline-flex;
+    -webkit-box-align: center;
+    align-items: center;
+    background: #fff;
+    border: 1px solid #e1e1e1;
+    border-radius: 0.5rem;
+    height: auto;
+    font-size: 18px;
+    color: #222;
+    padding: 1em;
+    margin: 0.8em;
+    white-space: nowrap;
+}
+
+
+
+.doc .admonitionblock .icon {
+    border-radius: 1rem;
+}
+
+i.fa[class^='icon-'],
+i.fa[class*=' icon-']::before {
+    content: "";
+    height: 1.25rem;
+    width: 1.25rem;
+    margin-right: 0.25rem;
+    margin-left: -0.5rem;
+}
+
+i.fa.icon-note::before {
+    background: no-repeat url("../img/note.svg");
+}
+
+i.fa.icon-tip::before {
+    background: no-repeat url("../img/tip.svg");
+}
+
+i.fa.icon-important::before {
+    background: no-repeat url("../img/important.svg");
+}
+
+i.fa.icon-warning::before {
+    background: no-repeat url("../img/warning.svg");
+}
+
+i.fa.icon-caution::before {
+    background: no-repeat url("../img/caution.svg");
+}
+
+/* Che logo in navigation bar */
+.navbar-item img.navbar-logo {
+    margin-right: 1ex;
+    width: 13%;
+}
+
+/* Burger menu in navigation bar indented less than Antora default */
+.navbar-burger {
+    margin-left: 0;
+}
+
+/* Highlight of current item in navigation sidebar */
+.nav-list .nav-item.is-current-page {
+    border-left: 0.5rem solid #c6c6c6;
+    padding-left: 1rem;
+    margin-left: -1.5rem;
+    background-color: #dadada;
+}
+
+/* Navigation sidebar on the left slightly wider than Antora default */
+.nav-container {
+    width: 17rem;
+}
+
+/* Navigation sidebar on the left slightly darker than Antora default */
+.nav-container .nav {
+    background-color: #eee;
+}
+
+/* .Headings made more prominent */
+.doc .title {
+    font-weight: bold;
+    color: #3a415f;
+}
+
+/* Google Search Box fix for empty line below header */
+.gsc-control-cse {
+    padding: 0 !important;
+    border: none !important;
+}
+
+aside.toc.sidebar {
+    overflow-block: scroll;
+}
+
+.image {
+    border: 1px solid #000000 !important;
+}
+
+
+.popup {
+    position: relative;
+    display: inline-block;
+    cursor: pointer;
+}
+
+.popuptext {
+    visibility: hidden;
+    background-color: #f0f0f0;
+    color: #333;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    padding: 5px;
+    position: absolute;
+    z-index: 1;
+    bottom: 125%;
+    left: 50%;
+    transform: translateX(-50%);
+    white-space: nowrap;
+}
+
+.popup:hover .popuptext {
+    visibility: visible;
+}
