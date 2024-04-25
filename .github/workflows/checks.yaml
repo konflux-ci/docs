@@ -60,7 +60,7 @@ jobs:
           echo ${{ github.event.pull_request.number }} > ./pull_request/number
 
       - name: Upload artifacts
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: website
           path: |
