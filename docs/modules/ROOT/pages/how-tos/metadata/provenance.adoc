@@ -1,0 +1,4 @@
+= Downloading the SLSA provenance
+
++
+NOTE:  We may want to make the action consistent with SBOMs.

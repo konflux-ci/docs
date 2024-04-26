@@ -1,0 +1,7 @@
+= Prefetching package manager dependencies for hermetic builds
+
++
+NOTE: We may want to rephrase this to word for more accurate SBOM information
+
++
+NOTE: Should this be a subtopic for hermetic or a sibling to it?
