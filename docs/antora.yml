@@ -1,5 +1,6 @@
 ---
 name: ROOT
+title: Konflux-CI
 version: ~
 nav:
 - modules/ROOT/pages/discover/_nav.adoc
