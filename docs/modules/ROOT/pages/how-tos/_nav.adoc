@@ -16,7 +16,7 @@
 **** xref:how-tos/testing/integration/adding.adoc[Adding an integration test]
 **** xref:how-tos/testing/integration/creating.adoc[Creating a custom integration test]
 **** xref:how-tos/testing/integration/rerunning.adoc[Rerunning an integration test]
-** xref:how-tos/metadata/index.adoc[Inspecting your supply chain metadata]
+** xref:how-tos/metadata/index.adoc[Inspecting provenance and attestations]
 *** xref:how-tos/metadata/sboms.adoc[Inspecting SBOMs]
 *** xref:how-tos/metadata/provenance.adoc[Downloading the SLSA provenance]
 ** xref:how-tos/deleting.adoc[Deleting applications and components]

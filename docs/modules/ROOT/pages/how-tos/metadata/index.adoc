@@ -1,1 +1,1 @@
-= Inspecting your supply chain metadata
+= Inspecting provenance and attestations
