@@ -1,0 +1,3 @@
+* Discover
+** xref:discover/index.adoc[Why {ProductName}]
+** xref:discover/slsa-conformity.adoc[Supply chain security through SLSA conformity]

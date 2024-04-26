@@ -2,7 +2,12 @@
 name: ROOT
 version: ~
 nav:
-- modules/ROOT/nav-root.adoc
+- modules/ROOT/pages/discover/_nav.adoc
+- modules/ROOT/pages/getting-started/_nav.adoc
+- modules/ROOT/pages/how-tos/_nav.adoc
+- modules/ROOT/pages/advanced-how-tos/_nav.adoc
+- modules/ROOT/pages/glossary/_nav.adoc
+- modules/ROOT/pages/contribute/_nav.adoc
 
 asciidoc:
   attributes:

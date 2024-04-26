@@ -1,0 +1,6 @@
+= Enabling Snyk
+
+While a Snky test is available to run a build time in the default pipelines, additional configuration is needed to enable the test. This is an example of a build-time test that requires the configuration of a custom secret to be able to run.
+
++
+NOTE:  We may want to consider generalizing this topic.

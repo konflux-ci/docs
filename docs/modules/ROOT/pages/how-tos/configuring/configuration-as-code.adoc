@@ -1,0 +1,4 @@
+= Configuration as code
+
++
+NOTE: Is this topic needed or can it be rolled into index.adoc?
