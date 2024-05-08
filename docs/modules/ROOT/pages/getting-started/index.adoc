@@ -1,1 +1,28 @@
 = Getting started with {ProductName}
+
+{ProductName} is a platform that helps teams develop applications. How you use {ProductName} depends on what role you have on your team. Konflux users generally fall into one of two categories:
+
+* Platform Engineers (PEs): These are the people whose job isn't to engineer applications, but to make it possible for others to do so. They usually own the instance of {ProductName}. They manage that instance and its users.   
+* Developers:  These are the people who engineer applications for their organization. They are the typical users of {ProductName}, who productize their software with it.
+
+Depending on your role, read whichever following section applies best to you, to get more information and links to further documentation.
+
+== For PEs
+
+Before anyone can use it, you need to link:https://github.com/konflux-ci/konflux-ci?tab=readme-ov-file#konflux-ci[install {ProductName}].
+
+After installing {ProductName}, you can add users and assign them to a {ProductName} workspace. We use {ProductName} workspaces for role-based access control (RBAC). 
+
+== For developers
+
+The purpose of {ProductName} is to help your applications get out into the world. Be aware that, in {ProductName}, we specifically define an application as one or more components that run together. And a component is an image built from a source repository.
+
+To access {ProductName}, your PE needs to give you the URL to your team's instance and your user credentials. Once you have that access, you can use {ProductName} to do a lot of different things. But the actions you can take generally fall into 3 key categories:
+
+. *Build:* as mentioned, to form an application, you build its components as images from a repository. While building, {ProductName} also runs certain checks against those images and their source repository.
+. *Test:* bring components together and test them as a whole application. 
+. *Release:* transfer ownership of your application to somewhere outside of {ProductName}, like a container registry. 
+
+
+
+
