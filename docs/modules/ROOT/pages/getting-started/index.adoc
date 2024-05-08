@@ -11,7 +11,7 @@ Depending on your role, read whichever following section applies best to you, to
 
 Before anyone can use it, you need to link:https://github.com/konflux-ci/konflux-ci?tab=readme-ov-file#konflux-ci[install {ProductName}].
 
-After installing {ProductName}, you can add users and assign them to a workspace. Technically, a workspace is a storage volume. But we also use workspaces for role-based access control (RBAC). 
+After installing {ProductName}, you can add users and assign them to a {ProductName} workspace. We use {ProductName} workspaces for role-based access control (RBAC). 
 
 == For developers
 
