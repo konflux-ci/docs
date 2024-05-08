@@ -17,7 +17,7 @@ After installing {ProductName}, you can add users and assign them to a workspace
 
 The purpose of {ProductName} is to help your applications get out into the world. Be aware that, in {ProductName}, we specifically define an application as one or more components that run together. And a component is an image built from a source repository.
 
-You can use {ProductName} to do a lot of different things. But the actions you can take generally fall into 3 key categories:
+To access {ProductName}, your PE needs to give you the URL to your team's instance and your user credentials. Once you have that access, you can use {ProductName} to do a lot of different things. But the actions you can take generally fall into 3 key categories:
 
 . *Build:* as mentioned, to form an application, you build its components as images from a repository. While building, {ProductName} also runs certain checks against those images and their source repository.
 . *Test:* bring components together and test them as a whole application. 
