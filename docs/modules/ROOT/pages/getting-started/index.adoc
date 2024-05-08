@@ -1,6 +1,6 @@
 = Getting started with {ProductName}
 
-{ProductName} is a platform that helps teams develop applications. How you use {ProductName} depends on your what role you have on your team. Konflux users generally fall into one of two categories:
+{ProductName} is a platform that helps teams develop applications. How you use {ProductName} depends on what role you have on your team. Konflux users generally fall into one of two categories:
 
 * Platform Engineers (PEs): These are the people whose job isn't to engineer applications, but to make it possible for others to do so. They usually own the instance of {ProductName}. They manage that instance and its users.   
 * Developers:  These are the people who engineer applications for their organization. They are the typical users of {ProductName}, who productize their software with it.
