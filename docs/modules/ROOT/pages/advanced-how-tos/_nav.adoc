@@ -4,6 +4,5 @@
 ** xref:advanced-how-tos/releasing/index.adoc[Releasing an application]
 *** xref:advanced-how-tos/releasing/create-release-plan.adoc[Creating a release plan]
 *** xref:advanced-how-tos/releasing/create-release-plan-admission.adoc[Creating a release plan admission]
-*** xref:advanced-how-tos/releasing/create-release.adoc[Creating a release]
 ** xref:advanced-how-tos/managing-multiple-versions.adoc[Managing multiple software versions]
 ** xref:advanced-how-tos/managing-security-fix.adoc[Managing a security fix]
