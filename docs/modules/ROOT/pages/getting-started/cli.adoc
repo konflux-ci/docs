@@ -1,1 +1,35 @@
 = Getting started with the CLI
+
+
+
+== What PEs need to do
+
+== What developers need to do
+
+.Prerequisites
+
+* Install link:https://kubernetes.io/docs/tasks/tools/[`kubectl`]
+* Install link:https://github.com/int128/kubelogin[`kubelogin`]
+
+.Procedure
+
+. Get the template `kubeconfig` file for your organization's instance of Konfluence. A PE should be able to provide you with this.
+. Using your preferred text editor, in your copy of the template `kubeconfig`, replace <username> with your Konflux username.
+. Use one of these two methods for making your `kubeconfig` file accessible to the `kubectl` CLI tool:
+.. In your CLI, run the following command:
++
+[source]
+--
+export $KUBECONFIG=<path to your kubeconfig file>
+--
++
+.. Or, overwrite the file located at `${HOME}/.kube/config` with your `kubeconfig` file.
+. Verify your available contexts by running the following command in your CLI. You should see the `konflux` context.
++
+`kubectl config get-contexts`
+. Still in your CLI, set Konflux as the default context:
++
+`kubectl config set-context konflux` 
+. Trigger a round trip from your machine to the cluster and back, to verify the connection:
++
+`kubectl get cm`
