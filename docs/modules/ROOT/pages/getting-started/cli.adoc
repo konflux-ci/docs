@@ -1,10 +1,51 @@
 = Getting started with the CLI
 
-While {ProductName} offers a powerful UI, users may also want to access the platform through your command line interface (CLI). For users to gain this access, a Platform Engineer (PE) must first configure their instance of {ProductName} to support CLI access. They must also draft a template `kubeconfig` file for their organization. Afterwards, users can edit that template to create a `kubeconfig` file specific to themselves. Then, they use that file to gain access to {ProductName} through the CLI. 
+While {ProductName} offers a powerful UI, users may also want to access the platform through their command line interface (CLI). For users to gain this access, a Platform Engineer (PE) must first configure their instance of {ProductName} to support CLI access. They must also draft a template `kubeconfig` file for their organization. Afterwards, users can edit that template to create a `kubeconfig` file specific to themselves. Then, they use that file to gain access to {ProductName} through the CLI. 
 
 Whether you need to enable CLI access, or to gain access once it is available, reference the relevant procedures below. 
 
 == Enabling CLI access for {ProductName}
+
+.Procedure
+
+. Follow link:https://docs.nginx.com/nginx-management-suite/admin-guides/authentication/oidc/oidc-keycloak/[these instructions] to set up Keycloak as an OpenID Connect (OIDC) identity provider. Be aware that, when installing {ProductName}, you already set up a Keycloak server and created a realm called `redhat-external`. 
+. Use the `kubeconfig` template below to create a template specific to your organization. Be sure to provide the following values, specific to your organization, for the corresponding fields in the template file:
+.. The API URL for your cluster, for example: `https://api-toolchain-host-operator.apps.stone-prd-host1.wdlc.p1.openshiftapps.com`
+.. Your OIDC issuer URL, for example: `https://sso.redhat.com/auth/realms/redhat-external`
+.. Your OIDC client ID, for example: `rhoas-cli-prod`
++
+[source]
+--
+apiVersion: v1
+clusters:
+- cluster:
+    server: <1>
+  name: konflux
+contexts:
+- context:
+    cluster: konflux
+    namespace: <username>-tenant
+    user: oidc
+  name: appstudio
+current-context: konflux
+kind: Config
+preferences: {}
+users:
+- name: oidc
+  user:
+    exec:
+      apiVersion: client.authentication.k8s.io/v1beta1
+      args:
+      - oidc-login
+      - get-token
+      - --oidc-issuer-url= <2>
+      - --oidc-client-id= <3>
+      command: kubectl
+      env: null
+      interactiveMode: IfAvailable
+      provideClusterInfo: false
+--
+. Make this template kubeconfig, now specific to your organization, available to users of your {ProductName} instance.
 
 == Accessing {ProductName} through the CLI
 
