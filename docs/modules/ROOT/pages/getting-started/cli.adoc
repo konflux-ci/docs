@@ -1,10 +1,12 @@
 = Getting started with the CLI
 
+While {ProductName} offers a powerful UI, users may also want to access the platform through your command line interface (CLI). For users to gain this access, a Platform Engineer (PE) must first configure their instance of {ProductName} to support CLI access. They must also draft a template `kubeconfig` file for their organization. Afterwards, users can edit that template to create a `kubeconfig` file specific to themselves. Then, they use that file to gain access to {ProductName} through the CLI. 
 
+Whether you need to enable CLI access, or to gain access once it is available, reference the relevant procedures below. 
 
-== What PEs need to do
+== Enabling CLI access for {ProductName}
 
-== What developers need to do
+== Accessing {ProductName} through the CLI
 
 .Prerequisites
 
@@ -13,8 +15,8 @@
 
 .Procedure
 
-. Get the template `kubeconfig` file for your organization's instance of Konfluence. A PE should be able to provide you with this.
-. Using your preferred text editor, in your copy of the template `kubeconfig`, replace <username> with your Konflux username.
+. Get the template `kubeconfig` file for your organization's instance of {ProductName}. A PE should be able to provide you with this.
+. Using your preferred text editor, in your copy of the template `kubeconfig`, replace <username> with your {ProductName} username.
 . Use one of these two methods for making your `kubeconfig` file accessible to the `kubectl` CLI tool:
 .. In your CLI, run the following command:
 +
@@ -27,7 +29,7 @@ export $KUBECONFIG=<path to your kubeconfig file>
 . Verify your available contexts by running the following command in your CLI. You should see the `konflux` context.
 +
 `kubectl config get-contexts`
-. Still in your CLI, set Konflux as the default context:
+. Still in your CLI, set `konflux` as the default context:
 +
 `kubectl config set-context konflux` 
 . Trigger a round trip from your machine to the cluster and back, to verify the connection:
