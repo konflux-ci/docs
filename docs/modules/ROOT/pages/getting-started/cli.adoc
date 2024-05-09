@@ -25,7 +25,7 @@ Whether you need to enable CLI access, or to gain access once it is available, r
 export $KUBECONFIG=<path to your kubeconfig file>
 --
 +
-.. Or, overwrite the file located at `${HOME}/.kube/config` with your `kubeconfig` file.
+.. Or, overwrite the file located at `~/.kube/config` with your `kubeconfig` file.
 . Verify your available contexts by running the following command in your CLI. You should see the `konflux` context.
 +
 `kubectl config get-contexts`
