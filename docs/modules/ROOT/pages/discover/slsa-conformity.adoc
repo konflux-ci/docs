@@ -4,7 +4,7 @@
 
 Supply-chain Levels for Software Artifacts (SLSA) is a security framework produced through industry collaboration. We use this framework as a guide for reinforcing the build process we use for your applications, to better secure your software supply chain.
 
-SLSA assigns two primary responsibilities to build platforms like {ProductName}:
+The SLSA Build (v1.0) specification assigns two primary responsibilities to build platforms like {ProductName}:
 
 * *Provenance* to describe how the platform built each software artifact
 * *Build isolation* to prevent tampering with the build process
