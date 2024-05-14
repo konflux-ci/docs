@@ -1,1 +1,46 @@
 = Adding an integration test
+
+In {ProductName}, you can add integration tests to verify that the individual components of your application integrate correctly, forming a complete and functional application. {ProductName} runs these integration tests on the container images of components before their deployment.
+
+.Prerequisites
+
+* You have created an application in {ProductName}.
+
+.Procedure
+
+Complete the following steps in the {ProductName} console:
+
+. Open an existing application and go to the *Integration tests* tab.
+
+. Select *Add integration test*.
+
+. In the *Integration test name* field, enter a name of your choosing.
+
+. In the *GitHub URL* field, enter the URL of the GitHub repository that contains the test you want to use.
+. Optional: If you want to use a branch, commit, or version other than the default, specify the branch name, commit SHA, or tag in the *Revisions* field.
+
+. In the *Path in repository* field, enter the path to the `.yaml` file that defines the test you want to use.
+. Optional: To allow the integration tests to fail without impacting the deployment and release process of your application, you can choose to select *Mark as optional for release*.
+
++
+NOTE: By default, all integration test scenarios are mandatory and must pass. A failing integration test marks the application snapshot as failed, preventing its deployment and release. However,  if you have selected *Mark as optional for release*, a failure in this test won't hinder the deployment and release of the application snapshot.
+
+. Select *Add integration test*.
+
+. Start a new build for any component you want to test.
+
+.. For components using the default build pipeline, go to the *Components* tab, select the three dots next to the name of the component, and select *Start new build*.
+
+.. For components with an upgraded build pipeline, make a commit to their GitHub repository.
+
+.Verification
+
+When the new build is finished:
+
+. Go to the *Integration tests* tab and select the highlighted name of your test.
+
+. Go to the *Pipeline runs* tab of that test and select the most recent run.
+
+.  On the *Details* page, you can see if the test succeeded for that component. Navigate to the other tabs for more details. 
+
+
