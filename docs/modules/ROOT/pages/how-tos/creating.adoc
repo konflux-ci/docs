@@ -1,9 +1,9 @@
 = Creating applications and components
 
-To create an application in {ProductName}, someone must enable build pipelines in your instance of {ProductName}. This includes creating a GitHub application, so {ProductName} can access pull requests that users make against their applications' repositories, and configuring a smee channel, to listen for those PRs. The first procedure in this document explains how to perform these tasks. 
+To create an application in {ProductName}, someone must enable build pipelines in your instance of {ProductName}. This includes creating a GitHub application, so {ProductName} can access users' pull requests, and configuring a smee channel, to listen for those PRs. The first procedure in this document explains how to perform these tasks. 
 
 Once build pipelines are enabled, users can create their applications in {ProductName}. The second procedure below describes how to create a single-component application. For applications with multiple components...
-//Yftach: What would users do to create an app with multiple components? Add a new URL to the same application-and-component.yaml?
+//Yftach: This is basically the question I had: What would users do to create an app with multiple components? Add a new URL to the same application-and-component.yaml? Create a new YAML file in the same namespace, within the Konflux directory?
 
 == Enabling build pipelines for your instance of {ProductName}:
 
@@ -22,7 +22,7 @@ Once build pipelines are enabled, users can create their applications in {Produc
 
 .Prerequisites:
 
-* kubectl CLI tool
+* link:https://kubernetes.io/docs/tasks/tools/[kubectl] CLI tool
 * The following values from your {ProductName} GitHub application:
 ** The private key
 ** The application ID
