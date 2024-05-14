@@ -1,1 +1,78 @@
 = Getting started with the CLI
+
+While {ProductName} offers a powerful UI, users may also want to access the platform through the `kubectl` command line interface (CLI). For users to gain this access, a Platform Engineer (PE) must first configure their instance of {ProductName} to support CLI access. They must also draft a template `kubeconfig` file for their organization. Afterwards, users can edit that template to create a `kubeconfig` file specific to themselves. Then, they use that file to gain access to {ProductName} through the CLI. 
+
+Whether you need to enable CLI access, or to gain access once it is available, refer to the relevant procedures below. 
+
+== Enabling CLI access for {ProductName}
+
+.Procedure
+
+. Follow link:https://docs.nginx.com/nginx-management-suite/admin-guides/authentication/oidc/oidc-keycloak/[these instructions] to set up Keycloak as an OpenID Connect (OIDC) identity provider. Be aware that, when installing {ProductName}, you already set up a Keycloak server and created a realm called `redhat-external`. 
+. In your preferred text editor, use the `kubeconfig` template below to create a template specific to your organization. Be sure to provide the following values, specific to your organization, for the corresponding fields in the template file:
+.. The API URL for your cluster, for example: `https://api-toolchain-host-operator.apps.stone-prd-host1.wdlc.p1.openshiftapps.com`
+.. Your OIDC issuer URL, for example: `https://sso.redhat.com/auth/realms/redhat-external`
+.. Your OIDC client ID, for example: `rhoas-cli-prod`
++
+[source]
+--
+apiVersion: v1
+clusters:
+- cluster:
+    server: <1>
+  name: konflux
+contexts:
+- context:
+    cluster: konflux
+    namespace: <username>-tenant
+    user: oidc
+  name: konflux
+current-context: konflux
+kind: Config
+preferences: {}
+users:
+- name: oidc
+  user:
+    exec:
+      apiVersion: client.authentication.k8s.io/v1beta1
+      args:
+      - oidc-login
+      - get-token
+      - --oidc-issuer-url= <2>
+      - --oidc-client-id= <3>
+      command: kubectl
+      env: null
+      interactiveMode: IfAvailable
+      provideClusterInfo: false
+--
+. Make this template `kubeconfig`, now specific to your organization, available to users of your {ProductName} instance.
+
+== Accessing {ProductName} through the CLI
+
+.Prerequisites
+
+* Install link:https://kubernetes.io/docs/tasks/tools/[`kubectl`]
+* Install link:https://github.com/int128/kubelogin[`kubelogin`]
+
+.Procedure
+
+. Get the template `kubeconfig` file for your organization's instance of {ProductName}. A PE should be able to provide you with this.
+. Using your preferred text editor, in your copy of the template `kubeconfig`, replace <username> with your {ProductName} username.
+. Use one of these two methods for making your `kubeconfig` file accessible to the `kubectl` CLI tool:
+.. In your CLI, run the following command:
++
+[source]
+--
+export $KUBECONFIG=<path to your kubeconfig file>
+--
++
+.. Or, overwrite the file located at `~/.kube/config` with your `kubeconfig` file.
+. Verify your available contexts by running the following command in your CLI. You should see the `konflux` context.
++
+`kubectl config get-contexts`
+. Still in your CLI, set `konflux` as the default context:
++
+`kubectl config set-context konflux` 
+. Trigger a round trip from your machine to the cluster and back, to verify the connection:
++
+`kubectl get cm`
