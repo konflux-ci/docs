@@ -1,6 +1,6 @@
 = Getting started with the CLI
 
-While {ProductName} offers a powerful UI, users may also want to access the platform through their command line interface (CLI). For users to gain this access, a Platform Engineer (PE) must first configure their instance of {ProductName} to support CLI access. They must also draft a template `kubeconfig` file for their organization. Afterwards, users can edit that template to create a `kubeconfig` file specific to themselves. Then, they use that file to gain access to {ProductName} through the CLI. 
+While {ProductName} offers a powerful UI, users may also want to access the platform through the `kubectl` command line interface (CLI). For users to gain this access, a Platform Engineer (PE) must first configure their instance of {ProductName} to support CLI access. They must also draft a template `kubeconfig` file for their organization. Afterwards, users can edit that template to create a `kubeconfig` file specific to themselves. Then, they use that file to gain access to {ProductName} through the CLI. 
 
 Whether you need to enable CLI access, or to gain access once it is available, refer to the relevant procedures below. 
 
