@@ -2,8 +2,7 @@
 
 To create an application in {ProductName}, someone must enable build pipelines in your instance of {ProductName}. This includes creating a GitHub application, so {ProductName} can access users' pull requests, and configuring a smee channel, to listen for those PRs. The first procedure in this document explains how to perform these tasks. 
 
-Once build pipelines are enabled, users can create their applications in {ProductName}. The second procedure below describes how to create a single-component application. For applications with multiple components...
-//Yftach: This is basically the question I had: What would users do to create an app with multiple components? Add a new URL to the same application-and-component.yaml? Create a new YAML file in the same namespace, within the Konflux directory?
+Once build pipelines are enabled, users can create their applications in {ProductName}. The second procedure below describes how to create an application. 
 
 == Enabling build pipelines for your instance of {ProductName}:
 
@@ -36,7 +35,9 @@ Once build pipelines are enabled, users can create their applications in {Produc
 . In the GitHub repository for your application, install your organization’s {ProductName} GitHub application.
 . In the repository for your instance of {ProductName}, you need to replace two `url` values in the relevant YAML file for your namespace. The path for this file is `/test/resources/demo-users/user/<namespace>/application-and-component.yaml`. Replace the two `url` values as follows:
 .. For the `url` value beneath `git`, provide the URL that you would use to locally clone your application’s repository. This URL ends with `.git`.
-.. For the `url` value beneath `spec`, at the end of the file, provide the URL for your application’s repository that you see in your browser, without `.git` at the end. 
+.. For the `url` value beneath `spec`, at the end of the file, provide the URL for your application’s repository that you see in your browser, without `.git` at the end.
++
+NOTE: To add other components to the same namespace, reference the example YAML file beneath this procedure. 
 . Login to {ProductName} xref:../getting-started/cli.adoc[through your CLI]. 
 . Run the following command. Be sure to replace <namespace> with your actual namespace.
 +
@@ -54,3 +55,73 @@ kubectl -n pipelines-as-code create secret generic pipelines-as-code-secret \
 . Now, you can trigger your application’s first build pipeline. In the git repository for your application, using your preferred text editor, open a pull request against the `/.tekton/pull-request.yaml` file. 
 .. Specifically, replace any existing value for the `git-url` field with the git URL for your application’s repository. (This is the URL you would use to clone the repository locally; it ends with `.git`.)
 . Once the PR is made, a build pipeline should start. You can track its progress on GitHub, or in the {ProductName} UI. If the pipeline is successful, you can merge the PR.
+
+== Example YAML file for multiple components
+
+If you want to create an application that contains multiple components, model your `application-and-component.yaml` file after the following example.
+
+[source]
+--
+---
+apiVersion: appstudio.redhat.com/v1alpha1
+kind: Application
+metadata:
+  name: test-application
+  namespace: user-ns2
+  annotations:
+    application.thumbnail: "1"
+spec:
+  displayName: test-application
+---
+apiVersion: appstudio.redhat.com/v1alpha1
+kind: Component
+metadata:
+  name: test-component1
+  namespace: user-ns2
+  annotations:
+    build.appstudio.openshift.io/request: configure-pac
+    image.redhat.com/generate: '{"visibility": "public"}'
+spec:
+  application: test-application
+  componentName: test-component1
+  source:
+    git:
+      revision: main
+      url: https://github.com/konflux-ci/testrepo.git
+      dockerfileUrl: Dockerfile
+      context: ./
+---
+apiVersion: appstudio.redhat.com/v1alpha1
+kind: Component
+metadata:
+  name: test-component2
+  namespace: user-ns2
+  annotations:
+    build.appstudio.openshift.io/request: configure-pac
+    image.redhat.com/generate: '{"visibility": "public"}'
+spec:
+  application: test-application
+  componentName: test-component2
+  source:
+    git:
+      revision: main
+      url: https://github.com/konflux-ci/anothertestrepo.git
+      dockerfileUrl: Dockerfile
+      context: ./
+---
+apiVersion: "pipelinesascode.tekton.dev/v1alpha1"
+kind: Repository
+metadata:
+  name: project-repository-testrepo
+  namespace: user-ns2
+spec:
+  url: "https://github.com/konflux-ci/testrepo"
+---
+apiVersion: "pipelinesascode.tekton.dev/v1alpha1"
+kind: Repository
+metadata:
+  name: project-repository-anothertestrepo
+  namespace: user-ns2
+spec:
+  url: "https://github.com/konflux-ci/anothertestrepo"
+--
