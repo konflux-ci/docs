@@ -1,6 +1,6 @@
 = Customizing the build pipeline
 
-To meet your specific needs, you can customize the way that {ProductName} builds components. You can customize in two ways:
+To meet your specific needs, you can customize the way that {ProductName} builds components. You can customize builds in two ways:
 
 * Change the parameters of the build pipeline of a component.
 * Extend the pipeline with your own tasks (or delete existing tasks).
@@ -30,7 +30,7 @@ To customize the build pipeline in any way, start by taking the following steps:
 
 == Extending the build pipeline with your own tasks
 
-So you can do this and it's very fun and cool, but you'll also need to exclude the whole trusted tasks thing from EC, if you choose to use EC. What links can we give for this? Do we need additional docs?
+Before you extend your build pipeline, be aware that doing so causes builds to fail an link:https://enterprisecontract.dev/docs/ec/main/index.html[Enterprise Contract] check, if you are using the EC. To resolve this issue, please reference the next procedure after completing this one.  
 
 .Procedure
 
@@ -102,6 +102,20 @@ An example of a custom task added to the pipeline that sends a slack notificatio
 
 ====
 
+== Preventing issues with the Enterprise Contract
+
+If you are using the Enterprise Contract (EC) to verify your builds, then extending your build pipeline causes your builds to fail the EC. Specifically, builds begin to violate the "trusted tasks" rule.  
+
+At the time of publication, the easiest solution for this problem we can recommend is to skip the trusted tasks check. 
+
+.Procedure 
+
+. In the repository for your instance of Konflux, find the version of the EC that your pipeline is using in the following directory: `/konflux-ci/enterprise-contract/core`. 
+.. By default, Konflux uses `enterprise-contract-service_appstudio.redhat.com_v1alpha1_enterprisecontractpolicy_default.yaml`.
+. Find this line: `exclude: []`
+. Between the brackets, insert the value `trusted_task.trusted`.
+. Commit this change to the repository.
+
 == Exchanging the build pipeline build task with higher memory limits
 
 The `buildah` task, which builds components from a Dockerfile, has a memory limit of 4 GB. To build components with memory requirements greater than 4 GB, use the following tasks:
@@ -121,49 +135,7 @@ To exchange the build task with a memory limit of 6 GB, complete the following s
 
 == Bring your own Quay repository to the build pipeline
 
-By default, all pipelines push the images to *not* the `quay.io/redhat-user-workloads` repository. It is not mandatory to use this Quay repo, so if you want to use your own Quay repo to control user permissions, you can do this by updating the `output-image` parameter in the pipelines.
-
-.Procedure
-
-. You need a secret to push images to your Quay repo. 
-.. Follow Quay's link:https://docs.quay.io/glossary/robot-accounts.html[documentation] to create a robot account for your repository.
-.. Give push access to your repository to the robot account.
-.. Retrieve the `.dockercfg` from the "Docker Configuration" menu on your robot account credentials page.
-.. Follow the steps to xref:how-to-guides/configuring-builds/proc_creating-secrets-for-your-builds.adoc[create a secret for your build] as an "Image Pull Secret".
-
-[NOTE] 
-====
-You need to delete the `"auths": {` and one `}` at the end of the docker config file for the secret to work, pending the resolution of https://issues.redhat.com/browse/KFLUXBUGS-1160[KFLUXBUGS-1160] bug. 
-
-For example, this is how you get the file from Quay:
-[source, json]
-----
-{
-  "auths": {
-    "quay.io": {
-      "auth": "example",
-      "email": "example"
-    }
-  }
-}
-----
-
-And this is how you should upload it to Konflux:
-[source, json]
-----
-{
-  "quay.io": {
-    "auth": "example",
-    "email": "example"
-  }
-}
-----
-====
-
-[start=2]
-. Go to the GitHub repo of your component.
-. In each .yaml file within the .tekton directory, under `params`, locate the parameter named `output-image`:
-.. Change it to reflect your new repository. For example: `quay.io/my-new-quay-repo/my-app:on-pr-{\{revision}}` for the `pull-request` pipeline, and `quay.io/my-new-quay-repo/my-app:{\{revision}}` for the `push` pipeline. This distinction helps identify which images originate from a Pull Request and which do not.
+By default, all pipelines push the images to a local repository that is set up as a part of installation. Ths registry address is registry-service.kind-registry:5001. It is not mandatory to use this local repo, so if you want to use your own Quay repo to control user permissions, you can do this by following link:https://github.com/konflux-ci/konflux-ci/tree/main?tab=readme-ov-file#configuring-a-push-secret-for-the-build-pipeline[the instructions] for configuring a push secret for the build piepline.
 
 == Verification
 
@@ -189,10 +161,7 @@ If you experience any issues with your customized pipeline, try the following so
 * For problems with both parameters and tasks, make sure you committed your changes to the `.tekton` directory in the repository that {ProductName} references for the component.
 
 * If your build pipeline can no longer successfully run, your best option is to simply rebuild the `.tekton` directory:
-** Delete the `.tekton` directory in the repository of the component.
-** In the {ProductName} console, on the *Overview* tab for the relevant application, scroll down and select *Manage build pipelines*.
-** Select the three dots next to the relevant component and select *Roll back to default pipeline*.
-** Complete the steps for xref:how-to-guides/configuring-builds/proc_upgrade_build_pipeline.adoc[upgrading the build pipeline] of that component again.
+** Use the link:https://github.com/konflux-ci/testrepo/tree/main/.tekton[template `.tekton` directory] to rebuild your own `.tekton` directory.
 
 == Additional resources [[additional-resources]]
 * Visit the Tekton documentation that explains link:https://tekton.dev/docs/pipelines/taskruns/#specifying-the-target-task[how to use `taskSpec`] in a task declaration.
