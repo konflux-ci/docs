@@ -1,4 +1,60 @@
-= Preventing redundant rebuilds
+= Preventing redundant builds
 
+{ProductName} rebuilds the component when new pull requests (PRs) include changes to that component. This behavior helps you identify any issues the PR might cause before merging it. 
+
+By default, {ProductName} configures pipelines to rebuild a component _only_ if a PR includes changes to that component. This configuration prevents redundant rebuilds in repositories that contain multiple components. 
+
+However, depending on the structure of your repository and the dependencies of your component, you may want to adjust the default configuration for rebuilds to better suit your needs. In particular, the default configuration might still rebuild a component too often. You can change this behavior by editing the `on-cel-expression` annotation.   
+
+.Procedure
+
+To prevent redundant builds of a component, complete the following steps.
+
+. Using your preferred IDE, in the repository of your component, open the  `/.tekton/<name of component>-on-pull-request.yaml` file and find the`on-cel-expression` annotation. 
 +
-NOTE: Is this builds or rebuilds?
+Example:
++
+----
+pipelinesascode.tekton.dev/on-cel-expression: event == "pull_request" && target_branch
+      == "main" && ( "my-component/***".pathChanged() || ".tekton/my-component-sample-pull-request.yaml".pathChanged()
+      || "root-docker/Dockerfile".pathChanged() )
+----
++
+. Set the value as the path or paths that you want to trigger rebuilds. PRs with changes to files in those paths will cause {ProductName} to rebuild the component.
++
+Example:
++
+----
+pipelinesascode.tekton.dev/on-cel-expression: event == "pull_request" && target_branch
+      == "main" && ( "my-component/context/***".pathChanged() || ".tekton/my-component-pull-request.yaml".pathChanged()
+      || "root-docker/Dockerfile".pathChanged() )
+----
++
+WARNING: Misconfiguring this value can prevent builds from starting or cause them to start at the wrong time.
++
+. Commit the changes.
+. Wait for {ProductName} to rebuild your component. 
+
+.Verification
+To verify that you have prevented redundant builds: 
+
+. Open a PR that modifies the component that you want {ProductName} to rebuild. 
+. Wait for {ProductName} to rebuild your component.
+. Check the PipelineRuns page in {ProductName}. There should be only one new PipelineRun with the type as “Build.” Check its logs for the `build-container` task. They should only refer to the component you specified with `on-cel-expression`.
+
+.Troubleshooting
+
+If {ProductName} continues to rebuild your whole application for each new PR:
+
+* Make sure you entered the right path as the value for `on-cel-expression`.
+* Make sure the logical operators between conditions in `on-cel-expression` are correct. For example, did you accidentally replace || with &&?
+* Make sure you merged the commit that changes `on-cel-expression`.
+
+If builds are failing to start:
+
+* Try the previously listed troubleshooting items.
+* If those ideas do not work, use `git revert` to restore your pipeline definition to its original state.
+
+If builds are starting at the wrong time:
+
+* For any component whose builds are starting at the wrong time, ensure that its `on-cel-expression` excludes all paths in the repo that are not associated with that component.
