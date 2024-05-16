@@ -24,7 +24,7 @@ Be aware that build-time tests include the following security-focused tests:
 
 == Custom tests
 
-Custom tests in {ProductName} are tests that users and administrators create. To add a custom test to an individual component, xref:../configuring/customizing-the-build.adoc[customize its build pipeline] to include the test as another Tekton task. Or, to add a test that runs on all components of an application, xref:./integration/creating.adoc[create a custom integration test].
+Custom tests in {ProductName} are tests that users and administrators create. To add a custom test to an individual component, xref:/how-tos/configuring/customizing-the-build.adoc[customize its build pipeline] to include the test as another Tekton task. Or, to add a test that runs on all components of an application, xref:./integration/creating.adoc[create a custom integration test].
 
 == Integration tests
 
