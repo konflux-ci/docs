@@ -1,1 +1,169 @@
 = Customizing the build pipeline
+
+To meet your specific needs, you can customize the way that {ProductName} builds components. You can customize builds in two ways:
+
+* Change the parameters of the build pipeline of a component.
+* Extend the pipeline with your own tasks (or delete existing tasks).
+
+For example, you might decide to limit how long {ProductName} saves the images that it builds for pull requests. You can set a limit by changing the value of the `image-expires-after` parameter. Or you can ensure that images are compliant with regulations for your industry, by adding a compliance check as a task to the build pipeline. 
+
+
+.Procedure
+
+To customize the build pipeline in any way, start by taking the following steps:
+
+. In your preferred IDE, navigate to the `.tekton` directory in the repository of your component.
+
+. Open the relevant YAML files:
+.. The file ending in `-pull-request.yaml` determines how {ProductName} responds when you open pull requests.
+.. The file ending in `-on-push.yaml` determines how {ProductName} responds when you push commits. 
+
+== Changing parameters
+
+.Procedure
+
+. In the relevant YAML files, in the `.tekton` directory, customize the parameters of the build pipeline by changing the pipeline `params`:
+.. To make sure your changes are not overriden, change params with the paths `.spec.params`.
+.. You can change the default `value` of existing parameters. For example, for PRs, you could set a value for `image-expires-after`, like `2w` or `5d`, so images built for PRs do not last indefinitely.  
+.. You can also add parameters. New parameters must include a `name` and `value`.
+. Commit your changes to the repository of the component.
+
+
+== Extending the build pipeline with your own tasks
+
+Before you extend your build pipeline, be aware that doing so causes builds to fail an link:https://enterprisecontract.dev/docs/ec/main/index.html[Enterprise Contract] check, if you are using the EC. To resolve this issue, please reference the xref:./customizing-the-build.adoc#Preventing-issues-with-the-Enterprise-Contract[next procedure] after completing this one.  
+
+.Procedure
+
+. In each `.yaml` file in the `.tekton` directory, add a new task under `.spec.pipelineSpec.tasks`. 
+
++ 
+Example task:
++
+[source]
+--
+  name: example-task
+  params:
+  - name: example-param
+    value: “Example”
+  runAfter:
+  - build-container #You can be more specific by choosing another task
+  taskRef:
+    params:
+    - name: name
+      value: example-task # metadata.name field of the Task
+    - name: bundle
+      value: quay.io/tekton-bundle-catalog/example-task-bundle:1.0
+      # For more details on tekton bundles, refer https://tekton.dev/docs/pipelines/pipelines/#tekton-bundles
+    - name: kind
+      value: task
+    resolver: bundles
+  when:
+  - input: $(params.skip-checks)    #This references the pipeline parameters
+    operator: in
+    values:
+    - "false"
+--
+
++
+An example of a custom task added to the pipeline that sends a slack notification when the `Pipelinerun` fails:
++
+[source]
+--
+  name: slack-webhook-notification
+  params:
+    - name: message
+      value: PipelineRun $(context.pipelineRun.name) failed
+    - name: secret-name
+      value: my-secret # name of secret in the your namespace which contains slack web-hook URL under key specified in 'key-name' parameter below
+    - name: key-name
+      value: dev-team
+  taskRef:
+    params:
+    - name: bundle
+      value: quay.io/redhat-appstudio-tekton-catalog/task-slack-webhook-notification:0.1
+    - name: name
+      value: slack-webhook-notification
+    - name: kind
+      value: Task
+    resolver: bundles
+  when:
+    - input: $(tasks.status)
+      operator: in
+      values: ["Failed"]
+--
+
+. Commit your changes to the repository of the component.
+
+[NOTE] 
+====
+* To use `slack-webhook-notification` task, you need to xref:./creating-secrets.adoc[create a secret] in your namespace with at least one key where the value is the webhook URL. For example, to create a secret for Slack, run `oc create secret generic my-secret --from-literal dev-team=https://hooks.slack.com/services/XXX/XXXXXX`
+
+* If you want to define a task directly in this file, rather than using `taskRef`, you can use `taskSpec`. Visit the documentation linked in the <<additional-resources>> section.
+
+====
+
+== Preventing issues with the Enterprise Contract
+
+If you are using the Enterprise Contract (EC) to verify your builds, then extending your build pipeline causes your builds to fail the EC. Specifically, builds begin to violate the link:https://enterprisecontract.dev/docs/ec-policies/release_policy.html#trusted_task__trusted[Trusted Tasks] rule.  
+
+At the time of publication, the easiest solution for this problem we can recommend is to skip the Trusted Tasks check. 
+
+.Procedure 
+
+. In the repository for your instance of Konflux, find the version of the EC that your pipeline is using in the following directory: `/konflux-ci/enterprise-contract/core`. 
+.. By default, Konflux uses `enterprise-contract-service_appstudio.redhat.com_v1alpha1_enterprisecontractpolicy_default.yaml`.
+. Find this line: `exclude: []`
+. Between the brackets, insert the value `trusted_task.trusted`.
+. Commit this change to the repository.
+
+== Exchanging the build pipeline build task with higher memory limits
+
+The `buildah` task, which builds components from a Dockerfile, has a memory limit of 4 GB. To build components with memory requirements greater than 4 GB, use the following tasks:
+
+* link:https://quay.io/repository/redhat-appstudio-tekton-catalog/task-buildah-6gb?tab=tags[quay.io/redhat-appstudio-tekton-catalog/task-buildah-6gb]
+* link:https://quay.io/repository/redhat-appstudio-tekton-catalog/task-buildah-8gb?tab=tags[quay.io/redhat-appstudio-tekton-catalog/task-buildah-8gb]
+* link:https://quay.io/repository/redhat-appstudio-tekton-catalog/task-buildah-10gb?tab=tags[quay.io/redhat-appstudio-tekton-catalog/task-buildah-10gb]
+
+.Procedure
+
+To exchange the build task with a memory limit of 6 GB, complete the following steps. For a memory limit of 8 or 10 GB, replace the references to 6 GB with the appropriate values.
+
+. Go to the GitHub repo of your component.
+. In each .yaml file in the .tekton directory, under tasks, locate the task named build-container:
+.. Under `.taskRef.params`, set `name` to `buildah-6gb`.
+.. Under `.taskRef.params`, set `bundle` to `quay.io/redhat-appstudio-tekton-catalog/task-buildah-6gb:0.1`.
+
+== Bring your own Quay repository to the build pipeline
+
+By default, all pipelines push the images to a local repository that is set up as a part of installation. Ths registry address is registry-service.kind-registry:5001. It is not mandatory to use this local repo, so if you want to use your own Quay repo to control user permissions, you can do this by following link:https://github.com/konflux-ci/konflux-ci/tree/main?tab=readme-ov-file#configuring-a-push-secret-for-the-build-pipeline[the instructions] for configuring a push secret for the build piepline.
+
+== Verification
+
+When you commit changes to these `.yaml` files in your repository, {ProductName} automatically triggers a new build. Wait for {ProductName} to complete the new build, then verify your changes have been made by following these steps:
+
+. Navigate to *Activity > Pipeline runs*.
+. Select the most recent build pipeline run. 
+. In the *Details* tab, confirm that there are new tasks that you added in the pipeline visualization.
+. In the *Logs* tab, confirm the following:
+.. Any new tasks are in the navigation bar. 
+.. If you changed a parameter's value, and that value gets printed, the new value is in the log.
+
+== Troubleshooting
+
+If you experience any issues with your customized pipeline, try the following solutions:
+
+* If you believe that your desired parameter values are not being passed into the pipeline, make sure that your assignment of that value doesn't get overwritten later in the `.yaml` file.
+
+* If your new task is not appearing in the pipeline run, ensure the following:
+** You added it to the correct place in the `.yaml` files, so that it has the path `.spec.params` or `.pipelineSpec.params`. 
+** You specified a valid `runAfter` field, and that the task in that field completed successfully.
+
+* For problems with both parameters and tasks, make sure you committed your changes to the `.tekton` directory in the repository that {ProductName} references for the component.
+
+* If your build pipeline can no longer successfully run, your best option is to simply rebuild the `.tekton` directory:
+** Use the link:https://github.com/konflux-ci/testrepo/tree/main/.tekton[template `.tekton` directory] to rebuild your own `.tekton` directory.
+
+== Additional resources [[additional-resources]]
+* Visit the Tekton documentation that explains link:https://tekton.dev/docs/pipelines/taskruns/#specifying-the-target-task[how to use `taskSpec`] in a task declaration.
+
