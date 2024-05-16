@@ -28,6 +28,6 @@ Custom tests in {ProductName} are tests that users and administrators create. To
 
 == Integration tests
 
-Integration tests ensure that all build components within an application are able to work together at the same time. You can xref:./integration/adding.adoc[add an integration test], simply by giving {ProductName} the address to a GitHub repo, and the path within that repo to the `.yaml` file that defines the test.
+Integration tests ensure that all components within an application are able to work together at the same time. You can xref:./integration/adding.adoc[add an integration test], simply by giving {ProductName} the address to a GitHub repo, and the path within that repo to an IntegrationTestScenario (ITS). An ITS is a YAML file, one that contains a Tekton Pipeline that defines an integration test.
 
-{ProductName} runs integration tests after it successfully builds the variou components of an application. As part of the build process, {ProductName} creates an image for each component and stores them in a repository. Images of all the components are then compiled into a snapshot of the application. {ProductName} tests the snapshot against user-defined IntegrationTestScenarios, which, again, refer to a GitHub repository. 
+{ProductName} runs integration tests after it successfully builds the variou components of an application. As part of the build process, {ProductName} creates an image for each component and stores them in a repository. Images of all the components are then compiled into a snapshot of the application. {ProductName} tests the snapshot against user-defined IntegrationTestScenarios, which, again, is a YAML file in a GitHub repository. 
