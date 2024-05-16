@@ -12,7 +12,7 @@ The following sections explain each of these test types in greater detail.
 
 Build-time tests in {ProductName} ensure the stability and security of the application, its components, its build pipeline, and the environment in which it is being tested. 
 
-The build-time tests used in {ProductName} are executed in the form of Tekton xref:glossary/index.adoc#task[tasks]. The utility used for validating container information is link:https://www.conftest.dev/[conftest]. A full listing of {ProductName} surface-level tests is available in this document: xref:how-to-guides/testing/build.adoc[Build-time tests].
+The build-time tests used in {ProductName} are executed in the form of Tekton xref:glossary/index.adoc#task[tasks]. The utility used for validating container information is link:https://www.conftest.dev/[conftest]. A full listing of {ProductName} surface-level tests is available in this document: xref:./build.adoc[Build-time tests].
 
 Be aware that build-time tests include the following security-focused tests:
 
@@ -24,10 +24,10 @@ Be aware that build-time tests include the following security-focused tests:
 
 == Custom tests
 
-Custom tests in {ProductName} are tests that users and administrators create. To add a custom test to an individual component, xref:how-to-guides/configuring-builds/proc_customize_build_pipeline.adoc[customize its build pipeline] to include the test as another Tekton task. Or, to add a test that runs on all components of an application, xref:how-to-guides/testing_applications/proc_creating_custom_test.adoc[create a custom integration test].
+Custom tests in {ProductName} are tests that users and administrators create. To add a custom test to an individual component, xref:../configuring-builds/proc_customize_build_pipeline.adoc[customize its build pipeline] to include the test as another Tekton task. Or, to add a test that runs on all components of an application, xref:./integration/creating.adoc[create a custom integration test].
 
 == Integration tests
 
-Integration tests ensure that all build components are able to work together at the same time. You can xref:how-to-guides/testing_applications/proc_adding_an_integration_test.adoc[add an integration test], simply by giving {ProductName} the address to a GitHub repo, and the path within that repo to the `.yaml` file that defines the test.
+Integration tests ensure that all build components are able to work together at the same time. You can xref:./integration/adding.adoc[add an integration test], simply by giving {ProductName} the address to a GitHub repo, and the path within that repo to the `.yaml` file that defines the test.
 
 {ProductName} runs integration tests after it successfully builds the components of an application. As part of the build process, {ProductName} creates an image for each component and stores them in a Quay.io repository. Images of all the components are then compiled into a snapshot of the application. {ProductName} tests the snapshot against user-defined IntegrationTestScenarios, which, again, refer to a GitHub repository. 
