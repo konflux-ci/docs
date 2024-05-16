@@ -14,7 +14,7 @@ Build-time tests in {ProductName} ensure the stability and security of the appli
 
 The build-time tests used in {ProductName} are executed in the form of Tekton xref:glossary/index.adoc#task[tasks]. The utility used for validating container information is link:https://www.conftest.dev/[conftest]. A full listing of {ProductName} surface-level tests is available in this document: xref:./build/index.adoc[Build-time tests].
 
-Be aware that build-time tests include the following security-focused tests:
+Build-time tests include the following security-focused tests:
 
 * Vulnerability scanning via Clair
 * Anti-virus scanning via ClamAV
@@ -28,6 +28,6 @@ Custom tests in {ProductName} are tests that users and administrators create. To
 
 == Integration tests
 
-Integration tests ensure that all build components are able to work together at the same time. You can xref:./integration/adding.adoc[add an integration test], simply by giving {ProductName} the address to a GitHub repo, and the path within that repo to the `.yaml` file that defines the test.
+Integration tests ensure that all build components within an application are able to work together at the same time. You can xref:./integration/adding.adoc[add an integration test], simply by giving {ProductName} the address to a GitHub repo, and the path within that repo to the `.yaml` file that defines the test.
 
-{ProductName} runs integration tests after it successfully builds the components of an application. As part of the build process, {ProductName} creates an image for each component and stores them in a Quay.io repository. Images of all the components are then compiled into a snapshot of the application. {ProductName} tests the snapshot against user-defined IntegrationTestScenarios, which, again, refer to a GitHub repository. 
+{ProductName} runs integration tests after it successfully builds the variou components of an application. As part of the build process, {ProductName} creates an image for each component and stores them in a repository. Images of all the components are then compiled into a snapshot of the application. {ProductName} tests the snapshot against user-defined IntegrationTestScenarios, which, again, refer to a GitHub repository. 
