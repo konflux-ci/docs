@@ -1,6 +1,6 @@
 = Creating applications and components
 
-To create an application in {ProductName}, someone must enable build pipelines in your instance of {ProductName}. This includes creating a GitHub application, so {ProductName} can access users' pull requests, and configuring a smee channel, to listen for those PRs. The first procedure in this document explains how to perform these tasks. 
+To create an application in {ProductName}, someone must enable build pipelines in your instance of {ProductName}. This includes creating a GitHub App, so {ProductName} can access users' pull requests, and configuring a smee channel, to listen for those PRs. The first procedure in this document explains how to perform these tasks. 
 
 Once build pipelines are enabled, users can create their applications in {ProductName}. The second procedure below describes how to create an application. 
 
@@ -13,7 +13,7 @@ Once build pipelines are enabled, users can create their applications in {Produc
 
 .Procedure:
 
-. Create a GitHub app according to link:https://pipelinesascode.com/docs/install/github_apps/#manual-setup[these Pipelines as Code instructions].
+. Create a GitHub App according to link:https://pipelinesascode.com/docs/install/github_apps/#manual-setup[these Pipelines as Code instructions].
 . Start a new link:https://smee.io/[smee] channel.
 . In the repository for your instance of {ProductName}, edit the file /smee/smee-client.yaml. Replace <smee-channel> with the webhook proxy URL from the previous step. 
 
@@ -22,9 +22,9 @@ Once build pipelines are enabled, users can create their applications in {Produc
 .Prerequisites:
 
 * link:https://kubernetes.io/docs/tasks/tools/[kubectl] CLI tool
-* The following values from your {ProductName} GitHub application:
+* The following values from your {ProductName} GitHub App:
 ** The private key
-** The application ID
+** The App ID
 ** The webhook secret
 * A GitHub repository with source code for your application 
 ** It must have the same basic structure as our example repository
@@ -32,13 +32,13 @@ Once build pipelines are enabled, users can create their applications in {Produc
 
 .Procedure:
 
-. In the GitHub repository for your application, install your organization’s {ProductName} GitHub application.
+. In the GitHub repository for your application, install your organization’s {ProductName} GitHub App.
 . In the repository for your instance of {ProductName}, you need to replace two `url` values in the relevant YAML file for your namespace. The path for this file is `/test/resources/demo-users/user/<namespace>/application-and-component.yaml`. Replace the two `url` values as follows:
 .. For the `url` value beneath `git`, provide the URL that you would use to locally clone your application’s repository. This URL ends with `.git`.
 .. For the `url` value beneath `spec`, at the end of the file, provide the URL for your application’s repository that you see in your browser, without `.git` at the end.
 +
 NOTE: To add other components to the same namespace, reference the example YAML file beneath this procedure. 
-. Login to {ProductName} xref:../getting-started/cli.adoc[through your CLI]. 
+. Login to the Kubernetes cluster where Konflux is deployed. 
 . Run the following command. Be sure to replace <namespace> with your actual namespace.
 +
 `kubectl create -f /test/resources/demo-users/user/<namespace>/application-and-component.yaml`
