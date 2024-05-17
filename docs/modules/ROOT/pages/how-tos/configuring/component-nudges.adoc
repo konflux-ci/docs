@@ -48,7 +48,6 @@ Alternatively, in the git repo for the component that nudges, push a commit. Whe
 Prerequisites:
 
 * `oc` CLI tool
-* CLI access to {ProductName}
 
 .Procedure
 
@@ -63,7 +62,7 @@ Component A _nudges_ Component B (or Component B _is nudged by_ Component A) if 
 ====
 . Patch the components to establish the nudging relationship.
 +
-`oc patch components <name of component that nudges> -p '{"spec":{"build-nudges-ref": ["<name of component that is nudged"]}}' --type=merge --kubeconfig=<path to kubeconfig>`
+`oc patch components <name of component that nudges> -p '{"spec":{"build-nudges-ref": ["<name of component that is nudged>"]}}' --type=merge --kubeconfig=<path to kubeconfig>`
 +
 .. You found the names of the two components in the last step.
 .. The `kubeconfig` and its path are the same you used to login to {ProductName}.
