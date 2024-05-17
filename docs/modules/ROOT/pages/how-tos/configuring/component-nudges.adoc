@@ -4,7 +4,7 @@ When an application includes multiple components, their repositories might conta
 
 In such instances, whenever you build a new image of the common parent component, you need to update the references to it. Specifically, you need to copy and paste the pullspec and image digest of that new image to your other source repositories. This process is tedious and error-prone.
 
-If you build an application with {ProductName} and make references between components with image digests (`sha256:...`), {ProductName} can automatically generate pull requests to update those references. To use this functionality, simply define the relationships between your components, either in the {ProductName} UI, or in your CLI.
+However, if you build an application with {ProductName} and make references between components with image digests (`sha256:...`), {ProductName} can automatically generate pull requests to update those references. To use this functionality, simply define the relationships between your components, either in the {ProductName} UI, or in your CLI.
 
 == In the UI
 
@@ -21,7 +21,7 @@ To define the relationships between components in an application, complete the f
 +
 [NOTE]
 ====
-Component A _nudges_ Component B (or Component B _is nudged by_ Component A) if Component B contains a reference by image digest to a build of Component A. 
+Component A _nudges_ Component B (or Component B _is nudged by_ Component A) if Component B contains a reference, by image digest, to a build of Component A. After successful push builds of Component A, nudging updates the image digest that Component B references. 
 ====
 
 . Use the remaining drop-down menu to choose which other components belong to this relationship.
@@ -58,7 +58,7 @@ Prerequisites:
 +
 [NOTE]
 ====
-Component A _nudges_ Component B (or Component B _is nudged by_ Component A) if Component B contains a reference by image digest to a build of Component A. 
+Component A _nudges_ Component B (or Component B _is nudged by_ Component A) if Component B contains a reference by image digest to a build of Component A. After successful push builds of Component A, nudging updates the image digest that Component B references. 
 ====
 . Patch the components to establish the nudging relationship.
 +
