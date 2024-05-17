@@ -22,12 +22,12 @@ Build-time tests include the following security-focused tests:
 +
 ** You can enable the Snyk test by following xref:./build/snyk.adoc[these instructions].
 
-== Custom tests
-
-Custom tests in {ProductName} are tests that users and platform engineers (PEs) create. To add a custom build-time test to an individual component, xref:/how-tos/configuring/customizing-the-build.adoc[customize its build pipeline] to include the test as another Tekton task. Or, to add a test that runs on all components of an application, xref:./integration/creating.adoc[create a custom integration test].
+You can also create your own build-time tests. To add a custom build-time test for a component, xref:/how-tos/configuring/customizing-the-build.adoc[customize its build pipeline] to include the test as another Tekton task. 
 
 == Integration tests
 
 Integration tests ensure that all components within an application are able to work together at the same time. You can xref:./integration/adding.adoc[add an integration test], simply by giving {ProductName} the address to a GitHub repo, and the path within that repo to an IntegrationTestScenario (ITS). An ITS is a YAML file, one that contains a Tekton Pipeline that defines an integration test.
 
 {ProductName} runs integration tests after it successfully builds the variou components of an application. As part of the build process, {ProductName} creates an image for each component and stores them in a repository. Images of all the components are then compiled into a snapshot of the application. {ProductName} tests the snapshot against user-defined IntegrationTestScenarios, which, again, is a YAML file in a GitHub repository. 
+
+As with build-time tests, you can also create your own integration tests.  To add your own test that runs on all components of an application, xref:./integration/creating.adoc[create a custom integration test].
