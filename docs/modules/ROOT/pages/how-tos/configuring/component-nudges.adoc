@@ -6,6 +6,12 @@ In such instances, whenever you build a new image of the common parent component
 
 However, if you build an application with {ProductName} and make references between components with image digests (`sha256:...`), {ProductName} can automatically generate pull requests to update those references. To use this functionality, simply define the relationships between your components, either in the {ProductName} UI, or in your CLI.
 
+[NOTE]
+====
+By default, {ProductName} only looks for image digest references in certain types of files. However, you can xref:customizing-the-build.adoc[customize your build pipeline] to adjust that list of files with an annotation. Add the following annotation under `annotations` in your component's `/.tekton/<component-name>-push.yaml` file:
+`build.appstudio.openshift.io/build-nudge-files: "<regex for file type, like .*.md>"`
+====
+
 == In the UI
 
 .Procedure
