@@ -8,7 +8,7 @@ However, if you build an application with {ProductName} and make references betw
 
 [NOTE]
 ====
-By default, {ProductName} only looks for image digest references in certain types of files. However, you can xref:customizing-the-build.adoc[customize your build pipeline] to adjust that list of files with an annotation. Add the following annotation under `annotations` in your component's `/.tekton/<component-name>-push.yaml` file:
+By default, {ProductName} only looks for image digest references in certain types of files. However, you can xref:./customizing-the-build.adoc[customize your build pipeline] to adjust that list of files with an annotation. Add the following annotation under `annotations` in your component's `/.tekton/<component-name>-push.yaml` file:
 `build.appstudio.openshift.io/build-nudge-files: "<regex for file type, like .*.md>"`
 ====
 
