@@ -1,1 +1,44 @@
 = Defining component relationships
+
+When an application includes multiple components, their repositories might contain references to image builds of another component. For instance, an application might include multiple child components that, using a Dockerfile `FROM` clause, reference the image build of a common parent.
+
+In such instances, whenever you build a new image of the common parent component, you need to update the references to it. Specifically, you need to copy and paste the pullspec and image digest of that new image to your other source repositories. This process is tedious and error-prone.
+
+If you build an application with {ProductName} and make references between components with image digests (`sha256:...`), {ProductName} can automatically generate pull requests to update those references. To use this functionality, simply define the relationships between your components in the {ProductName} UI.
+
+.Procedure
+
+To define the relationships between components in an application, complete the following steps in the {ProductName} UI:
+
+. Navigate to your application. 
+. On any tab, use the *Actions* drop-down menu to select *Define component relationships*. 
+.. Alternatively, go to the *Components* tab and select the *Define component relationships*.
+. In the *Component relationships* window, select one component from the *Select a component* drop-down menu.
+. Select *Nudges* or *Is nudged by*, depending on the relationship you wish to define.
+
++
+[NOTE]
+====
+Component A nudges Component B (or Component B is nudged by Component A) if Component B contains a reference by image digest to a build of Component A. 
+====
+
+. Use the remaining drop-down menu to choose which other components belong to this relationship.
+. To define multiple relationships, select *Add another component relationship*.
+. Once you have defined all necessary relationships, select *Save relationships*.
+
+.Verification
+
+To verify a relationship between your components, complete the following steps:
+
+. Go to the *Components* tab for your application. 
+. Select a component that belongs to the relationship you defined.
+. Scroll to the end of the page and select *Show related components*. 
+. Merge a pull request for Component A. When the build completes, you should see a new pull request appear for Component B. This new pull request contains the  image digest for the new build of Component A.
+
+
+.Troubleshooting
+
+To resolve any issues with relationships between components, complete the following steps:
+
+. On any tab, use the *Actions* drop-down menu to select *Define component relationships*. If you do not see the relationship, try to define it again and then make sure to select *Save relationships*.
+. Ensure that the existing references in the repositories of your components are correct. 
