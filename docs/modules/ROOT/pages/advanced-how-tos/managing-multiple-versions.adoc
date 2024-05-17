@@ -1,1 +1,175 @@
 = Managing multiple software versions
+
+Software projects are often required to maintain multiple versions of the software in parallel in order to support different users of the software with different needs. As far as source code goes, the typical way to maintain multiple versions is by using different Git branches. Using branches in conjunction with Konflux can be somewhat tedious as a separate Component needs to be defined for each branch and a separate Application needs to be defined for each collection of components that need to be tested and released together.
+
+The Konflux Project Controller seeks to streamline the process of managing multiple versions by introducing the following objects and concepts:
+
+* A *Project* is used to describe a major piece of software that can be worked on by multiple teams over an extended period of time. A project may contain one or more development streams.
+* A *ProjectDevelopmentStream* indicates an independent stream of development. A *ProjectDevelopmentStream* can contain one or more *Applications* each containing one or more *Components*.
+* As described above, starting a new development stream involves creating a large  amount of  *Application* and *Component* resources. The Project Controller helps to streamline that by allowing to create a *ProjectDevelopmentStreamTemplate* resource that specifies the resources to be created and allows for using variables to customize them. Using a template, many similar development streams can be created quickly.
+
+== Using the Project Controller
+
+In the sections below we will describe how to use the custom resources supported by the Project Controller to manage multiple software versions and generate Application and Component resources.
+
+=== Before you begin
+
+It's possible to have the Project Controller create all the Application and Component resources you would need. It is recommended, however, for the first time a particular repository is on-boarded, to do so manually via the Konflux UI. That would help ensuring the right access credentials are in place as well as that the Tekton Pipeline-as-Code files are committed to the repo.
+
+When creating components the Project Controller assumes that:
+
+* The default pipeline is not being used and that each branch in a component's repo contains the necessary Tekton Pipeline-as-Code files to build it.
+* Any credentials required to access the component repo had already been configured as secrets in the Konflux workspace.
+
+=== Creating a Project
+
+Create a project resource by applying YAML like the following:
+
+[source,yaml]
+.project.yaml
+----
+apiVersion: projctl.konflux.dev/v1beta1
+kind: Project
+metadata:
+  name: konflux-multibranch-sample
+spec:
+  displayName: "Multi-version demonstration sample project"
+  description: |
+    A sample project to demonstrate how to use the projects API.
+----
+
+=== Creating a ProjectDevelopmentStreamTemplate
+
+To enable quickly creating multiple development streams, we must create a template for them.
+
+[source,yaml]
+.template.yaml
+----
+apiVersion: projctl.konflux.dev/v1beta1
+kind: ProjectDevelopmentStreamTemplate
+metadata:
+  name: konflux-multibranch-sample-template
+spec:
+  project: konflux-multibranch-sample
+  variables:
+  - name: version
+    description: A version number for a new development stream
+  - name: versionName
+    description: A K8s-compliant name for the version
+    defaultValue: "{{hyphenize .version}}"
+
+  resources:
+  - apiVersion: appstudio.redhat.com/v1alpha1
+    kind: Application
+    metadata:
+      annotations:
+        application.thumbnail: "5"
+        finalizeCount: "0"
+      finalizers:
+      - spi.appstudio.redhat.com/remote-secrets
+      - application.appstudio.redhat.com/finalizer
+      name: "konflux-multibranch-sample-{{.versionName}}"
+    spec:
+      displayName: "konflux-multibranch-sample-{{.versionName}}"
+
+  - apiVersion: appstudio.redhat.com/v1alpha1
+    kind: Component
+    metadata:
+      annotations:
+        applicationFailCounter: "0"
+      finalizers:
+      - test.appstudio.openshift.io/component
+      - component.appstudio.redhat.com/finalizer
+      - image-controller.appstudio.openshift.io/image-repository
+      - image-registry-secret-sa-link.component.appstudio.openshift.io/finalizer
+      - pac.component.appstudio.openshift.io/finalizer
+      name: konflux-multibranch-sample-{{.versionName}}
+    spec:
+      application: "konflux-multibranch-sample-{{.versionName}}"
+      componentName: "konflux-multibranch-sample-{{.versionName}}"
+      source:
+        git:
+          context: ./
+          dockerfileUrl: Dockerfile
+          revision: "{{.version}}"
+          url: https://github.com/ifireball/konflux-multibranch-sample.git
+----
+
+The *resources* section for the template may be created by looking at the YAML for existing resources and copying it while removing generated and unnecessary data and adding variable references where needed.
+
+Here are specific examples for how to clean up and use the YAML for certain resource kinds:
+
+* For any kind of resource, the `namespace`, `creationTimestamp`, `generation`, `resourceVersion`, `uid` and `ownerReferences`, metadata fields should be removed as well as the `status` section.
+* For *Application* resources the `metadata.name` and `spec.displayName` fields should contain variable references.
+* For *Component* resources:
+** The following annotations should be removed:
+*** `build.appstudio.openshift.io/status`
+*** `image.redhat.com/image`
+** The `spec.containerImage` field should be removed.
+** The following fields should probably contain variable references:
+*** `spec.application`
+*** `spec.componentName`
+*** `source.git.revision`
+
+Some notes about using template variables:
+
+* You can use the https://pkg.go.dev/text/template[Go text/template] syntax to place template variable values into various resource attributes as well as variable default values.
+* You can use the custom `hyphenize` template function to create a value suitable for use in resource names.
+* It's advisable to quote strings that contain variable references and other template syntax elements to prevent the curly braces from being parsed as JSON embedded into YAML.
+
+=== Creating a ProjectDevelopmentStream
+
+Once the *Project* and *ProjectDevelopmentStreamTemplate* resources are in place, we can create *ProjectDevelopmentStream* resources.
+
+[source,yaml]
+.devstream.yaml
+----
+apiVersion: projctl.konflux.dev/v1beta1
+kind: ProjectDevelopmentStream
+metadata:
+  name: konflux-multibranch-sample-v1-0-0
+spec:
+  project: konflux-multibranch-sample
+  template:
+    name: konflux-multibranch-sample-template
+    values:
+    - name: version
+      value: "v1.0.0"
+----
+
+Creating this *ProjectDevelopmentStream* resource will cause the resources specified by the referenced *ProjectDevelopmentStreamTemplate* resource to get created. Since we've used the `version` template variable in the `spec.git.revision` field of the component resources, each component version will use a different branch of the component repository.
+
+=== Branching your component repositories
+
+Beyond creating new Git branches for your components in order to maintain different versions, you must also adjust the `.tekton/*.yaml` files within those branches in order to make the pipelines run and target the right components.
+
+In particular the following changes must be made each time a new branch is created in each of the pipeline YAML files:
+
+* The `pipelinesascode.tekton.dev/on-cel-expression` annotation should be adjusted to specify and filter by the right branch name. For example, for a pull request pipeline that resides in the `v1.0.0` branch the annotation value would be:
++
+[source]
+----
+event == "pull_request" && target_branch == "v1.0.0"
+----
++
+For a push pipeline in the same branch the value would be:
++
+[source]
+----
+event == "push" && target_branch == "v1.0.0"
+----
+
+* The `appstudio.openshift.io/application` and `appstudio.openshift.io/component` labels must be adjusted to specify the right Application and Component respectively. Failing to do this will cause builds of the pipeline to be associated with the wrong application or component.
+
+== Known limitations
+
+The following limitations exist in the current controller implementation and are likely to be resolved in the future.
+
+* Resource creation order is important. You must first create *Project* resources followed by *ProjectDevelopmentStreamTemplate* resources and only then *ProjectDevelopmentStream* resources.
+* If a *ProjectDevelopmentStreamTemplate* is modified, resources that were already created using that template do not get updated unless either:
+** The controller gets restarted
+** The *ProjectDevelopmentStream* resource referring to the template is modified
+* If a resource created by a template is modified, the configuration is not aligned back with the template unless either:
+** The controller gets restarted
+** The *ProjectDevelopmentStream* resource referring to the template is modified
+* A *ProjectDevelopmentStream* that isn't referring a template may be modified to refer to a template. Similarly, the template *ProjectDevelopmentStream* is referring to may be changed. In both those cases, resources owned by the *ProjectDevelopmentStream* but not defined by the new template do not get deleted.
