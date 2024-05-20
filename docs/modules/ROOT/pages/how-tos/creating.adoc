@@ -36,7 +36,7 @@ At the time of publication, to create applications in {ProductName}, you need to
 
 . In the GitHub repository for your application, install your organization’s {ProductName} GitHub App.
 . In the repository for your instance of {ProductName}, prepare an `application-and-component.yaml` file for your namespace. 
-.. If it your namespace does not already have this YAML file, create it with the following path: `/test/resources/demo-users/user/ns2/application-and-component.yaml`. Use the namespace 2 file as a template.
+.. If your namespace does not already have this YAML file, create it with the following path: `/test/resources/demo-users/user/<namespace>/application-and-component.yaml`. Use the namespace 2 file as a template.
 .. Replace the two `url` values in that YAML file as follows:
 ... For the `url` value beneath `git`, provide the URL that you would use to locally clone your application’s repository. This URL ends with `.git`.
 ... For the `url` value beneath `spec`, at the end of the file, provide the URL for your application’s repository that you see in your browser, without `.git` at the end.
