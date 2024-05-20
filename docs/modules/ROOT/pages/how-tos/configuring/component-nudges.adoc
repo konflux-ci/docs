@@ -1,1 +1,89 @@
 = Defining component relationships
+
+When an application includes multiple components, their repositories might contain references to image builds of another component. For instance, an application might include multiple child components that, using a Dockerfile `FROM` clause, reference the image build of a common parent.
+
+In such instances, whenever you build a new image of the common parent component, you need to update the references to it. Specifically, you need to copy and paste the pullspec and image digest of that new image to your other source repositories. This process is tedious and error-prone.
+
+However, if you build an application with {ProductName} and make references between components with image digests (`sha256:...`), {ProductName} can automatically generate pull requests to update those references. To use this functionality, simply define the relationships between your components, either in the {ProductName} UI, or in your CLI.
+
+[NOTE]
+====
+By default, {ProductName} only looks for image digest references in Dockerfiles, Containerfiles, and YAML files. However, you can xref:./customizing-the-build.adoc[customize your build pipeline] to adjust that list of files with an annotation. This functionality is only available for push builds, so add the following annotation under `annotations` in your component's `/.tekton/<component-name>-push.yaml` file:
+`build.appstudio.openshift.io/build-nudge-files: "<comma-separated list of link:https://docs.renovatebot.com/string-pattern-matching/[regex or glob patterns]>"`
+
+The existing list of patterns is: ".\*Dockerfile.*, .\*.yaml, .*Containerfile.*"  
+====
+
+== In the UI
+
+.Procedure
+
+To define the relationships between components in an application, complete the following steps in the {ProductName} UI:
+
+. Navigate to your application. 
+. On any tab, use the *Actions* drop-down menu to select *Define component relationships*. 
+.. Alternatively, go to the *Components* tab and select the *Define component relationships*.
+. In the *Component relationships* window, select one component from the *Select a component* drop-down menu.
+. Select *Nudges* or *Is nudged by*, depending on the relationship you wish to define.
+
++
+[NOTE]
+====
+Component A _nudges_ Component B (or Component B _is nudged by_ Component A) if Component B contains a reference, by image digest, to a build of Component A. After successful push builds of Component A, nudging updates the image digest that Component B references. 
+====
+
+. Use the remaining drop-down menu to choose which other components belong to this relationship.
+. To define multiple relationships, select *Add another component relationship*.
+. Once you have defined all necessary relationships, select *Save relationships*.
+
+.Verification
+
+To verify the new relationship in the UI:
+. Go to the *Components* tab for your application. 
+. Select a component that belongs to the relationship you defined.
+. Scroll to the end of the page and select *Show related components*. 
+
+Alternatively, in the git repo for the component that nudges, push a commit. When the build for that component completes, you should see a new pull request appear for the component that is nudged. This new pull request contains the image digest for the new build of its parent image.
+
+
+.Troubleshooting
+
+* On any tab, use the *Actions* drop-down menu to select *Define component relationships*. If you do not see the relationship, try to define it again and then make sure to select *Save relationships*.
+* Ensure that the existing references in the repositories of your components are correct.
+
+== In the CLI
+
+Prerequisites:
+
+* `oc` CLI tool
+
+.Procedure
+
+. In your CLI, xref:/getting-started/cli.adoc[login] to {ProductName}.
+. List your components, and identify the names of the components you want to relate to each other.
++ 
+`oc get components`
++
+[NOTE]
+====
+Component A _nudges_ Component B (or Component B _is nudged by_ Component A) if Component B contains a reference by image digest to a build of Component A. After successful push builds of Component A, nudging updates the image digest that Component B references. 
+====
+. Patch the components to establish the nudging relationship.
++
+`oc patch components <name of component that nudges> -p '{"spec":{"build-nudges-ref": ["<name of component that is nudged>"]}}' --type=merge --kubeconfig=<path to kubeconfig>`
++
+.. You found the names of the two components in the last step.
+.. The `kubeconfig` and its path are the same you used to login to {ProductName}.
+
+.Verification
+
+* Get the component custom resource (CR) definition for the components that nudges. The definition should include a line that says `build-nudges-ref:`, and beneath that, the name of the component that is nudged.   
++ 
+`oc get components/<name of component that nudges> -o yaml --kubeconfig=<path to kubeconfig> | less`
+* Push a commit to the component that nudges. When the build completes, you should see a new pull request appear for the component that is nudged. This new pull request contains the image digest for the new build of the parent image.
+
+
+.Troubleshooting
+
+* Ensure that the existing references in the repositories of your components are correct.
+* Try running the necessary commands again, and ensure you have the correct syntax.
