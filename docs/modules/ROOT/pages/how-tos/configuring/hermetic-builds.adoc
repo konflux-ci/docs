@@ -19,7 +19,7 @@ spec:
 ====
 * Hermetic builds disable network access, so a build with dependencies outside of its Git repository--including supported languages--might fail. To prevent this, or to pull in dependencies from a package manager for one of the xref:how-tos/configuring/prefetching-dependencies.adoc#supported-languages[supported languages], follow the instructions in link:https://konflux-ci.dev/docs/how-tos/configuring/prefetching-dependencies/[Prefetching the package manager dependencies for the hermetic build].
 +
-Similarly, with a link:https://github.com/redhat-appstudio/build-definitions/blob/main/task/buildah/0.1/buildah.yaml[Buildah] task for a non-Java application, when you set the `*hermetic*` parameter to `true`, you’re isolating the build from the network, which restricts it to building only from dependencies listed in your Git repository. 
+Similarly, with a link:https://github.com/konflux-ci/build-definitions/blob/main/task/buildah/0.1/buildah.yaml[Buildah] task for a non-Java application, when you set the `*hermetic*` parameter to `true`, you’re isolating the build from the network, which restricts it to building only from dependencies listed in your Git repository. 
 
 * Do not add these parameters to the link:https://github.com/burrsutter/partner-catalog-stage/blob/e2ebb05ba8b4e842010710898d555ed3ba687329/.tekton/partner-catalog-stage-wgxd-pull-request.yaml#L87[`**pipelineSpec.params**`] section, as it should always display the default values for hermetic builds.
 ====
