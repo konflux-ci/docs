@@ -1,29 +1,10 @@
 = Creating applications and components
 
-To create an application in {ProductName}, someone must enable build pipelines in your instance of {ProductName}. At the time of publication, this process includes configuring a smee channel, to listen for users' pull requests, and creating a GitHub App, so {ProductName} can access those PRs. The first procedure in this document explains how to perform these tasks. 
-
-Once build pipelines are enabled, users can create their applications in {ProductName}. The second procedure below describes how to create an application. 
-
-== Enabling build pipelines for your instance of {ProductName}:
+At the time of publication, to create applications in {ProductName}, you need to manually configure them by editing YAML files. This might change, in favor of maintaining those configurations in the {ProductName} UI.
 
 .Prerequisites:
 
-* Install link:https://github.com/konflux-ci/konflux-ci/tree/main[{ProductName}]
-* Read/write access to your {ProductName} instance’s repository
-
-.Procedure:
-
-. Start a new link:https://smee.io/[smee] channel.
-. In the repository for your instance of {ProductName}, edit the file /smee/smee-client.yaml. Replace `<smee-channel>` with the webhook proxy URL from the previous step. 
-. Create a GitHub App according to link:https://pipelinesascode.com/docs/install/github_apps/#manual-setup[these Pipelines as Code instructions]. For the *Webhook URL* field, use the webhook proxy URL for your smee channel.
-
-== Creating your applications and components with {ProductName}:
-
-At the time of publication, to create applications in {ProductName}, you need to manually maintain their configurations by editing YAML files. This might change, in favor of maintaining those configurations in the {ProductName} UI.
-
-.Prerequisites:
-
-* link:https://kubernetes.io/docs/tasks/tools/[kubectl] CLI tool
+* xref:/advanced-how-tos/installing/enabling-builds.adoc[Enabled] build pipelines for your instance of {ProductName}.
 * The following values from your {ProductName} GitHub App:
 ** The private key
 ** The App ID
@@ -31,6 +12,7 @@ At the time of publication, to create applications in {ProductName}, you need to
 * A GitHub repository with source code for your application 
 ** It must have the same basic structure as our example repository
 * Read/write access to the repository for your instance of {ProductName} 
+* link:https://kubernetes.io/docs/tasks/tools/[kubectl] CLI tool
 
 .Procedure:
 
