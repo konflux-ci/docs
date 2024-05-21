@@ -1,5 +1,7 @@
 * xref:advanced-how-tos/index.adoc[Advanced how-tos]
-** xref:advanced-how-tos/installing.adoc[Installing {ProductName}]
+** Installation
+*** xref:advanced-how-tos/installing/index.adoc[Installing {ProductName}]
+*** xref:advanced-how-tos/installing/enabling-builds.adoc[Enabling build pipelines]
 ** xref:advanced-how-tos/managing-compliance-with-ec.adoc[Managing compliance with EC]
 ** xref:advanced-how-tos/releasing/index.adoc[Releasing an application]
 *** xref:advanced-how-tos/releasing/create-release-plan.adoc[Creating a release plan]
