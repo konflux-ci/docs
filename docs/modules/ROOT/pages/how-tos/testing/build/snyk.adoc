@@ -1,6 +1,54 @@
-= Enabling Snyk
+= Enabling a Snyk task
 
-While a Snky test is available to run a build time in the default pipelines, additional configuration is needed to enable the test. This is an example of a build-time test that requires the configuration of a custom secret to be able to run.
+The Snyk test is available to run at build time in the default pipelines, but it requires additional configuration to enable. This procedural example illustrates a build-time test that requires the configuration of a custom secret.
 
-+
-NOTE:  We may want to consider generalizing this topic.
+The `sast-snyk-check` task uses the Snyk Code tool to perform static application security testing (SAST). 
+Specifically, the Snyk check scans an application's source code for potential security vulnerabilities, 
+including SQL injection, cross-site scripting (XSS), and code injection attack vulnerabilities.
+
+NOTE: You can run a Snyk task only if you have a Snyk token configured in a namespace secret. Ensure that the name of your secret is included in the *snyk-secret* pipeline parameter.
+
+.Procedure
+
+. Register for a Snyk account or log in at https://app.snyk.io/.
+. Get a Snyk token.
+
+.. In the lower left of the home page, click your name, then select *Account settings*.
+
+.. From the Account Settings page, select *General*, which is the default, then *Auth Token*.
+
+.. Under the *Auth Token* section, click *Click to View* to see the *KEY* value of the automatically generated token.
+
+. Enable Snyk Code.
+
+.. From the left panel, go to *Settings* > *Snyk Code*, then scroll to the *Enable Snyk Code* section.
+
+.. Toggle *Disabled* to *Enabled*.
+
+.. Click *Save* changes.
+
+. Add your new secret to your workspace.
+
+.. Log in to {ProductName} Overview page.
+
+.. From the left menu, click *Secrets*.
+
+.. Click *Add secret*.
+
+.. The *Add secret* page displays options for your new secret. Specify the following:
+
+... For *Secret for*, select *Build*.
+
+... From the *Secret type* drop-down menu, choose *Key/value secret*.
+
+... From the *Secret name* drop-down menu, select *snyk-secret*.
+
+... Paste your Snyk token into the *Upload the file with value for your key or paste its contents* field.
+... Click *Add secret* to save it.
+
+You've enabled the Snyk task for your build pipeline.
+
+[role="_additional-resources"]
+== Additional resources
+
+For more information about Snyk, see link:https://snyk.io/product/snyk-code/[the Snyk website].

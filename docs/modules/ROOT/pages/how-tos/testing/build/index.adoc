@@ -1,1 +1,48 @@
 = Build-time tests
+
+This document covers the build-time tests that {ProductName} runs as part of its component build pipeline. These build-time tests automatically check all application images to inform you if they're up-to-date, correctly formatted, and protected from security vulnerabilities.
+
+NOTE: These tests are non-blocking and do not prevent the pipeline from proceeding if issues are found.
+
+The component build pipeline for {ProductName} include various types of build-time tests, conducted using link:https://tekton.dev/docs/pipelines/tasks/#overview[Tekton tasks]. For validating container information, the pipeline employs https://www.conftest.dev/[Conftest]. 
+
+The table below outlines the default build-time tests:
+
+.Deprecated image checks
+|===
+|Test name |Description |Failure message
+
+|image_repository_deprecated |Deprecated images are no longer maintained, leading to unresolved security vulnerabilities. | The container image must not be built from a repository  marked as 'Deprecated' in COMET
+|===
+
+.Unsigned RPM check
+|===
+|Test name |Description |Failure message
+
+|image_unsigned_rpms |Packages signed with Red Hat's secure signing server adheres to stringent policies and procedures. |Alerts the user for any unsigned RPMs. Found following unsigned rpms(nvra):
+|===
+
+.Source code check
+|===
+|Test name |Description |Failure message
+
+|sast-snyk-check |Scans and analyze source code or compiled versions of code to help find security flaws. | <tbd>
+|===
+
+You can disable the default build-time tests by setting the `skip-checks` parameter to `true`
+
+[source,yaml]
+----
+- description: Skip checks against built image
+  name: skip-checks
+  type: string
+  default: "false"
+----
+ 
+
+[role="_additional-resources"]
+== Additional resources
+
+* For information about enabling Snyk task, see xref:how-tos/testing/build/snyk.adoc[Enabling a Snyk task].
+
+* For additional build-time tests, see link:https://konflux-ci.dev/docs/how-tos/configuring/customizing-the-build/[Customizing the build pipeline].
