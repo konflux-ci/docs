@@ -1,1 +1,34 @@
 = Contribute to {ProductName}
+
+We appreciate any edits that you suggest! You can choose to edit documentation in your browser or locally on your machine.
+
+== Contributing in a browser 
+
+To contribute to this documentation, select *Edit this Page* in the banner on any page. This action takes you to the link:https://github.com/konflux-ci/docs[source docs on GitHub] and opens a web editor, where you can propose specific changes.
+
+NOTE: When suggesting changes, use the AsciiDoc syntax because that's what we use when writing the Konflux-CI documentation.
+
+When you finish editing in GitHub, select *Create a new branch for this commit and start a pull request*. Then, name your pull request and select *Propose changes*.
+
+== Editing locally 
+
+You can edit documentation on your machine and suggest the changes using GitHub. Commit your proposed updates to a specific branch in your forked repository and open a pull request against the default branch in the link:https://github.com/konflux-ci/docs[upstream Konflux-CI/docs repository]. For more details, see the link:https://github.com/konflux-ci/docs/blob/main/CONTRIBUTING.md[Konflux-CI docs contributing guide] on GitHub.
+
+.Converting Markdown to AsciiDoc
+
+If you prefer to work with Markdown, you need to convert your Markdown files into AsciiDoc using any conversion tool, for example Pandoc:
+
+. Install link:https://pandoc.org/installing.html[Pandoc]
+
+. Convert a file by running the following command:
+
++
+[source,bash]
+----
+pandoc [file name].md -f markdown -t asciidoc [file name].adoc
+----
+
++
+The `-f` option specifies the input format, and the `-t` option specifies the output format. For more options, see link:https://pandoc.org/chunkedhtml-demo/3.1-general-options.html[General options] for the `pandoc` command.
+
+. Render the resulting AsciiDoc file using the Integrated Development Environment (IDE) of your choice, the `asciidoctor` text processor, or any other option. For details, see the link:https://github.com/konflux-ci/docs/blob/main/CONTRIBUTING.md[Konflux-CI docs contributing guide].
