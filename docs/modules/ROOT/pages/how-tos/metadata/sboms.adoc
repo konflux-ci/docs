@@ -36,7 +36,7 @@ This SBOM is unsigned. You can still use it for standard business processes, lik
 
 * Install the link:https://stedolan.github.io/jq/download/[jq] CLI tool.
 
-* xref:getting-started/getting_started_in_cli.adoc[Login] to {ProductName}.
+* xref:/getting-started/cli.adoc[Login] to {ProductName}.
 
 .Procedure
 
@@ -150,7 +150,3 @@ This information helps you verify that individual libraries are safely-sourced, 
                     "value": "python-package-cataloger"
                     ...
 ----
-
-== Additional resources
-* You can implement an automated check that verifies the integrity and security of your SBOM, using the CycloneDX tool, by upgrading your build pipeline. 
-//Add xref here^^ once upgrade doc is ready
