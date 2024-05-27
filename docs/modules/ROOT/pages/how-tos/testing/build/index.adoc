@@ -22,11 +22,15 @@ The table below outlines the default build-time tests:
 |image_unsigned_rpms |Packages signed with Red Hat's secure signing server adheres to stringent policies and procedures. |Alerts the user for any unsigned RPMs. Found following unsigned rpms(nvra):
 |===
 
-.Source code check
+.Security checks
 |===
 |Test name |Description |Failure message
 
-|sast-snyk-check |Scans and analyze source code or compiled versions of code to help find security flaws. | <tbd>
+|clair-scan |Scans container images for vulnerabilities using Clair, by comparing the components of container image against Clair's vulnerability databases. | Found packages with critical vulnerabilities. Consider updating to a newer version of those packages, they may no longer be affected by the reported CVEs.
+
+|clamav-scan |Scans the content of container images for viruses, malware, and other malicious content using ClamAV antivirus scanner. | A malware has been found.
+
+|sast-snyk-check |Scans and analyze source code or compiled versions of code to help find security flaws using Snyk Code. | For details, check Tekton task log.
 |===
 
 You can disable the default build-time tests by setting the `skip-checks` parameter to `true`
@@ -38,7 +42,6 @@ You can disable the default build-time tests by setting the `skip-checks` parame
   type: string
   default: "false"
 ----
- 
 
 [role="_additional-resources"]
 == Additional resources
