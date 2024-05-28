@@ -13,7 +13,7 @@ Cloning an application involves replicating the application's code and configura
 
 .**Prerequisites**
 
-* You have the Maintainer role or greater in the original workspace where the embargoed issue was identified.
+* You have the link:https://github.com/konflux-ci/architecture/blob/main/ADR/0011-roles-and-permissions.md[Maintainer role] or greater in the original workspace where the embargoed issue was identified.
 // Maintainer role was xref:getting-started/roles_permissions/ Currently no such file in konflux-ci/docs. Add a link if the doc is published.
 * You have link:https://konflux-ci.dev/docs/getting-started/cli/[enabled CLI access for {ProductName}].
 
@@ -29,12 +29,12 @@ NOTE: Creating a private fork of the public link:https://docs.github.com/en/repo
 +
 [IMPORTANT]
 ====
-* If you already have a private workspace that you used for another embargoed issue, you can re-use it. Always double-check the link:https://console.redhat.com/preview/application-pipeline/access[User Access] permissions.
+* If you already have a private workspace that you used for another embargoed issue, you can re-use it. Remember to check the link:https://console.redhat.com/preview/application-pipeline/access[User Access] permissions and ensure that access to the workspace is granted to a minimal number of required collaborators.
 
-* You can reuse a personal workspace, but double-check the User Access permissions.
+* You can reuse a personal workspace, but limit the link:https://console.redhat.com/preview/application-pipeline/access[User Access] to a minimal number of required collaborators.
 ====
 
-. Log in to the original workspace where the application was previously being developed using the `oc` CLI tool. (See xref:getting-started/cli/[Getting started with CLI].) Append `/workspaces/<original-tenant-workspace>` to the AppStudio API URL used in the `oc login` command to target a particular workspace other than your default user workspace.
+. Log in to the original workspace where the application was previously being developed using the `oc` CLI tool. (See xref:getting-started/cli/[Getting started with CLI].) Append `/workspaces/<original-tenant-workspace>` to the Konflux API URL used in the `oc login` command to target a particular workspace other than your default user workspace.
 // Add a link to the KUBECONFIG workflow when it's documented. Either approach is legit, up to a user to choose.
 . To export records the application from the original workspace with details changed to refer to your new private workspace, run the following command:
 
@@ -48,7 +48,7 @@ NOTE: Creating a private fork of the public link:https://docs.github.com/en/repo
 NOTE: Ensure that you have excluded the impacted component from which you have created a private mirror in step 1.
 
 . Confirm that the YAML file has been generated under the `./data` directory. This file contains the necessary information for importing the application into the new workspace.
-. Log in to the newly created private workspace using the `oc` CLI tool. Append `/workspaces/<private-workspace>` to the AppStudio API URL used in the `oc login` command to target the new private workspace.
+. Log in to the newly created private workspace using the `oc` CLI tool. Append `/workspaces/<private-workspace>` to the Konflux API URL used in the `oc login` command to target the new private workspace.
 . Apply the generated YAML file to the new private workspace by using the following command:
 
 +
@@ -71,7 +71,7 @@ At this point, you should have a clone of your application in the new private wo
 
 . Verify that pull requests to your private mirror create PipelineRuns in the private workspace and that integration tests run correctly.
 . Prepare the fix to your security issue as a pull request against your private mirror.
-. Invite reviewers from your security department or select members from your team to review the patch and confirm that it fixes the embargoed security issue by granting them collaborator rights in your workspace.
+. Invite reviewers from your security department or select members from your team to review the patch and confirm that it fixes the embargoed security issue by link:https://github.com/konflux-ci/architecture/blob/main/ADR/0011-roles-and-permissions.md[granting them collaborator rights] in your workspace.
 //by link:https://redhat-appstudio.github.io/docs.appstudio.io/Documentation/main/getting-started/get-started/#adding-collaborators-to-your-workspace[granting them collaborator rights in your workspace]. Add a link to roles-and-permissions if it's published.
 . When you are satisfied that the fix is ready, wait until the embargo disclosure time before releasing your fix.
 
