@@ -3,7 +3,9 @@
 //NOTE: We may want to rephrase this to word for more accurate SBOM information
 //NOTE: Should this be a subtopic for hermetic or a sibling to it?
 
-In {ProductName}, you can run a hermetic build by restricting network access to the build. Consequently, a build might fail if it can't retrieve dependencies from a repository. To address this, {ProductName} uses Cachi2 to prefetch package manager dependencies for supported languages. For every build, Cachi2 also generates a software bill of materials (SBOM) of all dependencies included in your builds, for better transparency and build maintainability. For more information about SBOMs, see link:https://konflux-ci.dev/docs/how-tos/metadata/sboms/[Inspecting SBOMs].
+In {ProductName}, you can run a hermetic build by restricting network access to the build, but without network a build can’t fetch component dependencies from a repository and might fail. To avoid that, {ProductName} can prefetch dependencies for your hermetic builds using link:https://github.com/containerbuildsystem/cachi2/blob/main/README.md[Cachi2].
+
+For every build, Cachi2 generates a software bill of materials (SBOM) where all dependencies are properly declared and pinned to specific versions. Also, Cachi2 ensures that arbitrary code is never executed during the prefetch, meaning, for example, that the build doesn’t pull any undeclared dependencies. Such measures result in very accurate SBOMs and improve the build reproducibility. For more information about SBOMs, see link:https://konflux-ci.dev/docs/how-tos/metadata/sboms/[Inspecting SBOMs].
 
 [#supported-languages]
 .Supported languages
