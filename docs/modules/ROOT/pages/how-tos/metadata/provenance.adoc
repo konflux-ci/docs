@@ -1,6 +1,6 @@
-= Downloading your SLSA provenance
+= Downloading the SLSA provenance
 
-To deliver heightened build-time security, {ProductName} conforms to the requirements for link:https://slsa.dev/spec/v1.0/levels#build-l3[SLSA Build Level 3]. One of the most basic requirements is that we provide link:https://slsa.dev/spec/v1.0/provenance[provenance], which tells you the steps that {ProductName} takes when building your applications.
+We are committed to providing exceptional build-time security with {ProductName}. As part of that commitment, {ProductName} conforms to the link:https://slsa.dev/spec/v1.0/levels#build-l3[SLSA Build Level 3] requirements. This includes providing transparency into the steps taken for all artifact builds by generating link:https://slsa.dev/spec/v1.0/provenance[SLSA provenance].
 
 We have also provided the following procedure for you to actually access the SLSA provenace that {ProductName} generates for each of your xref:../glossary/index.adoc#component[components]. Follow the instructions below to download your SLSA provenance.
 
