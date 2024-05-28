@@ -1,4 +1,142 @@
 = Downloading the SLSA provenance
 
+We are committed to providing exceptional build-time security with {ProductName}. As part of that commitment, {ProductName} conforms to the link:https://slsa.dev/spec/v1.0/levels#build-l3[SLSA Build Level 3] requirements. This includes providing transparency into the steps taken for all artifact builds by generating link:https://slsa.dev/spec/v1.0/provenance[SLSA provenance].
+
+We have also provided the following procedure for you to actually access the SLSA provenace that {ProductName} generates for each of your xref:../glossary/index.adoc#component[components]. Follow the instructions below to download your SLSA provenance.
+
+.Prerequisites
+
+* xref:/getting-started/cli.adoc[Login] to {ProductName} in your CLI 
+* link:https://stedolan.github.io/jq/download/[Install] the `jq` command line utility 
+* link:https://docs.sigstore.dev/cosign/installation/[Install] the `cosign` command line utility
+
+.Procedure
+
+First you need to get the image path for the component whose attestation you want to download. Then, you can use `cosign` to download the provenance. 
+
+. List your components: 
+
 +
-NOTE:  We may want to make the action consistent with SBOMs.
+[source]
+--
+oc get components
+--
+
++
+Example output:
++
+[source]
+--
+NAME                         AGE   STATUS   REASON   TYPE
+partner-catalog-build-ucmg   24d   True     OK       Updated
+partner-catalog-ec-pz7b      18d   True     OK       Updated
+--
+
+. Choose a component and get its image path: 
++
+[source]
+--
+oc get component <component name> -ojson | jq '.status.containerImage'
+--
+
++
+Example:
++
+[source]
+--
+oc get component partner-catalog-build-ucmg -ojson | jq '.status.containerImage'
+--
+
+. For convenience, save the image path to a local variable.
++
+Example:
++
+[source]
+--
+IMAGE=quay.io/redhat-user-workloads/rhn-support-csears-tenant/demo-build/partner-catalog-build-ucmg@sha256:<output omitted>
+--
+
+
+. Use `cosign` to download the attestation, and use `jq` to put it in a human-readable format: 
++
+[source]
+--
+cosign download attestation $IMAGE | jq '.payload|@base64d|fromjson'
+--
+
++
+Example output:
++
+[source]
+--
+{
+  "_type": "https://in-toto.io/Statement/v0.1",
+  "predicateType": "https://slsa.dev/provenance/v0.2",
+  "subject": [
+    {
+      "name": "quay.io/redhat-user-workloads/rhn-support-csears-tenant/demo-build/partner-catalog-build-ucmg",
+      "digest": {
+        "sha256": "<output omitted>"
+      }
+    }
+  ],
+  "predicate": {
+    "builder": {
+      "id": "https://tekton.dev/chains/v2"
+    },
+    "buildType": "tekton.dev/v1beta1/TaskRun",
+    "invocation": {
+<remaining output omitted>
+--
+
+. Use the same tools to download the attestation signature:
+
++
+[source]
+--
+cosign download attestation $IMAGE | jq '.|keys'
+--
+
++
+Example output:
++
+[source]
+--
+[
+  "payload",
+  "payloadType",
+  "signatures"
+]
+[
+  "payload",
+  "payloadType",
+  "signatures"
+]
+--
+
++
+. (Optional) You can also print a high-level overview of the provenance-related artifacts that {ProductName} has created for a component: 
+
++
+[source]
+--
+cosign tree $IMAGE
+--
++
+Example output:
++
+[source]
+--
+📦 Supply Chain Security Related artifacts for an image: quay.io/redhat-user-workloads/rhn-support-csears-tenant/demo-build/partner-catalog-build-ucmg@sha256::<output omitted>
+└── 💾 Attestations for an image tag: quay.io/redhat-user-workloads/rhn-support-csears-tenant/demo-build/partner-catalog-build-ucmg:sha256-:<output omitted>.att
+   ├── 🍒 sha256::<output omitted>
+   └── 🍒 sha256::<output omitted>
+└── 🔐 Signatures for an image tag: quay.io/redhat-user-workloads/rhn-support-csears-tenant/demo-build/partner-catalog-build-ucmg:sha256-:<output omitted>.sig
+ └── 🍒 sha256::<output omitted>
+└── 📦 SBOMs for an image tag: quay.io/redhat-user-workloads/rhn-support-csears-tenant/demo-build/partner-catalog-build-ucmg:sha256-:<output omitted>.sbom
+  └── 🍒 sha256:<output omitted>
+--
+
+== Additional resources
+* Learn about the SLSA framework and xref:/discover/slsa-conformity.adoc[how {ProductName} meets the requirements of SLSA Build Level 3].
+* Red Hat's Enterprise Contract (EC) is a powerful tool that you can also use to verify your SLSA provenance; visit link:https://enterprisecontract.dev/docs/user-guide/main/cli.html#_validating_an_image[this page]  to learn how to use the EC CLI tool to verify your provenance. You will need the public key used by Tekton Chains, which you can find by following link:https://enterprisecontract.dev/docs/user-guide/main/cli.html#_finding_the_public_key[these instructions].
