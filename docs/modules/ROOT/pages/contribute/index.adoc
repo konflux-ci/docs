@@ -1,34 +1,18 @@
 = Contribute to {ProductName}
 
-We appreciate any edits that you suggest! You can choose to edit documentation in your browser or locally on your machine.
+To contribute to this documentation:
 
-== Contributing in a browser 
+. Select *Edit this Page* in the banner on any page. This action takes you to the link:https://github.com/konflux-ci/docs[source docs on GitHub] and opens a web editor, where you can propose specific changes.
 
-To contribute to this documentation, select *Edit this Page* in the banner on any page. This action takes you to the link:https://github.com/konflux-ci/docs[source docs on GitHub] and opens a web editor, where you can propose specific changes.
-
++
 NOTE: When suggesting changes, use the AsciiDoc syntax because that's what we use when writing the Konflux-CI documentation.
 
-When you finish editing in GitHub, select *Create a new branch for this commit and start a pull request*. Then, name your pull request and select *Propose changes*.
+. When you finish editing in GitHub, select *Create a new branch for this commit and start a pull request*.
 
-== Editing locally 
+. Name your pull request and select *Propose changes*.
 
-You can edit documentation on your machine and suggest the changes using GitHub. Commit your proposed updates to a specific branch in your forked repository and open a pull request against the default branch in the link:https://github.com/konflux-ci/docs[upstream Konflux-CI/docs repository]. For more details, see the link:https://github.com/konflux-ci/docs/blob/main/CONTRIBUTING.md[Konflux-CI docs contributing guide] on GitHub.
+. For a review and merge, tag Andrew McNamara (@arewm) or any other contributor from the **Contributors** section on the link:https://github.com/konflux-ci/docs[Konflux-CI docs repository page]. If a redhatter, you can ask for a review in `#konflux-docs` in Slack.
 
-.Converting Markdown to AsciiDoc
+NOTE: You can also choose to fork the link:https://github.com/konflux-ci/docs[Konflux-CI/docs repository] on GitHub and edit documentation locally on your machine. For contribution guidelines and AsciiDoc help, see the link:https://github.com/konflux-ci/docs/blob/main/CONTRIBUTING.md[Konflux-CI docs contributing guide].
 
-If you prefer to work with Markdown, you need to convert your Markdown files into AsciiDoc using any conversion tool, for example Pandoc:
-
-. Install link:https://pandoc.org/installing.html[Pandoc]
-
-. Convert a file by running the following command:
-
-+
-[source,bash]
-----
-pandoc [file name].md -f markdown -t asciidoc [file name].adoc
-----
-
-+
-The `-f` option specifies the input format, and the `-t` option specifies the output format. For more options, see link:https://pandoc.org/chunkedhtml-demo/3.1-general-options.html[General options] for the `pandoc` command.
-
-. Render the resulting AsciiDoc file using the Integrated Development Environment (IDE) of your choice, the `asciidoctor` text processor, or any other option. For details, see the link:https://github.com/konflux-ci/docs/blob/main/CONTRIBUTING.md[Konflux-CI docs contributing guide].
+We appreciate any edits that you suggest!
