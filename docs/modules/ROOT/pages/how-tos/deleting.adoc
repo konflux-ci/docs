@@ -1,1 +1,42 @@
 = Deleting applications and components
+
+You can delete an application if you are a user with the workspace admin role.
+
+WARNING: If you delete an application permanently, you delete all the components and resources from the user interface (UI) and upstream repositories. This includes Tekton pipeline definitions and other resources managed in those repositories. The deletion process submits a pull request (PR) to remove these pipeline definitions and associated resources.
+
+== Deleting an application in the web UI
+.*Prerequisites*
+
+* You have successfully signed into {ProductName}.
+* You have the workspace admin role.
+
+.*Procedures*
+
+. In the UI, select *My applications*.
+. Next to your applications, click *More* image:more.png[alt=More] and then select *Delete*.
+. In *Enter application name to delete*, enter the relevant application name and then select *Delete*.
+
++
+NOTE: You can also delete an application by selecting *Actions > Delete Application*.
+
+
+== Deleting an application using CLI
+
+.*Prerequisites*
+
+* You have successfully signed into {ProductName}.
+* You have the workspace admin role.
+* You must have xref:getting-started/cli.adoc[enabled CLI access for {ProductName}].
+
+.*Procedures*
+
+* To delete an application, run the following command:
++
+[source,command]
+----
+oc delete application/<the-application-name>
+----
+
+== Additional resources
+* To create your first application in the web UI, refer to xref:getting-started/index.adoc[Getting started with {ProductName}].
+* To create your first application using CLI, refer to xref:getting-started/cli.adoc[Getting started in CLI].
