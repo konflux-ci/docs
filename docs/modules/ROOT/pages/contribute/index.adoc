@@ -11,8 +11,6 @@ NOTE: When suggesting changes, use the AsciiDoc syntax because that's what we us
 
 . Name your pull request and select *Propose changes*.
 
-. For a review and merge, tag Andrew McNamara (@arewm) or any other contributor from the **Contributors** section on the link:https://github.com/konflux-ci/docs[Konflux-CI docs repository page]. If a redhatter, you can ask for a review in `#konflux-docs` in Slack.
-
 NOTE: You can also choose to fork the link:https://github.com/konflux-ci/docs[Konflux-CI/docs repository] on GitHub and edit documentation locally on your machine. For contribution guidelines and AsciiDoc help, see the link:https://github.com/konflux-ci/docs/blob/main/CONTRIBUTING.md[Konflux-CI docs contributing guide].
 
 We appreciate any edits that you suggest!
