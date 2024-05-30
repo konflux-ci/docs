@@ -1,4 +1,0 @@
-= Overview of {ProductName} tests
-
-+
-NOTE: This might just be merged into the section page for testing components and applications
