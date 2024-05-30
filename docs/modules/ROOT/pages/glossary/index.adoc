@@ -3,7 +3,7 @@
 :source-highlighter: highlightjs
 
 **{ProductName}** +
-A platform to automate the process of building, testing, and deploying applications to the hybrid cloud. {ProductName} offers enterprise-grade security and customizable feature sets.   
+A platform to automate the process of building, testing, and releasing applications. {ProductName} offers enterprise-grade security and customizable feature sets.   
 
 **build pipeline customization** +
 The ability to update and manage build pipelines for each component in an application. 
@@ -12,7 +12,7 @@ The ability to update and manage build pipelines for each component in an applic
 A Kubernetes deployment with nodes that run containerized applications and a control plane that manages the nodes.
 
 **commit** +
-A change to one or more files. In {ProductName}, commits that you make to a linked Git repository move through the pipeline and automatically get published.
+A change to one or more files. In {ProductName}, commits that you make to a linked git repository move through the pipeline and automatically get published.
 
 **component** +
 An image that {ProductName} builds from source code in a repository. One or more components that run together form an application.
@@ -73,7 +73,7 @@ A process that determines if images meet security quality standards.
 Mechanisms that use Tekton chains to extract and store the metadata of the PipelineRuns, sign that metadata, and then store it in the image registry that is next to the component image.
 
 **snapshot** +
-A set of component and container images that specifies which components the system should deploy with which container images. The system creates a snapshot when it finishes running a component's build pipeline. 
+A set of component and container images that specifies which components the system should release with which container images. The system creates a snapshot when it finishes running a component's build pipeline. 
 
 
 **Supply-chain Levels for Software Artifacts (SLSA)** +
@@ -83,7 +83,7 @@ A link:https://slsa.dev/[security framework] that helps prevent tampering by sec
 One or more steps that run container images. Each container image performs a piece of construction work.
 
 **TaskRun** +
-A process that executes a task on a cluster with inputs, outputs, and execution parameters. The system creates a TaskRun on its own, or as a part of a PipelineRun for each task in a pipeline.
+A process that executes a task on a cluster with inputs, outputs, and execution parameters. {ProductName} creates a TaskRun on its own, or as a part of a PipelineRun for each task in a pipeline.
 
 **Tekton** +
 A Knative-based framework for CI/CD pipelines. Tekton is decoupled which means that you can use one pipeline to deploy to any Kubernetes cluster in multiple hybrid cloud providers. Tekton stores everything that is related to a pipeline in the cluster.
