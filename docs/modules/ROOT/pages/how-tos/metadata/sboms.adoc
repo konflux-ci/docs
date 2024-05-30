@@ -9,7 +9,7 @@ You can use an SBOM to better understand the composition of your software. In pa
 
 .Prerequisites
 
-* You must have an application that {ProductName} has successfully built and deployed.
+* You must have a component that {ProductName} has successfully built and tested.
 
 .Procedure
 
@@ -25,7 +25,7 @@ In the console, complete the following steps to download the SBOM for a componen
 
 [NOTE]
 ====
-This SBOM is unsigned. You can still use it for standard business processes, like providing an SBOM to your customers. However, do not use this unsigned SBOM as a legal document. 
+The SBOM is unsigned so there is no way to verify whether it has been tampered with after being pushed to the registry. Additional integrity verification should be performed before distributing the artifact if needed.
 ====
 
 == Downloading an SBOM in the CLI
@@ -73,7 +73,7 @@ $ oc get component <component name> -ojson | jq '.status.containerImage'
 [source]
 ----
 $ oc get component devfile-sample-python-basic-ikch -ojson | jq '.status.containerImage'
-    "quay.io/redhat-appstudio/user-workload@sha256:<output omitted>"
+    "quay.io/redhat-appstudio/user-workload@sha256:<sha-digest>"
 ----
 
 . Use Cosign to download the SBOM. From the output of the last command, pass the image path as an argument into Cosign's `download sbom` command. Be sure to delete any quotation marks around the image path.
@@ -83,14 +83,9 @@ $ oc get component devfile-sample-python-basic-ikch -ojson | jq '.status.contain
 +
 [source]
 ----
-$ cosign download sbom quay.io/redhat-appstudio/user-workload@sha256:<output omitted>
+$ cosign download sbom quay.io/redhat-appstudio/user-workload@sha256:<sha-digest>
 ----
 
-+
-[NOTE]
-====
-Because  the SBOM is unsigned, Cosign displays a warning about its authenticity. You can still use this SBOM for standard business processes, like providing an SBOM to your customers. However, do not use this unsigned SBOM as a legal document.
-====
 +
 [source]
 ----  
@@ -105,7 +100,7 @@ or verify its signature using 'cosign verify --key <key path> --attachment sbom 
 +
 [source]
 ----  
-$ cosign download sbom quay.io/redhat-appstudio/user-workload@sha256:<output omitted> > sbom.txt
+$ cosign download sbom quay.io/redhat-appstudio/user-workload@sha256:<sha-digest> > sbom.txt
 ----
 
 == Reading the SBOM
