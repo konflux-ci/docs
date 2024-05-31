@@ -1,6 +1,6 @@
 = Defining component relationships
 
-When a workspace includes multiple components, their repositories might contain references to image builds of another component. For instance, an application might include multiple child components that, using a Dockerfile `FROM` clause, reference the image build of a common parent. Or, a component might reference a image builds from another application altogether. OpenShift operators, for example, often have references to several components across applications.
+When a workspace includes multiple components, their repositories might contain references to image builds of another component. For instance, an application might include multiple child components that, using a Dockerfile `FROM` clause, reference the image build of a common parent. Or, a component might reference image builds from another application altogether. OpenShift operators, for example, often have references to several components across applications.
 
 In such instances, whenever you build a new image of the common parent component, you need to update the references to it. Specifically, you need to copy and paste the pullspec and image digest of that new image to your other source repositories. This process is tedious and error-prone.
 
