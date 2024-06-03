@@ -1,2 +1,2 @@
-:doctype: redirect
+= Konflux-CI
 :redirect: discover/index.html
