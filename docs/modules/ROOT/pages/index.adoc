@@ -1,2 +1,2 @@
 :doctype: redirect
-:redirect: discover/index.adoc
+:redirect: discover/index.html
