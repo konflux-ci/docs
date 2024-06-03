@@ -1,6 +1,7 @@
 ---
-name: Konflux-CI 
-version: main
+name: ROOT
+title: Konflux-CI
+version: ~
 nav:
 - modules/ROOT/pages/discover/_nav.adoc
 - modules/ROOT/pages/getting-started/_nav.adoc
