@@ -22,7 +22,7 @@ To define the relationships between components in a workspace, complete the foll
 
 [NOTE]
 ====
-Applications with only one component do not have the option to define relationships in the UI. To achieve the same result for single-component applications, you can define the relationship in the CLI.
+Currently, applications with only one component do not have the option to define relationships in the UI. To achieve the same result for single-component applications, you can define the relationship in the CLI.
 ====
 
 
