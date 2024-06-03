@@ -17,30 +17,17 @@ A change to one or more files. In {ProductName}, commits that you make to a link
 **component** +
 An image that {ProductName} builds from source code in a repository. One or more components that run together form an application.
 
-**Conftest** +
-A utility for testing structured configuration data. Use Conftest to validate container information.
-
 **enterprise contract (EC)** +
-A set of release policies that you apply to your application snapshot. Use the EC to prevent releases that are not compliant with Supply-chain Levels for Software Artifacts (SLSA) guidelines. 
-
+A set of release policies that you apply to your application snapshot. You can use the EC to prevent releases that are not compliant with Supply-chain Levels for Software Artifacts (SLSA) guidelines. 
 
 **integration test** +
 A pipeline that you set up in GitHub. When you add components, it tests each one individually, and then tests the application as a whole.
 
-**IntegrationTestScenario** +
-A parameter that the integration service uses to test application components.
-
-**Java build service** +
-A group of utilities that accelerates build times, locates dependencies in final images, and meets product security requirements by managing the construction of Java dependencies. 
-
-**lifecycle run** +
-The processes that automatically occur after a merge or pull request is resolved. These processes can include build tests, integration tests, and TaskRuns. 
+**IntegrationTestScenario (ITS)** +
+A Kubernetes resource that defines a pipeline to run. The integration service uses the ITS to test application components.
 
 **managed workspace** +
 A workspace that mirrors some details of an already existing workspace. Supporting teams can create a managed workspace to grant limited permissions to development teams in the production environment. 
-
-**OSBS features** +
-The layered image build service, or OSBS (derived from OpenShift Build Service), is a tool for building layered images. With OSBS features, you can build base RHEL images, layered images, and the builder image itself.
 
 **persister** +
 A component that moves all of the relevant PipelineRun information, known as the Pipeline output, to an external storage that is outside of the cluster’s etcd database. The persister runs after the system completes the PipelineRun.
@@ -52,19 +39,13 @@ A practice that defines pipelines by using source code in Git. Pipelines as Code
 Systems that retain the history and details of builds. 
 
 **PipelineRun** +
-A collection of TaskRuns that are arranged in a specific order of execution. A valid pipeline is compliant with the customer’s enterprise contract.
-
-**pipeline service** +
-A managed service that securely runs Tekton pipelines. It also stores the metadata and pipeline logs that are related to an executed pipeline in a separate database.
-
-**product security test** +
-A test that assesses the security of build inputs and outputs with vulnerability scanning, code scanning, image testing, and result reporting. It also identifies outdated images, applications, and build pipelines. 
+A collection of TaskRuns that are arranged in a specific order of execution. 
 
 **pruner** +
 A component that removes resources that are associated with the completed PipelineRuns. The system assigns resources, such as pods, to every PipelineRun. Without a pruner, these resources remain in the cluster indefinitely, even after the system completes the PipelineRun. 
 
 **release pipeline** +
-A pipeline that defines the process for validating snapshots against the enterprise contract. They also provide an array of release destinations. 
+A generic Tekton pipeline that can provide release destinations. An application snapshot must pass the enterprise contract test before {ProductName} can run the release pipeline. 
 
 **security testing** +
 A process that determines if images meet security quality standards.
@@ -74,7 +55,6 @@ Mechanisms that use Tekton chains to extract and store the metadata of the Pipel
 
 **snapshot** +
 A set of component and container images that specifies which components the system should release with which container images. The system creates a snapshot when it finishes running a component's build pipeline. 
-
 
 **Supply-chain Levels for Software Artifacts (SLSA)** +
 A link:https://slsa.dev/[security framework] that helps prevent tampering by securing the packages and infrastructure of customers’ projects.
@@ -93,6 +73,9 @@ A mechanism to secure the software supply chain by recording events in a user-de
 
 **Tekton integration testing** +
 A process that uses Tekton tasks to support the setup and execution of dynamic application tests against container images.
+
+**Tekton results** +
+A mechanism that stores PipelineRun and TaskRun metadata in a separate database and underlying pod logs in cloud storage.
 
 **workspace** +
 A storage volume that a task requires at runtime to receive input or provide output.
