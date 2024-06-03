@@ -5,7 +5,7 @@
 *** xref:how-tos/configuring/creating-secrets.adoc[Creating secrets for your builds]
 *** xref:how-tos/configuring/configuration-as-code.adoc[Configuration as code]
 *** xref:how-tos/configuring/hermetic-builds.adoc[Enabling hermetic builds]
-*** xref:how-tos/configuring/prefetching-dependencies.adoc[Prefetching package manage dependencies]
+*** xref:how-tos/configuring/prefetching-dependencies.adoc[Prefetching package manager dependencies]
 *** xref:how-tos/configuring/component-nudges.adoc[Defining component relationships]
 *** xref:how-tos/configuring/redundant-rebuilds.adoc[Preventing redundant rebuilds]
 ** xref:how-tos/testing/index.adoc[Testing your components and applications]
