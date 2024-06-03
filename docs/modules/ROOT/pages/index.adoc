@@ -1,1 +1,2 @@
-= {ProductName}
+:doctype: redirect
+:redirect: discover/index.adoc
