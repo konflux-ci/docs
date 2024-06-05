@@ -22,7 +22,7 @@ runtime:
 site:
   title: Konflux-CI Documentation
   url: https://konflux-ci.dev/docs
-  start_page: ROOT::index.adoc
+  start_page: Konflux-CI::index.adoc
   robots: allow
 content:
   sources:
