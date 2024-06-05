@@ -9,7 +9,7 @@ You can use an SBOM to better understand the composition of your software. In pa
 
 .Prerequisites
 
-* You must have a component that {ProductName} has successfully built and tested.
+* You must have a component that {ProductName} has successfully built.
 
 .Procedure
 
