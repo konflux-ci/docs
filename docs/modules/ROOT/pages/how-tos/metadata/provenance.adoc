@@ -138,5 +138,5 @@ Example output:
 --
 
 == Additional resources
-* Learn about the SLSA framework and xref:/discover/slsa-conformity.adoc[how {ProductName} meets the requirements of SLSA Build Level 3].
+* Learn about the SLSA framework and xref:/index.adoc[how {ProductName} meets the requirements of SLSA Build Level 3].
 * Red Hat's Enterprise Contract (EC) is a powerful tool that you can also use to verify your SLSA provenance; visit link:https://enterprisecontract.dev/docs/user-guide/main/cli.html#_validating_an_image[this page]  to learn how to use the EC CLI tool to verify your provenance. You will need the public key used by Tekton Chains, which you can find by following link:https://enterprisecontract.dev/docs/user-guide/main/cli.html#_finding_the_public_key[these instructions].
