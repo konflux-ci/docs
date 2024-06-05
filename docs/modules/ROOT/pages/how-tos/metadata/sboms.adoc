@@ -3,7 +3,7 @@
 == Software bill of materials
 A software bill of materials (SBOM) provides greater transparency for your software supply chain. {ProductName} provides link:https://www.cisa.gov/sites/default/files/2023-04/sbom-types-document-508c.pdf[build SBOMs], which list all the software libraries that a component uses. Those libraries can enable specific functionality or facilitate development. 
 
-You can use an SBOM to better understand the composition of your software. In particular, you can analyze your SBOM to determine if your application has any vulnerable dependencies. Furthermore, to comply with cybersecurity regulations, you might need to provide your customers with the SBOM for your application's components. For example, in the United States, the link:https://www.whitehouse.gov/briefing-room/presidential-actions/2021/05/12/executive-order-on-improving-the-nations-cybersecurity/[Executive Order on Improving the Nation's Cybersecurity] requires vendors to provide SBOMs, and in Europe, the link:https://www.cisa.gov/sites/default/files/2023-09/EU%20Commission%20SBOM%20Work_508c.pdf[Cyber Resilience Act] does the same.
+You can use an SBOM to better understand the composition of your software. In particular, you can use various tools to scan your SBOM and determine if any of your dependencies have known vulnerabilities. Furthermore, to comply with cybersecurity regulations, your organization might need to provide its customers with the SBOM for your application's components. For example, in the United States, the link:https://www.whitehouse.gov/briefing-room/presidential-actions/2021/05/12/executive-order-on-improving-the-nations-cybersecurity/[Executive Order on Improving the Nation's Cybersecurity] requires vendors to provide SBOMs, and in Europe, the link:https://www.cisa.gov/sites/default/files/2023-09/EU%20Commission%20SBOM%20Work_508c.pdf[Cyber Resilience Act] does the same.
 
 == Viewing an SBOM in the web UI
 
@@ -84,14 +84,6 @@ $ oc get component devfile-sample-python-basic-ikch -ojson | jq '.status.contain
 [source]
 ----
 $ cosign download sbom quay.io/redhat-appstudio/user-workload@sha256:<sha-digest>
-----
-
-+
-[source]
-----  
-WARNING: Downloading SBOMs this way does not ensure its authenticity. 
-If you want to ensure a tamper-proof SBOM, download it using 'cosign download attestation <image uri>' 
-or verify its signature using 'cosign verify --key <key path> --attachment sbom <image uri>'.
 ----
 
 +
