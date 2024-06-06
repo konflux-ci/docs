@@ -68,7 +68,7 @@ spec:
       finalizers:
       - spi.appstudio.redhat.com/remote-secrets
       - application.appstudio.redhat.com/finalizer
-      name: "konflux-multibranch-sample-{{.versionName}}"
+      name: "konflux-multibranch-sample-app-{{.versionName}}"
     spec:
       displayName: "konflux-multibranch-sample-{{.versionName}}"
 
@@ -85,7 +85,7 @@ spec:
       - pac.component.appstudio.openshift.io/finalizer
       name: konflux-multibranch-sample-{{.versionName}}
     spec:
-      application: "konflux-multibranch-sample-{{.versionName}}"
+      application: "konflux-multibranch-sample-app-{{.versionName}}"
       componentName: "konflux-multibranch-sample-{{.versionName}}"
       source:
         git:
@@ -160,6 +160,31 @@ event == "push" && target_branch == "v1.0.0"
 ----
 
 * The `appstudio.openshift.io/application` and `appstudio.openshift.io/component` labels must be adjusted to specify the right Application and Component respectively. Failing to do this will cause builds of the pipeline to be associated with the wrong application or component.
+
+=== Create ImageRepositories for each component
+
+This is done automatically when working with the UI, and must be done manually when creating components through CLI means.
+This must be done for each component to authenticate with the output-registry when pushing built images.
+
+[source,yaml]
+.imagerepository.yaml
+----
+apiVersion: appstudio.redhat.com/v1alpha1
+kind: ImageRepository
+metadata:
+  labels:
+    appstudio.redhat.com/application: konflux-multibranch-sample-app-v1-0-0
+    appstudio.redhat.com/component: konflux-multibranch-sample-v1-0-0
+  annotations:
+    image-controller.appstudio.redhat.com/update-component-image: 'true'
+  name: imagerepository-for-konflux-multibranch-sample-app-v1-0-0-konflux-multibranch-sample-v1-0-0
+spec:
+  image:
+    name: konflux-multibranch-sample-app-v1-0-0/konflux-multibranch-sample-v1-0-0
+    visibility: public
+----
+
+`visibility` can be set to either `public` or `private`.
 
 == Known limitations
 
