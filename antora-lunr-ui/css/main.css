@@ -66,12 +66,6 @@ i.fa.icon-caution::before {
     background: no-repeat url("../img/caution.svg");
 }
 
-/* Che logo in navigation bar */
-.navbar-item img.navbar-logo {
-    margin-right: 1ex;
-    width: 13%;
-}
-
 /* Burger menu in navigation bar indented less than Antora default */
 .navbar-burger {
     margin-left: 0;
@@ -145,4 +139,8 @@ aside.toc.sidebar {
     border: 1px solid #000;
     padding: 5px;
     border-radius: 5px;
+}
+
+.navbar-brand .navbar-item:first-child a {
+    margin-top: 5px;
 }
