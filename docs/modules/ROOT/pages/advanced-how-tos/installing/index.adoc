@@ -1,1 +1,11 @@
 = Installing {ProductName}
+
+{ProductName} offers a comprehensive solution that fortifies your software supply chain against emerging threats. By providing detailed insights into the composition and construction of your software, {ProductName} enables proactive identification and mitigation of vulnerabilities.
+
+Before tapping into the vast array of benefits offered by {ProductName}, the initial step involves its installation. Users have two options for onboarding applications to {ProductName}:
+
+. *Using the {ProductName} UI*: This option provides a more streamlined user experience but requires using Quay.io for the image registry and additional initial setup steps.
+
+. *Using Kubernetes manifests*: This option supports any image registry and involves fewer initial setup steps.
+
+For detailed instructions, refer to link:https://github.com/{ProductName}-ci/{ProductName}-ci/blob/main/README.md[{ProductName}-CI] guide.
