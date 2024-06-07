@@ -1,8 +1,12 @@
 = Deleting applications and components
 
-You can delete an application if you are a user with the workspace admin role.
+You can delete a component or application if you are a user with the workspace admin role.
 
-WARNING: If you delete an application permanently, you delete all the components and resources from the user interface (UI) and upstream repositories. This includes Tekton pipeline definitions and other resources managed in those repositories. The deletion process submits a pull request (PR) to remove these pipeline definitions and associated resources.
+WARNING: If you delete a component permanently, you delete all resources from the quay organization, user interface (UI), and upstream repositories. This includes all images that have been previously built by Konflux that haven't been copied into a different location, Tekton pipeline definitions, and other resources managed in those repositories. The deletion process submits a pull request (PR) to remove these pipeline definitions and associated resources.
+
+WARNING: If you delete a component then any previous snapshots referencing this component will become invalid since the image reference will no longer be valid.
+
+WARNING: If you delete an application permanently, you delete all the components within that application and all resources linked to these components.
 
 == Deleting an application in the web UI
 .*Prerequisites*
