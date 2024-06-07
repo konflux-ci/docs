@@ -63,11 +63,11 @@ The rest of this document further explains our key responsibilities, provenance 
 
 === SLSA Provenance
 
-In the context of its framework, SLSA defines provenance as “the verifiable information about software artifacts describing where, when and how something was produced.” SLSA provenance is expressed through attestation, and for higher Build Levels, build platforms must sign that attestation.
+In the context of its framework, SLSA defines provenance as “the verifiable information about software artifacts describing where, when and how something was produced.” SLSA provenance is a type of attestation, and for higher Build Levels, build platforms like {ProductName} must sign that attestation.
 
 ==== Attestation
 
-Attestation is the fundamental component of provenance, and you can think of it like a recipe. A recipe tells you how someone made a certain dish, and attestation tells you how a build platform created a software artifact. Our SLSA attestation specifically includes a subject that tells you which artifact the attestation belongs to, and a predicate that explains how {ProductName} built each artifact, including relevant links. 
+You can think of attestation like a recipe: a recipe tells you how someone made a certain dish, and attestation tells you how a build platform created a software artifact. SLSA provenance is a form of attestation. The SLSA provenance that {ProductName} provides includes a subject that tells you which artifact the attestation belongs to, and a predicate that explains how {ProductName} built each artifact, including relevant links. 
 
 ==== Signing the attestation
 
@@ -81,7 +81,7 @@ In its Build Levels, SLSA evaluates provenance based on three questions:
 * Authenticity: How certain are you that the provenance came from the builder?
 * Accuracy: How difficult is it to tamper with provenance during the build process?    
 
-Completeness of provenance comes from its attestation, and authenticity derives from the signature. 
+Completeness of provenance comes from its attestation format, and authenticity derives from the signature. 
 
 Accuracy is where provenance and build isolation intersect. To generate unforgeable provenance, build platforms must store those secret materials in a secure management system that platform users cannot access. In {ProductName}, only Tekton Chains, which generates and signs provenance, has access to the private key. 
 
