@@ -1,8 +1,5 @@
 = Prefetching package manager dependencies for hermetic builds
 
-//NOTE: We may want to rephrase this to word for more accurate SBOM information
-//NOTE: Should this be a subtopic for hermetic or a sibling to it?
-
 In {ProductName}, you can run a hermetic build by restricting network access to the build, but without network a build can’t fetch component dependencies from a repository and might fail. To avoid that, {ProductName} can prefetch dependencies for your hermetic builds using link:https://github.com/containerbuildsystem/cachi2/blob/main/README.md[Cachi2].
 
 For every build, Cachi2 generates a software bill of materials (SBOM) where all dependencies are properly declared and pinned to specific versions. Also, Cachi2 ensures that arbitrary code is never executed during the prefetch, meaning, for example, that the build doesn’t pull any undeclared dependencies. Such measures result in very accurate SBOMs and improve the build reproducibility. For more information about SBOMs, see link:https://konflux-ci.dev/docs/how-tos/metadata/sboms/[Inspecting SBOMs].
@@ -25,6 +22,7 @@ For every build, Cachi2 generates a software bill of materials (SBOM) where all 
 |`npm`
 |===
 
+NOTE: To use Yarn as the package manager, see the link:https://github.com/containerbuildsystem/cachi2/blob/main/docs/usage.md#example-yarn[Cachi2 Usage guide].
 
 == Enabling prefetch builds for `gomod`
 
@@ -32,10 +30,10 @@ For every build, Cachi2 generates a software bill of materials (SBOM) where all 
 * You have a `go.mod` file in your repository that lists all the dependencies.
 
 .Procedure
-To create a hermetic build for a component, complete the following steps:
+To prefetch dependencies for a component build, complete the following steps:
 
 . Go to the `.tekton` directory in your component repository and find the `.yaml` files related to both the `*pull request*` and `*push*` processes.
-. To configure the hermetic pipeline in both `.yaml` files, add the following hermetic pipeline parameters to the `spec.params` sections:
+. To configure the hermetic pipeline in both `.yaml` files, add the following hermetic pipeline `prefetch-input` parameters to the `spec.params` sections:
 
 +
 [source,yaml]
@@ -54,7 +52,7 @@ spec:
 
 .Verification
 * From the {ProductName} *Applications* view, go to *Activity > Pipeline runs*.
-** Go to the pipeline run with *Build* in the *Type* column and confirm that the `pre-fetch dependencies` stage displays a green checkmark. This indicates that the build process successfully fetched all dependencies.
+** Go to the pipeline run with *Build* in the *Type* column and confirm that the `prefetch-dependencies` stage displays a green checkmark. This indicates that the build process successfully fetched all dependencies.
 * From the {ProductName} *Applications* view, go to *Activity > Latest commits*.
 //include::../partials/con_hermetic_verification.adoc[]
 
@@ -69,7 +67,7 @@ IMPORTANT: The requirements file can have a different name because you can use m
 * You have installed the link:https://github.com/jazzband/pip-tools[pip-tools] package.
 
 .Procedure
-To create a hermetic build for a component, complete the following steps:
+To prefetch dependencies for a component build, complete the following steps:
 
 . Download the link:https://raw.githubusercontent.com/containerbuildsystem/cachito/master/bin/pip_find_builddeps.py[pip_find_builddeps.py] script directly from GitHub.
 
@@ -161,7 +159,7 @@ NOTE: `pip` automatically installs the build dependencies when needed for explic
 
 . Configure the hermetic pipeline.
 
-.. Add the following hermetic pipeline parameters in both the `.yaml` files:
+.. Add the following hermetic pipeline `prefetch-input` parameters in both the `.yaml` files:
 
 +
 [source,yaml]
@@ -182,7 +180,7 @@ spec:
 * When adding these parameters, you can safely ignore the default values for the link:https://github.com/burrsutter/partner-catalog-stage/blob/e2ebb05ba8b4e842010710898d555ed3ba687329/.tekton/partner-catalog-stage-wgxd-pull-request.yaml#L90[`pipelineSpec.params`] in the `.yaml` files.
 ====
 
-.. Optional: For requirements files without default names and path, add the following hermetic pipeline parameters in both the `.yaml` files:
+.. Optional: For requirements files without default names and path, add the following hermetic pipeline `prefetch-input` parameters in both the `.yaml` files:
 
 +
 [source,yaml]
@@ -202,7 +200,7 @@ spec:
 
 .Verification
 * From the {ProductName} *Applications* view, go to *Activity > Pipeline runs*.
-** Go to the pipeline run with *Build* in the *Type* column and confirm that the `pre-fetch dependencies` stage displays a green checkmark. This indicates that the build process successfully fetched all dependencies.
+** Go to the pipeline run with *Build* in the *Type* column and confirm that the `prefetch-dependencies` stage displays a green checkmark. This indicates that the build process successfully fetched all dependencies.
 * From the {ProductName} *Applications* view, go to *Activity > Latest commits*.
 //include::../partials/con_hermetic_verification.adoc[]
 
@@ -213,7 +211,7 @@ Cachi2 supports `npm` by fetching any dependencies you declare in your `package.
 * You have an up-to-date link:https://docs.npmjs.com/cli/v9/configuring-npm/package-lock-json[`package-lock.json`] file, newer than version 1, in your source repository. To make sure that you have the latest `package-lock.json` file, or to create a lockfile, run the link:https://docs.npmjs.com/cli/v9/commands/npm-install?v=true[`npm-install`] command. You can also look at the `lockfileVersion` attribute in your `package-lock.json` file to make sure its value is a number greater than `*1*`. 
 
 .Procedure
-To create a hermetic build for a component, complete the following steps:
+To prefetch dependencies for a component build, complete the following steps:
 
 . Go to the `.tekton` directory and find the `.yaml` files related to the `*pull request*` and `*push*` processes.
 . Configure the hermetic pipeline by adding the following parameters in both `.yaml` files:
@@ -234,7 +232,7 @@ spec:
 
 .Verification
 * From the {ProductName} *Applications* view, go to *Activity > Pipeline runs*.
-** Go to the pipeline run with *Build* in the *Type* column and confirm that the `pre-fetch dependencies` stage displays a green checkmark. This indicates that the build process successfully fetched all dependencies.
+** Go to the pipeline run with *Build* in the *Type* column and confirm that the `prefetch-dependencies` stage displays a green checkmark. This indicates that the build process successfully fetched all dependencies.
 * From the {ProductName} *Applications* view, go to *Activity > Latest commits*.
 
 .Troubleshooting
@@ -248,4 +246,4 @@ In {ProductName}, from the *Applications* view, select the application build you
 == Additional resources
 
 * To troubleshoot any issues you might experience when you enable prefetch builds for `pip` or `pip` with source dependencies, see link:https://github.com/containerbuildsystem/cachi2/blob/main/docs/pip.md#troubleshooting[Troubleshooting].
-* For more information about Cachi2, see link:https://github.com/containerbuildsystem/cachi2/blob/main/README.md[Cachi2].
+* For more information about Cachi2, see link:https://github.com/containerbuildsystem/cachi2/blob/main/docs/usage.md[Cachi2].
