@@ -6,7 +6,7 @@ There are 2 different ways you can contribute to the {ProductName} documentation
 
 * **GitHub**: You can fork the [Konflux-CI/docs repository](https://github.com/konflux-ci/docs) on GitHub and edit documentation locally on your machine. 
 
-## Contributing with a PR
+## Contributing with your own fork
 
 When contributing to documentation, we recommend that you:
 
@@ -20,7 +20,7 @@ When you submit a PR, the Konflux team reviews it and arranges further reviews a
 
 ## Working with AsciiDoc
 
-The Konflux documentation is developed in AsciiDoc format. AsciiDoc is a plain text documentation syntax, also known as a mark-up language, for text files. AsciiDoc is rendered as HTML automatically by web browsers, so the files can be viewed as formatted text via the GitLab repository URL.
+The Konflux documentation is developed in AsciiDoc format. AsciiDoc is a plain text documentation syntax, also known as a mark-up language, for text files. Asciidoctor, the core processor for the AsciiDoc language, converts AsciiDoc files to HTML, so readers can view files as formatted text via the GitHub repository URL.
 
 ### Rendering individual pages
 
