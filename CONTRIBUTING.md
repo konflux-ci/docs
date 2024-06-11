@@ -1,29 +1,30 @@
 # Konflux-CI documentation contributing guide
 
-## Contributing
+There are 2 different ways you can contribute to the {ProductName} documentation:
 
-For active maintenance/development of the documentation, developers
-should create a
-[fork](https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/working-with-forks/fork-a-repo)
-of the repository. Updates are performed in the forked
-repository and, when changes are ready for review, submitted as
-[pull requests](https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/proposing-changes-to-your-work-with-pull-requests/about-pull-requests)
-to the upstream repository. Developers are encouraged to create task
-specific branches in their forked repositories, but merge request should
-always target the default branch of the
-[Konflux repository](https://github.com/konflux-ci/docs).
+* **UI**: You can select **Edit this Page** in the banner on any page of the [Konflux documentation](https://konflux-ci.dev/docs) and suggest your changes in the web editor.
+
+* **GitHub**: You can fork the [Konflux-CI/docs repository](https://github.com/konflux-ci/docs) on GitHub and edit documentation locally on your machine. 
+
+## Contributing with your own fork
+
+When contributing to documentation, we recommend that you:
+
+- Create a [fork](https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/working-with-forks/fork-a-repo) of the [Konflux-CI/docs repository](https://github.com/konflux-ci/docs).
+
+- Suggest your updates in the forked repository on a task-specific branch.
+
+- When changes are ready for a review, open a [pull request](https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/proposing-changes-to-your-work-with-pull-requests/about-pull-requests) against the default *main* branch of the upstream Konflux docs repository.
+
+When you submit a PR, the Konflux team reviews it and arranges further reviews as required.
 
 ## Working with AsciiDoc
 
-The Konflux documentation is developed in AsciiDoc format. AsciiDoc is a plain text documentation syntax, also known as a mark-up
-language, for text files. AsciiDoc is rendered as HTML automatically by
-web browsers, so the files can be viewed as formatted text via the GitLab
-repository URL.
+The Konflux documentation is developed in AsciiDoc format. AsciiDoc is a plain text documentation syntax, also known as a mark-up language, for text files. Asciidoctor, the core processor for the AsciiDoc language, converts AsciiDoc files to HTML, so readers can view files as formatted text via the GitHub repository URL.
 
 ### Rendering individual pages
 
-To render individual AsciiDoc pages for review,
-use the `asciidoctor` software to generate HTML files.
+To render individual AsciiDoc pages for review, use the `asciidoctor` software to generate HTML files.
 
 To install `asciidoctor` on Fedora or RHEL:
 
