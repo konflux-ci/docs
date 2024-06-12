@@ -1,0 +1,8 @@
+Building an OLM
+
+ Ok so the basic basics are
+Create an app for the operator
+Add your controller/operator as a component. It should share a git repo with other components. So specify it’s Dockerfile within that repo.
+Add your bundle as another component. Same repo, different Dockerfile.
+Add a SHA reference to the bundle’s csv. Then, in Konflux, define the relationship: controller nudges bundle.
+Add FBC as another application. 
