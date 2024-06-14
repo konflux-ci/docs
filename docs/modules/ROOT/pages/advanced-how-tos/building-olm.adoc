@@ -5,7 +5,10 @@ If you are using an link:https://olm.operatorframework.io/docs/[Operator Lifecyc
 
 == Builing the operator and the bundle
 
-[NOTE] This procedure assumes that the source code for your OLM operator and bundle, including the Dockerfile, are in the same git repository, per OLM convention.
+[NOTE] 
+====
+This procedure assumes that the source code for your OLM operator and bundle, including the Dockerfile, are in the same git repository, per OLM convention.
+====
 
 .Procedure
 
