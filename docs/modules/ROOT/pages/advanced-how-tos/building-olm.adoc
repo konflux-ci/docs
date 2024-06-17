@@ -1,27 +1,27 @@
-= Building an Operator Lifecycle Manager (OLM) in {ProductName}
+= Building an Operator in {ProductName}
 
-If you are using an link:https://olm.operatorframework.io/docs/[Operator Lifecycle Manager (OLM)] for your application, you can build the OLM in {ProductName}. The first procedure in this document explains how to use {ProductName} to build an OLM in the most basic sense--building its operator and bundle. The second procedure is optional but recommended. It explains how you can automatically update the image references to the operator and operands that should be present in your bundle.
+If you are developing an application that aligns with the link:https://operatorframework.io/[Operator Framework], and managing it with link:https://olm.operatorframework.io/docs/[Operator Lifecycle Manager (OLM)], you can build your Operator in {ProductName}. The first procedure in this document explains how to use {ProductName} to build an Operator in the most basic sense--building its controller and bundle images. The second procedure is optional but recommended. It explains how you can automatically update the image references that should be present in your bundle.
 
 
-== Builing the operator and the bundle
+== Building the operator and the bundle
 
 [NOTE] 
 ====
-This procedure assumes that the source code for your OLM operator and bundle, including the Dockerfile, are in the same git repository, per OLM convention.
+This procedure assumes that the source code for your Operator's controller and bundle, including the Dockerfiles, are in the same git repository, per OLM convention.
 ====
 
 .Procedure
 
-. In the {ProductName} UI,  xref:../how-tos/creating.adoc[create a new application] for your OLM in {ProductName}.
-. In your new OLM application, xref:../how-tos/creating.adoc[add a new component] for your OLM operator. Be sure to specify the correct path to the operator's Dockerfile within its git repository.
-. Add another component for your OLM bundle. Enter the same URL that you used for the operator, but enter the path to the bundle's Dockerfile.
-. (Optional) If you are using a File-based Catalog (FBC) for your OLM, you must build the FBC as another component in its own, separate application in {ProductName}.
-. (Optional) You may want to configure {ProductName} to xref:../how-tos/configuring/redundant-rebuilds.adoc[prevent redundant rebuilds] for this application. For example, you can configure {ProductName} to rebuild your bundle image only if a commit is made to its Dockerfile or the `/bundle` directory, instead of rebuilding it whenever any commit is made to the OLM git repository. 
+. In the {ProductName} UI,  xref:../how-tos/creating.adoc[create a new application] for your Operator in {ProductName}.
+. In your new Operator application, xref:../how-tos/creating.adoc[add a new component] for your controller. Be sure to specify the correct path to the operator's Dockerfile within its git repository.
+. Add another component for your bundle. Enter the same URL that you used for the controller, but enter the path to the bundle's Dockerfile.
+. (Optional) If you are using a File-based Catalog (FBC) for your Operator, you must build the FBC as another component in its own separate application in {ProductName}.
+. (Optional) You may want to configure {ProductName} to xref:../how-tos/configuring/redundant-rebuilds.adoc[prevent redundant rebuilds] for this application. For example, you can configure {ProductName} to rebuild your bundle image only if a commit is made to its Dockerfile or the `/bundle` directory, instead of rebuilding it whenever any commit is made to your Operator git repository. 
 
 == Defining relationships between OLM components
 
 .Procedure
-. In the {ProductName} UI, in your OLM's application, go to the *Components* tab and copy the URL for the operator's container image. The URL should include `sha256:`.
-. Using your preferred text editor, in the git repo for your OLM, open the cluster service version (CSV) file for your bundle. In that file, update the image reference to the operator to be the URL you just copied. Commit this change.
-. In the {ProductName} UI, follow the instructions in xref:../how-tos/configuring/component-nudges.adoc[this document] to define the relationship between the operator and the bundle. The operator nudges the bundle.
+. In the {ProductName} UI, in your Operator's application, go to the *Components* tab and copy the URL for the controller's container image. The URL should include `sha256:`.
+. Using your preferred text editor, in the git repo for your Operator, open the cluster service version (CSV) file for your bundle. In that file, update the image reference to the controller to be the URL you just copied. Commit this change.
+. In the {ProductName} UI, follow the instructions in xref:../how-tos/configuring/component-nudges.adoc[this document] to define the relationship between the controller and the bundle. The controller nudges the bundle.
 . (Optional) For any operands with image references in your bundle's CSV, you can repeat this same basic process, to enable automatic updates to those references as well. Add the operands as components in {ProductName}, wait for their first build to finish, then copy the URL to the image and paste it as a reference in the bundle's CSV file.
