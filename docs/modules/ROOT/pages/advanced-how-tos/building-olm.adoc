@@ -1,27 +1,41 @@
-= Building an Operator in {ProductName}
+= Building an Operator Lifecycle Manager (OLM) Operator in {ProductName}
 
-If you are developing an application that aligns with the link:https://operatorframework.io/[Operator Framework], and managing it with link:https://olm.operatorframework.io/docs/[Operator Lifecycle Manager (OLM)], you can build your Operator in {ProductName}. The first procedure in this document explains how to use {ProductName} to build an Operator in the most basic sense--building its controller and bundle images. The second procedure is optional but recommended. It explains how you can automatically update the image references that should be present in your bundle.
+If you are developing an application that aligns with the link:https://operatorframework.io/[Operator Framework], and managing it with link:https://olm.operatorframework.io/docs/[Operator Lifecycle Manager (OLM)], you can build that application in {ProductName}. We refer to such applications as OLM Operators. 
+
+OLM Operators include the following elements:
+
+* Operator, which manages Operands
+* Operands, which are custom resources
+* Bundle, which packages the Operator and Operands together as defined by a ClusterServiceVersion (CSV) file
+
+Note the difference between an "OLM Operator" and an "Operator." An OLM Operator refers to the whole application, and an Operator is one part of the OLM Operator.
+
+The first procedure in this document explains how to use {ProductName} to build an OLM Operator in the most basic sense--building its Operator and bundle images. The second procedure is optional but recommended. It explains how you can automatically update the image references in the CSV of the bundle.
 
 
-== Building the operator and the bundle
+== Building the Operator and the bundle
 
 [NOTE] 
 ====
-This procedure assumes that the source code for your Operator's controller and bundle, including the Dockerfiles, are in the same git repository, per OLM convention.
+This procedure assumes that the source code for your Operator and bundle, including the Dockerfiles, are in the same git repository, per OLM convention.
 ====
 
 .Procedure
 
-. In the {ProductName} UI,  xref:../how-tos/creating.adoc[create a new application] for your Operator in {ProductName}.
-. In your new Operator application, xref:../how-tos/creating.adoc[add a new component] for your controller. Be sure to specify the correct path to the operator's Dockerfile within its git repository.
-. Add another component for your bundle. Enter the same URL that you used for the controller, but enter the path to the bundle's Dockerfile.
-. (Optional) If you are using a File-based Catalog (FBC) for your Operator, you must build the FBC as another component in its own separate application in {ProductName}.
-. (Optional) You may want to configure {ProductName} to xref:../how-tos/configuring/redundant-rebuilds.adoc[prevent redundant rebuilds] for this application. For example, you can configure {ProductName} to rebuild your bundle image only if a commit is made to its Dockerfile or the `/bundle` directory, instead of rebuilding it whenever any commit is made to your Operator git repository. 
+. In the {ProductName} UI,  xref:../how-tos/creating.adoc[create a new application] for your OLM Operator in {ProductName}.
+. In your new application, xref:../how-tos/creating.adoc[add a new component] for your Operator. Be sure to specify the correct path to the Operator's Dockerfile within its git repository.
+. Add another component for your bundle. Enter the same URL that you used for the Operator, but enter the path to the bundle's Dockerfile.
+. (Optional) If you are using a File-based Catalog (FBC) for your OLM Operator, you must build the FBC as another component in its own separate application in {ProductName}.
+. (Optional) You may want to configure {ProductName} to xref:../how-tos/configuring/redundant-rebuilds.adoc[prevent redundant rebuilds] for this application. For example, you can configure {ProductName} to rebuild your bundle image only if a commit is made to its Dockerfile or the `/bundle` directory, instead of rebuilding it whenever any commit is made to your OLM Operator's git repository. 
 
-== Defining relationships between OLM components
+== Automating updates for image references in the CSV
 
 .Procedure
-. In the {ProductName} UI, in your Operator's application, go to the *Components* tab and copy the URL for the controller's container image. The URL should include `sha256:`.
-. Using your preferred text editor, in the git repo for your Operator, open the cluster service version (CSV) file for your bundle. In that file, update the image reference to the controller to be the URL you just copied. Commit this change.
-. In the {ProductName} UI, follow the instructions in xref:../how-tos/configuring/component-nudges.adoc[this document] to define the relationship between the controller and the bundle. The controller nudges the bundle.
-. (Optional) For any operands with image references in your bundle's CSV, you can repeat this same basic process, to enable automatic updates to those references as well. Add the operands as components in {ProductName}, wait for their first build to finish, then copy the URL to the image and paste it as a reference in the bundle's CSV file.
+
+. In the {ProductName} UI, in your OLM Operator's application, go to the *Components* tab and copy the URL for the Operator's container image. The URL should include `sha256:`.
+. Using your preferred text editor, in the git repo for your OLM Operator, open the CSV file for your bundle. In that file, update the image reference to the Operator to be the URL you just copied. Commit this change.
+. In the {ProductName} UI, follow the instructions in xref:../how-tos/configuring/component-nudges.adoc[this document] to define the relationship between the Operator and the bundle. The Operator nudges the bundle.
+. (Optional) For any Operands with image references in your bundle's CSV, you can repeat this same basic process:
+.. Add the Operands as components in {ProductName}.
+.. Wait for the first build of those components to finish.
+.. Copy the URL to the images and paste it as a reference in the bundle's CSV file.
