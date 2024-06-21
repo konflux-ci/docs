@@ -5,7 +5,7 @@ If you are developing an application that aligns with the link:https://operatorf
 OLM Operators include the following elements:
 
 * Operator, which manages Operands
-* Operands, which are custom resources
+* Operands, which are components or resources that the operator manages
 * Bundle, which packages the Operator and Operands together as defined by a ClusterServiceVersion (CSV) file
 
 Note the difference between an "OLM Operator" and an "Operator." An OLM Operator refers to the whole application, and an Operator is one part of the OLM Operator.
