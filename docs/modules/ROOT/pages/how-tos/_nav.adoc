@@ -7,6 +7,7 @@
 *** xref:how-tos/configuring/hermetic-builds.adoc[Enabling hermetic builds]
 *** xref:how-tos/configuring/prefetching-dependencies.adoc[Prefetching package manager dependencies]
 *** xref:how-tos/configuring/component-nudges.adoc[Defining component relationships]
+*** xref:how-tos/configuring/rerunning.adoc[Retriggering build pipelines]
 *** xref:how-tos/configuring/redundant-rebuilds.adoc[Preventing redundant rebuilds]
 ** xref:how-tos/testing/index.adoc[Testing your components and applications]
 *** xref:how-tos/testing/build/index.adoc[Build-time tests]

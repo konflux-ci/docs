@@ -2,6 +2,8 @@
 
 Integration test scenarios for a given snapshot can be re-triggered by adding a label to the snapshot.
 
+See also xref:/how-tos/configuring/rerunning.adoc[Retriggering build pipelines].
+
 .Prerequisites
 - You have a snapshot that has completed all its initial tests. All initial tests must be finished before you trigger subsequent tests.
 
