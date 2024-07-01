@@ -1,6 +1,26 @@
 = Getting started with the CLI
 
-While {ProductName} offers a powerful UI, users may also want to access the platform through the `kubectl` command line interface (CLI). For users to gain this access, a Platform Engineer (PE) must first configure their instance of {ProductName} to support CLI access. They must also draft a template `kubeconfig` file for their organization. Afterwards, users can edit that template to create a `kubeconfig` file specific to themselves. Then, they use that file to gain access to {ProductName} through the CLI. 
+{ProductName} provides a user-friendly web interface for managing your resources. However, for advanced users or those comfortable with the command line, kubectl offers a powerful way to interact with the platform.
+
+.Prerequisites
+
+* An up-to-date kubectl binary installed on your machine. You can verify the version using `kubectl version`.
+
+* Alternatively, the `oc` binary (used with OpenShift) is also compatible with {ProductName} in most cases.
+
+*Granting Cluster Access (Platform Engineer Role)*
+
+. *Cluster Configuration (Platform Engineer):*  A Platform Engineer (PE) with the appropriate permissions needs to configure your {ProductName} instance for kubectl access. This typically involves enabling the Kubernetes API server and generating a cluster configuration file (often named `kubeconfig`).
+
+. *Template kubeconfig File (Platform Engineer):* The PE will likely provide a template `kubeconfig` file containing the necessary connection details. This file serves as a starting point for individual user access.
+
+*User Setup*
+
+. **Obtain the Template kubeconfig:**  Once the PE has configured cluster access and created the template file, you'll receive a copy from your PE or IT team.
+
+. *Personalize Your kubeconfig:**  Make a copy of the template file and personalize it with your unique user context information. This might involve setting environment variables or editing the file directly as provided by the PE.
+
+. *Use kubectl:**  With your personalized `kubeconfig` in place, you can use the kubectl command-line tool to interact with your {ProductName} cluster. 
 
 Whether you need to enable CLI access, or to gain access once it is available, refer to the relevant procedures below. 
 
