@@ -18,7 +18,7 @@
 
 . **Obtain the Template kubeconfig:**  Once the PE has configured cluster access and created the template file, you'll receive a copy from your PE or IT team.
 
-. *Personalize Your kubeconfig:**  Make a copy of the template file and personalize it with your unique user context information. This might involve setting environment variables or editing the file directly (refer to {ProductName} documentation for specific instructions).
+. *Personalize Your kubeconfig:**  Make a copy of the template file and personalize it with your unique user context information. This might involve setting environment variables or editing the file directly as provided by the PE.
 
 . *Use kubectl:**  With your personalized `kubeconfig` in place, you can use the kubectl command-line tool to interact with your {ProductName} cluster. 
 
