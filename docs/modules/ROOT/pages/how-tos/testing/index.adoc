@@ -36,4 +36,4 @@ As with build-time tests, you can also create your own integration tests.  To ad
 
 The integration service provides users with the ability to reset their component's Global Candidate List to a desired state with a manually created `override`, you can xref:./integration/creatingoverridesnapshot.adoc[create an override snapshot] and provide a valid container image for component to reset the component's Global Candidate List.
 
-While these tests are triggered after new artifacts are build (for example after build pipelines have successfully completed), their execution can be retriggered without building new artifacts. This process is described in xref:./integration/rerunning.adoc[retriggering integration tests].
+While these tests are triggered after new artifacts are built (for example after build pipelines have successfully completed), their execution can be retriggered without building new artifacts. This process is described in xref:./integration/rerunning.adoc[retriggering integration tests].
