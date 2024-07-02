@@ -1,6 +1,5 @@
-= Inspecting SBOMs
+= Inspecting artifact SBOMs
 
-== Software bill of materials
 A software bill of materials (SBOM) provides greater transparency for your software supply chain. {ProductName} provides link:https://www.cisa.gov/sites/default/files/2023-04/sbom-types-document-508c.pdf[build SBOMs], which list all the software libraries that a component uses. Those libraries can enable specific functionality or facilitate development. 
 
 You can use an SBOM to better understand the composition of your software. In particular, you can use various tools to scan your SBOM and determine if any of your dependencies have known vulnerabilities. Furthermore, to comply with cybersecurity regulations, your organization might need to provide its customers with the SBOM for your application's components. For example, in the United States, the link:https://www.whitehouse.gov/briefing-room/presidential-actions/2021/05/12/executive-order-on-improving-the-nations-cybersecurity/[Executive Order on Improving the Nation's Cybersecurity] requires vendors to provide SBOMs, and in Europe, the link:https://www.cisa.gov/sites/default/files/2023-09/EU%20Commission%20SBOM%20Work_508c.pdf[Cyber Resilience Act] does the same.
@@ -38,52 +37,20 @@ The SBOM is unsigned so there is no way to verify whether it has been tampered w
 
 * xref:/getting-started/cli.adoc[Login] to {ProductName}.
 
+* You have found the image for a xref:/how-tos/creating.adoc#finding-the-built-image[recently completed build pipeline] and exported the value to the `IMAGE` environment variable.
+
 .Procedure
 
 In the CLI, complete the following steps to download the SBOM for a component:
 
-. List your components.
-+
-[source]
-----
-$ oc get components
-----
-+
-.Example output
-+
-[source]
-----
-NAME                               AGE   STATUS   REASON   TYPE
-devfile-sample-go-basic-8wqt       8m54s True     OK       Updated
-devfile-sample-python-basic-ikch   20d   True     OK       Updated
-----
-
-. Choose which component's SBOM you want to download. Then use `oc get` and the jq CLI tool to get the component image path.
-
-+
-[source]
-----
-$ oc get component <component name> -ojson | jq '.status.containerImage'
-----
-
-+
-.Example
-
-+
-[source]
-----
-$ oc get component devfile-sample-python-basic-ikch -ojson | jq '.status.containerImage'
-    "quay.io/redhat-appstudio/user-workload@sha256:<sha-digest>"
-----
-
-. Use Cosign to download the SBOM. From the output of the last command, pass the image path as an argument into Cosign's `download sbom` command. Be sure to delete any quotation marks around the image path.
+. Use Cosign to download the SBOM. Pass the IMAGE environment variable as an argument into Cosign's `download sbom` command.
 
 +
 .Example
 +
 [source]
 ----
-$ cosign download sbom quay.io/redhat-appstudio/user-workload@sha256:<sha-digest>
+$ cosign download sbom $IMAGE
 ----
 
 +
@@ -92,7 +59,7 @@ $ cosign download sbom quay.io/redhat-appstudio/user-workload@sha256:<sha-digest
 +
 [source]
 ----  
-$ cosign download sbom quay.io/redhat-appstudio/user-workload@sha256:<sha-digest> > sbom.txt
+$ cosign download sbom $IMAGE > sbom.txt
 ----
 
 == Reading the SBOM

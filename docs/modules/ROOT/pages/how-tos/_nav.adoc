@@ -18,5 +18,5 @@
 **** xref:how-tos/testing/integration/creatingoverridesnapshot.adoc[Creating an override snapshot]
 ** xref:how-tos/metadata/index.adoc[Inspecting provenance and attestations]
 *** xref:how-tos/metadata/sboms.adoc[Inspecting SBOMs]
-*** xref:how-tos/metadata/provenance.adoc[Downloading the SLSA provenance]
+*** xref:how-tos/metadata/attestations.adoc[Inspecting artifact attestations]
 ** xref:how-tos/deleting.adoc[Deleting applications and components]
