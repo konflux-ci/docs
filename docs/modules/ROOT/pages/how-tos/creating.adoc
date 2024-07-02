@@ -40,7 +40,7 @@ kubectl -n pipelines-as-code create secret generic pipelines-as-code-secret \
 . Still in the context of your {ProductName} repository, run `kubectl create -f smee/smee-client`.
 . Now, you can trigger your application’s first build pipeline. In the git repository for your application, using your preferred text editor, open a pull request against the `/.tekton/pull-request.yaml` file. 
 .. Specifically, replace any existing value for the `git-url` field with the git URL for your application’s repository. (This is the URL you would use to clone the repository locally; it ends with `.git`.)
-. Once the PR is made, a build pipeline should start. You can track its progress in the {ProductName} UI or you can see the final status in GitHub after the pipeline completes. If the pipeline is successful, you can merge the PR.
+. Once the PR is made, a build pipeline should start. You can track its progress on GitHub, or in the {ProductName} UI. If the pipeline is successful, you can merge the PR.
 
 == Example YAML file for multiple components
 
@@ -110,74 +110,4 @@ metadata:
   namespace: user-ns2
 spec:
   url: "https://github.com/konflux-ci/anothertestrepo"
---
-
-== Finding the built image
-
-After a pipeline completes with a built artifact, you may want to test the resulting image to ensure that it works properly. The `IMAGE_URL` Tekton result will be set to the pullspec for the image. This can be discovered using the UI or the CLI.
-
-+
-NOTE: Images build from pull request pipelines will be automatically deleted 5 days after they are built. This parameter can be changed by xref:/how-tos/configuring/customizing-the-build.adoc[customizing the build].
-
-=== With the UI
-
-All build PipelineRuns are visible in the {ProductName} UI. The location of these images in the OCI registry is reported on the *Activity* page.
-
-.Procedure
-
-In the console, complete the following steps to find the image pullspec for a completed PipelineRun:
-
-. Navigate to the *Activity* > *Pipeline runs* tab.
-
-. For the component whose SBOM you want to view, select its most recent pipeline run.
-
-. Find the *Results* section at the bottom of the page and look for the `IMAGE_URL` row. It should resemble `quay.io/redhat-user-workloads/workspace-tenant/application/component:tag`. The `IMAGE_DIGEST` provided can be used as an alternative mechanism for referencing the image. You will 
-
-=== With the CLI
-
-After the build PipelineRuns are completed from git push events, the Components are updated with the location of the artifact in the OCI registry.
-
-The CLI
-
-.Prerequisites
-
-* xref:/getting-started/cli.adoc[Login] to {ProductName}.
-
-* Install the link:https://stedolan.github.io/jq/download/[jq] CLI tool.
-
-.Procedure
-
-In the CLI, complete the following steps to find the latest pullspec for a component:
-
-. List your components.
-+
-[source]
-----
-$ oc get components
-----
-+
-.Example output
-+
-[source]
-----
-NAME                               AGE   STATUS   REASON   TYPE
-devfile-sample-go-basic-8wqt       8m54s True     OK       Updated
-devfile-sample-python-basic-ikch   20d   True     OK       Updated
-----
-
-. Choose which component's image you want to discover. Then use `oc get` and the `jq` CLI tool to get the component image path.
-
-+
-[source]
-----
-$ oc get component <component name> -o json | jq '.status.containerImage'
-----
-
-. For convenience, you may want to save the image path to a local variable.
-+
-Example:
-+
-[source]
---
-IMAGE=quay.io/redhat-user-workloads/workspace-tenant/application/component@sha256:<output omitted>
 --
