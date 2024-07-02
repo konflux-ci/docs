@@ -112,7 +112,7 @@ spec:
   url: "https://github.com/konflux-ci/anothertestrepo"
 --
 
-== Finding the built image
+== Finding the built images
 
 After a pipeline completes with a built artifact, you may want to test the resulting image to ensure that it works properly. The `IMAGE_URL` Tekton result will be set to the pullspec for the image. This can be discovered using the UI or the CLI.
 
