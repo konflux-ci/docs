@@ -1,8 +1,53 @@
-= Downloading the SLSA provenance
+= Inspecting artifact attestations
 
-We are committed to providing exceptional build-time security with {ProductName}. As part of that commitment, {ProductName} conforms to the link:https://slsa.dev/spec/v1.0/levels#build-l3[SLSA Build Level 3] requirements. This includes providing transparency into the steps taken for all artifact builds by generating link:https://slsa.dev/spec/v1.0/provenance[SLSA provenance].
+Generally speaking, link:https://github.com/in-toto/attestation/blob/main/spec/README.md#in-toto-attestation-framework-spec[attestations] are authenticated metadata about software artifacts. An identity (and their private cryptographic key) are required to create an attestation for a software artifact. The primary attestation that {ProductName} generates is the SLSA provenance which is produced by link:https://tekton.dev/docs/concepts/supply-chain-security/[Tekton Chains]. This provenance contains information from the PipelineRun that generated the attested artifact including input parameters for the Tasks as well as Task results.
 
-We have also provided the following procedure for you to actually access the SLSA provenace that {ProductName} generates for each of your xref:../glossary/index.adoc#component[components]. Follow the instructions below to download your SLSA provenance.
+After you have found the image for a xref:/how-tos/creating.adoc#finding-the-built-image[recently completed build pipeline] and exported the value to the `IMAGE` environment variable, you are ready to start exploring the information stored in the attestations.
+
+== Inspect the SLSA provenance
+
+Tekton Chains produces a very detailed SLSA provenance. If we were to look at the output from the following provenance, we would find that it is over 2800 lines long!
+
+[source]
+--
+$ cosign download attestation $IMAGE | jq -r '.payload | @base64d | fromjson' | head
+{
+  "_type": "https://in-toto.io/Statement/v0.1",
+  "predicateType": "https://slsa.dev/provenance/v0.2",
+  "subject": [
+    {
+      "name": "quay.io/redhat-user-workloads/rhtap-integration-tenant/oras-container/oras-container",
+      "digest": {
+        "sha256": "5d0a8a5535fcc4ba467264cacbdeab2fb8662a538a61cb7fc8b3155e3f20fa39"
+      }
+    },
+--
+
+Therefore, it will likely be convenient to use tools like `jq` to further filter the provenance to identify smaller sets of relevant information.
+
+=== Identify the build parameters
+
+Since the SLSA provenance includes metadata about the input parameters, we can use it to view the parameters for the Tekton PipelineRun including its source repository!
+
+[source]
+--
+$ cosign download attestation $IMAGE | jq -r '.payload | @base64d | fromjson | .predicate.invocation.parameters'
+{
+  "build-args-file": "",
+  "build-source-image": "false",
+  "dockerfile": "Containerfile",
+  "git-url": "https://github.com/konflux-ci/oras-container",
+  "hermetic": "false",
+  "image-expires-after": "",
+  "java": "false",
+  "output-image": "quay.io/redhat-user-workloads/rhtap-integration-tenant/oras-container/oras-container:477ee20f7e6d146ea203c4aaa0507f4d1e925a53",
+  "path-context": ".",
+  "prefetch-input": "",
+  "rebuild": "false",
+  "revision": "477ee20f7e6d146ea203c4aaa0507f4d1e925a53",
+  "skip-checks": "false"
+}
+--
 
 .Prerequisites
 
@@ -107,11 +152,6 @@ Example output:
   "payloadType",
   "signatures"
 ]
-[
-  "payload",
-  "payloadType",
-  "signatures"
-]
 --
 
 +
@@ -130,12 +170,15 @@ Example output:
 📦 Supply Chain Security Related artifacts for an image: quay.io/redhat-user-workloads/rhn-support-csears-tenant/demo-build/partner-catalog-build-ucmg@sha256::<output omitted>
 └── 💾 Attestations for an image tag: quay.io/redhat-user-workloads/rhn-support-csears-tenant/demo-build/partner-catalog-build-ucmg:sha256-:<output omitted>.att
    ├── 🍒 sha256::<output omitted>
-   └── 🍒 sha256::<output omitted>
 └── 🔐 Signatures for an image tag: quay.io/redhat-user-workloads/rhn-support-csears-tenant/demo-build/partner-catalog-build-ucmg:sha256-:<output omitted>.sig
  └── 🍒 sha256::<output omitted>
 └── 📦 SBOMs for an image tag: quay.io/redhat-user-workloads/rhn-support-csears-tenant/demo-build/partner-catalog-build-ucmg:sha256-:<output omitted>.sbom
   └── 🍒 sha256:<output omitted>
 --
+
+== Inspecting the downloaded provenance
+
+The generated provenance includes information from the Tekton PipelineRun that generated the attested artifact. It 
 
 == Additional resources
 * Learn about the SLSA framework and xref:/index.adoc#supply-chain-security-through-slsa-conformity[how {ProductName} meets the requirements of SLSA Build Level 3].
