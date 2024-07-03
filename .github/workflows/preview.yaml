@@ -1,0 +1,79 @@
+# Copyright 2022 Red Hat, Inc.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#      http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+#
+# SPDX-License-Identifier: Apache-2.0s
+
+name: Publish preview
+
+on:
+  workflow_run:
+    workflows: ["Check pull request"]
+    types:
+      - completed
+
+jobs:
+  preview:
+    runs-on: ubuntu-latest
+    permissions:
+      pull-requests: write
+    if: github.event.workflow_run.event == 'pull_request' && github.event.workflow_run.conclusion == 'success'
+    steps:
+      - name: Download pull request artifact
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const artifacts = await github.rest.actions.listWorkflowRunArtifacts({
+               owner: context.repo.owner,
+               repo: context.repo.repo,
+               run_id: ${{ github.event.workflow_run.id }},
+            });
+            const websiteArtifact = artifacts.data.artifacts.filter((artifact) => {
+              return artifact.name == 'website'
+            })[0];
+            var download = await github.rest.actions.downloadArtifact({
+               owner: context.repo.owner,
+               repo: context.repo.repo,
+               artifact_id: websiteArtifact.id,
+               archive_format: 'zip',
+            });
+            const fs = require('fs');
+            fs.writeFileSync('${{github.workspace}}/website.zip', Buffer.from(download.data));
+      - name: Unzip website artifact
+        run: unzip -q website.zip
+      - name: Setup pull request data
+        id: data
+        run: |
+          PR_NUMBER=$(head -1 pull_request/number)
+          PR_NUMBER=${PR_NUMBER//[^0-9]/}
+          echo "PR_NUMBER=${PR_NUMBER}" >> $GITHUB_OUTPUT
+          echo "PR_URL=https://github.com/${GITHUB_REPOSITORY}/pull/${PR_NUMBER}" >> $GITHUB_OUTPUT
+      - name: Preview on Netlify
+        uses: netlify/actions/cli@master
+        id: preview
+        with:
+          args: deploy --dir=public --alias="pr-${{ steps.data.outputs.PR_NUMBER }}" --message="Preview for ${{ steps.data.outputs.PR_URL}}"
+        env:
+          NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
+          NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
+      - name: Add comment
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            github.rest.issues.createComment({
+              issue_number: Number(${{ steps.data.outputs.PR_NUMBER }}),
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: `🚀 Preview is available at ${{ steps.preview.outputs.NETLIFY_URL }}`
+            })
