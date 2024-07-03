@@ -114,7 +114,7 @@ spec:
 
 == Finding the built images
 
-After a pipeline completes with a built artifact, you may want to test the resulting image to ensure that it works properly. The `IMAGE_URL` Tekton result will be set to the pullspec for the image. This can be discovered using the UI or the CLI.
+After a pipeline completes with a built artifact, you may want to test the resulting image to ensure that it works properly. The `IMAGE_URL` Tekton result (discoverable from the UI or CLI) should be set to the pullspec for the image.
 
 +
 NOTE: {ProductName} automatically deletes images built for PR pipelines five days after building them.
