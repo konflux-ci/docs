@@ -1,6 +1,12 @@
 = Inspecting provenance and attestations
 
-We are committed to providing exceptional security with {ProductName} by hardening the build platform and providing transparency into the build process and artifact's composition. By hardening the build platform, we enable multiple builds to run on a shared platform while preventing tampering from other running builds (link:https://slsa.dev/spec/v1.1/threats-overview[threats to the build process]). By providing transparency, we enable xref:/advanced-how-tos/managing-compliance-with-ec.adoc[policy evaluation] and auditability on the actual build process (link:https://slsa.dev/spec/v1.1/threats-overview[threats to the package selection]). This commitment means that {ProductName} conforms to the link:https://slsa.dev/spec/v1.0/levels#build-l3[SLSA Build Level 3] requirements.
+We are committed to providing exceptional security with {ProductName}. We harden the build platform, we provide transparency into the build process, and we expose the composition of artifacts.
+
+To harden the build platform, we enable multiple builds to run on a shared platform while preventing those builds from tampering with each other. This defends against link:https://slsa.dev/spec/v1.1/threats-overview[threats to the build process]. To provide transparency, we enable you to xref:/advanced-how-tos/managing-compliance-with-ec.adoc[evaluate policies] and conduct audits on the build process. This defends against link:https://slsa.dev/spec/v1.1/threats-overview[threats to the package selection].
+
+Our commitment to security means that {ProductName} conforms to the link:https://slsa.dev/spec/v1.0/levels#build-l3[SLSA v1.0 Build Level 3] requirements.
+
+Don't take our word for it --you can download and inspect these artifacts yourself!
 
 Don't take our word on the transparency -- you can download and inspect these artifacts yourself! {ProductName} generates and pushes build metadata as OCI artifacts to the container registry alongside your software's build using the link:https://github.com/oras-project/artifacts-spec/blob/main/manifest-referrers-api.md[referrers API].
 
