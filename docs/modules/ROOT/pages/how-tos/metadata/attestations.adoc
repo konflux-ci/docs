@@ -6,7 +6,7 @@ After you have found the image for a xref:/how-tos/creating.adoc#finding-the-bui
 
 == Inspect the SLSA provenance
 
-Tekton Chains produces a very detailed SLSA provenance. If we were to look at the output from the following provenance, we would find that it is over 2800 lines long!
+Tekton Chains produces a very detailed SLSA provenance. The output from the following provenance is over 2800 lines long!
 
 [source]
 --

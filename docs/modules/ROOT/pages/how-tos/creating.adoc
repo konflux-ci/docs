@@ -131,13 +131,12 @@ In the console, complete the following steps to find the image pullspec for a co
 
 . For the component whose SBOM you want to view, select its most recent pipeline run.
 
-. Find the *Results* section at the bottom of the page and look for the `IMAGE_URL` row. It should resemble `quay.io/redhat-user-workloads/workspace-tenant/application/component:tag`. The `IMAGE_DIGEST` provided can be used as an alternative mechanism for referencing the image. You will 
+. Find the *Results* section at the bottom of the page and look for the `IMAGE_URL` row. It should resemble `quay.io/redhat-user-workloads/workspace-tenant/application/component:tag`. You can use the `IMAGE_DIGEST` provided as an alternate mechanism for referencing the image.
 
 === With the CLI
 
 After the build PipelineRuns are completed from git push events, the Components are updated with the location of the artifact in the OCI registry.
 
-The CLI
 
 .Prerequisites
 

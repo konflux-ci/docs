@@ -16,7 +16,7 @@ Don't take our word on the transparency -- you can download and inspect these ar
 
 .Procedure
 
-In the CLI, complete the following steps to discover the associated metadata a component:
+In the CLI, complete the following steps to discover the associated metadata for a component:
 
 . Find the image for a xref:/how-tos/creating.adoc#finding-the-built-image[recently completed build pipeline] and export the value to the `IMAGE` environment variable
 +
@@ -49,7 +49,7 @@ Example output:
    └── 🍒 sha256:<signature-sha-digest>
 --
 
-The `cosign tree` command will show all metadata associated to the artifact via the referrers API. The SBOM artifact contains the Software Bill of MaterialsWe have provided further procedures for you to view and inspect the xref:/how-tos/metadata/attestations.adoc[attestations] and xref:/how-tos/metadata/sboms.adoc[SBOMs] by {ProductName}.
+The `cosign tree` command will show all metadata associated to the artifact via the referrers API. The SBOM artifact contains the Software Bill of Materials. We have provided further procedures for you to view and inspect the xref:/how-tos/metadata/attestations.adoc[attestations] and xref:/how-tos/metadata/sboms.adoc[SBOMs] by {ProductName}.
 
 == Additional resources
 * Learn about the SLSA framework and xref:/index.adoc#supply-chain-security-through-slsa-conformity[how {ProductName} meets the requirements of SLSA Build Level 3].
