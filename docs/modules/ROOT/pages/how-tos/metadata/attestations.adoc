@@ -23,7 +23,7 @@ $ cosign download attestation $IMAGE | jq -r '.payload | @base64d | fromjson' | 
     },
 --
 
-Therefore, it will likely be convenient to use tools like `jq` to further filter the provenance to identify smaller sets of relevant information.
+Use tools like `jq` to further filter the provenance to identify smaller sets of relevant information.
 
 === Identify the build parameters
 
