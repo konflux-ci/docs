@@ -204,6 +204,60 @@ spec:
 * From the {ProductName} *Applications* view, go to *Activity > Latest commits*.
 //include::../partials/con_hermetic_verification.adoc[]
 
+=== Prefetching `pip` dependencies from custom index servers
+
+Cachi2 supports the link:https://pip.pypa.io/en/stable/cli/pip_install/#install-index-url[--index-url] option.
+You can add this option to your `requirements.txt` file(s), instructing Cachi2 to download packages from the specified
+index server. For example:
+
+[source,text]
+----
+--index-url=https://example.pypi.org/simple/
+requests==2.32.2 \
+    --hash=sha256:dd951ff5ecf3e3b3aa26b40703ba77495dab41da839ae72ef3c8e5d8e2433289 \
+    --hash=sha256:fc06670dd0ed212426dfeb94fc1b983d917c4f9847c863f313c9dfaaffb7c23c
+
+# ...other packages
+----
+
+WARNING: Do not include credentials in the index url. If needed, provide authentication through a `.netrc` file (as described below).
+
+To provide `.netrc` authentication for the index server:
+
+. Create a key/value secret (see xref:/how-tos/configuring/creating-secrets.adoc[creating secrets for your builds]).
+  Set `.netrc` as the key. Upload the content of your `.netrc` file as the value. For more details on netrc files,
+  review the link:https://pip.pypa.io/en/stable/topics/authentication/#netrc-support[pip documentation for netrc support].
+
+. In your `.tekton/` PipelineRun files, add the newly created secret to the `.spec.workspaces` section:
+
++
+[source,yaml]
+----
+spec:
+  # ...
+  workspaces:
+    # ...
+    - name: netrc
+      secret:
+        secretName: my-netrc  # the name you assigned to the secret in step 1
+----
+
+. In the `.spec.pipelineSpec.tasks` section, find the entry with `name: prefetch-dependencies`.
+  Add the `netrc` workspace to the list of workspaces (if not present):
+
++
+[source,yaml]
+----
+    tasks:
+      # ...
+      - name: prefetch-dependencies
+        # ...
+        workspaces:
+          # ...
+          - name: netrc
+            workspace: netrc
+----
+
 == Enabling prefetch builds for `npm`
 Cachi2 supports `npm` by fetching any dependencies you declare in your `package.json` and `package-lock.json` project files. The npm CLI manages the `package-lock.json` file automatically, and Cachi2 fetches any dependencies and enables your build to install them without network access.
 
