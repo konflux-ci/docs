@@ -1,0 +1,59 @@
+= Creating a release
+
+A Release CR is created to submit a specific Application Snapshot to be processed according to teh referenced ReleasePlan.
+
+== Creating a `Release` object
+
+The development team creates a `Release` object in the developer workspace. The `Release` object includes a reference to the application snapshot that the development team wants to release, along with release plan that will be used to release the application.
+
+.*Prerequisites*
+
+* You have an existing Development workspace.
+* Ensure you have installed `oc`.
+* You have completed the steps listed in the xref:/getting-started/cli.adoc[Getting started in the CLI] page.
+* You have completed the steps for creating a ReleasePlanAdmission and a matching ReleasePlan.
+
+.*Procedures*
+
+. Create a `Release.yaml` object locally.
+
++
+*Example `Release.yaml` object*
+
++
+[source,yaml]
+----
+apiVersion: appstudio.redhat.com/v1alpha1
+kind: Release
+metadata:
+ name: <name-of-this-release> <.>
+ namespace: dev-workspace <.>
+spec:
+ releasePlan: <release-plan-name> <.>
+ snapshot: <application-snapshot-name> <.>
+ data: <key> <.>
+----
+
+
++
+<.> The name of the release.
+<.> The development team's workspace.
+<.> The name of the release plan specifying the pipeline to run.
+<.> The name of the application snapshot that you want to release.
+<.> Optional: An unstructured key used for providing data for the managed Pipeline.
+
+. In the development workspace, apply the `Release.yaml` file and add the resource to your cluster by running the following command:
+
++
+[source,shell]
+----
+$ oc apply -f Release.yaml -n dev
+----
+
+.*Verification*
+
+. In the {ProductName} UI, select the *Applications* tab
+. Click on the application that is being released
+. Click on the *Releases* tab
+. See the recent releases that have been created for the application.
+. You can find a link to the release pipeline run by clicking on the name of the release that you created.
