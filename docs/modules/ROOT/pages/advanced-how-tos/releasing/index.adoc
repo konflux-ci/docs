@@ -3,7 +3,7 @@
 :numbered:
 :source-highlighter: highlightjs
 
-The process of developing software rarely happens all within a single team. Especially within large organizations, there may be different teams building applications and deploying them. In these situations, the team managing the deployments (for example Site Reliability Engineers) will want to be able to automate the process of accepting content for release, validating that certain conditions are met, and the performing the release action -- while maintaining control of their pipelines and secrets. In {ProductName}, we call this process releasing an application.
+The process of developing software rarely happens entirely within a single team. Especially within large organizations, different teams may be building and deploying applications. In these situations, the team managing the deployments (for example, Site Reliability Engineers) will want to automate the process of accepting content for release, validating that certain conditions are met, and then performing the release action—all while maintaining control of their pipelines and secrets. In {ProductName}, we call this process releasing an application.
 
 Two teams work together to release an application:
 
@@ -17,7 +17,7 @@ Two teams work together to release an application:
 
 . The development and managed environment teams will work together to create a ReleasePlanAdmission (RPA) in the managed environment to specify the release pipeline to run containing the appropriate tasks to release the application.
 
-. The development team creates a matching ReleasePlan (RP) configuration in their environment that is same as that of the Managed environment and attempts to release the application to production.
+. The development team creates a matching ReleasePlan (RP) configuration in their environment, which is same as that of the Managed environment, and attempts to release the application to production.
 
 .Next steps
 
