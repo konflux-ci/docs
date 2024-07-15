@@ -3,24 +3,26 @@
 :numbered:
 :source-highlighter: highlightjs
 
+The process of developing software rarely happens entirely within a single team. Especially within large organizations, different teams may be building and deploying applications. In these situations, the team managing the deployments (for example, Site Reliability Engineers) will want to automate the process of accepting content for release, validating that certain conditions are met, and then performing the release action—all while maintaining control of their pipelines and secrets. In {ProductName}, we call this process releasing an application.
+
 Two teams work together to release an application:
 
-* *Development team* - The team that develops and supports the application in a pre-production environment.
+* *Development team* - The team that develops and supports the application. This may include testing or deploying it in a pre-production environment.
 
-* *Managed environment team* - The team that supports the production instance of that application.
+* *Managed environment team* - The team that maintains control of the process and secrets for performing a specific action (for example, deploying an application to a production environment).
 
-image::managed_environment.png[alt=Managed Environment]
+.Procedure
 
-[1] When an application is ready for release, the Development team contacts the Managed Environment team; for example, their organization's SRE team, requesting access to the Managed environment for the first production release.
+. When an application is ready for release, the Development team contacts the Managed Environment team (for example, their organization's SRE team) requesting access to the managed environment for the first production release. 
 
-[2] The Managed environment team creates the managed environment and responds to the development team with the managed environment's configuration details. The Managed environment inherits some details of the development team’s workspace. However, the development team has limited access to the production environment, which is a part of the managed environment.
+. The development and managed environment teams will work together to create a ReleasePlanAdmission (RPA) in the managed environment to specify the release pipeline to run containing the appropriate tasks to release the application.
 
-[3] The development team creates a matching configuration in their environment that is same as that of the Managed environment and attempts to release the application to production.
-
-[4] The Managed environment team validates the initial release and configures a traffic gateway, which allows external traffic to the application.
+. The development team creates a matching ReleasePlan (RP) configuration in their environment, which is same as that of the Managed environment, and attempts to release the application to production.
 
 .Next steps
 
 * *Create a `releasePlan` object:* The development team creates a ReleasePlan object in the developer workspace. The ReleasePlan object includes a reference to the application that the development team wants to release, along with workspace where the application is supposed to be released.
 
 * *Create a `releasePlanAdmission` object:* The Managed Environment team creates or updates the ReleasePlanAdmission object in response to the ReleasePlan object created by the development team. It indicates that the Managed Environment team has approved the application specified in the ReleasePlan object.
+
+* *Create a `release` object:* The development team creates a Release object to references a specific Snapshot and ReleasePlan. It indicates the users' intent to operate on the Snapshot with the matched ReleasePlanAdmission.
