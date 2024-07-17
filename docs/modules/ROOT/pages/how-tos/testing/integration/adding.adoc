@@ -17,6 +17,10 @@ Complete the following steps in the {ProductName} console:
 . In the *Integration test name* field, enter a name of your choosing.
 
 . In the *GitHub URL* field, enter the URL of the GitHub repository that contains the test you want to use.
+
++
+NOTE: If you do not already have a custom test that you want to add, we tell you how to xref:./creating.adoc[create a custom integration test] in the next section.
+
 . Optional: If you want to use a branch, commit, or version other than the default, specify the branch name, commit SHA, or tag in the *Revisions* field.
 
 . In the *Path in repository* field, enter the path to the `.yaml` file that defines the test you want to use.
@@ -38,5 +42,4 @@ When the new build is finished:
 . Go to the *Pipeline runs* tab of that test and select the most recent run.
 
 .  On the *Details* page, you can see if the test succeeded for that component. Navigate to the other tabs for more details. 
-
 
