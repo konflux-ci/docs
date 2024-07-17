@@ -1,0 +1,42 @@
+= Passing build arguments
+
+Konflux buildah task accepts link:https://github.com/konflux-ci/build-definitions/blob/main/task/buildah/0.1/buildah.yaml#L78[`BUILD_ARGS` parameter] that allows passing build arguments to the underlying `buildah` command via `--build-arg` flag. To do this, make the following changes to the PipelineRuns under the `.tekton/` directory:
+
+[source,diff]
+--
+     value: 'pip'
+   - name: build-source-image
+     value: 'true'
++  - name: build-args           (1)
++    value: ["ARG1=val", "ARG2=val"]
+   pipelineSpec:
+     finally:
+     - name: show-sbom
+@@ -127,6 +129,9 @@
+         during build
+       name: build-args-file
+       type: string
++    - name: build-args         (2)
++      type: array
++      default: []
+     results:
+     - description: ""
+       name: IMAGE_URL
+@@ -231,6 +236,8 @@
+         value: $(tasks.clone-repository.results.commit)
+       - name: BUILD_ARGS_FILE
+         value: $(params.build-args-file)
++      - name: BUILD_ARGS       (3)
++        value: ["$(params.build-args[*])"]
+       runAfter:
+       - prefetch-dependencies
+       taskRef:
+--
+
+(1) Replace with real build arguments.
+
+(2) Define a Pipeline parameter to accept the passed-in build arguments.
+
+(3) Pass the argument to the link:https://github.com/konflux-ci/build-definitions/tree/main/task/buildah/[buildah task].
+
+Please note that the value of `BUILD_ARGS` is in the correct syntax of link:https://tekton.dev/docs/pipelines/tasks/#substituting-array-parameters[Tekton Array parameter].
