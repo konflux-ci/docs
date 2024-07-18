@@ -3,7 +3,7 @@
 In {ProductName}, the integration service provides users with the ability to reset their component's Global Candidate List to a desired state with a manually created `override` snapshot which can then be a candidate for further promotion (release) if it passes all integration tests.
 
 == Prerequisites
-- You have CLI access to the specific OpenShift cluster. For information on obtaining CLI access, refer link:https://konflux-ci.dev/docs/getting-started/cli/[Getting started with the CLI]
+- You have CLI access to the specific OpenShift cluster. For information on obtaining CLI access, refer xref:/getting-started/cli.adoc[Getting started with the CLI]
 - You have an up-to-date kubectl binary. Alternatively, the `oc` binary is also compatible.
 - You have an existing managed workspace such as `ws-sample`, an application such as `application-sample` and a component such as `component-sample`.
 

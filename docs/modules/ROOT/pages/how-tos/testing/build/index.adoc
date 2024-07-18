@@ -48,4 +48,4 @@ You can disable the default build-time tests by setting the `skip-checks` parame
 
 * For information about enabling Snyk task, see xref:how-tos/testing/build/snyk.adoc[Enabling a Snyk task].
 
-* For additional build-time tests, see link:https://konflux-ci.dev/docs/how-tos/configuring/customizing-the-build/[Customizing the build pipeline].
+* For additional build-time tests, see xref:/how-tos/configuring/customizing-the-build.adoc[Customizing the build pipeline].

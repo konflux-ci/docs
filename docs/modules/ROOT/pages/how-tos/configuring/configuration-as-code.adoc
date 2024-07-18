@@ -1,6 +1,6 @@
 = Configuring Applications and Components as Code with Kustomize
 
-If you need to define a large application with many components, easily duplicate or update components, or ensure consistent component and application states, consider configuring your Konflux applications and components as code using Kustomize. This document provides an overview of a basic application and component configuration that can be replicated and duplicated using Kustomize bases and overlays.
+If you need to define a large application with many components, easily duplicate or update components, or ensure consistent component and application states, consider configuring your {ProductName} applications and components as code using Kustomize. This document provides an overview of a basic application and component configuration that can be replicated and duplicated using Kustomize bases and overlays.
 
 For more information about Kustomize, visit the link:https://kustomize.io/[Kustomize official site]. This document is based on the configuration defined in the link:https://github.com/konflux-ci/casc-gpt[Konflux CI repository], where you can see the configuration first-hand.
 

@@ -9,7 +9,7 @@ See also xref:/how-tos/configuring/rerunning.adoc[Retriggering build pipelines].
 
 - The snapshot for which tests will be retriggered has completed its initial tests.
 
-- You have CLI access to the specific OpenShift cluster. For information on obtaining CLI access, refer link:https://konflux-ci.dev/docs/getting-started/cli/[Getting started with the CLI].
+- You have CLI access to the specific OpenShift cluster. For information on obtaining CLI access, refer xref:/getting-started/cli.adoc[Getting started with the CLI].
 
 .Procedure
 

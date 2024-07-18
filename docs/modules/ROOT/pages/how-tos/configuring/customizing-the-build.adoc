@@ -111,8 +111,8 @@ At the time of publication, the easiest solution for this problem we can recomme
 
 .Procedure 
 
-. In the repository for your instance of Konflux, find the version of the EC that your pipeline is using in the following directory: `/konflux-ci/enterprise-contract/core`. 
-.. By default, Konflux uses `enterprise-contract-service_appstudio.redhat.com_v1alpha1_enterprisecontractpolicy_default.yaml`.
+. In the repository for your instance of {ProductName}, find the version of the EC that your pipeline is using in the following directory: `/konflux-ci/enterprise-contract/core`. 
+.. By default, {ProductName} uses `enterprise-contract-service_appstudio.redhat.com_v1alpha1_enterprisecontractpolicy_default.yaml`.
 . Find this line: `exclude: []`
 . Between the brackets, insert the value `trusted_task.trusted`.
 . Commit this change to the repository.
