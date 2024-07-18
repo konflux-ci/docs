@@ -9,6 +9,7 @@
 *** xref:how-tos/configuring/component-nudges.adoc[Defining component relationships]
 *** xref:how-tos/configuring/rerunning.adoc[Retriggering build pipelines]
 *** xref:how-tos/configuring/redundant-rebuilds.adoc[Preventing redundant rebuilds]
+*** xref:how-tos/configuring/build-with-args.adoc[Passing buildah arguments]
 ** xref:how-tos/testing/index.adoc[Testing your components and applications]
 *** xref:how-tos/testing/build/index.adoc[Build-time tests]
 **** xref:how-tos/testing/build/snyk.adoc[Enabling Snyk]
