@@ -1,8 +1,8 @@
 = Managing multiple software versions
 
-Software projects are often required to maintain multiple versions of the software in parallel in order to support different users of the software with different needs. As far as source code goes, the typical way to maintain multiple versions is by using different Git branches. Using branches in conjunction with Konflux can be somewhat tedious as a separate Component needs to be defined for each branch and a separate Application needs to be defined for each collection of components that need to be tested and released together.
+Software projects are often required to maintain multiple versions of the software in parallel in order to support different users of the software with different needs. As far as source code goes, the typical way to maintain multiple versions is by using different Git branches. Using branches in conjunction with {ProductName} can be somewhat tedious as a separate Component needs to be defined for each branch and a separate Application needs to be defined for each collection of components that need to be tested and released together.
 
-The Konflux Project Controller seeks to streamline the process of managing multiple versions by introducing the following objects and concepts:
+The {ProductName} Project Controller seeks to streamline the process of managing multiple versions by introducing the following objects and concepts:
 
 * A *Project* is used to describe a major piece of software that can be worked on by multiple teams over an extended period of time. A project may contain one or more development streams.
 * A *ProjectDevelopmentStream* indicates an independent stream of development. A *ProjectDevelopmentStream* can contain one or more *Applications* each containing one or more *Components*.
@@ -14,12 +14,12 @@ In the sections below we will describe how to use the custom resources supported
 
 === Before you begin
 
-It's possible to have the Project Controller create all the Application and Component resources you would need. It is recommended, however, for the first time a particular repository is on-boarded, to do so manually via the Konflux UI. That would help ensuring the right access credentials are in place as well as that the Tekton Pipeline-as-Code files are committed to the repo.
+It's possible to have the Project Controller create all the Application and Component resources you would need. It is recommended, however, for the first time a particular repository is on-boarded, to do so manually via the {ProductName} UI. That would help ensuring the right access credentials are in place as well as that the Tekton Pipeline-as-Code files are committed to the repo.
 
 When creating components the Project Controller assumes that:
 
 * The default pipeline is not being used and that each branch in a component's repo contains the necessary Tekton Pipeline-as-Code files to build it.
-* Any credentials required to access the component repo had already been configured as secrets in the Konflux workspace.
+* Any credentials required to access the component repo had already been configured as secrets in the {ProductName} workspace.
 
 === Creating a Project
 

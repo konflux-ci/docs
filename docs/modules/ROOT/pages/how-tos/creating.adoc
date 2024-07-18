@@ -24,7 +24,7 @@ At the time of publication, to create applications in {ProductName}, you need to
 ... For the `url` value beneath `spec`, at the end of the file, provide the URL for your application’s repository that you see in your browser, without `.git` at the end.
 +
 NOTE: To add other components to the same namespace, reference the example YAML file beneath this procedure. 
-. Login to the Kubernetes cluster where Konflux is deployed. 
+. Login to the Kubernetes cluster where {ProductName} is deployed. 
 . Run the following command. Be sure to replace <namespace> with your actual namespace.
 +
 `kubectl create -f /test/resources/demo-users/user/<namespace>/application-and-component.yaml`
