@@ -136,7 +136,7 @@ To exchange the build task with a memory limit of 6 GB, complete the following s
 
 == Bring your own Quay repository to the build pipeline
 
-By default, all pipelines push the images to a local repository that is set up as a part of installation. Ths registry address is registry-service.kind-registry:5001. It is not mandatory to use this local repo, so if you want to use your own Quay repo to control user permissions, you can do this by following link:https://github.com/konflux-ci/konflux-ci/tree/main?tab=readme-ov-file#configuring-a-push-secret-for-the-build-pipeline[the instructions] for configuring a push secret for the build piepline.
+By default, all pipelines push the images to a local repository that is set up as a part of installation. Ths registry address is registry-service.kind-registry:5001. It is not mandatory to use this local repo, so if you want to use your own Quay repo to control user permissions, you can do this by following link:https://github.com/konflux-ci/konflux-ci/blob/main/docs/quay.md#configuring-a-push-secret-for-the-build-pipeline[the instructions] for configuring a push secret for the build piepline.
 
 == Verification
 
