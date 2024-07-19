@@ -43,3 +43,5 @@ When the new build is finished:
 
 .  On the *Details* page, you can see if the test succeeded for that component. Navigate to the other tabs for more details. 
 
+. xref:./editing.adoc[Edit the integration test] if it is not properly configured.
+

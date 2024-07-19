@@ -16,7 +16,7 @@
 **** xref:how-tos/testing/integration/adding.adoc[Adding an integration test]
 **** xref:how-tos/testing/integration/creating.adoc[Creating a custom integration test]
 **** xref:how-tos/testing/integration/rerunning.adoc[Rerunning an integration test]
-**** xref:how-tos/testing/integration/creatingoverridesnapshot.adoc[Creating an override snapshot]
+**** xref:how-tos/testing/integration/override-snapshots.adoc[Creating an override snapshot]
 ** xref:how-tos/metadata/index.adoc[Inspecting provenance and attestations]
 *** xref:how-tos/metadata/sboms.adoc[Inspecting SBOMs]
 *** xref:how-tos/metadata/attestations.adoc[Inspecting artifact attestations]
