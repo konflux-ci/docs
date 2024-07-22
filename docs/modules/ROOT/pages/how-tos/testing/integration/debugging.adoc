@@ -1,0 +1,36 @@
+= Debugging Integration Tests
+
+In the event of an integration test scenario failing, there are a number of steps to take in order to debug the issue before rerunning the test in question. These steps are outlined below.
+
+
+.Prerequisites
+- You have a snapshot that has completed all build-time tests. These must be completed before attempting to debug the failed test.
+
+- You have access to the {ProductName} UI in order to view the logs of the failed test.
+
+.Procedure
+
+. Identify the IntegrationTestScenario that has failed
+    * Open the {ProductName} and navigate to Application/your_application_name/activity
+    * Select "Pipeline Runs" under "Activity By"
+    * Your view should look similar to the below image.
+
++
+image::activityview.png[role="border" alt="Activity View"]
+
+. Click on the pipeline run that has a status of "Failed". This will take you to a detailed view of the failed run. 
+
+. Examine the "Log Snippet" section on the right side of this page. It contains the most recent error returned by the integration test. For more comprehensive logs, click on "See Logs". See the below image for reference.
+
++
+image::testfailed.png[role="border" alt="Test Failed"]
+
+. In this example the output suggests that the pipelineRun is missing an expected parameter, "username". To edit the integration test, follow the procedure provided xref:/how-tos/testing/integration/editing.adoc[here].
+
+. Rerun the test by following the steps xref:/how-tos/testing/integration/rerunning.adoc[here].
+
+. Once the test has been rerun, verify that the test has passed by checking the "Pipeline Runs" tab in the {ProductName} console. The status of the test should now be "Succeeded". See the below image for reference.
+
++
+image::successfulretest.png[role="border alt="Successful Retest"]
+
