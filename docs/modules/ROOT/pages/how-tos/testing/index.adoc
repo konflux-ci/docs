@@ -34,6 +34,6 @@ Integration tests ensure that all components within an application are able to w
 
 As with build-time tests, you can also create your own integration tests.  To add your own test that runs on all components of an application, xref:./integration/creating.adoc[create a custom integration test].
 
-The integration service provides users with the ability to reset their component's Global Candidate List to a desired state with a manually created `override`, you can xref:./integration/creatingoverridesnapshot.adoc[create an override snapshot] and provide a valid container image for component to reset the component's Global Candidate List.
+The integration service provides users with the ability to reset their component's Global Candidate List to a desired state with a manually created `override`, you can xref:./integration/override-snapshots.adoc[create an override snapshot] and provide a valid container image for component to reset the component's Global Candidate List.
 
 While these tests are triggered after new artifacts are built (for example after build pipelines have successfully completed), their execution can be retriggered without building new artifacts. This process is described in xref:./integration/rerunning.adoc[retriggering integration tests].

@@ -157,7 +157,7 @@ Labels:
 
 * *`appstudio.openshift.io/snapshot`*: contains the name of the snapshot.
 
-* *`test.appstudio.openshift.io/optional`*: contains the optional flag, which specifies whether or not components must pass the integration test before deployment. 
+* *`test.appstudio.openshift.io/optional`*: contains the optional flag, which specifies whether or not components must pass the integration test before release. 
 
 * *`test.appstudio.openshift.io/scenario`*: contains the name of the integration test (this label ends with "scenario," because each test is technically a custom resource called an `IntegrationTestScenario`). 
 

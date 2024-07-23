@@ -63,7 +63,7 @@ The rest of this document further explains our key responsibilities, provenance 
 
 === SLSA Provenance
 
-In the context of its framework, SLSA defines provenance as “the verifiable information about software artifacts describing where, when and how something was produced.” SLSA provenance is a type of attestation, and for higher Build Levels, build platforms like {ProductName} must sign that attestation.
+In the context of its framework, link:https://slsa.dev/spec/v1.0/provenance[SLSA defines] provenance as “the verifiable information about software artifacts describing where, when and how something was produced.” SLSA provenance is a type of attestation, and for higher Build Levels, build platforms like {ProductName} must sign that attestation.
 
 ==== Attestation
 
