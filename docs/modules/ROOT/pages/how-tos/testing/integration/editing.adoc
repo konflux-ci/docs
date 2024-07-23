@@ -25,7 +25,7 @@ Complete the following steps in the {ProductName} console:
     * Modify whether this integration test scenario is required or optional for release.
 
 +
-NOTE: A failing integration test marks the application snapshot as failed. A failing required test will prevent the promotion to the Global Candidate List and release. If you have selected *Mark as optional for release*, a failure in this test will still result in an update to the Global Candidate List and release of the application snapshot.
+NOTE: A failing integration test marks the application snapshot as failed. A failing required test will prevent the automated release. If you have selected *Mark as optional for release*, a failure in this test will still result in an automated release of the application snapshot.
 
 . Select *Save changes*.
 
