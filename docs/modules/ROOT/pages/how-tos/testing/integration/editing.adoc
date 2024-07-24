@@ -1,6 +1,6 @@
-= Editing Integration Test Scenarios
+= Editing integration tests
 
-Once you have added an Integration Test Scenario to {ProductName}, you may want to change the configurations for it. 
+Once you have xref:./adding.adoc[added] an Integration Test Scenario to {ProductName}, you may want to change the configurations for it. 
 
 .Prerequisites
 
