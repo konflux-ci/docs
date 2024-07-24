@@ -2,7 +2,7 @@
 
 This document covers the build-time tests that {ProductName} runs as part of its component build pipeline. These build-time tests automatically check all application images to inform you if they're up-to-date, correctly formatted, and protected from security vulnerabilities.
 
-NOTE: These tests are non-blocking and do not prevent the pipeline from proceeding if issues are found.
+NOTE: These tests are non-blocking and do not prevent the pipeline from proceeding if issues are found. The tests use link:https://konflux-ci.dev/architecture/ADR/0030-tekton-results-naming-convention.html[results conventions] in order to indicate the status of the tests and scans that are run.
 
 The component build pipeline for {ProductName} include various types of build-time tests, conducted using link:https://tekton.dev/docs/pipelines/tasks/#overview[Tekton tasks].
 
