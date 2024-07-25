@@ -18,6 +18,21 @@ You should see the pipelinerun start executing in the UI and in the pull request
 
 NOTE: For additional options, refer to the link:https://pipelinesascode.com/docs/guide/running/#gitops-command-on-pull-or-merge-request[pipelinesascode documentation].
 
+== Retriggering a Post-merge build from your main branch from GitHub
+
+.**Prerequisite**
+
+- You have already merged a pull request, but the subsequent build failed, prompting a need for retriggering.
+
+.**Procedure**
+
+. Navigate to the latest commit on your branch in the GitHub UI.
+. Comment `/retest` on the commit.
+
+The pipeline run should resume in the *Activity* > *Pipeline runs* tab.
+
+NOTE: This only works on the latest commit on the branch.
+
 == Retriggering a Post-merge build from your main branch from the UI
 
 .**Prerequisite**
