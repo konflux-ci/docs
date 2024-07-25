@@ -43,52 +43,8 @@ In order to enable your operator to be installed in disconnected environments, i
 .. Wait for the first build of those components to finish.
 .. Copy the URL to the images and paste it as a reference in the bundle's CSV file.
 
-== Maintaining valid image references before a release
-
-When images are xref:/advanced-how-tos/releasing/index.adoc[released] they will be copied to another image repository so any pinned references will be invalid. To surmount this, {ProductName} enables your bundle to be pinned to image references which will be valid after release.
-
-.Procedure
-
-. Configure your xref:/advanced-how-tos/releasing/create-release-plan-admission.adoc[release plan admission] which will copy the images to a new repository.
-. In the `spec.data.mapping.components` create a list of component mappings to the target repository
-
 +
-*Example partial `ReleasePlanAdmission.yaml` object*
-
-+
-[source,yaml]
-----
-apiVersion: appstudio.redhat.com/v1alpha1
-kind: ReleasePlanAdmission
-spec:
- applications:
-  - demo-app <.>
- data:
-   mapping:
-     components: <.>
-       - name: demo-component-1
-         repository: target-image-repository-1
-       - name: demo-component-2
-         repository: target-image-repository-2
- origin: <dev-workspace> <.>
-
-----
-
-+
-<.> A list of applications that will contain components to be released.
-<.> A list containing the target repository for each component
-<.> The development team workspace where the applications and components are defined.
-
-. Using your preferred text editor, in the git repo for your OLM Operator, open the CSV file for your bundle. In that file, update the image references to all images that will be released to the target repository from the RPA (the sha digests should remain unchanged). Commit this change.
-
-+
-NOTE: Once this change is merged, the bundle will be invalid until all referenced images are released. In order to test the bundles in an environment, you will need to use a registry mirror like an link:https://docs.openshift.com/container-platform/4.16/rest_api/config_apis/imagedigestmirrorset-config-openshift-io-v1.html[ImageDigestMirrorSet].
-
-.*Verification*
-
-. Commit a change to an Operand or Operator triggering a push event.
-. After the build is completed, a pull request should be opened against your bundle's git repository.
-
+NOTE: If you want to update the references in your CSV to match where the operands and operators will be pushed to, see how to xref:/advanced-how-tos/releasing/maintaining-references-before-release.adoc[maintain references before release].
 
 == Building the file-based catalog
 
