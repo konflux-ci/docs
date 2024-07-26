@@ -1,0 +1,33 @@
+= Troubleshooting
+
+== No space left on device
+
+Tasks may fail with an error message mentioning `No space left on device` as the underlying error.
+This likely means your build pipeline wrote more data than expected into a shared volume.
+
+Typically seen in the `clone-repository` or `prefetch-dependencies` task in a build pipeline.
+
+For the clone task, the error message may look similar to:
+
+[source,text]
+----
+[clone] {"level":"error","ts":1721904304.0047252,"caller":"git/git.go:53","msg":"Error running git [checkout -f FETCH_HEAD]: exit status 128\nerror: unable to write file ...: No space left on device\n"
+----
+
+The device that's running out of space is most likely the workspace declared in your `PipelineRun`
+YAML files. *The solution is to request more disk space.* In the `.spec.workspaces` section in
+all the relevant PipelineRun files, increase the storage request.
+
+[source,yaml]
+----
+spec:
+  # ...
+  workspaces:
+    # ...
+    - name: workspace
+      volumeClaimTemplate:
+        spec:
+          resources:
+            requests:
+              storage: 1Gi  # increase accordingly
+----
