@@ -4,7 +4,7 @@ Occasionally, your build pipeline may fail unexpectedly, necessitating a retrigg
 
 See also xref:/how-tos/testing/integration/rerunning.adoc[Retriggering integration tests].
 
-== Retriggering a Pre-merge build on a pull request
+== Retriggering a pre-merge build on a pull request
 
 .**Prerequisite**
 
@@ -14,11 +14,33 @@ See also xref:/how-tos/testing/integration/rerunning.adoc[Retriggering integrati
 
 . Add a comment to the pull request with the text `/retest` to trigger a new build.
 
-You should see the pipelinerun start executing in the UI and in the pull request.
++
+The pipeline run should start executing in the *Activity* > *Pipeline runs* tab and in the pull request
 
++
 NOTE: For additional options, refer to the link:https://pipelinesascode.com/docs/guide/running/#gitops-command-on-pull-or-merge-request[pipelinesascode documentation].
 
-== Retriggering a Post-merge build from your main branch from the UI
+== Retriggering a post-merge build from from GitHub
+
+.**Prerequisite**
+
+- You have already merged a pull request, but the subsequent build failed, prompting a need for retriggering.
+
+.**Procedure**
+
+. On the GitHub UI, navigate to the latest commit on your branch that that you want to rebuild.
+. Comment `/retest` on the commit.
+
++
+The pipeline run should resume in the *Activity* > *Pipeline runs* tab.
+
++
+NOTE: This procedure only works to retrigger the build pipeline for the latest commit on the branch.
+
++
+NOTE: If you only want to retrigger the integration tests, see xref:/how-tos/testing/integration/rerunning.adoc[retriggering integration tests].
+
+== Retriggering a post-merge build from your main branch from the UI
 
 .**Prerequisite**
 
@@ -33,9 +55,10 @@ In the console, complete the following steps to retrigger the build pipeline:
 . Select the three dots on the right side of the table.
 . Select the *Rerun* action.
 
++
 The pipeline run should resume in the *Activity* > *Pipeline runs* tab.
 
-== Retriggering a Post-merge build from your main branch from the API
+== Retriggering a post-merge build from your main branch from the API
 
 .**Prerequisite**
 
