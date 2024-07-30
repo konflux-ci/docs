@@ -16,3 +16,6 @@ Before users can create an application in {ProductName}, you must enable build p
 .Verification
 
 * To verify that you successfully enabled build pipelines, a user should try to xref:/how-tos/creating.adoc[create an application].
+
+NOTE: The PipelineRun will run only for submitters who have permission to run PipelineRuns or who receive an `/ok-to-test` comment from an authorized user. +
+For further details on PipelineRun permissions, please refer to the https://pipelinesascode.com/docs/guide/running/[PipelinesAsCode documentation].
