@@ -18,6 +18,8 @@ See also xref:/how-tos/configuring/rerunning.adoc[Retriggering build pipelines].
 +
 image::snapshot.png[role="border" alt="IntegrationTestScenario Snapshot"]
 
+. To rerun within the UI, click on the three vertical dots on the right side of the details page mentioned above. From the expanded menu, select "Rerun". Alternatively, follow the below steps to rerun via the CLI.
+
 . Label the snapshot with `test.appstudio.openshift.io/run`, assigning the scenario name you wish to rerun as its value.
 
 +
