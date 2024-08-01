@@ -2,7 +2,9 @@
 ** Installation
 *** xref:advanced-how-tos/installing/index.adoc[Installing {ProductName}]
 *** xref:advanced-how-tos/installing/enabling-builds.adoc[Enabling build pipelines]
-** xref:advanced-how-tos/managing-compliance-with-ec.adoc[Managing compliance with EC]
+** xref:advanced-how-tos/managing-compliance-with-ec/index.adoc[Managing compliance with EC]
+*** xref:advanced-how-tos/managing-compliance-with-ec/customizing-policy.adoc[Customizing Policy]
+*** xref:advanced-how-tos/managing-compliance-with-ec/policy-evaluations.adoc[Policy evaluations in {ProductName}]
 ** xref:advanced-how-tos/releasing/index.adoc[Releasing an application]
 *** xref:advanced-how-tos/releasing/create-release-plan.adoc[Creating a release plan]
 *** xref:advanced-how-tos/releasing/create-release-plan-admission.adoc[Creating a release plan admission]
