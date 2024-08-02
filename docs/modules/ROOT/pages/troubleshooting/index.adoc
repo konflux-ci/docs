@@ -31,3 +31,17 @@ spec:
             requests:
               storage: 1Gi  # increase accordingly
 ----
+
+
+== Pipeline Run Times Out
+
+Tasks may fail with an error message mentioning ``PipelineRun <pipelineName> failed to finish within "1h0m0s".``
+
+If you see this error message, it means that the pipeline run has exceeded the default one hour time limit set for PipelineRuns. If you want to increase the time limit, you can do so by setting the `spec.timeout` field in the corresponding PipelineRun YAML file.
+
+[source,yaml]
+----
+spec:
+  # ...
+  timeout: 1h30m0s  # increase accordingly
+----
