@@ -1,0 +1,28 @@
+= Using Red Hat entitlement subscription
+
+Entitlement subscription allows users to install RPMs that are not accessible without it. In order to use it in your builds, you must have access to an entitlement subscription 
+and possess the neccessary entitlement certificate files. To obtain them, review https://developers.redhat.com/articles/2022/01/24/create-entitled-builds-red-hat-subscriptions-openshift[Subscription benefits for secure deployments] guide.
+
+Once you have the *<entitlement-id>.pem* and *<entitlement-id>-key.pem* files, you will need to create a secret in your Konflux namespace. You can do it in two ways:
+
+. <<Create-entitlement-secret-through-the-UI>>
+. <<Create-entitlement-secret-through-console>>
+
+
+[[Create-entitlement-secret-through-the-UI]]
+== Create entitlement secret through the UI
+
+1. Access the Secrets section in the konflux UI and click on *Add secret*.
+2. Set the secret name to *etc-pki-entitlement*.
+3. Add the first key with the name *<entitlement-id>-key.pem* and and set the value to the contents of the key file.
+4. Add a second key with the name *<entitlement-id>.pem* and set the value to the contents of the certificate file.
+5. Save the secret by clicking *Add secret*
+
+[[Create-entitlement-secret-through-console]]
+== Create entitlement secret through console
+
+Alternatively, you can create the secret through the CLI. After logging into your cluster and navigating to your namespace, run the following command:
+
+----
+oc create secret generic etc-pki-entitlement -n <your-tenant> --from-file <entitlement-id>-key.pem --from-file <entitlement-id>.pem
+----
