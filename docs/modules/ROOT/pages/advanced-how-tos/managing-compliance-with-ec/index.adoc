@@ -8,7 +8,7 @@ If you ever need to restore the default EC integration test to an application, o
 
 .Additional resources
 * To produce a signed link:https://in-toto.io/in-toto/[in-toto] attestation of the build pipeline, go to link:https://tekton.dev/docs/chains/[Tekton Chains].
-* For information on the source code for the Tekton pipelines defined in the bundle, see the link:https://github.com/redhat-appstudio/build-definitions/blob/main/pipelines/enterprise-contract.yaml[build-definitions] and 
+* For information on the source code for the Tekton pipelines defined in the bundle, see the link:https://github.com/redhat-appstudio/build-definitions/blob/main/pipelines/enterprise-contract.yaml[build-definitions] and
 link:https://github.com/enterprise-contract/ec-cli/blob/main/tasks/verify-enterprise-contract/0.1/verify-enterprise-contract.yaml[ec-cli] repositories.
 * To use a specific version of the pipeline bundle instead of the devel tag, you can select one of the link:https://quay.io/repository/redhat-appstudio-tekton-catalog/pipeline-enterprise-contract?tab=tags[pinned tags].
 * For information on components in Enterprise Contract, see the link:https://enterprisecontract.dev/docs/ec/main/index.html#_components[Components].
