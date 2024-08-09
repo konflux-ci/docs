@@ -7,7 +7,7 @@ Konflux allows tagging built images with custom tags. This tagging is handled by
 
 [NOTE]
 ====
-These can be combined and used together
+These can be combined and used together.
 ====
 
 [[using-konflux-label]]
@@ -33,7 +33,7 @@ LABEL konflux.additional-tags="tag1, tag2"
 ----
 
 [[using-additional-tags-parameter]]
-== Using ADDITIONAL_TAGS parameter for apply-tags task.
+== Using ADDITIONAL_TAGS parameter for apply-tags task
 You can also specify additional custom tags by using *ADDITIONAL_TAGS* array parameter for apply-tags task in your PipelineRun definition, e.g:
 
 [source,yaml]
@@ -59,7 +59,7 @@ You can also specify additional custom tags by using *ADDITIONAL_TAGS* array par
 ...
 ----
 
-The array parameter ADDITIONAL_TAGS can also be specified differently:
+The array parameter *ADDITIONAL_TAGS* can also be specified differently:
 
 [source,yaml]
 ----
