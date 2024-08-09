@@ -1,0 +1,87 @@
+= Using custom tags
+
+Konflux allows tagging built images with custom tags. This tagging is handled by separate *apply-tags* task. The custom tags can be configured in two ways:
+
+. <<using-konflux-label>>
+. <<using-additional-tags-parameter>>
+
+[NOTE]
+====
+These can be combined and used together.
+====
+
+[[using-konflux-label]]
+== Using konflux.additional-tags image label in your Dockerfile
+
+You can specify the additional custom tags directly in your Dockerfile by using the *konflux.additional-tags* label, e.g.:
+
+[source,dockerfile]
+----
+LABEL konflux.additional-tags="tag1"
+----
+
+If you want to specify multiple tags, they have to be separated by space or a comma, e.g.:
+
+[source,dockerfile]
+----
+LABEL konflux.additional-tags="tag1 tag2"
+----
+
+[source,dockerfile]
+----
+LABEL konflux.additional-tags="tag1, tag2"
+----
+
+[[using-additional-tags-parameter]]
+== Using ADDITIONAL_TAGS parameter for apply-tags task
+You can also specify additional custom tags by using *ADDITIONAL_TAGS* array parameter for apply-tags task in your PipelineRun definition, e.g:
+
+[source,yaml]
+----
+...
+- name: apply-tags
+  params:
+  - name: IMAGE
+    value: $(tasks.build-container.results.IMAGE_URL)
+  - name: ADDITIONAL_TAGS
+    value: ["tag1", "tag2"]
+  runAfter:
+  - build-container
+  taskRef:
+    params:
+    - name: name
+      value: apply-tags
+    - name: bundle
+      value: quay.io/redhat-appstudio-tekton-catalog/task-apply-tags:0.1
+    - name: kind
+      value: task
+    resolver: bundles
+...
+----
+
+The array parameter *ADDITIONAL_TAGS* can also be specified differently:
+
+[source,yaml]
+----
+...
+  - name: ADDITIONAL_TAGS
+    value:
+      - tag1
+      - tag2
+...
+----
+
+[NOTE]
+====
+The provided tags can also be based on dynamic variables that are provided by Pipelines as Code, e.g.:
+
+[source,yaml]
+----
+...
+  - name: ADDITIONAL_TAGS
+    value: ["pull-request-{{pull_request_number}}", "from-branch-{{source_branch}}", "{{target_branch}}"]
+...
+----
+
+To see all available dynamic variables, please see the dynamic variables section in the https://pipelinesascode.com/docs/guide/authoringprs/#dynamic-variables[Pipeline as Code documentation]
+====
