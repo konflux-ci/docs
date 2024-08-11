@@ -14,7 +14,7 @@ In the sections below we will describe how to use the custom resources supported
 
 === Before you begin
 
-The typical process of onboarding a componnent to {ProductName} includes having the {ProductName} Build Service generate a PR to the component Git repository which includes the Tekton Pipeline-as-Code (PaC) pipeline definition for building that component. As a part of this process various other resources such as the PaC Repository resource and Secret resources for accessing the repository are also created.
+The typical process of onboarding a component to {ProductName} includes having the {ProductName} Build Service generate a PR to the component Git repository which includes the Tekton Pipeline-as-Code (PaC) pipeline definition for building that component. As a part of this process various other resources such as the PaC Repository resource and Secret resources for accessing the repository are also created.
 
 When using the Project Controller to create components the process of generating the PR is skipped because in this document we assume the branches being created in the component Git repositories already contain PaC pipeline files. Each Git repository, however, needs to undergo this process at least once, therefore it is recommended to onboard at least once component from each repository from the UI or by other means before attempting to manage components in that repository via the Project Controller.
 
@@ -137,7 +137,7 @@ The following kinds of resources are currently supported. Please do not attempt 
 
 Here are specific examples for how to clean up and use the YAML for certain resource kinds:
 
-* For any kind of resource specifid in the ProjectDevelopmentStreamTemplate, the `namespace`, `creationTimestamp`, `generation`, `resourceVersion`, `uid`, `ownerReferences`, and `finalizers` metadata fields should be removed as well as the `status` section.
+* For any kind of resource specified in the ProjectDevelopmentStreamTemplate, the `namespace`, `creationTimestamp`, `generation`, `resourceVersion`, `uid`, `ownerReferences`, and `finalizers` metadata fields should be removed as well as the `status` section.
 * For *Application* resources the `metadata.name` and `spec.displayName` fields should contain variable references.
 * For *Component* resources:
 ** The following deprecated annotations should be removed:
@@ -147,7 +147,7 @@ Here are specific examples for how to clean up and use the YAML for certain reso
 *** `spec.application`
 *** `spec.componentName`
 *** `source.git.revision`
-** The `build.appstudio.openshift.io/status` annotation is in place to make the UI present the component's pipeline as customized. Its not mandatory if you can ignore the pipeline status being missrepresented in the UI. Note that this annotation's value needs to contain a reference to a merged PR that added the PaC pipeline files. There is no harm in having multiple components reference the same PR, as long as the `pac.component.appstudio.openshift.io/finalizer` finalizer is not added to the component's finalizers list.
+** The `build.appstudio.openshift.io/status` annotation is in place to make the UI present the component's pipeline as customized. Its not mandatory if you can ignore the pipeline status being misrepresented in the UI. Note that this annotation's value needs to contain a reference to a merged PR that added the PaC pipeline files. There is no harm in having multiple components reference the same PR, as long as the `pac.component.appstudio.openshift.io/finalizer` finalizer is not added to the component's finalizers list.
 * For *ImageRepository* resources:
 ** The labels referring to the owning component and application should probably contain variable references.
 ** To allow for correct ownership configuration between Component and ImageRepository resources, every component that has its built image pushed to the default registry organization that is managed automatically by {ProductName} needs to have a Dedicated ImageRepository resource. This implies each component has its own container image repository.
@@ -186,6 +186,8 @@ spec:
 
 Creating this *ProjectDevelopmentStream* resource will cause the resources specified by the referenced *ProjectDevelopmentStreamTemplate* resource to get created. Since we've used the `version` template variable in the `spec.git.revision` field of the component resources, each component version will use a different branch of the component repository.
 
+When you look at your components in the {ProductName} UI, you may see notifications that a PRs were sent to configure pipelines for them. In addition the source code links in the UI will not work until corresponding branches are actually created in your Git repository. To overcome those issues, create and push a branch with the appropriate name for each new component and then create and merge a PR into it that will cause the push pipeline to run for that branch. For the pipeline to run you need to adjust the Tekton PaC pipeline YAML code as described blow. We recommend that the first PR you send into a branch would include those adjustments.
+
 === Branching your component repositories
 
 Beyond creating new Git branches for your components in order to maintain different versions, you must also adjust the `.tekton/*.yaml` files within those branches in order to make the pipelines run and target the right components.
@@ -208,7 +210,7 @@ event == "push" && target_branch == "v1.0.0"
 
 * The `appstudio.openshift.io/application` and `appstudio.openshift.io/component` labels must be adjusted to specify the right Application and Component respectively. Failing to do this will cause builds of the pipeline to be associated with the wrong application or component.
 
-* The value for the `output-image` parameter should be set to match the vale of the `spec.image.name` field of the `ImageRepository` resource that corresponds to the component the pipline would build. 
+* The value for the `output-image` parameter should be set to match the vale of the `spec.image.name` field of the `ImageRepository` resource that corresponds to the component the pipeline would build. 
 +
 If your template is setup in such a way that the repo branch name would appear in the image name, you can use the `target_branch` PaC variable like so:
 +
