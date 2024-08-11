@@ -40,10 +40,10 @@ spec:
 ----
 
 +
+<.> Optional: The name of the RPA to use if more than one RPA references the specified application.
 <.> The name of the release plan.
 <.> The development team's workspace.
 <.> The name of the application that you want to deploy to the managed workspace.
-<.> Optional: The name of the RPA to use if more than one RPA references the specified application.
 <.> Optional: An unstructured key used for providing data for the managed Pipeline.
 <.> Optional: Reference to the Pipeline to be executed by the release service.
 <.> Optional: The name of the service account to use in the Pipeline to gain elevated privileges. It's used only if you have defined the `pipelineRef` value.
