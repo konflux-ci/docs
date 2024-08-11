@@ -1,24 +1,24 @@
 = Managing multiple software versions
 
-Software projects are often required to maintain multiple versions of the software in parallel in order to support different users of the software with different needs. As far as source code goes, the typical way to maintain multiple versions is by using different Git branches. Using branches in conjunction with {ProductName} can be somewhat tedious as a separate Component needs to be defined for each branch and a separate Application needs to be defined for each collection of components that need to be tested and released together. In addition mutiple other resourced such as *ImageRepositorey*, *IntegrationTestScenario* and *ReleasePlan* need to be defined for each Component or Applicaiton to enable a full CI/CD process.
+Software projects are often required to maintain multiple versions of the software in parallel in order to support different users of the software with different needs. As far as source code goes, the typical way to maintain multiple versions is by using different Git branches. Using branches in conjunction with {ProductName} can be somewhat tedious as a separate Component needs to be defined for each branch and a separate Application needs to be defined for each collection of components that need to be tested and released together. In addition multiple other resources such as *ImageRepository*, *IntegrationTestScenario*, and *ReleasePlan* need to be defined for each Component or Application to enable a full CI/CD process.
 
 The {ProductName} Project Controller seeks to streamline the process of managing multiple versions by introducing the following objects and concepts:
 
 * A *Project* is used to describe a major piece of software that can be worked on by multiple teams over an extended period of time. A project may contain one or more development streams.
 * A *ProjectDevelopmentStream* indicates an independent stream of development. A *ProjectDevelopmentStream* can contain one or more *Applications* each containing one or more *Components*.
-* As described above, starting a new development stream involves creating a large  amount of  *Application*, *Component* and other resources. The Project Controller helps to streamline that by allowing to create a *ProjectDevelopmentStreamTemplate* resource that specifies the resources to be created and allows for using variables to customize them. Using a template, many similar development streams can be created quickly.
+* As described above, starting a new development stream involves creating a large amount of *Application*, *Component*, and other resources. The Project Controller helps to streamline that by allowing to create a *ProjectDevelopmentStreamTemplate* resource that specifies the resources to be created and allows for using variables to customize them. Using a template, many similar development streams can be created quickly.
 
 == Using the Project Controller
 
-In the sections below we will describe how to use the custom resources supported by the Project Controller to manage multiple software versions and generate Application, Component and other resources.
+In the sections below we will describe how to use the custom resources supported by the Project Controller to manage multiple software versions and generate Application, Component, and other resources.
 
 === Before you begin
 
 The typical process of onboarding a componnent to {ProductName} includes having the {ProductName} Build Service generate a PR to the component Git repository which includes the Tekton Pipeline-as-Code (PaC) pipeline definition for building that component. As a part of this process various other resources such as the PaC Repository resource and Secret resources for accessing the repository are also created.
 
-Whe using the Project Controller to create components the process of generating the PR is skipped because it is assumed the branches being created in the component Git repositores already contain PaC pipeline files. Eert Git repository, however, needs to undergo this process at least once, therefore it is recommended to onboard at least once component from each repository from the UI or by other means before attempting to manage components in that repository via the Project Controller.
+When using the Project Controller to create components the process of generating the PR is skipped because in this document we assume the branches being created in the component Git repositories already contain PaC pipeline files. Each Git repository, however, needs to undergo this process at least once, therefore it is recommended to onboard at least once component from each repository from the UI or by other means before attempting to manage components in that repository via the Project Controller.
 
-The rest of this document is going to assume that process is being followed and would, on occasion requst that data would be copied from the component that was already on-boarded by other means.
+The rest of this document is going to assume that process is being followed and would, on occasion request that data would be copied from the component that was already on-boarded by other means.
 
 === Creating a Project
 
@@ -106,7 +106,7 @@ spec:
 
 The *resources* section for the template may be created by looking at the YAML for existing resources and copying it while removing generated and unnecessary data and adding variable references where needed.
 
-The following kinds of resources are currentyl supported. Please do not attempt to create other kinds as that would prevent the template from being applied successfully.
+The following kinds of resources are currently supported. Please do not attempt to create other kinds as that would prevent the template from being applied successfully.
 
 [cols="2,1,3"]
 |===
@@ -126,18 +126,18 @@ The following kinds of resources are currentyl supported. Please do not attempt 
 
 |appstudio.redhat.com/v1beta2
 |IntegrationTestScenario
-|Note the `v1beta2` API version. Make sure to use the right version when querying the cluster, otherwise important data may be missing from the resutls you get.
+|Note the `v1beta2` API version. Make sure to use the right version when querying the cluster, otherwise important data may be missing from the results you get.
 
 |appstudio.redhat.com/v1alpha1
 |ReleasePlan
 |
 |===
 
-*Note:* When in doubt - the source of truth about what the YAML for your resources should look like is the up to date YAML you can find on the Konflux clusters. We try to keep the exaples here up to date, but with this being a static document there may be a gap between what you see here and what you should configure in tour system. It is recommended that you follow the process of creating the template by copying the YAML of the resrouces you have and cleaning it as describe blow, and not by copying the sample you see here.
+*Note:* When in doubt - the source of truth about what the YAML for your resources should look like is the version you can find on the {ProductName} clusters. We try to keep the examples here up to date, but with this being a static document there may be a gap between what you see here and what you should configure in your system. It is recommended that you follow the process of creating the template by copying the YAML of the resources you have and cleaning it as described below, and not by copying the sample you see here.
 
 Here are specific examples for how to clean up and use the YAML for certain resource kinds:
 
-* For any kind of resource, the `namespace`, `creationTimestamp`, `generation`, `resourceVersion`, `uid`, `ownerReferences` and `finalizers` metadata fields should be removed as well as the `status` section.
+* For any kind of resource specifid in the ProjectDevelopmentStreamTemplate, the `namespace`, `creationTimestamp`, `generation`, `resourceVersion`, `uid`, `ownerReferences`, and `finalizers` metadata fields should be removed as well as the `status` section.
 * For *Application* resources the `metadata.name` and `spec.displayName` fields should contain variable references.
 * For *Component* resources:
 ** The following deprecated annotations should be removed:
@@ -150,7 +150,7 @@ Here are specific examples for how to clean up and use the YAML for certain reso
 ** The `build.appstudio.openshift.io/status` annotation is in place to make the UI present the component's pipeline as customized. Its not mandatory if you can ignore the pipeline status being missrepresented in the UI. Note that this annotation's value needs to contain a reference to a merged PR that added the PaC pipeline files. There is no harm in having multiple components reference the same PR, as long as the `pac.component.appstudio.openshift.io/finalizer` finalizer is not added to the component's finalizers list.
 * For *ImageRepository* resources:
 ** The labels referring to the owning component and application should probably contain variable references.
-** To allow for correct ownership configuration between Component and ImageRepositorey resources, every componet that has its built image pushed to the default registry organisation that is managed automatically by {ProductName}, needs to have a Dedicated ImageRepositorey resource. This implies each component has its own container image repository.
+** To allow for correct ownership configuration between Component and ImageRepository resources, every component that has its built image pushed to the default registry organization that is managed automatically by {ProductName} needs to have a Dedicated ImageRepository resource. This implies each component has its own container image repository.
 ** To meet the above requirement the `spec.image.name` field should contain a variable reference.
 * For *IntegrationTestScenario* resources:
 ** Make sure you query for the `v1beta2` version of those resources, and that you specify that version in your template.
@@ -210,7 +210,7 @@ event == "push" && target_branch == "v1.0.0"
 
 * The value for the `output-image` parameter should be set to match the vale of the `spec.image.name` field of the `ImageRepository` resource that corresponds to the component the pipline would build. 
 +
-If you template is setup in such a way that the repo branch name would appear in the image name, you can use the `target_branch` PaC variable like so:
+If your template is setup in such a way that the repo branch name would appear in the image name, you can use the `target_branch` PaC variable like so:
 +
 [source]
 ----
@@ -218,7 +218,7 @@ If you template is setup in such a way that the repo branch name would appear in
     value: quay.io/redhat-user-workloads/my-tenant/my-app-{{target_branch}}/my-comp-{{target_branch}}:{{revision}}
 ----
 +
-Please note that the examples in this document to not allow for this setup because the image names conain the hyphenized version value while the branch names contain the non-hyphenized value.
+Please note that the examples in this document do not allow for this setup because the image names contain the hyphenated version value while the branch names contain the unhyphenated value.
 
 == Known limitations
 
