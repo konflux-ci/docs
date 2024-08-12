@@ -2,92 +2,62 @@
 :icons: font
 :source-highlighter: highlightjs
 
-**{ProductName}** +
-A platform to automate the process of building, testing, and releasing applications. {ProductName} offers enterprise-grade security and customizable feature sets.
+[[productname]]{ProductName}:: A platform to automate the process of building, testing, and releasing applications. {ProductName} offers enterprise-grade security and customizable feature sets.
 
-**build pipeline** +
-A Tekton PipelineRun, which takes source code and turns it into a tested software artifact stored in a container registry.
+[[build-pipeline]]build pipeline:: A Tekton PipelineRun, which takes source code and turns it into a tested software artifact stored in a container registry.
 
-**build pipeline customization** +
-The ability to update and manage build pipelines for each component in an application.
+[[build-pipeline-customization]]build pipeline customization:: The ability to update and manage build pipelines for each component in an application.
 
-**build-time tests** +
-A specific TaskRun within a build pipeline that doesn't convert source code into a software artifact. It can include any number of functional or security checks performed on the source code or the produced artifact.
+[[build-time-tests]]build-time tests:: A specific TaskRun within a build pipeline that doesn't convert source code into a software artifact. It can include any number of functional or security checks performed on the source code or the produced artifact.
 
-**cluster** +
-A Kubernetes deployment with nodes that run containerized applications and a control plane that manages the nodes.
+[[cluster]]cluster:: A Kubernetes deployment with nodes that run containerized applications and a control plane that manages the nodes.
 
-**component** +
-An internal representation of a software artifact that {ProductName} builds and tests, using source code from a git repository. Components are stored in an link:https://github.com/opencontainers/distribution-spec[OCI container registry] such as quay.io after they are built.
+[[component]]component:: An internal representation of a software artifact that {ProductName} builds and tests, using source code from a git repository. Components are stored in an link:https://github.com/opencontainers/distribution-spec[OCI container registry] such as quay.io after they are built.
 
-**Enterprise Contract (EC)** +
-A link:https://enterprisecontract.dev[set of tools] which are used for verifying the security and provenance of software artifacts.
+[[ec]]Enterprise Contract (EC):: A link:https://enterprisecontract.dev[set of tools] which are used for verifying the security and provenance of software artifacts.
 
-**Enterprise Contract Policy (ECP)** +
-A set of release policies that you apply to your application snapshot. You can use the EC to prevent releases that are not compliant with Supply-chain Levels for Software Artifacts (SLSA) guidelines. 
+[[ecp]]Enterprise Contract Policy (ECP):: A set of release policies that you apply to your application snapshot. You can use the EC to prevent releases that are not compliant with Supply-chain Levels for Software Artifacts (SLSA) guidelines. 
 
-**integration test** +
-A Tekton pipeline defined in source control that runs after components are built. It performs a test against all components in a snapshot as a whole.
+[[integration-test]]integration test:: A Tekton pipeline defined in source control that runs after components are built. It performs a test against all components in a snapshot as a whole.
 
-**IntegrationTestScenario (ITS)** +
-A Kubernetes resource that contains metadata for running an integration test including a reference to the Tekton pipeline. The integration service uses the ITS to trigger tests on an application with a new or updated component
+[[its]]IntegrationTestScenario (ITS):: A Kubernetes resource that contains metadata for running an integration test including a reference to the Tekton pipeline. The integration service uses the ITS to trigger tests on an application with a new or updated component
 
-**managed workspace** +
-A {ProductName} workspace whose primary purpose is to restrict access to release pipelines and the secrets required to run them. Access to these release pipelines are defined by the creation of Releases, their ReleasePlan, and the matching ReleasePlanAdmission. Manages workspaces are generally not used for running build pipelines.
+[[managed-workspace]]managed workspace:: A {ProductName} workspace whose primary purpose is to restrict access to release pipelines and the secrets required to run them. Access to these release pipelines are defined by the creation of Releases, their ReleasePlan, and the matching ReleasePlanAdmission. Manages workspaces are generally not used for running build pipelines.
 
-**pipelines as code** +
-A practice that defines pipelines by using source code in Git. Pipelines as Code is also the name of link:https://pipelinesascode.com[a subsystem] that executes those pipelines.
+[[pac]]pipelines as code:: A practice that defines pipelines by using source code in Git. Pipelines as Code is also the name of link:https://pipelinesascode.com[a subsystem] that executes those pipelines.
 
-**PipelineRun** +
-A collection of TaskRuns that are arranged in a specific order of execution. 
+[[pipelinerun]]PipelineRun:: A collection of TaskRuns that are arranged in a specific order of execution. 
 
-**provenance** +
-Metadata describing where, when, and how the associated software artifact was produced.
+[[provenance]]provenance:: Metadata describing where, when, and how the associated software artifact was produced.
 
-**release pipeline** +
-A generic Tekton pipeline that moves artifacts built within {ProductName} to somewhere outside of its control. An application snapshot must pass the Enterprise Contract Policy check before {ProductName} can run the release pipeline. 
+[[release-pipeline]]release pipeline:: A generic Tekton pipeline that moves artifacts built within {ProductName} to somewhere outside of its control. An application snapshot must pass the Enterprise Contract Policy check before {ProductName} can run the release pipeline. 
 
-**Release** +
-A Kubernetes resource indicating an intention to operate on a specific application snapshot according to the process defined in the indicated ReleasePlan.
+[[release]]Release:: A Kubernetes resource indicating an intention to operate on a specific application snapshot according to the process defined in the indicated ReleasePlan.
 
-**ReleasePlan (RP)** +
-A Kubernetes resource defining the process to release a specific application snapshot to a target managed workspace. The RP is created for a specific application and is matched with a specific ReleasePlanAdmission.
+[[rp]]ReleasePlan (RP):: A Kubernetes resource defining the process to release a specific application snapshot to a target managed workspace. The RP is created for a specific application and is matched with a specific ReleasePlanAdmission.
 
-**ReleasePlanAdmission (RPA)** +
-A Kubernetes resource defining the specific release pipeline to run as well as which Enterprise Contact Policy must pass. The RPA exists within a managed workspace.
+[[rpa]]ReleasePlanAdmission (RPA):: A Kubernetes resource defining the specific release pipeline to run as well as which Enterprise Contact Policy must pass. The RPA exists within a managed workspace.
 
-**security testing** +
-A process that determines if images meet security quality standards.
+[[security-testing]]security testing:: A process that determines if images meet security quality standards.
 
-**snapshot** +
-An immutable set of component references. The system creates a snapshot when it finishes running a component's build pipeline based on all other components in its application. A snapshot defines a set of components which are either tested or released together.
+[[snapshot]]snapshot:: An immutable set of component references. The system creates a snapshot when it finishes running a component's build pipeline based on all other components in its application. A snapshot defines a set of components which are either tested or released together.
 
-**Supply-chain Levels for Software Artifacts (SLSA)** +
-A link:https://slsa.dev/[security framework] that helps prevent tampering by securing the packages and infrastructure of customers’ projects.
+[[slsa]]Supply-chain Levels for Software Artifacts (SLSA):: A link:https://slsa.dev/[security framework] that helps prevent tampering by securing the packages and infrastructure of customers’ projects.
 
-**task** +
-One or more steps that run container images. Each container image performs a piece of construction work.
+[[task]]task:: One or more steps that run container images. Each container image performs a piece of construction work.
 
-**TaskRun** +
-A process that executes a task on a cluster with inputs, outputs, and execution parameters. {ProductName} creates a TaskRun on its own, or as a part of a PipelineRun for each task in a pipeline.
+[[taskrun]]TaskRun:: A process that executes a task on a cluster with inputs, outputs, and execution parameters. {ProductName} creates a TaskRun on its own, or as a part of a PipelineRun for each task in a pipeline.
 
-**Tekton** +
-A Knative-based framework for CI/CD pipelines. Tekton is decoupled which means that you can use one pipeline to deploy to any Kubernetes cluster in multiple hybrid cloud providers. Tekton stores everything that is related to a pipeline in the cluster.
+[[tekton]]Tekton:: A Knative-based framework for CI/CD pipelines. Tekton is decoupled which means that you can use one pipeline to deploy to any Kubernetes cluster in multiple hybrid cloud providers. Tekton stores everything that is related to a pipeline in the cluster.
 
-**Tekton chains** +
-A mechanism to secure the software supply chain by recording events in a user-defined pipeline.
+[[tekton-chains]]Tekton chains:: A mechanism to secure the software supply chain by recording events in a user-defined pipeline.
 
-**Tekton integration testing** +
-A process that uses Tekton tasks to support the setup and execution of dynamic application tests against container images.
+[[tekton-integration-testing]]Tekton integration testing:: A process that uses Tekton tasks to support the setup and execution of dynamic application tests against container images.
 
-**Tekton results** +
-A mechanism that stores PipelineRun and TaskRun metadata in a separate database and underlying pod logs in cloud storage. After this metadata is stored in a separate database, the original resources are removed from the cluster.
+[[tekton-results]]Tekton results:: A mechanism that stores PipelineRun and TaskRun metadata in a separate database and underlying pod logs in cloud storage. After this metadata is stored in a separate database, the original resources are removed from the cluster.
 
-**Tekton workspace** +
-A storage volume that a task requires at runtime to receive input or provide output. Required workspaces are defined in a Tekton PipelineRun.
+[[tekton-workspace]]Tekton workspace:: A storage volume that a task requires at runtime to receive input or provide output. Required workspaces are defined in a Tekton PipelineRun.
 
-**tenant workspace** +
-A {ProductName} workspace whose primary purpose is to build and test software artifacts using Tekton Pipelines.
+[[tenant-workspace]]tenant workspace:: A {ProductName} workspace whose primary purpose is to build and test software artifacts using Tekton Pipelines.
 
-**workspace** +
-A Kubernetes namespace which is owned by either an individual or a group of individuals. All Tekton Pipelines are run within a workspace including build, test, and release pipelines. Users with access to {ProductName} will have access to at least one workspace but may have access to more than one. Access can be granted to individuals in link:https://konflux-ci.dev/architecture/ADR/0011-roles-and-permissions.html[three tiers], `Contributor`, `Maintainer`, and `Admin`.
+[[workspace]]workspace:: A Kubernetes namespace which is owned by either an individual or a group of individuals. All Tekton Pipelines are run within a workspace including build, test, and release pipelines. Users with access to {ProductName} will have access to at least one workspace but may have access to more than one. Access can be granted to individuals in link:https://konflux-ci.dev/architecture/ADR/0011-roles-and-permissions.html[three tiers], `Contributor`, `Maintainer`, and `Admin`.
