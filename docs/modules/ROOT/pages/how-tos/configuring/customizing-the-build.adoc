@@ -99,7 +99,8 @@ An example of a custom task added to the pipeline that sends a slack notificatio
 ====
 * To use `slack-webhook-notification` task, you need to xref:./creating-secrets.adoc[create a secret] in your namespace with at least one key where the value is the webhook URL. For example, to create a secret for Slack, run `oc create secret generic my-secret --from-literal dev-team=https://hooks.slack.com/services/XXX/XXXXXX`
 
-* If you want to define a task directly in this file, rather than using `taskRef`, you can use `taskSpec`. Visit the documentation linked in the <<additional-resources>> section.
+* If you want to define a task directly in this file, rather than using `taskRef`, you can use `taskSpec`. See the Tekton documentation on
+  link:https://tekton.dev/docs/pipelines/taskruns/#specifying-the-target-task[specifying the target task] for more details.
 
 ====
 
@@ -155,5 +156,9 @@ If you experience any issues with your customized pipeline, try the following so
 ** Use the link:https://github.com/konflux-ci/testrepo/tree/main/.tekton[template `.tekton` directory] to rebuild your own `.tekton` directory.
 
 == Additional resources [[additional-resources]]
-* Visit the Tekton documentation that explains link:https://tekton.dev/docs/pipelines/taskruns/#specifying-the-target-task[how to use `taskSpec`] in a task declaration.
 
+* Tekton docs for link:https://tekton.dev/docs/pipelines/tasks/[Tasks], link:https://tekton.dev/docs/pipelines/pipelines/[Pipelines]
+  and link:https://tekton.dev/docs/pipelines/pipelineruns/[PipelineRuns]
+** The fundamentals of your build pipeline
+* Pipelines as Code docs for link:https://pipelinesascode.com/docs/guide/authoringprs/[PipelineRuns]
+** PaC-specific concepts, such as dynamic variables and event matching
