@@ -8,16 +8,6 @@ To meet your specific needs, you can customize the way that {ProductName} builds
 For example, you might decide to limit how long {ProductName} saves the images that it builds for pull requests. You can set a limit by changing the value of the `image-expires-after` parameter. Or you can ensure that images are compliant with regulations for your industry, by adding a compliance check as a task to the build pipeline.
 
 
-.Procedure
-
-To customize the build pipeline in any way, start by taking the following steps:
-
-. In your preferred IDE, navigate to the `.tekton` directory in the repository of your component.
-
-. Open the relevant YAML files:
-.. The file ending in `-pull-request.yaml` determines how {ProductName} responds when you open pull requests.
-.. The file ending in `-on-push.yaml` determines how {ProductName} responds when you push commits.
-
 == Changing parameters
 
 .Procedure
@@ -66,7 +56,7 @@ Before you extend your build pipeline, be aware that doing so causes builds to f
 
 .Procedure
 
-. In each `.yaml` file in the `.tekton` directory, add a new task under `.spec.pipelineSpec.tasks`.
+. In each Pipeline definition in the `.tekton` directory, add a new task to the `tasks` section.
 
 +
 Example task:
@@ -152,7 +142,7 @@ The `buildah` task, which builds components from a Dockerfile, has a memory limi
 To exchange the build task with a memory limit of 6 GB, complete the following steps. For a memory limit of 8 or 10 GB, replace the references to 6 GB with the appropriate values.
 
 . Go to the GitHub repo of your component.
-. In each .yaml file in the .tekton directory, under tasks, locate the task named build-container:
+. In each Pipeline definition in the `.tekton` directory, under `tasks`, locate the task named build-container:
 .. Under `.taskRef.params`, set `name` to `buildah-6gb`.
 .. Under `.taskRef.params`, set `bundle` to `quay.io/redhat-appstudio-tekton-catalog/task-buildah-6gb:0.1`.
 
