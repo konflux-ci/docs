@@ -1,0 +1,96 @@
+= Using Trusted Artifacts
+
+In order to retain the integrity of the build process, {ProductName} provides two modes of
+operation. The first is by ensuring that every Task in the build Pipeline is
+link:https://enterprisecontract.dev/docs/ec-policies/release_policy.html#trusted_task_package[trusted].
+The second relies on Trusted Artifacts to securely allow sharing of data between Tasks. See
+link:https://konflux-ci.dev/architecture/ADR/0036-trusted-artifacts.html[ADR-36] for more
+information.
+
+Today, when a component is created in {ProductName}, the provided build Pipeline uses Trusted
+Artifacts. However, older components might still be using a version of the build Pipeline which does
+not use Trusted Artifacts. This document explains how to identify if Trusted Artifacts are being
+used and, if not, how to start using them.
+
+== Am I using Trusted Artifacts?
+
+To determine if a certain component is using Trusted Artifacts, inspect its build Pipeline. Look for
+the PipelineRun YAML files under the `.tekton` directory in the git repository of the component. If
+the PipelineRun contains a workspace named `workspace`, it is likely NOT using Trusted Artifacts.
+
+== Migrate to Trusted Artifacts
+
+For components already created in {ProductName}, the simplest way to start using Trusted Artifacts
+is via the link:https://github.com/zregvart/build-migration[build-migration] tool. Run the
+`migration.py` script with the path to the `.tekton` directory as the first parameter. For example:
+`python migration.py ~/src/my-component/.tekton`.
+
+If your build Pipeline has been modified in certain ways, e.g. it includes a custom Task, the
+`build-migration` tool may not work as expected. In this case, perform the required modifications
+manually. These are captured in
+link:https://github.com/konflux-ci/build-definitions/blob/main/pipelines/docker-build-oci-ta/patch.yaml[this]
+patch file. Although the patch file cannot be directly applied to your Pipeline, it describes in
+detail all the required changes.
+
+If your build Pipeline includes custom Tasks that require access to the workspace, e.g. it reads the
+component's source code, the Task must be modified to implement the Trusted Artifacts pattern. At a
+high-level this means accessing data created by other Tasks via OCI artifacts instead of a shared
+workspace backed by a PVC (Persistent Volume Claim).
+
+For example, if your build Pipeline includes a custom Task that accesses the component's source code
+via a workspace:
+
+[source]
+--
+- name: test-kustomize-build
+  workspaces:
+    - name: workspace
+      workspace: workspace
+  runAfter:
+    - clone-repository
+  taskSpec:
+    workspaces:
+      - name: workspace
+    steps:
+      - name: kustomize-build
+        image: registry.access.redhat.com/ubi8/ubi:latest
+        workingDir: $(workspaces.workspace.path)/source
+        script: yum install -y make && make kustomize-build
+--
+
+You can modify the Task to use the Trusted Artifacts pattern:
+
+[source]
+--
+- name: test-kustomize-build
+  params:
+    # New parameter to use the Trusted Artifact from the git-clone Task.
+    - name: SOURCE_ARTIFACT
+      value: $(tasks.clone-repository-oci-ta.results.SOURCE_ARTIFACT)
+  runAfter:
+    - clone-repository-oci-ta
+  taskSpec:
+    params:
+      - description: The Trusted Artifact URI pointing to the artifact with the application source code.
+        name: SOURCE_ARTIFACT
+        type: string
+    stepTemplate:
+      volumeMounts:
+        - mountPath: /var/workdir
+          name: workdir
+    steps:
+      # New step to fetch the Trusted Artifact and make it available to the next steps.
+      - name: use-trusted-artifact
+        image: quay.io/redhat-appstudio/build-trusted-artifacts:latest@sha256:8391272c4e5011120e9e7fee2c1f339e9405366110bf239dadcbc21e953ce099
+        args:
+          - use
+          - $(params.SOURCE_ARTIFACT)=/var/workdir/source
+      - name: kustomize-build
+        image: registry.access.redhat.com/ubi8/ubi:latest
+        workingDir: /var/workdir/source
+        script: yum install -y make && make kustomize-build
+    volumes:
+      # New volume to store a copy of the source code accessible only to this Task.
+      - name: workdir
+        emptyDir: {}
+--
