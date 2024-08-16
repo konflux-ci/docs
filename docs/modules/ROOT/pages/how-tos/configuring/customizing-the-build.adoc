@@ -102,7 +102,7 @@ An example of a custom task added to the pipeline that sends a slack notificatio
   taskRef:
     params:
     - name: bundle
-      value: quay.io/redhat-appstudio-tekton-catalog/task-slack-webhook-notification:0.1
+      value: quay.io/konflux-ci/tekton-catalog/task-slack-webhook-notification:0.1
     - name: name
       value: slack-webhook-notification
     - name: kind
@@ -133,9 +133,11 @@ Custom Tasks may need access to data from other Tasks. However, in order to not 
 
 The `buildah` task, which builds components from a Dockerfile, has a memory limit of 4 GB. To build components with memory requirements greater than 4 GB, use the following tasks:
 
-* link:https://quay.io/repository/redhat-appstudio-tekton-catalog/task-buildah-6gb?tab=tags[quay.io/redhat-appstudio-tekton-catalog/task-buildah-6gb]
-* link:https://quay.io/repository/redhat-appstudio-tekton-catalog/task-buildah-8gb?tab=tags[quay.io/redhat-appstudio-tekton-catalog/task-buildah-8gb]
-* link:https://quay.io/repository/redhat-appstudio-tekton-catalog/task-buildah-10gb?tab=tags[quay.io/redhat-appstudio-tekton-catalog/task-buildah-10gb]
+* link:https://quay.io/repository/konflux-ci/tekton-catalog/task-buildah-6gb?tab=tags[quay.io/konflux-ci/tekton-catalog/task-buildah-6gb]
+* link:https://quay.io/repository/konflux-ci/tekton-catalog/task-buildah-8gb?tab=tags[quay.io/konflux-ci/tekton-catalog/task-buildah-8gb]
+* link:https://quay.io/repository/konflux-ci/tekton-catalog/task-buildah-10gb?tab=tags[quay.io/konflux-ci/tekton-catalog/task-buildah-10gb]
+* link:https://quay.io/repository/konflux-ci/tekton-catalog/task-buildah-20gb?tab=tags[quay.io/konflux-ci/tekton-catalog/task-buildah-20gb]
+* link:https://quay.io/repository/konflux-ci/tekton-catalog/task-buildah-24gb?tab=tags[quay.io/konflux-ci/tekton-catalog/task-buildah-24gb]
 
 .Procedure
 
@@ -144,7 +146,7 @@ To exchange the build task with a memory limit of 6 GB, complete the following s
 . Go to the GitHub repo of your component.
 . In each Pipeline definition in the `.tekton` directory, under `tasks`, locate the task named build-container:
 .. Under `.taskRef.params`, set `name` to `buildah-6gb`.
-.. Under `.taskRef.params`, set `bundle` to `quay.io/redhat-appstudio-tekton-catalog/task-buildah-6gb:0.1`.
+.. Under `.taskRef.params`, set `bundle` to `quay.io/konflux-ci/tekton-catalog/task-buildah-6gb:0.1`.
 
 == Bring your own Quay repository to the build pipeline
 
