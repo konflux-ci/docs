@@ -257,7 +257,7 @@ If you experience any issues with your customized pipeline, try the following so
 * If you believe that your desired parameter values are not being passed into the pipeline, make sure that your assignment of that value doesn't get overwritten later in the `.yaml` file.
 
 * If your new task is not appearing in the pipeline run, ensure the following:
-** You added it to the correct place in the `.yaml` files, so that it has the path `.spec.params` or `.pipelineSpec.params`.
+** You added it to the correct place in the `.yaml` files, so that it has the path `.spec.tasks` or `.pipelineSpec.tasks`.
 ** You specified a valid `runAfter` field, and that the task in that field completed successfully.
 
 * For problems with both parameters and tasks, make sure you committed your changes to the `.tekton` directory in the repository that {ProductName} references for the component.
