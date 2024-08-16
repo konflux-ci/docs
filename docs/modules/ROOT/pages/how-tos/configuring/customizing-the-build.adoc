@@ -173,9 +173,6 @@ If you experience any issues with your customized pipeline, try the following so
 
 * For problems with both parameters and tasks, make sure you committed your changes to the `.tekton` directory in the repository that {ProductName} references for the component.
 
-* If your build pipeline can no longer successfully run, your best option is to simply rebuild the `.tekton` directory:
-** Use the link:https://github.com/konflux-ci/testrepo/tree/main/.tekton[template `.tekton` directory] to rebuild your own `.tekton` directory.
-
 == Additional resources [[additional-resources]]
 
 * Tekton docs for link:https://tekton.dev/docs/pipelines/tasks/[Tasks], link:https://tekton.dev/docs/pipelines/pipelines/[Pipelines]
