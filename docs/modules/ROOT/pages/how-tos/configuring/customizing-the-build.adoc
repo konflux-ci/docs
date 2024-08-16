@@ -3,6 +3,7 @@
 To meet your specific needs, you can customize the way that {ProductName} builds components. For instance:
 
 * Change the parameters of the build pipeline of a component.
+* Configure the timeouts for the pipeline.
 * Extend the pipeline with your own tasks (or delete existing tasks).
 
 For example, you might decide to limit how long {ProductName} saves the images that it builds for pull requests. You can set a limit by changing the value of the `image-expires-after` parameter. Or you can ensure that images are compliant with regulations for your industry, by adding a compliance check as a task to the build pipeline.
@@ -48,6 +49,52 @@ When looking at a PipelineRun file, you can typically find the Pipeline definiti
 * An external location, referenced by a resolver in `.spec.pipelineRef`
 
 . Commit your changes to the repository of the component.
+
+
+== Configuring timeouts
+
+By default, your pipeline has a timeout of 1 hour (as does each task in the pipeline individually).
+Your builds may take longer than that, in which case you will need to increase the timeouts accordingly.
+
+.Procedure
+
+For example, let's configure the timeouts for a pipeline where the build itself may take up to 3 hours
+and antivirus scanning may take up to 2 hours. We'll set corresponding timeouts for both the tasks
+and a 6 hour total timeout for the pipeline.
+
+. In the PipelineRun files in the `.tekton` directory, set the `.spec.timeouts`. This is the overall timeout for the pipeline.
++
+[source,yaml]
+----
+kind: PipelineRun
+spec:
+  timeouts:
+    # See https://tekton.dev/docs/pipelines/pipelineruns/#configuring-a-failure-timeout
+    pipeline: 6h
+----
+. In the Pipeline definitions in the `.tekton` directory, set the `timeout` for the relevant tasks:
++
+[source,yaml]
+----
+kind: Pipeline
+spec:
+  tasks:
+    # ...
+    - name: build-container
+      timeout: 3h
+      runAfter:
+        - clone-repository
+      taskRef: ...
+    - name: clamav-scan
+      timeout: 2h
+      runAfter:
+        - build-container
+      taskRef: ...
+----
++
+NOTE: This example shows a separate Pipeline file, but your pipeline may also be defined directly in
+    your PipelineRun file(s) (in `.spec.pipelineSpec`), in which case you configure all the timeouts in
+    the PipelineRun.
 
 
 == Extending the build pipeline with your own tasks
