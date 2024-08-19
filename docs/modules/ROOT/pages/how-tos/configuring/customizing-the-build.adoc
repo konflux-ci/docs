@@ -146,7 +146,47 @@ To exchange the build task with a memory limit of 6 GB, complete the following s
 . Go to the GitHub repo of your component.
 . In each Pipeline definition in the `.tekton` directory, under `tasks`, locate the task named build-container:
 .. Under `.taskRef.params`, set `name` to `buildah-6gb`.
-.. Under `.taskRef.params`, set `bundle` to `quay.io/konflux-ci/tekton-catalog/task-buildah-6gb:0.1`.
+.. Under `.taskRef.params`, change the value of `bundle` - replace the repository name with `task-buildah-6gb`.
+   Keep the version tag (e.g. `0.2`) and remove the `@sha256:...` digest.
++
+[source,diff]
+----
+ spec:
+   pipelineSpec:
+     tasks:
+       # ...
+       - name: build-container
+         taskRef:
+           resolver: bundles
+           params:
+             - name: kind
+               value: task
+             - name: name
+-              value: buildah
++              value: buildah-6gb
+             - name: bundle
+-              value: quay.io/konflux-ci/tekton-catalog/task-buildah:0.2@sha256:3f0913dfb85e9aeb9916e412d10329528ddf4c8fba9958cba5291ca8ee247f7e
++              value: quay.io/konflux-ci/tekton-catalog/task-buildah-6gb:0.2
+----
+
+.. If you'd like, pin the `task-buildah-6gb` bundle to a digest.
+   Take the output of the following script (requires `skopeo`) and append it to the `bundle` value:
++
+[source,bash]
+----
+my_bundle=quay.io/konflux-ci/tekton-catalog/task-buildah-6gb:0.2
+
+skopeo inspect --format '@{{.Digest}}' --no-tags docker://"${my_bundle}"
+----
++
+[TIP]
+====
+{ProductName} task version tags (e.g. `0.2`) are "floating" - they move to the latest release every time the task gets an update.
+By pinning to a digest, you ensure your pipeline will always use the exact same version of the task.
+{ProductName} automatically sends out PRs to update task digests, letting you opt into updating the task rather than having it update on its own behind your back.
+The task update PR will trigger the on-pull-request pipeline, testing the changes before they can affect the on-push pipeline or other PRs.
+
+====
 
 == Bring your own Quay repository to the build pipeline
 
