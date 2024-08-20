@@ -26,7 +26,13 @@
 
 [[pac]]pipelines as code:: A practice that defines pipelines by using source code in Git. Pipelines as Code is also the name of link:https://pipelinesascode.com[a subsystem] that executes those pipelines.
 
-[[pipelinerun]]PipelineRun:: A collection of TaskRuns that are arranged in a specific order of execution. 
+[[pipeline]]Pipeline:: A collection of <<task,Tasks>> executed in a specific order.
+    See https://tekton.dev/docs/pipelines/pipelines/ for more details.
+
+[[pipelinerun]]PipelineRun:: A process that executes a Pipeline on a cluster with inputs, outputs, and execution parameters.
+    {ProductName} creates PipelineRuns in response to pull request and push events in your repository.
+    - See https://tekton.dev/docs/pipelines/pipelineruns/ for more details about PipelineRuns.
+    - See https://pipelinesascode.com/docs/guide/running/ for details about responding to repository events.
 
 [[provenance]]provenance:: Metadata describing where, when, and how the associated software artifact was produced.
 
@@ -44,9 +50,13 @@
 
 [[slsa]]Supply-chain Levels for Software Artifacts (SLSA):: A link:https://slsa.dev/[security framework] that helps prevent tampering by securing the packages and infrastructure of customers’ projects.
 
-[[task]]task:: One or more steps that run container images. Each container image performs a piece of construction work.
+[[task]]Task:: One or more steps that run container images.
+    Each container image performs a piece of construction work.
+    See https://tekton.dev/docs/pipelines/tasks/ for more details.
 
-[[taskrun]]TaskRun:: A process that executes a task on a cluster with inputs, outputs, and execution parameters. {ProductName} creates a TaskRun on its own, or as a part of a PipelineRun for each task in a pipeline.
+[[taskrun]]TaskRun:: A process that executes a Task on a cluster with inputs, outputs, and execution parameters.
+    {ProductName} creates TaskRuns as part of a PipelineRun (runs each Task in the Pipeline).
+    See https://tekton.dev/docs/pipelines/taskruns/ for more details.
 
 [[tekton]]Tekton:: A Knative-based framework for CI/CD pipelines. Tekton is decoupled which means that you can use one pipeline to deploy to any Kubernetes cluster in multiple hybrid cloud providers. Tekton stores everything that is related to a pipeline in the cluster.
 
