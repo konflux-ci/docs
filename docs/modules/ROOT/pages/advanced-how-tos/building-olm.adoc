@@ -13,6 +13,8 @@ Note the difference between an "OLM Operator" and an "Operator." An OLM Operator
 
 The first procedure in this document explains how to use {ProductName} to build an OLM Operator in the most basic sense--building its Operator and bundle images. The second procedure is optional but recommended. It explains how you can automatically update the image references in the CSV of the bundle. The third procedure describes the process for generating the file-based catalog to inform OLM how to upgrade between OLM Operator versions.
 
+NOTE: A link:https://github.com/konflux-ci/olm-operator-konflux-sample[sample repository] has been prepared which covers many of the steps for creating and maintaining OLM operators.
+
 
 == Building the Operator and the bundle
 
