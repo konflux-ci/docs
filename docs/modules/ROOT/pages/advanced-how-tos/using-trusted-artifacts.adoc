@@ -21,9 +21,9 @@ the PipelineRun contains a workspace named `workspace`, it is likely NOT using T
 == Migrate to Trusted Artifacts
 
 For components already created in {ProductName}, the simplest way to start using Trusted Artifacts
-is via the link:https://github.com/zregvart/build-migration[build-migration] tool. Run the
-`migration.py` script with the path to the `.tekton` directory as the first parameter. For example:
-`python migration.py ~/src/my-component/.tekton`.
+is via the link:https://github.com/konflux-ci/build-ta-pipeline-migration[build-ta-pipeline-migration]
+tool. Run the `migration.py` script with the path to the `.tekton` directory as the first parameter.
+For example: `python migration.py ~/src/my-component/.tekton`.
 
 If your build Pipeline has been modified in certain ways, e.g. it includes a custom Task, the
 `build-migration` tool may not work as expected. In this case, perform the required modifications
