@@ -30,3 +30,4 @@
 *** xref:how-tos/metadata/attestations.adoc[Inspecting artifact attestations]
 ** xref:how-tos/deleting.adoc[Deleting applications and components]
 ** xref:how-tos/workflows/index.adoc[Workflows for {ProductName} integrated repositories]
+*** xref:how-tos/workflows/git-submodules.adoc[Git submodule workflow pattern]
