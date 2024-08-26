@@ -29,3 +29,4 @@
 *** xref:how-tos/metadata/sboms.adoc[Inspecting SBOMs]
 *** xref:how-tos/metadata/attestations.adoc[Inspecting artifact attestations]
 ** xref:how-tos/deleting.adoc[Deleting applications and components]
+** xref:how-tos/workflows/index.adoc[Workflows for {ProductName} integrated repositories]
