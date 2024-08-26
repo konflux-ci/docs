@@ -1,0 +1,90 @@
+= Git Submodule pattern
+
+== How this workflow pattern works:
+
+1. Create a "downstream" repo.
+2. Track your upstream git repo with a git submodule reference.
+3. Onboard to {ProductName}, use link:https://github.com/renovatebot/renovate[Renovate] to keep your Git submodule references up to date.
+4. In your downstream repo, apply patches in your Containerfile if you need to carry downstream patches.
+
+== Implementing this solution pattern
+=== Create a downstream repo
+
+A **downstream repo** is a self-owned copy of the upstream repository whose build, test, release lifecycle you want to control completely.
+
+The downstream repo will:
+
+* be used to hold the git submodule reference to the upstream repository.
+* contain a Containerfile that references and pulls in the git submodule(s) content.
+* become a Component of our {ProductName} application.
+
+=== Create the git submodule for the upstream repo to track it
+
+An **upstream repo** is a community project which you do not have push access to (or which you do not want to push CI changes into).
+
+After creating the downstream repo, add a git submodule for the upstream repo:
+
+[source, bash]
+----
+git submodule add <upstream-url>
+----
+
+Check and configure the git submodule config:
+[source, gitmodules]
+----
+# .gitmodules
+[submodule "<project-name>"]
+  path = <path-in-downstream-repo>
+  url = https://github.com/<namespace>/<project>.git
+  branch = main # Ensure the branch is correct
+----
+See the link:https://git-scm.com/docs/gitsubmodules[Git documentation] for more details on configuring git submodules.
+
+=== Onboard the project onto {ProductName}
+
+After creating the repository, onboard to {ProductName} and configure your application and its components.
+
+**Note:**
+The xref:/getting-started/index.adoc[Getting started docs] are currently geared towards configuring YAML files.
+____
+At the time of publication, to create applications in {ProductName}, you need to manually configure them by editing YAML files
+____
+
+This repo was configured using the {ProductName} UI.
+There does not seem to be any detailed steps on how to do this yet via the UI.
+
+Here are some **brief** steps on onboarding to {ProductName} using the UI:
+
+1. Create an application in your workspace.
+2. Configure your application component.
+3. If you're using Github, ensure that you have the link:https://github.com/apps/red-hat-konflux[Red Hat {ProductName} bot] enabled.
+4. Check your {ProductName} CI results. Ensure that your component was able to be pulled from, built and tested.
+
+For more information on configuring creating applications and components, please read xref:/how-tos/creating.adoc[this documentation].
+
+== Benefits of this pattern
+
+1. **Separation of Concerns**: The downstream repo can stay focused on its specific development goals while the submodule handles its own code. This keeps your downstream repo clean and modular.
+2. **Automatic Dependency Syncing with link:https://github.com/renovatebot/renovate[Renovate]**: By automating the dependency sync process, whether its syncing the git submodule, the Containerfile, etc. your downstream repo can always use the latest code from the upstream repo(s), ensuring that your project benefits from new features, bug fixes, and security updates.
+3. **Version Control for upstream repos**: You can lock the submodule to a specific commit or version, giving you control over when and how updates are integrated. This is especially useful if an upstream update introduces breaking changes.
+4. **{ProductName} CI**: Automated building and testing of your software artifacts help ensure that changes in the upstream repo don't break your downstream project.
+
+== Potential drawbacks
+
+1. **Complexity**: Managing submodules and automating their updates adds complexity to your workflow, such as:
+  - Debugging issues related to submodule updates
+  - Your automation configuration can be more challenging.
+2. **Dependency Management**: Breaking changes in the upstream repo can affect your downstream repo, requiring manual intervention to fix integration issues.
+3. **Merge Conflicts**: If you have automatic updates configured, this might lead to merge conflicts, especially if both the upstream and downstream repos are being actively developed. Resolving these conflicts might require manual effort.
+
+== Gitlab support
+
+GitLab is supported, you need to follow xref:/how-tos/configuring/creating-secrets.adoc [Creating secrets for your build] to provide the token to access your GitLab repository.
+
+To do that you have to create a secret from command line. Refer to link:https://gitlab.cee.redhat.com/konflux/docs/users/-/blob/main/topics/getting-started/getting-access.md#accessing-konflux-via-cli[Accessing {ProductName} via CLI] for how to login with CLI.
+
+Also refer to this doc for which cluster you can use: link:https://gitlab.cee.redhat.com/konflux/docs/users/-/blob/main/topics/overview/deployments.md[deployments].
+
+For example, you can't access internal network with public clusters, with internal clusters, you can only use internal gitlab repositories plus gitlab.com/redhat repositories, there are other restrictions as well.
+
+After onboarding your downstream project repo in Gitlab onto {ProductName} you should be able to follow a similar workflow pattern to the one outlined here.

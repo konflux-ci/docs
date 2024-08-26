@@ -1,0 +1,6 @@
+= Generic workflows for {ProductName} integrated repositories
+
+Depending on your use case, there are several workflows you can use for repositories that are integrated with {ProductName}:
+
+* xref:/how-tos/workflows/git-submodules.adoc[Git Submodule pattern]
+
