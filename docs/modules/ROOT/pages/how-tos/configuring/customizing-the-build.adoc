@@ -176,6 +176,59 @@ An example of a custom task added to the pipeline that sends a slack notificatio
 
 Custom Tasks may need access to data from other Tasks. However, in order to not break the chain of trust in a build Pipeline, there are restrictions in modifying such data. For example, a custom Task should not be allowed to modify the component's source code. If you are using the Enterprise Contract (EC) to verify your builds, introducing a custom Task may violate the link:https://enterprisecontract.dev/docs/ec-policies/release_policy.html#trusted_task__trusted[Trusted Tasks] rule. See xref:advanced-how-tos/using-trusted-artifacts.adoc[Trusted Artifacts] for how to safely allow share data between Tasks.
 
+== Extending the build pipeline with your own tasks using Trusted Artifacts
+
+If you are using the Enterprise Contract (EC) to verify your builds, you can extend the build pipeline with your own tasks using Trusted Artifacts. Trusted Artifacts allow you to share data between Tasks in a secure way. For example, the `task-git-clone` task, has Trusted Artifacts version called `task-git-clone-oci-ta`. 
+[NOTE]
+====
+You can find more tasks link:https://quay.io/organization/konflux-ci[here] and their build definitions link:https://github.com/konflux-ci/build-definitions/tree/main/task[here]. Task generating Trusted Artifacts have `-oci-ta` suffix.
+====
+
+.Adding oci-ta task to pipeline 
+
+In your Pipeline definition, add a new task to the `tasks` section.
+
+[source,yaml]
+--
+spec:
+  tasks:
+    # ...
+    - name: clone-repository-oci-ta
+      params:
+      - name: url
+        value: $(params.git-url)
+      - name: revision
+        value: $(params.revision)
+      - name: ociStorage
+        # needs to be unique storage name within the pipeline definition
+        value: $(params.output-image).git
+      runAfter:
+      - init
+      taskRef:
+        params:
+        - name: name
+          value: git-clone-oci-ta
+        - name: bundle
+          value: quay.io/konflux-ci/tekton-catalog/task-git-clone-oci-ta@sha256:0f4360ce144d46171ebd2e8f4d4575539a0600e02208ba5fc9beeb2c27ddfd4c
+        - name: kind
+          value: task
+        resolver: bundles
+      workspaces:
+      # use the git-auth workspace for credentials
+      - name: basic-auth
+        workspace: git-auth  
+--
+
+The trusted tasks generate `SOURCE_ARTIFACT` result. This result can be used by other tasks in the pipeline.
+
+.Using `SOURCE_ARTIFACT` in another task
+
+In order to use the `SOURCE_ARTIFACT` in another task, the artifact has to be added as a parameter to the task. The artifact itself is then loaded to a volume accessible only to the task.
+
+You can check link:https://github.com/RedHatInsights/chrome-service-backend/blob/main/.tekton/chrome-service-pull-request.yaml[pipeline] of using the `SOURCE_ARTIFACT` in the pipeline. Look for the `validate-schemas` task.
+
+The task has access to the repository source code, while maintaining the security of the build pipeline and following policies set by EC. This is a common use case for running unit tests, validating the source code, or running a linter.
+
 == Exchanging the build pipeline build task with higher memory limits
 
 The `buildah` task, which builds components from a Dockerfile, has a memory limit of 4 GB. To build components with memory requirements greater than 4 GB, use the following tasks:

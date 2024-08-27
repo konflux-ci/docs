@@ -15,6 +15,7 @@
 ** xref:how-tos/testing/index.adoc[Testing your components and applications]
 *** xref:how-tos/testing/build/index.adoc[Build-time tests]
 **** xref:how-tos/testing/build/snyk.adoc[Enabling Snyk]
+**** xref:how-tos/testing/build/sidecars.adoc[Enabling sidecar containers]
 *** xref:how-tos/testing/integration/index.adoc[Integration tests]
 **** xref:how-tos/testing/integration/adding.adoc[Adding an integration test]
 **** xref:how-tos/testing/integration/creating.adoc[Creating a custom integration test]
