@@ -96,7 +96,7 @@ see link:https://git-scm.com/docs/gitsubmodules[Git documentation] for more deta
 
 After creating the downstream repository you can onboard the component. See xref:/how-tos/creating.adoc[Creating applications and components] for more details.
 
-== Benefits of this pattern
+== Benefits of this guideline
 
 1. **Separation of Concerns**: The downstream repo can stay focused on its specific development goals while the submodule handles its own code. This keeps your downstream repo clean and modular.
 2. **Automatic Dependency Syncing with link:https://github.com/renovatebot/renovate[Renovate]**: By automating the dependency sync process, whether its syncing the git submodule, the Containerfile, etc. your downstream repo can always use the latest code from the upstream repo(s), ensuring that your project benefits from new features, bug fixes, and security updates.
@@ -121,4 +121,4 @@ Also refer to this doc for which cluster you can use: link:https://gitlab.cee.re
 
 For example, you can't access internal network with public clusters, with internal clusters, you can only use internal gitlab repositories plus gitlab.com/redhat repositories, there are other restrictions as well.
 
-After onboarding your downstream project repo in Gitlab onto {ProductName} you should be able to follow a similar workflow pattern to the one outlined here.
+After onboarding your downstream project repo in Gitlab onto {ProductName} you should be able to follow a similar guideline to the one outlined here.
