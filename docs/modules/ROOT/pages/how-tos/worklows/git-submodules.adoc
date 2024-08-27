@@ -1,26 +1,76 @@
-= Git Submodule pattern
+= Git Submodule guideline
 
-== How this workflow pattern works:
+This document outlines some basic guidelines for synchronizing changes between an upstream and downstream repository using Git submodules.
 
-1. Create a "downstream" repo.
-2. Track your upstream git repo with a git submodule reference.
-3. Onboard to {ProductName}, use link:https://github.com/renovatebot/renovate[Renovate] to keep your Git submodule references up to date.
-4. In your downstream repo, apply patches in your Containerfile if you need to carry downstream patches.
+By leveraging Git submodules, it is possible to maintain a consistent and up-to-date relationship between related repositories (upstream and downstream) while having more control of how the project is built, tested and released.
 
-== Implementing this solution pattern
+Additionally, the integration with Konflux can automate key aspects of this process, ensuring that changes from the upstream repository are efficiently and reliably propagated to the downstream repository.
+
+== Implementing this guideline
+=== Basic definitions
+
+- **Upstream repo**: a community project which you do not have push access to (or which you do not want to push CI changes into).
+
+- **Downstream repo**: a self-owned copy of the upstream repository whose build, test, release lifecycle you want to control completely.
+
 === Create a downstream repo
 
-A **downstream repo** is a self-owned copy of the upstream repository whose build, test, release lifecycle you want to control completely.
+The downstream repo can be used to do the following:
 
-The downstream repo will:
+* hold the git submodule reference to the upstream repository.
+* use the contents of the git submodule in a Containerfile for further edits.
+* onboarded onto {ProductName}.
 
-* be used to hold the git submodule reference to the upstream repository.
-* contain a Containerfile that references and pulls in the git submodule(s) content.
-* become a Component of our {ProductName} application.
+==== Configuring components
+
+Here is an example of a component definition:
+
+[source, yaml]
+----
+apiVersion: appstudio.redhat.com/v1alpha1
+kind: Component
+metadata:
+  name: <component-name>
+  namespace: <project-namespace>
+  annotations:
+    build.appstudio.openshift.io/request: configure-pac
+    image.redhat.com/generate: '{"visibility": "public"}'
+spec:
+  application: <application-name>
+  componentName: <component-name>
+  source:
+    git:
+      revision: main
+      url: <downstream repo name>
+      dockerfileUrl: <Dockerfile/Containefile path in downstream repository>
+      context: <directory path used to build the Containerfile/Dockerfile>
+----
+
+See xref:/how-tos/creating.adoc[Creating applications and components] for more details.
+
+==== Configuring the Containerfile
+
+In the Containerfile you can specify the git submodule directories and add any necessary edits that differ from the upstream repository. Here is a basic example:
+
+[source, Dockerfile]
+----
+FROM <base-image>
+ENV <SUBMODULEPKG> /path/to/submodule
+
+# Install necessary dependencies
+RUN dnf -y install <dependencies>
+
+# Set the working directory
+WORKDIR ${<SUBMODULEPKG>}
+
+RUN sed -i 's/<old-text>/<new-text>/g' /file/in/submodule/directory
+
+WORKDIR /app
+
+ENTRYPOINT ["<entrypoint-executable>"]
+----
 
 === Create the git submodule for the upstream repo to track it
-
-An **upstream repo** is a community project which you do not have push access to (or which you do not want to push CI changes into).
 
 After creating the downstream repo, add a git submodule for the upstream repo:
 
@@ -36,31 +86,15 @@ Check and configure the git submodule config:
 [submodule "<project-name>"]
   path = <path-in-downstream-repo>
   url = https://github.com/<namespace>/<project>.git
-  branch = main # Ensure the branch is correct
 ----
 See the link:https://git-scm.com/docs/gitsubmodules[Git documentation] for more details on configuring git submodules.
 
-=== Onboard the project onto {ProductName}
+**Note**: By default the branch is not specified in the git submodule configuration file when adding a git submodule.
+see link:https://git-scm.com/docs/gitsubmodules[Git documentation] for more details on how to configure the branches for the submodules.
 
-After creating the repository, onboard to {ProductName} and configure your application and its components.
+=== Onboard the component onto {ProductName}
 
-**Note:**
-The xref:/getting-started/index.adoc[Getting started docs] are currently geared towards configuring YAML files.
-____
-At the time of publication, to create applications in {ProductName}, you need to manually configure them by editing YAML files
-____
-
-This repo was configured using the {ProductName} UI.
-There does not seem to be any detailed steps on how to do this yet via the UI.
-
-Here are some **brief** steps on onboarding to {ProductName} using the UI:
-
-1. Create an application in your workspace.
-2. Configure your application component.
-3. If you're using Github, ensure that you have the link:https://github.com/apps/red-hat-konflux[Red Hat {ProductName} bot] enabled.
-4. Check your {ProductName} CI results. Ensure that your component was able to be pulled from, built and tested.
-
-For more information on configuring creating applications and components, please read xref:/how-tos/creating.adoc[this documentation].
+After creating the downstream repository you can onboard the component. See xref:/how-tos/creating.adoc[Creating applications and components] for more details.
 
 == Benefits of this pattern
 
@@ -74,7 +108,7 @@ For more information on configuring creating applications and components, please
 1. **Complexity**: Managing submodules and automating their updates adds complexity to your workflow, such as:
   - Debugging issues related to submodule updates
   - Your automation configuration can be more challenging.
-2. **Dependency Management**: Breaking changes in the upstream repo can affect your downstream repo, requiring manual intervention to fix integration issues.
+2. **Dependency Management**: Breaking changes in the upstream repo can affect your downstream repo. In scenarios like this it is strongly recommended to proceed with caution when fixing such issues.
 3. **Merge Conflicts**: If you have automatic updates configured, this might lead to merge conflicts, especially if both the upstream and downstream repos are being actively developed. Resolving these conflicts might require manual effort.
 
 == Gitlab support
