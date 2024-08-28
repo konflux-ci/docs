@@ -41,6 +41,7 @@ kubectl -n pipelines-as-code create secret generic pipelines-as-code-secret \
 . Now, you can trigger your application’s first build pipeline. In the git repository for your application, using your preferred text editor, open a pull request against the `/.tekton/pull-request.yaml` file. 
 .. Specifically, replace any existing value for the `git-url` field with the git URL for your application’s repository. (This is the URL you would use to clone the repository locally; it ends with `.git`.)
 
++
 NOTE: The PipelineRun will run only for submitters who have permission to run PipelineRuns or who receive an `/ok-to-test` comment from an authorized user. +
 For further details on PipelineRun permissions, please refer to the https://pipelinesascode.com/docs/guide/running/[PipelinesAsCode documentation].
 
@@ -50,7 +51,7 @@ For further details on PipelineRun permissions, please refer to the https://pipe
 
 If you want to create an application that contains multiple components, model your `application-and-component.yaml` file after the following example.
 
-[source]
+[source,yaml]
 --
 ---
 apiVersion: appstudio.redhat.com/v1alpha1
