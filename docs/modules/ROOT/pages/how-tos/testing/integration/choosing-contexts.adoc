@@ -1,0 +1,65 @@
+= Choosing when to run certain Integration Tests
+
+Integration test scenarios can be configured to run in only certain cases (contexts).
+The supported contexts are listed below:
+
+* “application”  - runs the integration test in all cases - this is the default state
+* “component” - runs the integration tests only in case of single component builds - this is the most common use case
+* "group” - runs the integration test for a Snapshot that was created for a PR group
+* "override” - runs the integration test for an `override`  Snapshot
+** See more in xref:how-tos/testing/integration/override-snapshots.adoc[Creating an override snapshot]
+* “component_COMPONENT” - runs the integration test for a specific component update
+** For a component  `sample-component`, this context would need to be `component_sample-component`
+* "pull_request” - runs the integration test in case of the Snapshot being created for a `pull request` event
+* “push” - runs the integration test in case of the Snapshot being created for a `push` event
+
++
+NOTE: Setting more than one context in the list will run the IntegrationTestScenario for both contexts (logical OR).
+
+.Prerequisites
+- You have CLI access to the specific OpenShift cluster. For information on obtaining CLI access, refer link:https://konflux-ci.dev/docs/getting-started/cli/[Getting started with the CLI].
+
+.Procedure
+
+. Identify the IntegrationTestScenario that you want to run only in certain cases.
+
+. Edit the IntegrationTestScenario using kubectl.
+
++
+[source]
+----
+$ kubectl edit integrationtestscenario [integrationtestscenario name]
+----
+
+. Modify the `contexts` field by setting the list of contexts you wish the IntegrationTestScenario.
++
+Example integrationTestScenario configuration with the pull_request context:
+
++
+[source]
+----
+apiVersion: appstudio.redhat.com/v1beta1
+kind: IntegrationTestScenario
+metadata:
+  name: example-pass
+  namespace: default
+spec:
+  application: application-sample
+  contexts:
+    - description: PR testing
+      name: pull_request
+  resolverRef:
+    resolver: git
+    params:
+      - name: url
+        value: https://github.com/konflux-ci/integration-examples
+      - name: revision
+        value: main
+      - name: pathInRepo
+        value: pipelines/integration_pipeline_pass.yaml
+----
+
+.Verification
+
+. To verify the configuration, run a component build in the desired context (e.g. as part of a Pull Request) and
+verify if the integration test pipeline was executed according to your expectations.
