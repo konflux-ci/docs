@@ -11,6 +11,7 @@
 *** xref:how-tos/configuring/redundant-rebuilds.adoc[Preventing redundant rebuilds]
 *** xref:how-tos/configuring/build-with-args.adoc[Passing buildah arguments]
 *** xref:how-tos/configuring/custom-tags.adoc[Using custom tags]
+*** xref:how-tos/configuring/overriding-compute-resources.adoc[Overriding compute resources]
 *** xref:how-tos/configuring/entitlement_subscription.adoc[Using Red Hat entitlement subscription]
 ** xref:how-tos/testing/index.adoc[Testing your components and applications]
 *** xref:how-tos/testing/build/index.adoc[Build-time tests]

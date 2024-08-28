@@ -1,0 +1,88 @@
+= Overriding compute resources
+
+_For background on compute resources, see link:https://tekton.dev/docs/pipelines/compute-resources/[Compute Resources in Tekton]._
+
+{ProductName} tasks have default resource requests and limits.
+Some set them explicitly in the Task definition,
+others inherit them from the link:https://tekton.dev/docs/pipelines/compute-resources/#limitrange-support[LimitRange] in your namespace.
+
+If the default resources do not meet your needs, you can take advantage of Tekton's
+link:https://tekton.dev/docs/pipelines/pipelineruns/#specifying-taskrunspecs[taskRunSpecs] to override them.
+You can configure `taskRunSpecs` in the PipelineRun files in your `.tekton` directory. For example:
+
+[source,yaml]
+----
+kind: PipelineRun
+spec:
+  taskRunSpecs:
+    - pipelineTaskName: build-container
+      stepSpecs:
+        - name: build
+          computeResources:
+            requests:
+              memory: 10Gi
+            limits:
+              memory: 10Gi
+
+    - pipelineTaskName: prefetch-dependencies
+      computeResources:
+        requests:
+          cpu: '1'
+          memory: 2Gi
+        limits:
+          memory: 2Gi
+
+  pipelineSpec:
+    tasks:
+      # ...
+      - name: prefetch-dependencies
+        taskRef: ...
+      # ...
+      - name: build-container
+        taskRef:
+          resolver: bundles
+          params:
+            - name: kind
+              value: task
+            - name: name
+              value: buildah
+            - name: bundle
+              value: quay.io/konflux-ci/tekton-catalog/task-buildah:0.2
+----
+
+This PipelineRun:
+
+* Overrides the resources for the `build` step in the `build-container` task.
+  Other steps in the `build-container` task are not affected.
+* Sets the overall resources for the `prefetch-dependencies` task.
+  Tekton divides the resources equally among all the steps in the task.
+  If the prefetch task has two steps, each will receive `500m` cpu and `1Gi` memory.
+
+[TIP]
+====
+When overriding the resources for a specific step, you need to know the name of the step.
+You can find the names of all steps in the Task definition.
+If your Pipeline references the task as a bundle (like the example above), you can use the
+link:https://tekton.dev/docs/cli/[tkn] tool to see the Task definition:
+
+[source]
+----
+tkn bundle list -o yaml quay.io/konflux-ci/tekton-catalog/task-buildah:0.2
+----
+
+====
+
+[NOTE]
+====
+To set the overall resources, we use
+link:https://tekton.dev/docs/pipelines/compute-resources/#task-level-compute-resources-configuration[task-level computeResources].
+To set the resources for a specific step, we use
+link:https://tekton.dev/docs/pipelines/taskruns/#configuring-task-steps-and-sidecars-in-a-taskrun[stepSpecs].
+
+As of Tekton Pipelines `v0.61.0`, task-level `computeResources` are a Beta feature and `stepSpecs` are an Alpha feature.
+These features may not be enabled for your Tekton installation, confirm with your cluster administrator.
+See the Tekton documentation on
+link:https://tekton.dev/docs/pipelines/additional-configs/#beta-features[Beta Features] and
+link:https://tekton.dev/docs/pipelines/additional-configs/#alpha-features[Alpha Features].
+
+====
