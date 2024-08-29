@@ -104,7 +104,7 @@ When using private repositories we encourage that you give the link:https://gith
 
 ==== Gitlab
 
-For Gitlab repositories please see xref:/how-tos/configuring/creating-secrets.adoc[Creating secrets for your builds]
+For Gitlab repositories please see <<create-source-control-secrets,Creating source control secrets>>
 
 == Benefits of this guideline
 
