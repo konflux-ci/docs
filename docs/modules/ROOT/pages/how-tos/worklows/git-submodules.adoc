@@ -96,6 +96,16 @@ see link:https://git-scm.com/docs/gitsubmodules[Git documentation] for more deta
 
 After creating the downstream repository you can onboard the component. See xref:/how-tos/creating.adoc[Creating applications and components] for more details.
 
+=== Using private repositories as a git submodule
+
+==== Github
+
+When using private repositories we encourage that you give the link:https://github.com/apps/red-hat-konflux[Red Hat {ProductName} Github app] access to that private repository.
+
+==== Gitlab
+
+For Gitlab repositories please see xref:/how-tos/configuring/creating-secrets.adoc[Creating secrets for your builds]
+
 == Benefits of this guideline
 
 1. **Separation of Concerns**: The downstream repo can stay focused on its specific development goals while the submodule handles its own code. This keeps your downstream repo clean and modular.
