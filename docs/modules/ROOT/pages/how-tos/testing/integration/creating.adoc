@@ -1,12 +1,12 @@
 = Creating a custom integration test
 
-In {ProductName}, you can create your own integration tests to run on all components of a given application before they are deployed. 
+In {ProductName}, you can create your own integration tests to run on all components of a given application before they are deployed.
 
 .Procedure
 
 To create any custom test, complete the following steps:
 
-. In your preferred IDE, create a Tekton pipeline in a `.yaml` file. 
+. In your preferred IDE, create a Tekton pipeline in a `.yaml` file.
 
 . Within that pipeline, create tasks, which define the actual steps of the test that {ProductName} executes against images before deploying them.
 
@@ -24,7 +24,7 @@ To create a custom test that checks that your app serves the text “Hello world
 Example pipeline file:
 
 +
-[source]
+[source,yaml]
 ----
 kind: Pipeline
 apiVersion: tekton.dev/v1beta1
@@ -45,7 +45,7 @@ spec:
 Example task declaration:
 
 +
-[source]
+[source,yaml]
 ----
 tasks:
   - name: task-1
@@ -79,7 +79,7 @@ tasks:
 
 ----
 
-. Save the `.yaml` file. 
+. Save the `.yaml` file.
 
 .. If you haven’t already, commit this file to a GitHub repository that {ProductName} can access.
 
@@ -87,7 +87,7 @@ tasks:
 Complete example file:
 
 +
-[source]
+[source,yaml]
 ----
 kind: Pipeline
 apiVersion: tekton.dev/v1beta1
@@ -157,10 +157,56 @@ Labels:
 
 * *`appstudio.openshift.io/snapshot`*: contains the name of the snapshot.
 
-* *`test.appstudio.openshift.io/optional`*: contains the optional flag, which specifies whether or not components must pass the integration test before release. 
+* *`test.appstudio.openshift.io/optional`*: contains the optional flag, which specifies whether or not components must pass the integration test before release.
 
-* *`test.appstudio.openshift.io/scenario`*: contains the name of the integration test (this label ends with "scenario," because each test is technically a custom resource called an `IntegrationTestScenario`). 
+* *`test.appstudio.openshift.io/scenario`*: contains the name of the integration test (this label ends with "scenario," because each test is technically a custom resource called an `IntegrationTestScenario`).
 
+NOTE: It is also possible to set custom labels or annotations in the build pipelineRun, and those will be copied over
+to all integration pipelineRuns associated with that build. The labels/annotations have to have the
+`custom.appstudio.openshift.io` prefix in order to be copied in this manner.
+
+.Utilizing the labels and annotations within the integration pipeline run
+
+It is possible to use the injected metadata within the integration PipelineRun itself in order to influence the testing behavior.
+This can be done by exposing the pipelineRun labels as environment variables within a Task and then referencing them within the Task logic.
+
+Example of extracting the component name and finding its image within the SNAPSHOT parameter's JSON data:
+
+[source,yaml]
+----
+apiVersion: tekton.dev/v1
+kind: Task
+metadata:
+  name: test-metadata
+spec:
+  params:
+    - name: SNAPSHOT
+      description: The JSON string of the Snapshot under test
+  steps:
+    - name: find-component-image
+      image: quay.io/redhat-appstudio/konflux-test:stable
+      workingDir: /workspace
+      env:
+        - name: SNAPSHOT
+          value: $(params.SNAPSHOT)
+        - name: COMPONENT_NAME
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.labels['appstudio.openshift.io/component']
+      script: |
+        #!/bin/sh
+
+        # Extract the component container image from the SNAPSHOT JSON data
+        COMPONENT_CONTAINER_IMAGE=$(jq -r --arg component_name "${COMPONENT_NAME}" '.components[] | select(.name == $component_name) | .containerImage' <<< "${SNAPSHOT}")
+
+        # Log the extracted variable
+        echo "  COMPONENT_CONTAINER_IMAGE: ${COMPONENT_CONTAINER_IMAGE}"
+----
+
+NOTE: For more examples of available labels and how they can be used within the integration tests, consult the
+link:https://github.com/konflux-ci/integration-examples/blob/main/tasks/test_metadata.yaml[example test-metadata task] as well as the
+link:https://github.com/konflux-ci/integration-examples/blob/main/pipelines/integration_resolver_pipeline_pass_metadata.yaml[example integration pipeline]
+which uses the information from that task's results to influence its workflow.
 
 .Verification
 
