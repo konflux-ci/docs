@@ -125,10 +125,4 @@ For Gitlab repositories please see xref:/how-tos/configuring/creating-secrets.ad
 
 GitLab is supported, you need to follow xref:/how-tos/configuring/creating-secrets.adoc [Creating secrets for your build] to provide the token to access your GitLab repository.
 
-To do that you have to create a secret from command line. Refer to link:https://gitlab.cee.redhat.com/konflux/docs/users/-/blob/main/topics/getting-started/getting-access.md#accessing-konflux-via-cli[Accessing {ProductName} via CLI] for how to login with CLI.
-
-Also refer to this doc for which cluster you can use: link:https://gitlab.cee.redhat.com/konflux/docs/users/-/blob/main/topics/overview/deployments.md[deployments].
-
-For example, you can't access internal network with public clusters, with internal clusters, you can only use internal gitlab repositories plus gitlab.com/redhat repositories, there are other restrictions as well.
-
 After onboarding your downstream project repo in Gitlab onto {ProductName} you should be able to follow a similar guideline to the one outlined here.
