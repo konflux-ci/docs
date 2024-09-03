@@ -23,6 +23,8 @@ The downstream repo can be used to do the following:
 
 ==== Configuring components
 
+CAUTION: Make sure to properly set the xref:/how-tos/creating.doc#context-and-containerfile-path[Context and Containerfile path] as required for the artifact builds.
+
 See xref:/how-tos/creating.adoc[Creating applications and components] for more details.
 
 ==== Configuring the Containerfile
