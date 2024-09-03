@@ -23,29 +23,6 @@ The downstream repo can be used to do the following:
 
 ==== Configuring components
 
-Here is an example of a component definition:
-
-[source, yaml]
-----
-apiVersion: appstudio.redhat.com/v1alpha1
-kind: Component
-metadata:
-  name: <component-name>
-  namespace: <project-namespace>
-  annotations:
-    build.appstudio.openshift.io/request: configure-pac
-    image.redhat.com/generate: '{"visibility": "public"}'
-spec:
-  application: <application-name>
-  componentName: <component-name>
-  source:
-    git:
-      revision: main
-      url: <downstream repo name>
-      dockerfileUrl: <Dockerfile/Containefile path in downstream repository>
-      context: <directory path used to build the Containerfile/Dockerfile>
-----
-
 See xref:/how-tos/creating.adoc[Creating applications and components] for more details.
 
 ==== Configuring the Containerfile
@@ -55,17 +32,24 @@ In the Containerfile you can specify the git submodule directories and add any n
 [source, Dockerfile]
 ----
 FROM <base-image>
-ENV <SUBMODULEPKG> /path/to/submodule
 
 # Install necessary dependencies
 RUN dnf -y install <dependencies>
 
 # Set the working directory
+ENV <SUBMODULEPKG> /path/to/submodule
 WORKDIR ${<SUBMODULEPKG>}
 
-RUN sed -i 's/<old-text>/<new-text>/g' /file/in/submodule/directory
+# Commands to update the submodule for the current image build
+RUN sed -i 's/<old-text>/<new-text>/g' file/in/submodule/directory
+# Commands to build binary from submodule sources
+RUN go build file/in/submodule/directory
 
 WORKDIR /app
+
+LABEL name="<name" \
+      summary="<summary>" \
+      description="<description>"
 
 ENTRYPOINT ["<entrypoint-executable>"]
 ----
@@ -96,15 +80,9 @@ see link:https://git-scm.com/docs/gitsubmodules[Git documentation] for more deta
 
 After creating the downstream repository you can onboard the component. See xref:/how-tos/creating.adoc[Creating applications and components] for more details.
 
-=== Using private repositories as a git submodule
-
-==== Github
+=== Using private repositories as a git submodule:
 
 When using private repositories we encourage that you give the link:https://github.com/apps/red-hat-konflux[Red Hat {ProductName} Github app] access to that private repository.
-
-==== Gitlab
-
-For Gitlab repositories please see xref:/how-tos/configuring/creating-secrets.adoc#creating-source-control-secrets[Creating secrets for your builds]
 
 == Benefits of this guideline
 
@@ -118,11 +96,4 @@ For Gitlab repositories please see xref:/how-tos/configuring/creating-secrets.ad
 1. **Complexity**: Managing submodules and automating their updates adds complexity to your workflow, such as:
   - Debugging issues related to submodule updates
   - Your automation configuration can be more challenging.
-2. **Dependency Management**: Breaking changes in the upstream repo can affect your downstream repo. In scenarios like this it is strongly recommended to proceed with caution when fixing such issues.
-3. **Merge Conflicts**: If you have automatic updates configured, this might lead to merge conflicts, especially if both the upstream and downstream repos are being actively developed. Resolving these conflicts might require manual effort.
-
-== Gitlab support
-
-GitLab is supported, you need to follow xref:/how-tos/configuring/creating-secrets.adoc [Creating secrets for your build] to provide the token to access your GitLab repository.
-
-After onboarding your downstream project repo in Gitlab onto {ProductName} you should be able to follow a similar guideline to the one outlined here.
+  - Updates in the submodules can be opaque which can result in drift between your build process and that of the original repository.
