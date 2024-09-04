@@ -38,9 +38,8 @@ NOTE: You can also delete an application by selecting *Actions > Delete Applicat
 +
 [source,command]
 ----
-oc delete application/<the-application-name>
+kubectl delete application/<the-application-name>
 ----
 
 == Additional resources
-* To create your first application in the web UI, refer to xref:getting-started/index.adoc[Getting started with {ProductName}].
-* To create your first application using CLI, refer to xref:getting-started/cli.adoc[Getting started in CLI].
+* To create your first application, refer to xref:/how-tos/creating.adoc[Creating applications and components].

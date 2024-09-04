@@ -61,14 +61,14 @@ Alternatively, in the git repo for the component that nudges, push a commit. Whe
 
 Prerequisites:
 
-* `oc` CLI tool
+* You have completed the steps listed in the xref:/getting-started/cli.adoc[Getting started in the CLI] page.
 
 .Procedure
 
 . In your CLI, xref:/getting-started/cli.adoc[login] to {ProductName}.
 . List your components, and identify the names of the components you want to relate to each other.
 +
-`oc get components`
+`kubectl get components`
 +
 [NOTE]
 ====
@@ -76,8 +76,11 @@ Component A _nudges_ Component B (or Component B _is nudged by_ Component A) if 
 ====
 . Patch the components to establish the nudging relationship.
 +
-`oc patch components <name of component that nudges> -p '{"spec":{"build-nudges-ref": ["<name of component that is nudged>"]}}' --type=merge --kubeconfig=<path to kubeconfig>`
+`kubectl patch components/<name of component that nudges> -p '{"spec":{"build-nudges-ref": ["<name of component that is nudged>"]}}' --type=merge --kubeconfig=<path to kubeconfig>`
+
 +
+NOTE: You can also use **kubectl edit** to add the build-nudges-ref instead of patching the component.
+
 .. You found the names of the two components in the last step.
 .. The `kubeconfig` and its path are the same you used to login to {ProductName}.
 
@@ -85,7 +88,7 @@ Component A _nudges_ Component B (or Component B _is nudged by_ Component A) if 
 
 * Get the component custom resource (CR) definition for the components that nudges. The definition should include a line that says `build-nudges-ref:`, and beneath that, the name of the component that is nudged.
 +
-`oc get components/<name of component that nudges> -o yaml --kubeconfig=<path to kubeconfig> | less`
+`kubectl get components/<name of component that nudges> -o yaml --kubeconfig=<path to kubeconfig> | less`
 * Push a commit to the component that nudges. When the build completes, you should see a new pull request appear for the component that is nudged. This new pull request contains the image digest for the new build of the parent image.
 
 

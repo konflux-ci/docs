@@ -34,7 +34,7 @@ NOTE: Creating a private fork of the public link:https://docs.github.com/en/repo
 * You can reuse a personal workspace, but limit the link:https://console.redhat.com/preview/application-pipeline/access[User Access] to a minimal number of required collaborators.
 ====
 
-. Log in to the original workspace where the application was previously being developed using the `oc` CLI tool. (See xref:/getting-started/cli.adoc[Getting started with CLI].) Append `/workspaces/<original-tenant-workspace>` to the {ProductName} API URL used in the `oc login` command to target a particular workspace other than your default user workspace.
+. Log in to the original workspace where the application was previously being developed using the `kubectl` CLI tool. (See xref:/getting-started/cli.adoc[Getting started with CLI].) Append `/workspaces/<original-tenant-workspace>` to the {ProductName} API URL used in the `kubectl login` command to target a particular workspace other than your default user workspace.
 // Add a link to the KUBECONFIG workflow when it's documented. Either approach is legit, up to a user to choose.
 . To export records the application from the original workspace with details changed to refer to your new private workspace, run the following command:
 
@@ -48,13 +48,13 @@ NOTE: Creating a private fork of the public link:https://docs.github.com/en/repo
 NOTE: Ensure that you have excluded the impacted component from which you have created a private mirror in step 1.
 
 . Confirm that the YAML file has been generated under the `./data` directory. This file contains the necessary information for importing the application into the new workspace.
-. Log in to the newly created private workspace using the `oc` CLI tool. Append `/workspaces/<private-workspace>` to the {ProductName} API URL used in the `oc login` command to target the new private workspace.
+. Log in to the newly created private workspace using the `kubectl` CLI tool. Append `/workspaces/<private-workspace>` to the {ProductName} API URL used in the `kubectl login` command to target the new private workspace.
 . Apply the generated YAML file to the new private workspace by using the following command:
 
 +
 [source,bash]
 ----
-oc apply -f ./data/<path-to-yaml>
+kubectl apply -f ./data/<path-to-yaml>
 ----
 
 . Within the {ProductName} UI, in the private workspace, import the private mirror as a new component in the application that you just created in step 7.
@@ -87,9 +87,9 @@ At this point, you should have a clone of your application in the new private wo
 
 . In the private workspace, use the UI to identify the pullspec of the image bearing the fix, pinned to digest.
 . In your team's normal workspace (not the private workspace), use the CLI to identify a `Snapshot` that you want to use as a basis for your new release. A common choice is "the most recently released Snapshot", which you can find by picking through your history of Releases sorted by creation date to find the relevant Snapshot identifier.
-. Use `oc` to extract the Snapshot that you want to use as a basis for your new release to a local yaml file with `oc get snapshots <that snapshot id> -o yaml > snapshot.yaml`
+. Use `kubectl` to extract the Snapshot that you want to use as a basis for your new release to a local yaml file with `kubectl get snapshots <that snapshot id> -o yaml > snapshot.yaml`
 . Edit the extracted file to construct a new `Snapshot` that replaces the impacted components pullspec with the pullspec of the image bearing the fix, pinned to digest. You can discard all annotations and labels and you should give the Snapshot a new `name`.
-. Create that new Snapshot in the system with `oc apply -f snapshot.yaml`.
+. Create that new Snapshot in the system with `kubectl apply -f snapshot.yaml`.
 . Review your integration test pipelines to confirm that the `Snapshot` is valid and can be released.
 . Create a `Release` resource referencing the specified `Snapshot`. Follow a similar procedure as outlined above. Export the existing `Release` as a starting point. Modify it to reference the new `Snapshot` and make any necessary adjustments.
 . In your team's normal workspace (not the private workspace), use the UI to watch the progress of the `Release`. When completed, your fix is live and available to your customers.

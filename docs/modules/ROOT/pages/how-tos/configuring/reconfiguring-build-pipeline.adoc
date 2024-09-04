@@ -9,7 +9,6 @@ After you have created a component {ProductName}, you may find yourself in a sit
 .*Prerequisites*
 
 * You have an existing Development workspace.
-* Ensure you have installed `oc`.
 * You have completed the steps listed in the xref:/getting-started/cli.adoc[Getting started in the CLI] page.
 
 == Reset the build pipeline
@@ -21,7 +20,7 @@ In the CLI, complete the following steps to reset the build pipeline:
 +
 [source]
 ----
-$ oc get components
+$ kubectl get components
 ----
 +
 .Example output
@@ -38,7 +37,7 @@ devfile-sample-python-basic-ikch   20d   True     OK       Updated
 +
 [source]
 ----
-$ oc edit component <component name>
+$ kubectl edit component <component name>
 ----
 
 .. While editing the component, add the request to `metadata.annotations`.
@@ -58,7 +57,7 @@ metadata:
 +
 WARNING: {ProductName} will submit a pull request to reset the Tekton pipeline in your git repository which will not have any previous customizations included. If you made changes that you want to preserve, you will need to re-apply these changes.
 
-== Changing to a different default pipeline
+== Changing to a different template pipeline [[changing-pipelines]]
 
 .Procedure
 In the CLI, complete the following steps to change the build pipeline:
@@ -67,7 +66,7 @@ In the CLI, complete the following steps to change the build pipeline:
 +
 [source]
 ----
-$ oc get components
+$ kubectl get components
 ----
 +
 .Example output
@@ -84,10 +83,10 @@ devfile-sample-python-basic-ikch   20d   True     OK       Updated
 +
 [source]
 ----
-$ oc edit component <component name>
+$ kubectl edit component <component name>
 ----
 
-.. While editing the component, update the pipeline and add the request to configure PAC to `metadata.annotations`.
+.. While editing the component, update the pipeline to one of the xref:/advanced-how-tos/installing/enabling-builds.adoc#customize-pipelines[configured pipelines] and add the request to configure PAC to `metadata.annotations`.
 
 +
 [source,yaml]
