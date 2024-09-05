@@ -1,21 +1,21 @@
-= Git Submodule guideline
+= Building upstream projects with git submodules
 
 This document outlines some basic guidelines for synchronizing changes between an upstream and downstream repository using Git submodules.
 
 By leveraging Git submodules, it is possible to maintain a consistent and up-to-date relationship between related repositories (upstream and downstream) while having more control of how the project is built, tested and released.
 
-Additionally, the integration with Konflux can automate key aspects of this process, ensuring that changes from the upstream repository are efficiently and reliably propagated to the downstream repository.
+Additionally, {ProductName} can automate key aspects of this process, ensuring that changes from the upstream repository are efficiently and reliably propagated to the downstream repository.
 
 == Implementing this guideline
 === Basic definitions
 
-- **Upstream repo**: a community project which you do not have push access to (or which you do not want to push CI changes into).
+- **Upstream repository**: a community project which you do not have push access to (or which you do not want to push CI changes into).
 
-- **Downstream repo**: a self-owned copy of the upstream repository whose build, test, release lifecycle you want to control completely.
+- **Downstream repository**: a self-owned copy of the upstream repository whose build, test, release lifecycle you want to control completely.
 
-=== Create a downstream repo
+=== Create a downstream repository
 
-The downstream repo can be used to do the following:
+The downstream repository can be used to do the following:
 
 * hold the git submodule reference to the upstream repository.
 * use the contents of the git submodule in a Containerfile for further edits.
@@ -23,7 +23,8 @@ The downstream repo can be used to do the following:
 
 ==== Configuring components
 
-CAUTION: Make sure to properly set the xref:/how-tos/creating.doc#context-and-containerfile-path[Context and Containerfile path] as required for the artifact builds.
+CAUTION: Make sure to properly set the context and Containerfile path as required for the artifact builds.
+You can keep the context value at the the repository root where the Containerfile and git submodules are located.
 
 See xref:/how-tos/creating.adoc[Creating applications and components] for more details.
 
@@ -56,9 +57,9 @@ LABEL name="<name" \
 ENTRYPOINT ["<entrypoint-executable>"]
 ----
 
-=== Create the git submodule for the upstream repo to track it
+=== Create the git submodule for the upstream repository to track it
 
-After creating the downstream repo, add a git submodule for the upstream repo:
+After creating the downstream repository, add a git submodule for the upstream repository:
 
 [source, bash]
 ----
@@ -70,13 +71,16 @@ Check and configure the git submodule config:
 ----
 # .gitmodules
 [submodule "<project-name>"]
-  path = <path-in-downstream-repo>
+  path = <path-in-downstream-repository>
   url = https://github.com/<namespace>/<project>.git
+  # Please note: by default a branch is not specified
+  # in the git submodule configuration file.
+  # Please consider setting one to prevent using the wrong branch.
+  # Here is an example of a branch being set:
+  branch = <designated-repository-branch>
 ----
-See the link:https://git-scm.com/docs/gitsubmodules[Git documentation] for more details on configuring git submodules.
 
-**Note**: By default the branch is not specified in the git submodule configuration file when adding a git submodule.
-see link:https://git-scm.com/docs/gitsubmodules[Git documentation] for more details on how to configure the branches for the submodules.
+See the link:https://git-scm.com/docs/gitsubmodules[Git documentation] for more details on configuring git submodules.
 
 === Onboard the component onto {ProductName}
 
@@ -86,12 +90,14 @@ After creating the downstream repository you can onboard the component. See xref
 
 When using private repositories we encourage that you give the link:https://github.com/apps/red-hat-konflux[Red Hat {ProductName} Github app] access to that private repository.
 
+Private Gitlab repositories are also supported as long as {ProductName} has access to them.
+
 == Benefits of this guideline
 
-1. **Separation of Concerns**: The downstream repo can stay focused on its specific development goals while the submodule handles its own code. This keeps your downstream repo clean and modular.
-2. **Automatic Dependency Syncing with link:https://github.com/renovatebot/renovate[Renovate]**: By automating the dependency sync process, whether its syncing the git submodule, the Containerfile, etc. your downstream repo can always use the latest code from the upstream repo(s), ensuring that your project benefits from new features, bug fixes, and security updates.
-3. **Version Control for upstream repos**: You can lock the submodule to a specific commit or version, giving you control over when and how updates are integrated. This is especially useful if an upstream update introduces breaking changes.
-4. **{ProductName} CI**: Automated building and testing of your software artifacts help ensure that changes in the upstream repo don't break your downstream project.
+1. **Separation of Concerns**: The downstream repository can stay focused on its specific development goals while the submodule handles its own code. This keeps your downstream repository clean and modular.
+2. **Automatic Dependency Syncing with link:https://github.com/renovatebot/renovate[Renovate]**: By automating the dependency sync process, whether its syncing the git submodule, the Containerfile, etc. your downstream repository can always use the latest code from the upstream repository(s), ensuring that your project benefits from new features, bug fixes, and security updates.
+3. **Version Control for upstream repositories**: You can lock the submodule to a specific commit or version, giving you control over when and how updates are integrated. This is especially useful if an upstream update introduces breaking changes.
+4. **{ProductName} CI**: Automated building and testing of your software artifacts help ensure that changes in the upstream repository don't break your downstream project.
 
 == Potential drawbacks
 
