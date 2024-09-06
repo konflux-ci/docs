@@ -92,6 +92,8 @@ When using private repositories we encourage that you give the link:https://gith
 
 Private Gitlab repositories are also supported as long as {ProductName} has access to them.
 
+NOTE: Private Gitlab submodules are currently untested.
+
 == Benefits of this guideline
 
 1. **Separation of Concerns**: The downstream repository can stay focused on its specific development goals while the submodule handles its own code. This keeps your downstream repository clean and modular.
