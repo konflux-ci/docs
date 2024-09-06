@@ -1,0 +1,571 @@
+[cols="1,1,1,1,1,1"]
+|===
+|Name|Description|README|Usage|Migration|Troubleshooting
+
+|https://github.com/konflux-ci/build-definitions/tree/main/task/acs-deploy-check/0.1/[acs-deploy-check @ 0.1]
+|Policy check a deployment with StackRox/RHACS This tasks allows you to check a deployment against build-time policies and apply enforcement to fail builds. It's a companion to the stackrox-image-scan task, which returns full vulnerability scan results for an image.
+|
+|
+|
+|
+
+|https://github.com/konflux-ci/build-definitions/tree/main/task/acs-image-check/0.1/[acs-image-check @ 0.1]
+|Policy check an image with StackRox/RHACS This tasks allows you to check an image against build-time policies and apply enforcement to fail builds. It's a companion to the stackrox-image-scan task, which returns full vulnerability scan results for an image.
+|
+|
+|
+|
+
+|https://github.com/konflux-ci/build-definitions/tree/main/task/acs-image-scan/0.1/[acs-image-scan @ 0.1]
+|Policy check an image with StackRox/RHACS This tasks allows you to check an image against build-time policies and apply enforcement to fail builds. It's a companion to the stackrox-image-scan task, which returns full vulnerability scan results for an image.
+|
+|
+|
+|
+
+|https://github.com/konflux-ci/build-definitions/tree/main/task/apply-tags/0.1/[apply-tags @ 0.1]
+|Applies additional tags to the built image.
+|https://github.com/konflux-ci/build-definitions/tree/main/task/apply-tags/0.1/README.md[README.md]
+|
+|
+|
+
+|https://github.com/konflux-ci/build-definitions/tree/main/task/buildah/0.1/[buildah @ 0.1]
+|Buildah task builds source code into a container image and pushes the image into container registry using buildah tool.
+|https://github.com/konflux-ci/build-definitions/tree/main/task/buildah/0.1/README.md[README.md]
+|
+|
+|
+
+|https://github.com/konflux-ci/build-definitions/tree/main/task/buildah/0.2/[buildah @ 0.2]
+|Buildah task builds source code into a container image and pushes the image into container registry using buildah tool.
+|https://github.com/konflux-ci/build-definitions/tree/main/task/buildah/0.2/README.md[README.md]
+|
+|https://github.com/konflux-ci/build-definitions/tree/main/task/buildah/0.2/MIGRATION.md[MIGRATION.md]
+|
+
+|https://github.com/konflux-ci/build-definitions/tree/main/task/buildah-10gb/0.1/[buildah-10gb @ 0.1]
+|
+|
+|
+|
+|
+
+|https://github.com/konflux-ci/build-definitions/tree/main/task/buildah-10gb/0.2/[buildah-10gb @ 0.2]
+|
+|
+|
+|https://github.com/konflux-ci/build-definitions/tree/main/task/buildah-10gb/0.2/MIGRATION.md[MIGRATION.md]
+|
+
+|https://github.com/konflux-ci/build-definitions/tree/main/task/buildah-20gb/0.1/[buildah-20gb @ 0.1]
+|
+|
+|
+|
+|
+
+|https://github.com/konflux-ci/build-definitions/tree/main/task/buildah-20gb/0.2/[buildah-20gb @ 0.2]
+|
+|
+|
+|https://github.com/konflux-ci/build-definitions/tree/main/task/buildah-20gb/0.2/MIGRATION.md[MIGRATION.md]
+|
+
+|https://github.com/konflux-ci/build-definitions/tree/main/task/buildah-24gb/0.1/[buildah-24gb @ 0.1]
+|
+|
+|
+|
+|
+
+|https://github.com/konflux-ci/build-definitions/tree/main/task/buildah-24gb/0.2/[buildah-24gb @ 0.2]
+|
+|
+|
+|https://github.com/konflux-ci/build-definitions/tree/main/task/buildah-24gb/0.2/MIGRATION.md[MIGRATION.md]
+|
+
+|https://github.com/konflux-ci/build-definitions/tree/main/task/buildah-6gb/0.1/[buildah-6gb @ 0.1]
+|
+|
+|
+|
+|
+
+|https://github.com/konflux-ci/build-definitions/tree/main/task/buildah-6gb/0.2/[buildah-6gb @ 0.2]
+|
+|
+|
+|https://github.com/konflux-ci/build-definitions/tree/main/task/buildah-6gb/0.2/MIGRATION.md[MIGRATION.md]
+|
+
+|https://github.com/konflux-ci/build-definitions/tree/main/task/buildah-8gb/0.1/[buildah-8gb @ 0.1]
+|
+|
+|
+|
+|
+
+|https://github.com/konflux-ci/build-definitions/tree/main/task/buildah-8gb/0.2/[buildah-8gb @ 0.2]
+|
+|
+|
+|https://github.com/konflux-ci/build-definitions/tree/main/task/buildah-8gb/0.2/MIGRATION.md[MIGRATION.md]
+|
+
+|https://github.com/konflux-ci/build-definitions/tree/main/task/buildah-min/0.1/[buildah-min @ 0.1]
+|
+|
+|
+|
+|
+
+|https://github.com/konflux-ci/build-definitions/tree/main/task/buildah-min/0.2/[buildah-min @ 0.2]
+|
+|
+|
+|https://github.com/konflux-ci/build-definitions/tree/main/task/buildah-min/0.2/MIGRATION.md[MIGRATION.md]
+|
+
+|https://github.com/konflux-ci/build-definitions/tree/main/task/buildah-oci-ta/0.1/[buildah-oci-ta @ 0.1]
+|Buildah task builds source code into a container image and pushes the image into container registry using buildah tool.
+|https://github.com/konflux-ci/build-definitions/tree/main/task/buildah-oci-ta/0.1/README.md[README.md]
+|
+|
+|
+
+|https://github.com/konflux-ci/build-definitions/tree/main/task/buildah-oci-ta/0.2/[buildah-oci-ta @ 0.2]
+|Buildah task builds source code into a container image and pushes the image into container registry using buildah tool.
+|https://github.com/konflux-ci/build-definitions/tree/main/task/buildah-oci-ta/0.2/README.md[README.md]
+|
+|https://github.com/konflux-ci/build-definitions/tree/main/task/buildah-oci-ta/0.2/MIGRATION.md[MIGRATION.md]
+|
+
+|https://github.com/konflux-ci/build-definitions/tree/main/task/buildah-remote/0.1/[buildah-remote @ 0.1]
+|Buildah task builds source code into a container image and pushes the image into container registry using buildah tool.
+|https://github.com/konflux-ci/build-definitions/tree/main/task/buildah-remote/0.1/README.md[README.md]
+|
+|
+|
+
+|https://github.com/konflux-ci/build-definitions/tree/main/task/buildah-remote/0.2/[buildah-remote @ 0.2]
+|Buildah task builds source code into a container image and pushes the image into container registry using buildah tool.
+|https://github.com/konflux-ci/build-definitions/tree/main/task/buildah-remote/0.2/README.md[README.md]
+|
+|https://github.com/konflux-ci/build-definitions/tree/main/task/buildah-remote/0.2/MIGRATION.md[MIGRATION.md]
+|
+
+|https://github.com/konflux-ci/build-definitions/tree/main/task/buildah-remote-oci-ta/0.1/[buildah-remote-oci-ta @ 0.1]
+|Buildah task builds source code into a container image and pushes the image into container registry using buildah tool.
+|
+|
+|
+|
+
+|https://github.com/konflux-ci/build-definitions/tree/main/task/buildah-remote-oci-ta/0.2/[buildah-remote-oci-ta @ 0.2]
+|Buildah task builds source code into a container image and pushes the image into container registry using buildah tool.
+|https://github.com/konflux-ci/build-definitions/tree/main/task/buildah-remote-oci-ta/0.2/README.md[README.md]
+|
+|https://github.com/konflux-ci/build-definitions/tree/main/task/buildah-remote-oci-ta/0.2/MIGRATION.md[MIGRATION.md]
+|
+
+|https://github.com/konflux-ci/build-definitions/tree/main/task/buildah-rhtap/0.1/[buildah-rhtap @ 0.1]
+|Buildah task builds source code into a container image and pushes the image into container registry using buildah tool.
+|
+|
+|
+|
+
+|https://github.com/konflux-ci/build-definitions/tree/main/task/build-image-index/0.1/[build-image-index @ 0.1]
+|This takes existing Image Manifests and combines them in an Image Index.
+|https://github.com/konflux-ci/build-definitions/tree/main/task/build-image-index/0.1/README.md[README.md]
+|
+|
+|
+
+|https://github.com/konflux-ci/build-definitions/tree/main/task/build-image-manifest/0.1/[build-image-manifest @ 0.1]
+|
+|https://github.com/konflux-ci/build-definitions/tree/main/task/build-image-manifest/0.1/README.md[README.md]
+|
+|
+|
+
+|https://github.com/konflux-ci/build-definitions/tree/main/task/build-vm-image/0.1/[build-vm-image @ 0.1]
+|Build disk images using bootc-image-builder. https://github.com/osbuild/bootc-image-builder/
+|
+|
+|
+|
+
+|https://github.com/konflux-ci/build-definitions/tree/main/task/clair-scan/0.1/[clair-scan @ 0.1]
+|Scans container images for vulnerabilities using Clair, by comparing the components of container image against Clair's vulnerability databases.
+|https://github.com/konflux-ci/build-definitions/tree/main/task/clair-scan/0.1/README.md[README.md]
+|
+|
+|
+
+|https://github.com/konflux-ci/build-definitions/tree/main/task/clamav-scan/0.1/[clamav-scan @ 0.1]
+|Scans the content of container images for viruses, malware, and other malicious content using ClamAV antivirus scanner.
+|https://github.com/konflux-ci/build-definitions/tree/main/task/clamav-scan/0.1/README.md[README.md]
+|
+|
+|
+
+|https://github.com/konflux-ci/build-definitions/tree/main/task/deprecated-image-check/0.1/[deprecated-image-check @ 0.1]
+|Identifies the unmaintained and potentially insecure deprecated base images. Pyxis API collects metadata from image repository, and Conftest applies supplied policy to identify the deprecated images using that metadata.
+|https://github.com/konflux-ci/build-definitions/tree/main/task/deprecated-image-check/0.1/README.md[README.md]
+|
+|
+|
+
+|https://github.com/konflux-ci/build-definitions/tree/main/task/deprecated-image-check/0.2/[deprecated-image-check @ 0.2]
+|Identifies the unmaintained and potentially insecure deprecated base images. Pyxis API collects metadata from image repository, and Conftest applies supplied policy to identify the deprecated images using that metadata.
+|https://github.com/konflux-ci/build-definitions/tree/main/task/deprecated-image-check/0.2/README.md[README.md]
+|
+|https://github.com/konflux-ci/build-definitions/tree/main/task/deprecated-image-check/0.2/MIGRATION.md[MIGRATION.md]
+|
+
+|https://github.com/konflux-ci/build-definitions/tree/main/task/deprecated-image-check/0.3/[deprecated-image-check @ 0.3]
+|Identifies the unmaintained and potentially insecure deprecated base images. Pyxis API collects metadata from image repository, and Conftest applies supplied policy to identify the deprecated images using that metadata.
+|https://github.com/konflux-ci/build-definitions/tree/main/task/deprecated-image-check/0.3/README.md[README.md]
+|
+|https://github.com/konflux-ci/build-definitions/tree/main/task/deprecated-image-check/0.3/MIGRATION.md[MIGRATION.md]
+|
+
+|https://github.com/konflux-ci/build-definitions/tree/main/task/deprecated-image-check/0.4/[deprecated-image-check @ 0.4]
+|Identifies the unmaintained and potentially insecure deprecated base images. Pyxis API collects metadata from image repository, and Conftest applies supplied policy to identify the deprecated images using that metadata.
+|https://github.com/konflux-ci/build-definitions/tree/main/task/deprecated-image-check/0.4/README.md[README.md]
+|
+|https://github.com/konflux-ci/build-definitions/tree/main/task/deprecated-image-check/0.4/MIGRATION.md[MIGRATION.md]
+|
+
+|https://github.com/konflux-ci/build-definitions/tree/main/task/download-sbom-from-url-in-attestation/0.1/[download-sbom-from-url-in-attestation @ 0.1]
+|Get the SBOM for an image by downloading the OCI blob referenced in the image attestation.
+|https://github.com/konflux-ci/build-definitions/tree/main/task/download-sbom-from-url-in-attestation/0.1/README.md[README.md]
+|
+|
+|
+
+|https://github.com/konflux-ci/build-definitions/tree/main/task/eaas-provision-space/0.1/[eaas-provision-space @ 0.1]
+|Provisions an ephemeral namespace on an EaaS cluster using a SpaceRequest. This namespace can then be used to provision other ephemeral environments for testing.
+|https://github.com/konflux-ci/build-definitions/tree/main/task/eaas-provision-space/0.1/README.md[README.md]
+|
+|
+|
+
+|https://github.com/konflux-ci/build-definitions/tree/main/task/ecosystem-cert-preflight-checks/0.1/[ecosystem-cert-preflight-checks @ 0.1]
+|Scans container images for certification readiness
+|https://github.com/konflux-ci/build-definitions/tree/main/task/ecosystem-cert-preflight-checks/0.1/README.md[README.md]
+|
+|
+|
+
+|https://github.com/konflux-ci/build-definitions/tree/main/task/fbc-related-image-check/0.1/[fbc-related-image-check @ 0.1]
+|Checks the validity of all the images referenced in the file-based catalog (FBC) to inspect manifest content using Skopeo.
+|https://github.com/konflux-ci/build-definitions/tree/main/task/fbc-related-image-check/0.1/README.md[README.md]
+|
+|
+|
+
+|https://github.com/konflux-ci/build-definitions/tree/main/task/fbc-validation/0.1/[fbc-validation @ 0.1]
+|Ensures file-based catalog (FBC) components are uniquely linted for proper construction as part of build pipeline.
+|https://github.com/konflux-ci/build-definitions/tree/main/task/fbc-validation/0.1/README.md[README.md]
+|https://github.com/konflux-ci/build-definitions/tree/main/task/fbc-validation/0.1/USAGE.md[USAGE.md]
+|
+|https://github.com/konflux-ci/build-definitions/tree/main/task/fbc-validation/0.1/TROUBLESHOOTING.md[TROUBLESHOOTING.md]
+
+|https://github.com/konflux-ci/build-definitions/tree/main/task/gather-deploy-images/0.1/[gather-deploy-images @ 0.1]
+|Extract images from deployment YAML to pass to EC for validation
+|https://github.com/konflux-ci/build-definitions/tree/main/task/gather-deploy-images/0.1/README.md[README.md]
+|
+|
+|
+
+|https://github.com/konflux-ci/build-definitions/tree/main/task/generate-odcs-compose/0.1/[generate-odcs-compose @ 0.1]
+|
+|https://github.com/konflux-ci/build-definitions/tree/main/task/generate-odcs-compose/0.1/README.md[README.md]
+|
+|
+|
+
+|https://github.com/konflux-ci/build-definitions/tree/main/task/generate-odcs-compose/0.2/[generate-odcs-compose @ 0.2]
+|
+|https://github.com/konflux-ci/build-definitions/tree/main/task/generate-odcs-compose/0.2/README.md[README.md]
+|
+|https://github.com/konflux-ci/build-definitions/tree/main/task/generate-odcs-compose/0.2/MIGRATION.md[MIGRATION.md]
+|
+
+|https://github.com/konflux-ci/build-definitions/tree/main/task/git-clone/0.1/[git-clone @ 0.1]
+|The git-clone Task will clone a repo from the provided url into the output Workspace. By default the repo will be cloned into the root of your Workspace.
+|https://github.com/konflux-ci/build-definitions/tree/main/task/git-clone/0.1/README.md[README.md]
+|
+|
+|
+
+|https://github.com/konflux-ci/build-definitions/tree/main/task/git-clone-oci-ta/0.1/[git-clone-oci-ta @ 0.1]
+|The git-clone-oci-ta Task will clone a repo from the provided url and store it as a trusted artifact in the provided OCI repository.
+|https://github.com/konflux-ci/build-definitions/tree/main/task/git-clone-oci-ta/0.1/README.md[README.md]
+|
+|
+|
+
+|https://github.com/konflux-ci/build-definitions/tree/main/task/init/0.1/[init @ 0.1]
+|Initialize Pipeline Task, include flags for rebuild and auth. Generates image repository secret used by the PipelineRun.
+|https://github.com/konflux-ci/build-definitions/tree/main/task/init/0.1/README.md[README.md]
+|
+|
+|
+
+|https://github.com/konflux-ci/build-definitions/tree/main/task/init/0.2/[init @ 0.2]
+|Initialize Pipeline Task, include flags for rebuild and auth. Generates image repository secret used by the PipelineRun.
+|https://github.com/konflux-ci/build-definitions/tree/main/task/init/0.2/README.md[README.md]
+|
+|https://github.com/konflux-ci/build-definitions/tree/main/task/init/0.2/MIGRATION.md[MIGRATION.md]
+|
+
+|https://github.com/konflux-ci/build-definitions/tree/main/task/inspect-image/0.1/[inspect-image @ 0.1]
+|Inspects and analyzes manifest data of the container's source image, and its base image (if available) using Skopeo. An image's manifest data contains information about the layers that make up the image, the platforms for which the image is intended, and other metadata about the image.
+|https://github.com/konflux-ci/build-definitions/tree/main/task/inspect-image/0.1/README.md[README.md]
+|
+|
+|
+
+|https://github.com/konflux-ci/build-definitions/tree/main/task/oci-copy/0.1/[oci-copy @ 0.1]
+|Given a file in the user's source directory, copy content from arbitrary urls into the OCI registry.
+|https://github.com/konflux-ci/build-definitions/tree/main/task/oci-copy/0.1/README.md[README.md]
+|
+|
+|
+
+|https://github.com/konflux-ci/build-definitions/tree/main/task/oci-copy-oci-ta/0.1/[oci-copy-oci-ta @ 0.1]
+|Given a file in the user's source directory, copy content from arbitrary urls into the OCI registry.
+|https://github.com/konflux-ci/build-definitions/tree/main/task/oci-copy-oci-ta/0.1/README.md[README.md]
+|
+|
+|
+
+|https://github.com/konflux-ci/build-definitions/tree/main/task/operator-sdk-generate-bundle/0.1/[operator-sdk-generate-bundle @ 0.1]
+|Generate an OLM bundle using the operator-sdk
+|https://github.com/konflux-ci/build-definitions/tree/main/task/operator-sdk-generate-bundle/0.1/README.md[README.md]
+|
+|
+|
+
+|https://github.com/konflux-ci/build-definitions/tree/main/task/opm-get-bundle-version/0.1/[opm-get-bundle-version @ 0.1]
+|Fetch the current version of the provided OLM bundle image
+|https://github.com/konflux-ci/build-definitions/tree/main/task/opm-get-bundle-version/0.1/README.md[README.md]
+|
+|
+|
+
+|https://github.com/konflux-ci/build-definitions/tree/main/task/opm-render-bundles/0.1/[opm-render-bundles @ 0.1]
+|Create a catalog index and render the provided bundles into it
+|https://github.com/konflux-ci/build-definitions/tree/main/task/opm-render-bundles/0.1/README.md[README.md]
+|
+|
+|
+
+|https://github.com/konflux-ci/build-definitions/tree/main/task/prefetch-dependencies/0.1/[prefetch-dependencies @ 0.1]
+|Task that uses Cachi2 to prefetch build dependencies.
+|https://github.com/konflux-ci/build-definitions/tree/main/task/prefetch-dependencies/0.1/README.md[README.md]
+|
+|
+|
+
+|https://github.com/konflux-ci/build-definitions/tree/main/task/prefetch-dependencies-oci-ta/0.1/[prefetch-dependencies-oci-ta @ 0.1]
+|Task that uses Cachi2 to prefetch build dependencies. The fetched dependencies and the
+|https://github.com/konflux-ci/build-definitions/tree/main/task/prefetch-dependencies-oci-ta/0.1/README.md[README.md]
+|
+|
+|
+
+|https://github.com/konflux-ci/build-definitions/tree/main/task/provision-env-with-ephemeral-namespace/0.1/[provision-env-with-ephemeral-namespace @ 0.1]
+|
+|https://github.com/konflux-ci/build-definitions/tree/main/task/provision-env-with-ephemeral-namespace/0.1/README.md[README.md]
+|
+|
+|
+
+|https://github.com/konflux-ci/build-definitions/tree/main/task/push-dockerfile/0.1/[push-dockerfile @ 0.1]
+|Discover Dockerfile from source code and push it to registry as an OCI artifact.
+|https://github.com/konflux-ci/build-definitions/tree/main/task/push-dockerfile/0.1/README.md[README.md]
+|
+|
+|
+
+|https://github.com/konflux-ci/build-definitions/tree/main/task/push-dockerfile-oci-ta/0.1/[push-dockerfile-oci-ta @ 0.1]
+|Discover Dockerfile from source code and push it to registry as an OCI artifact.
+|https://github.com/konflux-ci/build-definitions/tree/main/task/push-dockerfile-oci-ta/0.1/README.md[README.md]
+|
+|
+|
+
+|https://github.com/konflux-ci/build-definitions/tree/main/task/reduce-snapshot-to-single-component/0.1/[reduce-snapshot-to-single-component @ 0.1]
+|Reduce a snapshot to contain the single component that the snapshot was created for.
+|https://github.com/konflux-ci/build-definitions/tree/main/task/reduce-snapshot-to-single-component/0.1/README.md[README.md]
+|
+|
+|
+
+|https://github.com/konflux-ci/build-definitions/tree/main/task/rpm-ostree/0.1/[rpm-ostree @ 0.1]
+|RPM Ostree
+|https://github.com/konflux-ci/build-definitions/tree/main/task/rpm-ostree/0.1/README.md[README.md]
+|
+|
+|
+
+|https://github.com/konflux-ci/build-definitions/tree/main/task/rpm-ostree/0.2/[rpm-ostree @ 0.2]
+|RPM Ostree
+|
+|
+|https://github.com/konflux-ci/build-definitions/tree/main/task/rpm-ostree/0.2/MIGRATION.md[MIGRATION.md]
+|
+
+|https://github.com/konflux-ci/build-definitions/tree/main/task/s2i-java/0.1/[s2i-java @ 0.1]
+|s2i-java task builds source code into a container image and pushes the image into container registry using S2I and buildah tool.
+|https://github.com/konflux-ci/build-definitions/tree/main/task/s2i-java/0.1/README.md[README.md]
+|
+|
+|
+
+|https://github.com/konflux-ci/build-definitions/tree/main/task/s2i-nodejs/0.1/[s2i-nodejs @ 0.1]
+|s2i-nodejs task builds source code into a container image and pushes the image into container registry using S2I and buildah tool.
+|https://github.com/konflux-ci/build-definitions/tree/main/task/s2i-nodejs/0.1/README.md[README.md]
+|
+|
+|
+
+|https://github.com/konflux-ci/build-definitions/tree/main/task/sast-snyk-check/0.1/[sast-snyk-check @ 0.1]
+|Scans source code for security vulnerabilities, including common issues such as SQL injection, cross-site scripting (XSS), and code injection attacks using Snyk Code, a Static Application Security Testing (SAST) tool.
+|https://github.com/konflux-ci/build-definitions/tree/main/task/sast-snyk-check/0.1/README.md[README.md]
+|
+|
+|
+
+|https://github.com/konflux-ci/build-definitions/tree/main/task/sast-snyk-check/0.2/[sast-snyk-check @ 0.2]
+|Scans source code for security vulnerabilities, including common issues such as SQL injection, cross-site scripting (XSS), and code injection attacks using Snyk Code, a Static Application Security Testing (SAST) tool.
+|https://github.com/konflux-ci/build-definitions/tree/main/task/sast-snyk-check/0.2/README.md[README.md]
+|
+|https://github.com/konflux-ci/build-definitions/tree/main/task/sast-snyk-check/0.2/MIGRATION.md[MIGRATION.md]
+|
+
+|https://github.com/konflux-ci/build-definitions/tree/main/task/sast-snyk-check-oci-ta/0.1/[sast-snyk-check-oci-ta @ 0.1]
+|Scans source code for security vulnerabilities, including common issues such as SQL injection, cross-site scripting (XSS), and code injection attacks using Snyk Code, a Static Application Security Testing (SAST) tool.
+|https://github.com/konflux-ci/build-definitions/tree/main/task/sast-snyk-check-oci-ta/0.1/README.md[README.md]
+|
+|
+|
+
+|https://github.com/konflux-ci/build-definitions/tree/main/task/sast-snyk-check-oci-ta/0.2/[sast-snyk-check-oci-ta @ 0.2]
+|Scans source code for security vulnerabilities, including common issues such as SQL injection, cross-site scripting (XSS), and code injection attacks using Snyk Code, a Static Application Security Testing (SAST) tool.
+|https://github.com/konflux-ci/build-definitions/tree/main/task/sast-snyk-check-oci-ta/0.2/README.md[README.md]
+|
+|https://github.com/konflux-ci/build-definitions/tree/main/task/sast-snyk-check-oci-ta/0.2/MIGRATION.md[MIGRATION.md]
+|
+
+|https://github.com/konflux-ci/build-definitions/tree/main/task/sbom-json-check/0.1/[sbom-json-check @ 0.1]
+|Verifies the integrity and security of the Software Bill of Materials (SBOM) file in JSON format using CyloneDX tool.
+|https://github.com/konflux-ci/build-definitions/tree/main/task/sbom-json-check/0.1/README.md[README.md]
+|
+|
+|
+
+|https://github.com/konflux-ci/build-definitions/tree/main/task/sbom-json-check/0.2/[sbom-json-check @ 0.2]
+|Verifies the integrity and security of the Software Bill of Materials (SBOM) file in JSON format using CyloneDX tool.
+|https://github.com/konflux-ci/build-definitions/tree/main/task/sbom-json-check/0.2/README.md[README.md]
+|
+|https://github.com/konflux-ci/build-definitions/tree/main/task/sbom-json-check/0.2/MIGRATION.md[MIGRATION.md]
+|
+
+|https://github.com/konflux-ci/build-definitions/tree/main/task/show-sbom/0.1/[show-sbom @ 0.1]
+|Shows the Software Bill of Materials (SBOM) generated for the built image in CyloneDX JSON format.
+|https://github.com/konflux-ci/build-definitions/tree/main/task/show-sbom/0.1/README.md[README.md]
+|
+|
+|
+
+|https://github.com/konflux-ci/build-definitions/tree/main/task/show-sbom-rhdh/0.1/[show-sbom-rhdh @ 0.1]
+|Shows the Software Bill of Materials (SBOM) generated for the built image in CyloneDX JSON format. The 'task.*' annotations are processed by Red Hat Developer Hub (RHDH) so that the log content can be rendered in its UI.
+|https://github.com/konflux-ci/build-definitions/tree/main/task/show-sbom-rhdh/0.1/README.md[README.md]
+|
+|
+|
+
+|https://github.com/konflux-ci/build-definitions/tree/main/task/slack-webhook-notification/0.1/[slack-webhook-notification @ 0.1]
+|Sends message to slack using incoming webhook
+|https://github.com/konflux-ci/build-definitions/tree/main/task/slack-webhook-notification/0.1/README.md[README.md]
+|
+|
+|
+
+|https://github.com/konflux-ci/build-definitions/tree/main/task/source-build/0.1/[source-build @ 0.1]
+|Source image build.
+|https://github.com/konflux-ci/build-definitions/tree/main/task/source-build/0.1/README.md[README.md]
+|
+|
+|
+
+|https://github.com/konflux-ci/build-definitions/tree/main/task/source-build-oci-ta/0.1/[source-build-oci-ta @ 0.1]
+|Source image build.
+|https://github.com/konflux-ci/build-definitions/tree/main/task/source-build-oci-ta/0.1/README.md[README.md]
+|
+|
+|
+
+|https://github.com/konflux-ci/build-definitions/tree/main/task/summary/0.1/[summary @ 0.1]
+|Summary Pipeline Task. Prints PipelineRun information, removes image repository secret used by the PipelineRun.
+|https://github.com/konflux-ci/build-definitions/tree/main/task/summary/0.1/README.md[README.md]
+|
+|
+|
+
+|https://github.com/konflux-ci/build-definitions/tree/main/task/summary/0.2/[summary @ 0.2]
+|Summary Pipeline Task. Prints PipelineRun information, removes image repository secret used by the PipelineRun.
+|https://github.com/konflux-ci/build-definitions/tree/main/task/summary/0.2/README.md[README.md]
+|
+|https://github.com/konflux-ci/build-definitions/tree/main/task/summary/0.2/MIGRATION.md[MIGRATION.md]
+|
+
+|https://github.com/konflux-ci/build-definitions/tree/main/task/tkn-bundle/0.1/[tkn-bundle @ 0.1]
+|Creates and pushes a Tekton bundle containing the specified Tekton YAML files.
+|https://github.com/konflux-ci/build-definitions/tree/main/task/tkn-bundle/0.1/README.md[README.md]
+|
+|
+|
+
+|https://github.com/konflux-ci/build-definitions/tree/main/task/update-deployment/0.1/[update-deployment @ 0.1]
+|Task to update deployment with newly built image in gitops repository.
+|https://github.com/konflux-ci/build-definitions/tree/main/task/update-deployment/0.1/README.md[README.md]
+|
+|
+|
+
+|https://github.com/konflux-ci/build-definitions/tree/main/task/update-infra-deployments/0.1/[update-infra-deployments @ 0.1]
+|Clones redhat-appstudio/infra-deployments repository, runs script in 'SCRIPT' parameter, generates pull-request for redhat-appstudio/infra-deployments repository.
+|https://github.com/konflux-ci/build-definitions/tree/main/task/update-infra-deployments/0.1/README.md[README.md]
+|
+|
+|
+
+|https://github.com/konflux-ci/build-definitions/tree/main/task/upload-sbom-to-trustification/0.1/[upload-sbom-to-trustification @ 0.1]
+|Upload an SBOM file to [Trustification] using the [BOMbastic] API.
+|https://github.com/konflux-ci/build-definitions/tree/main/task/upload-sbom-to-trustification/0.1/README.md[README.md]
+|
+|
+|
+
+|https://github.com/konflux-ci/build-definitions/tree/main/task/verify-enterprise-contract/0.1/[verify-enterprise-contract @ 0.1]
+|Verify the enterprise contract is met
+|https://github.com/konflux-ci/build-definitions/tree/main/task/verify-enterprise-contract/0.1/README.md[README.md]
+|
+|
+|
+
+|https://github.com/konflux-ci/build-definitions/tree/main/task/verify-signed-rpms/0.1/[verify-signed-rpms @ 0.1]
+|
+|https://github.com/konflux-ci/build-definitions/tree/main/task/verify-signed-rpms/0.1/README.md[README.md]
+|
+|
+|
+|===
