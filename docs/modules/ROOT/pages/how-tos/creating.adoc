@@ -117,6 +117,20 @@ spec:
   url: "https://github.com/konflux-ci/anothertestrepo"
 --
 
+=== Context and Containerfile path
+
+==== With the UI
+In the UI, ensure that the "Dockerfile" value points to the path of the Containerfile. If the Containerfile is in the root directory of the repository, you can just input "Containerfile".
+
+==== Within the CR
+In the CR, ensure that `dockerfileUrl` points to the Containerfile filename and `context` points to where this Containerfile is located.
+
+[source, Dockerfile]
+---
+dockerfileUrl: Containerfile
+context: path/to/Containerfile
+---
+
 == Finding the built images
 
 After a pipeline completes with a built artifact, you may want to test the resulting image to ensure that it works properly. The `IMAGE_URL` Tekton result (discoverable from the UI or CLI) should be set to the pullspec for the image.
