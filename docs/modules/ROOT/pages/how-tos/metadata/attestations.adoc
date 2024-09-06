@@ -4,7 +4,9 @@ Generally speaking, link:https://github.com/in-toto/attestation/blob/main/spec/R
 
 To see the attestations, you need to find the image for a xref:/how-tos/creating.adoc#finding-the-built-image[recently completed build pipeline] and export that value to the IMAGE environment variable. Then you can start exploring the information stored in the attestations.
 
-== Inspect the SLSA provenance
+== Exploring the provenance
+
+=== Inspect the SLSA provenance
 
 Tekton Chains produces a very detailed SLSA provenance. The output from the following provenance is over 2800 lines long!
 
@@ -25,7 +27,7 @@ $ cosign download attestation $IMAGE | jq -r '.payload | @base64d | fromjson' | 
 
 Use tools like `jq` to further filter the provenance to identify smaller sets of relevant information.
 
-=== Identify the build parameters
+==== Identify the build parameters
 
 Since the SLSA provenance includes metadata about the input parameters, we can use it to view the parameters for the Tekton PipelineRun including its source repository!
 
@@ -47,4 +49,34 @@ $ cosign download attestation $IMAGE | jq -r '.payload | @base64d | fromjson | .
   "revision": "477ee20f7e6d146ea203c4aaa0507f4d1e925a53",
   "skip-checks": "false"
 }
+--
+
+== Frequently used commands
+
+=== Extract a link to the build logs
+
+[source]
+--
+$ cosign download attestation $IMAGE | jq -r '.payload | @base64d | fromjson | .predicate.buildConfig.tasks[0].invocation.environment.annotations."pipelinesascode.tekton.dev/log-url"'
+https://your-konflux-instance.com/application-pipeline/ns/your-tenant/pipelinerun/some-image-123-on-push-abcdef
+--
+
+==== Extract a link to the source repo
+
+Extract a link to the source repo, at the commit that the build was built from:
+
+[source]
+--
+$ cosign download attestation $IMAGE | jq -r '.payload | @base64d | fromjson | .predicate.buildConfig.tasks[0].invocation.environment.annotations | ."pipelinesascode.tekton.dev/source-repo-url" + "/-/tree/" + ."pipelinesascode.tekton.dev/sha"'
+https://github.com/your-org/your-repo/-/tree/021c682e1cbad87fea187051055b8259d356ed50
+--
+
+=== Extract a link to the commit itself
+
+Extract a link to the commit itself, in the source repository:
+
+[source]
+--
+$ cosign download attestation $IMAGE | jq -r '.payload | @base64d | fromjson | .predicate.buildConfig.tasks[0].invocation.environment.annotations | ."pipelinesascode.tekton.dev/source-repo-url" + "/-/commit/" + ."pipelinesascode.tekton.dev/sha"'
+https://github.com/your-org/your-repo/-/commit/021c682e1cbad87fea187051055b8259d356ed50
 --
