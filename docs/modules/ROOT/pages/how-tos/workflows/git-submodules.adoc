@@ -88,9 +88,7 @@ After creating the downstream repository you can onboard the component. See xref
 
 === Using private repositories as a git submodule:
 
-When using private repositories we encourage that you give the link:https://github.com/apps/red-hat-konflux[Red Hat {ProductName} Github app] access to that private repository.
-
-Private Gitlab repositories are also supported as long as {ProductName} has access to them.
+When using private repositories you must give {ProductName} access to them.
 
 NOTE: Private Gitlab submodules are currently untested.
 
