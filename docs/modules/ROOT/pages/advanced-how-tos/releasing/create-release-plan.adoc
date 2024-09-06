@@ -61,3 +61,4 @@ $ oc apply -f ReleasePlan.yaml -n dev
 
 . In the {ProductName} UI, select the *Release services* > *Release plan* tab.
 . Review the Release plan object that you just added. Using the Release plan tab, you can update or delete the selected Release plan object.
+. When a ReleasePlan is correctly configured to be paired with a ReleasePlanAdmission, its *Status* will display as being `Matched`.
