@@ -1,1 +1,4 @@
 = Tasks in the {ProductName} ecosystem
+
+* xref:tasks/build.adoc[Build Pipeline Tasks]
+* xref:tasks/release.adoc[Release Pipeline Tasks]
