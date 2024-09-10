@@ -29,7 +29,7 @@ do
     url="${VCS_URL}/tree/main/${task_dir}"
 
     echo >> "$WORKDIR/tasks.adoc"
-    echo -n "[[$task_name@$task_version]]$task_name ($task_version):: " >> "$WORKDIR/tasks.adoc"
+    echo -n "[[$task_name-$task_version]]$task_name ($task_version):: " >> "$WORKDIR/tasks.adoc"
 
     if [ -f "${task_dir}/${task_name}.yaml" ]; then
         description=$(yq '.spec.description | split("\n") | .[0]' "$task_dir/$task_name.yaml")
