@@ -1,5 +1,5 @@
 #!/bin/bash
-# Build an asciidocs index of all tasks defined in this repo.
+# Build an asciidocs index of all tasks defined in another repo.
 
 set -e -o pipefail
 
@@ -68,4 +68,5 @@ do
 done
 )
 
-echo "$WORKDIR/tasks.adoc"
+cp "$WORKDIR/tasks.adoc" "$SCRIPTDIR/.."
+echo "$SCRIPTDIR/tasks.adoc"

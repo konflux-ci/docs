@@ -1,3 +1,8 @@
+= Release pipeline tasks
+
+These tasks, defined in the https://github.com/konflux-ci/release-service-catalog[release-service catalog repo] are tasks provided by and supported as a part of the {ProductName} platform.
+You can combine references to these tasks in different ways when creating new release pipelines.
+
 
 [[add-fbc-contribution]]add-fbc-contribution (3.2.0):: Task to create internalrequests to add contributions to index images See also: https://github.com/konflux-ci/release-service-catalog/tree/production/tasks/add-fbc-contribution/README.md[README.md]
 
