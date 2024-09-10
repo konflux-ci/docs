@@ -1,4 +1,3 @@
-
 [[acs-deploy-check-0.1]]acs-deploy-check (0.1):: Policy check a deployment with StackRox/RHACS This tasks allows you to check a deployment against build-time policies and apply enforcement to fail builds. It's a companion to the stackrox-image-scan task, which returns full vulnerability scan results for an image. See also:
 
 [[acs-image-check-0.1]]acs-image-check (0.1):: Policy check an image with StackRox/RHACS This tasks allows you to check an image against build-time policies and apply enforcement to fail builds. It's a companion to the stackrox-image-scan task, which returns full vulnerability scan results for an image. See also:
