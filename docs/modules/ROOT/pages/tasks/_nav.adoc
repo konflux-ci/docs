@@ -1,1 +1,3 @@
-* xref:tasks/index.adoc[Tasks]
+* Tasks
+** xref:tasks/build.adoc[Build pipeline tasks]
+** xref:tasks/release.adoc[Release pipeline tasks]
