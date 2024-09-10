@@ -26,16 +26,17 @@ cd "$WORKDIR/repo"
 find "$SUBDIR/"*/*/ -maxdepth 0 -type d | awk -F '/' '{ print $0, $2, $3 }' | \
 while read -r task_dir task_name task_version
 do
+    if [ ! -f "${task_dir}/${task_name}.yaml" ]; then
+        echo "Skipping ${task_name}.yaml. kustomize rendering not supported yet"
+        continue
+    fi
+
     url="${VCS_URL}/tree/main/${task_dir}"
 
     echo >> "$WORKDIR/tasks.adoc"
     echo -n "[[$task_name-$task_version]]$task_name ($task_version):: " >> "$WORKDIR/tasks.adoc"
 
-    if [ -f "${task_dir}/${task_name}.yaml" ]; then
-        description=$(yq '.spec.description | split("\n") | .[0]' "$task_dir/$task_name.yaml")
-    else
-        description=
-    fi
+    description=$(yq '.spec.description | split("\n") | .[0]' "$task_dir/$task_name.yaml")
     echo -n "$description " >> "$WORKDIR/tasks.adoc"
 
     echo -n "See also:" >> "$WORKDIR/tasks.adoc"

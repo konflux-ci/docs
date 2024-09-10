@@ -1,3 +1,4 @@
+
 [[acs-deploy-check-0.1]]acs-deploy-check (0.1):: Policy check a deployment with StackRox/RHACS This tasks allows you to check a deployment against build-time policies and apply enforcement to fail builds. It's a companion to the stackrox-image-scan task, which returns full vulnerability scan results for an image. See also:
 
 [[acs-image-check-0.1]]acs-image-check (0.1):: Policy check an image with StackRox/RHACS This tasks allows you to check an image against build-time policies and apply enforcement to fail builds. It's a companion to the stackrox-image-scan task, which returns full vulnerability scan results for an image. See also:
@@ -9,30 +10,6 @@
 [[buildah-0.1]]buildah (0.1):: Buildah task builds source code into a container image and pushes the image into container registry using buildah tool. See also: https://github.com/konflux-ci/build-definitions/tree/main/task/buildah/0.1/README.md[README.md]
 
 [[buildah-0.2]]buildah (0.2):: Buildah task builds source code into a container image and pushes the image into container registry using buildah tool. See also: https://github.com/konflux-ci/build-definitions/tree/main/task/buildah/0.2/README.md[README.md] https://github.com/konflux-ci/build-definitions/tree/main/task/buildah/0.2/MIGRATION.md[MIGRATION.md]
-
-[[buildah-10gb-0.1]]buildah-10gb (0.1)::  See also:
-
-[[buildah-10gb-0.2]]buildah-10gb (0.2)::  See also: https://github.com/konflux-ci/build-definitions/tree/main/task/buildah-10gb/0.2/MIGRATION.md[MIGRATION.md]
-
-[[buildah-20gb-0.1]]buildah-20gb (0.1)::  See also:
-
-[[buildah-20gb-0.2]]buildah-20gb (0.2)::  See also: https://github.com/konflux-ci/build-definitions/tree/main/task/buildah-20gb/0.2/MIGRATION.md[MIGRATION.md]
-
-[[buildah-24gb-0.1]]buildah-24gb (0.1)::  See also:
-
-[[buildah-24gb-0.2]]buildah-24gb (0.2)::  See also: https://github.com/konflux-ci/build-definitions/tree/main/task/buildah-24gb/0.2/MIGRATION.md[MIGRATION.md]
-
-[[buildah-6gb-0.1]]buildah-6gb (0.1)::  See also:
-
-[[buildah-6gb-0.2]]buildah-6gb (0.2)::  See also: https://github.com/konflux-ci/build-definitions/tree/main/task/buildah-6gb/0.2/MIGRATION.md[MIGRATION.md]
-
-[[buildah-8gb-0.1]]buildah-8gb (0.1)::  See also:
-
-[[buildah-8gb-0.2]]buildah-8gb (0.2)::  See also: https://github.com/konflux-ci/build-definitions/tree/main/task/buildah-8gb/0.2/MIGRATION.md[MIGRATION.md]
-
-[[buildah-min-0.1]]buildah-min (0.1)::  See also:
-
-[[buildah-min-0.2]]buildah-min (0.2)::  See also: https://github.com/konflux-ci/build-definitions/tree/main/task/buildah-min/0.2/MIGRATION.md[MIGRATION.md]
 
 [[buildah-oci-ta-0.1]]buildah-oci-ta (0.1):: Buildah task builds source code into a container image and pushes the image into container registry using buildah tool. See also: https://github.com/konflux-ci/build-definitions/tree/main/task/buildah-oci-ta/0.1/README.md[README.md]
 
@@ -49,8 +26,6 @@
 [[buildah-rhtap-0.1]]buildah-rhtap (0.1):: Buildah task builds source code into a container image and pushes the image into container registry using buildah tool. See also:
 
 [[build-image-index-0.1]]build-image-index (0.1):: This takes existing Image Manifests and combines them in an Image Index. See also: https://github.com/konflux-ci/build-definitions/tree/main/task/build-image-index/0.1/README.md[README.md]
-
-[[build-image-manifest-0.1]]build-image-manifest (0.1)::  See also: https://github.com/konflux-ci/build-definitions/tree/main/task/build-image-manifest/0.1/README.md[README.md]
 
 [[build-vm-image-0.1]]build-vm-image (0.1):: Build disk images using bootc-image-builder. https://github.com/osbuild/bootc-image-builder/ See also:
 
