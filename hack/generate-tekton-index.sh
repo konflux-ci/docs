@@ -14,6 +14,7 @@ fi
 # local dev build script
 SCRIPTDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 WORKDIR=$(mktemp -d --suffix "-$(basename "${BASH_SOURCE[0]}" .sh)")
+NOW=$(date +%Y-%m-%d)
 
 git clone "$VCS_URL" "$WORKDIR/repo"
 
@@ -29,6 +30,13 @@ do
     if [ ! -f "${task_dir}/${task_name}.yaml" ]; then
         echo "Skipping ${task_name}.yaml. kustomize rendering not supported yet"
         continue
+    fi
+
+    expiration=$(yq '.metadata.annotations."build.appstudio.redhat.com/expires-on"' "$task_dir/$task_name.yaml")
+    if [ "$expiration" != "null" ]; then
+        if [ "${expiration%T*}" > "${NOW}" ]; then
+            continue
+        fi
     fi
 
     url="${VCS_URL}/tree/main/${task_dir}"

@@ -33,10 +33,6 @@
 
 [[clamav-scan-0.1]]clamav-scan (0.1):: Scans the content of container images for viruses, malware, and other malicious content using ClamAV antivirus scanner. See also: https://github.com/konflux-ci/build-definitions/tree/main/task/clamav-scan/0.1/README.md[README.md]
 
-[[deprecated-image-check-0.1]]deprecated-image-check (0.1):: Identifies the unmaintained and potentially insecure deprecated base images. Pyxis API collects metadata from image repository, and Conftest applies supplied policy to identify the deprecated images using that metadata. See also: https://github.com/konflux-ci/build-definitions/tree/main/task/deprecated-image-check/0.1/README.md[README.md]
-
-[[deprecated-image-check-0.2]]deprecated-image-check (0.2):: Identifies the unmaintained and potentially insecure deprecated base images. Pyxis API collects metadata from image repository, and Conftest applies supplied policy to identify the deprecated images using that metadata. See also: https://github.com/konflux-ci/build-definitions/tree/main/task/deprecated-image-check/0.2/README.md[README.md] https://github.com/konflux-ci/build-definitions/tree/main/task/deprecated-image-check/0.2/MIGRATION.md[MIGRATION.md]
-
 [[deprecated-image-check-0.3]]deprecated-image-check (0.3):: Identifies the unmaintained and potentially insecure deprecated base images. Pyxis API collects metadata from image repository, and Conftest applies supplied policy to identify the deprecated images using that metadata. See also: https://github.com/konflux-ci/build-definitions/tree/main/task/deprecated-image-check/0.3/README.md[README.md] https://github.com/konflux-ci/build-definitions/tree/main/task/deprecated-image-check/0.3/MIGRATION.md[MIGRATION.md]
 
 [[deprecated-image-check-0.4]]deprecated-image-check (0.4):: Identifies the unmaintained and potentially insecure deprecated base images. Pyxis API collects metadata from image repository, and Conftest applies supplied policy to identify the deprecated images using that metadata. See also: https://github.com/konflux-ci/build-definitions/tree/main/task/deprecated-image-check/0.4/README.md[README.md] https://github.com/konflux-ci/build-definitions/tree/main/task/deprecated-image-check/0.4/MIGRATION.md[MIGRATION.md]
@@ -104,10 +100,6 @@
 [[sast-snyk-check-oci-ta-0.1]]sast-snyk-check-oci-ta (0.1):: Scans source code for security vulnerabilities, including common issues such as SQL injection, cross-site scripting (XSS), and code injection attacks using Snyk Code, a Static Application Security Testing (SAST) tool. See also: https://github.com/konflux-ci/build-definitions/tree/main/task/sast-snyk-check-oci-ta/0.1/README.md[README.md]
 
 [[sast-snyk-check-oci-ta-0.2]]sast-snyk-check-oci-ta (0.2):: Scans source code for security vulnerabilities, including common issues such as SQL injection, cross-site scripting (XSS), and code injection attacks using Snyk Code, a Static Application Security Testing (SAST) tool. See also: https://github.com/konflux-ci/build-definitions/tree/main/task/sast-snyk-check-oci-ta/0.2/README.md[README.md] https://github.com/konflux-ci/build-definitions/tree/main/task/sast-snyk-check-oci-ta/0.2/MIGRATION.md[MIGRATION.md]
-
-[[sbom-json-check-0.1]]sbom-json-check (0.1):: Verifies the integrity and security of the Software Bill of Materials (SBOM) file in JSON format using CyloneDX tool. See also: https://github.com/konflux-ci/build-definitions/tree/main/task/sbom-json-check/0.1/README.md[README.md]
-
-[[sbom-json-check-0.2]]sbom-json-check (0.2):: Verifies the integrity and security of the Software Bill of Materials (SBOM) file in JSON format using CyloneDX tool. See also: https://github.com/konflux-ci/build-definitions/tree/main/task/sbom-json-check/0.2/README.md[README.md] https://github.com/konflux-ci/build-definitions/tree/main/task/sbom-json-check/0.2/MIGRATION.md[MIGRATION.md]
 
 [[show-sbom-0.1]]show-sbom (0.1):: Shows the Software Bill of Materials (SBOM) generated for the built image in CyloneDX JSON format. See also: https://github.com/konflux-ci/build-definitions/tree/main/task/show-sbom/0.1/README.md[README.md]
 
