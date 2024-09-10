@@ -4,88 +4,88 @@ These tasks, defined in the https://github.com/konflux-ci/release-service-catalo
 You can combine references to these tasks in different ways when creating new release pipelines.
 
 
-[[add-fbc-contribution]]add-fbc-contribution (3.2.0):: Task to create internalrequests to add contributions to index images See also: https://github.com/konflux-ci/release-service-catalog/tree/production/tasks/add-fbc-contribution/README.md[README.md]
+[[add-fbc-contribution-]]add-fbc-contribution (3.2.0):: Task to create internalrequests to add contributions to index images See also: https://github.com/konflux-ci/release-service-catalog/tree/production/tasks/add-fbc-contribution/README.md[README.md]
 
-[[apply-mapping]]apply-mapping (1.5.0):: Tekton task to apply a mapping to a Snapshot. It will override the Snapshot file. See also: https://github.com/konflux-ci/release-service-catalog/tree/production/tasks/apply-mapping/README.md[README.md]
+[[apply-mapping-]]apply-mapping (1.5.0):: Tekton task to apply a mapping to a Snapshot. It will override the Snapshot file. See also: https://github.com/konflux-ci/release-service-catalog/tree/production/tasks/apply-mapping/README.md[README.md]
 
-[[base64-encode-checksum]]base64-encode-checksum (1.2.0):: Task to encode the Terraform Checksum file See also: https://github.com/konflux-ci/release-service-catalog/tree/production/tasks/base64-encode-checksum/README.md[README.md]
+[[base64-encode-checksum-]]base64-encode-checksum (1.2.0):: Task to encode the Terraform Checksum file See also: https://github.com/konflux-ci/release-service-catalog/tree/production/tasks/base64-encode-checksum/README.md[README.md]
 
-[[check-data-keys]]check-data-keys (0.9.1):: Tekton task to check that all required information is present to use the specified system(s) See also: https://github.com/konflux-ci/release-service-catalog/tree/production/tasks/check-data-keys/README.md[README.md]
+[[check-data-keys-]]check-data-keys (0.9.1):: Tekton task to check that all required information is present to use the specified system(s) See also: https://github.com/konflux-ci/release-service-catalog/tree/production/tasks/check-data-keys/README.md[README.md]
 
-[[check-fbc-packages]]check-fbc-packages (0.4.0):: Task to check that the packages being shipped in an fbc contribution are in the allow list provided in the dataPath. See also: https://github.com/konflux-ci/release-service-catalog/tree/production/tasks/check-fbc-packages/README.md[README.md]
+[[check-fbc-packages-]]check-fbc-packages (0.4.0):: Task to check that the packages being shipped in an fbc contribution are in the allow list provided in the dataPath. See also: https://github.com/konflux-ci/release-service-catalog/tree/production/tasks/check-fbc-packages/README.md[README.md]
 
-[[cleanup-workspace]]cleanup-workspace (0.8.0):: Tekton task to delete a given directory in a passed workspace See also: https://github.com/konflux-ci/release-service-catalog/tree/production/tasks/cleanup-workspace/README.md[README.md]
+[[cleanup-workspace-]]cleanup-workspace (0.8.0):: Tekton task to delete a given directory in a passed workspace See also: https://github.com/konflux-ci/release-service-catalog/tree/production/tasks/cleanup-workspace/README.md[README.md]
 
-[[collect-cosign-params]]collect-cosign-params (0.1.0):: Task that collects cosign options from the data file See also: https://github.com/konflux-ci/release-service-catalog/tree/production/tasks/collect-cosign-params/README.md[README.md]
+[[collect-cosign-params-]]collect-cosign-params (0.1.0):: Task that collects cosign options from the data file See also: https://github.com/konflux-ci/release-service-catalog/tree/production/tasks/collect-cosign-params/README.md[README.md]
 
-[[collect-data]]collect-data (4.5.0):: Tekton task to collect data from release resources and verify that they do not contain any disallowed fields See also: https://github.com/konflux-ci/release-service-catalog/tree/production/tasks/collect-data/README.md[README.md]
+[[collect-data-]]collect-data (4.5.0):: Tekton task to collect data from release resources and verify that they do not contain any disallowed fields See also: https://github.com/konflux-ci/release-service-catalog/tree/production/tasks/collect-data/README.md[README.md]
 
-[[collect-gh-params]]collect-gh-params (1.3.0):: Tekton task that collects GitHub configuration options from the data file See also: https://github.com/konflux-ci/release-service-catalog/tree/production/tasks/collect-gh-params/README.md[README.md]
+[[collect-gh-params-]]collect-gh-params (1.3.0):: Tekton task that collects GitHub configuration options from the data file See also: https://github.com/konflux-ci/release-service-catalog/tree/production/tasks/collect-gh-params/README.md[README.md]
 
-[[collect-mrrc-params]]collect-mrrc-params (0.1.0)::  See also: https://github.com/konflux-ci/release-service-catalog/tree/production/tasks/collect-mrrc-params/README.md[README.md]
+[[collect-mrrc-params-]]collect-mrrc-params (0.1.0)::  See also: https://github.com/konflux-ci/release-service-catalog/tree/production/tasks/collect-mrrc-params/README.md[README.md]
 
-[[collect-pyxis-params]]collect-pyxis-params (0.5.0):: Tekton task that collects pyxis configuration options from the data file See also: https://github.com/konflux-ci/release-service-catalog/tree/production/tasks/collect-pyxis-params/README.md[README.md]
+[[collect-pyxis-params-]]collect-pyxis-params (0.5.0):: Tekton task that collects pyxis configuration options from the data file See also: https://github.com/konflux-ci/release-service-catalog/tree/production/tasks/collect-pyxis-params/README.md[README.md]
 
-[[collect-slack-notification-params]]collect-slack-notification-params (1.4.0):: Tekton task that collects slack notification configuration options from Release CRs and the data file See also: https://github.com/konflux-ci/release-service-catalog/tree/production/tasks/collect-slack-notification-params/README.md[README.md]
+[[collect-slack-notification-params-]]collect-slack-notification-params (1.4.0):: Tekton task that collects slack notification configuration options from Release CRs and the data file See also: https://github.com/konflux-ci/release-service-catalog/tree/production/tasks/collect-slack-notification-params/README.md[README.md]
 
-[[create-advisory]]create-advisory (4.3.0):: Tekton task to create an advisory via an InternalRequest See also: https://github.com/konflux-ci/release-service-catalog/tree/production/tasks/create-advisory/README.md[README.md]
+[[create-advisory-]]create-advisory (4.3.0):: Tekton task to create an advisory via an InternalRequest See also: https://github.com/konflux-ci/release-service-catalog/tree/production/tasks/create-advisory/README.md[README.md]
 
-[[create-github-release]]create-github-release (2.1.0):: Tekton task that creates a release on github.com via the GitHub API See also: https://github.com/konflux-ci/release-service-catalog/tree/production/tasks/create-github-release/README.md[README.md]
+[[create-github-release-]]create-github-release (2.1.0):: Tekton task that creates a release on github.com via the GitHub API See also: https://github.com/konflux-ci/release-service-catalog/tree/production/tasks/create-github-release/README.md[README.md]
 
-[[create-internal-request]]create-internal-request (0.13.0):: Creates an InternalRequest resource to call IIB service See also: https://github.com/konflux-ci/release-service-catalog/tree/production/tasks/create-internal-request/README.md[README.md]
+[[create-internal-request-]]create-internal-request (0.13.0):: Creates an InternalRequest resource to call IIB service See also: https://github.com/konflux-ci/release-service-catalog/tree/production/tasks/create-internal-request/README.md[README.md]
 
-[[create-pyxis-image]]create-pyxis-image (3.2.0):: Tekton task that pushes metadata to Pyxis for all container images contained in a snapshot See also: https://github.com/konflux-ci/release-service-catalog/tree/production/tasks/create-pyxis-image/README.md[README.md]
+[[create-pyxis-image-]]create-pyxis-image (3.2.0):: Tekton task that pushes metadata to Pyxis for all container images contained in a snapshot See also: https://github.com/konflux-ci/release-service-catalog/tree/production/tasks/create-pyxis-image/README.md[README.md]
 
-[[embargo-check]]embargo-check (0.4.0):: Tekton task to check if any issues or CVEs in the releaseNotes key of the data.json are embargoed. It checks the issues by server using curl and checks the CVEs via an InternalRequest. If any issue or CVE is embargoed, the task will fail. See also: https://github.com/konflux-ci/release-service-catalog/tree/production/tasks/embargo-check/README.md[README.md]
+[[embargo-check-]]embargo-check (0.4.0):: Tekton task to check if any issues or CVEs in the releaseNotes key of the data.json are embargoed. It checks the issues by server using curl and checks the CVEs via an InternalRequest. If any issue or CVE is embargoed, the task will fail. See also: https://github.com/konflux-ci/release-service-catalog/tree/production/tasks/embargo-check/README.md[README.md]
 
-[[extract-binaries-from-image]]extract-binaries-from-image (2.1.0):: Tekton task that extracts binaries to be released on github.com from an image See also: https://github.com/konflux-ci/release-service-catalog/tree/production/tasks/extract-binaries-from-image/README.md[README.md]
+[[extract-binaries-from-image-]]extract-binaries-from-image (2.1.0):: Tekton task that extracts binaries to be released on github.com from an image See also: https://github.com/konflux-ci/release-service-catalog/tree/production/tasks/extract-binaries-from-image/README.md[README.md]
 
-[[extract-index-image]]extract-index-image (1.1.0):: Extract the index image fields from the inputDataFile See also: https://github.com/konflux-ci/release-service-catalog/tree/production/tasks/extract-index-image/README.md[README.md]
+[[extract-index-image-]]extract-index-image (1.1.0):: Extract the index image fields from the inputDataFile See also: https://github.com/konflux-ci/release-service-catalog/tree/production/tasks/extract-index-image/README.md[README.md]
 
-[[get-ocp-version]]get-ocp-version (0.5.0):: Tekton task to collect OCP version tag from FBC fragment using `skopeo inspect` See also: https://github.com/konflux-ci/release-service-catalog/tree/production/tasks/get-ocp-version/README.md[README.md]
+[[get-ocp-version-]]get-ocp-version (0.5.0):: Tekton task to collect OCP version tag from FBC fragment using `skopeo inspect` See also: https://github.com/konflux-ci/release-service-catalog/tree/production/tasks/get-ocp-version/README.md[README.md]
 
-[[populate-release-notes-images]]populate-release-notes-images (2.2.0):: Tekton task to populate the releaseNotes.content.images key in the data.json file See also: https://github.com/konflux-ci/release-service-catalog/tree/production/tasks/populate-release-notes-images/README.md[README.md]
+[[populate-release-notes-images-]]populate-release-notes-images (2.2.0):: Tekton task to populate the releaseNotes.content.images key in the data.json file See also: https://github.com/konflux-ci/release-service-catalog/tree/production/tasks/populate-release-notes-images/README.md[README.md]
 
-[[prepare-exodus-params]]prepare-exodus-params (0.2.1):: Tekton task that prepares exodus configuration options from the data file See also: https://github.com/konflux-ci/release-service-catalog/tree/production/tasks/prepare-exodus-params/README.md[README.md]
+[[prepare-exodus-params-]]prepare-exodus-params (0.2.1):: Tekton task that prepares exodus configuration options from the data file See also: https://github.com/konflux-ci/release-service-catalog/tree/production/tasks/prepare-exodus-params/README.md[README.md]
 
-[[prepare-fbc-release]]prepare-fbc-release (1.3.0):: A tekton task to prepare FBC Release by collecting a valid OCP version for each component from given containerImage(fbcFragment) in the snapshot, and update the fromIndex, targetIndex and binaryImage with collected OCP version and store updated values to snapshot respective to each component, so other task can use them. See also: https://github.com/konflux-ci/release-service-catalog/tree/production/tasks/prepare-fbc-release/README.md[README.md]
+[[prepare-fbc-release-]]prepare-fbc-release (1.3.0):: A tekton task to prepare FBC Release by collecting a valid OCP version for each component from given containerImage(fbcFragment) in the snapshot, and update the fromIndex, targetIndex and binaryImage with collected OCP version and store updated values to snapshot respective to each component, so other task can use them. See also: https://github.com/konflux-ci/release-service-catalog/tree/production/tasks/prepare-fbc-release/README.md[README.md]
 
-[[prepare-validation]]prepare-validation (0.7.0):: Tekton task to extract a pull spec from a Snapshot See also: https://github.com/konflux-ci/release-service-catalog/tree/production/tasks/prepare-validation/README.md[README.md]
+[[prepare-validation-]]prepare-validation (0.7.0):: Tekton task to extract a pull spec from a Snapshot See also: https://github.com/konflux-ci/release-service-catalog/tree/production/tasks/prepare-validation/README.md[README.md]
 
-[[publish-index-image]]publish-index-image (3.3.0):: Publish a built FBC index image using skopeo See also: https://github.com/konflux-ci/release-service-catalog/tree/production/tasks/publish-index-image/README.md[README.md]
+[[publish-index-image-]]publish-index-image (3.3.0):: Publish a built FBC index image using skopeo See also: https://github.com/konflux-ci/release-service-catalog/tree/production/tasks/publish-index-image/README.md[README.md]
 
-[[publish-pyxis-repository]]publish-pyxis-repository (2.0.0):: Tekton task to mark all repositories in the mapped snapshot as published in Pyxis. This is currently only intended for the rh-push-to-registry-redhat-io pipeline, so it will convert the values to the ones used for registry.redhat.io releases. E.g. repository "quay.io/redhat-prod/my-product----my-image" will be converted to use registry "registry.access.redhat.com" and repository "my-product/my-image" to identify the right Container Registry object in Pyxis. The task also optionally marks the repositories as source_container_image_enabled true if pushSourceContainer is true in the data JSON. Additionally, this task respects the `publish-on-push` flag. If `false`, then the task does not publish the repository. See also: https://github.com/konflux-ci/release-service-catalog/tree/production/tasks/publish-pyxis-repository/README.md[README.md]
+[[publish-pyxis-repository-]]publish-pyxis-repository (2.0.0):: Tekton task to mark all repositories in the mapped snapshot as published in Pyxis. This is currently only intended for the rh-push-to-registry-redhat-io pipeline, so it will convert the values to the ones used for registry.redhat.io releases. E.g. repository "quay.io/redhat-prod/my-product----my-image" will be converted to use registry "registry.access.redhat.com" and repository "my-product/my-image" to identify the right Container Registry object in Pyxis. The task also optionally marks the repositories as source_container_image_enabled true if pushSourceContainer is true in the data JSON. Additionally, this task respects the `publish-on-push` flag. If `false`, then the task does not publish the repository. See also: https://github.com/konflux-ci/release-service-catalog/tree/production/tasks/publish-pyxis-repository/README.md[README.md]
 
-[[publish-to-cgw]]publish-to-cgw (0.2.2):: Tekton task to publish content to CGW (Content-Gateway) See also: https://github.com/konflux-ci/release-service-catalog/tree/production/tasks/publish-to-cgw/README.md[README.md]
+[[publish-to-cgw-]]publish-to-cgw (0.2.2):: Tekton task to publish content to CGW (Content-Gateway) See also: https://github.com/konflux-ci/release-service-catalog/tree/production/tasks/publish-to-cgw/README.md[README.md]
 
-[[push-disk-images]]push-disk-images (0.2.0):: Tekton task to push disk images via an InternalRequest to Exodus CDN in addition to Developer Portal. The environment to use is pulled from the `cdn.env` key in the data file. See also: https://github.com/konflux-ci/release-service-catalog/tree/production/tasks/push-disk-images/README.md[README.md]
+[[push-disk-images-]]push-disk-images (0.2.0):: Tekton task to push disk images via an InternalRequest to Exodus CDN in addition to Developer Portal. The environment to use is pulled from the `cdn.env` key in the data file. See also: https://github.com/konflux-ci/release-service-catalog/tree/production/tasks/push-disk-images/README.md[README.md]
 
-[[push-rpm-manifests-to-pyxis]]push-rpm-manifests-to-pyxis (0.4.4):: Tekton task that extracts all rpms from the sboms and pushes them to Pyxis as an RPM Manifest. See also: https://github.com/konflux-ci/release-service-catalog/tree/production/tasks/push-rpm-manifests-to-pyxis/README.md[README.md]
+[[push-rpm-manifests-to-pyxis-]]push-rpm-manifests-to-pyxis (0.4.4):: Tekton task that extracts all rpms from the sboms and pushes them to Pyxis as an RPM Manifest. See also: https://github.com/konflux-ci/release-service-catalog/tree/production/tasks/push-rpm-manifests-to-pyxis/README.md[README.md]
 
-[[push-snapshot]]push-snapshot (6.3.0):: Tekton task to push snapshot images to an image registry using `cosign copy` See also: https://github.com/konflux-ci/release-service-catalog/tree/production/tasks/push-snapshot/README.md[README.md]
+[[push-snapshot-]]push-snapshot (6.3.0):: Tekton task to push snapshot images to an image registry using `cosign copy` See also: https://github.com/konflux-ci/release-service-catalog/tree/production/tasks/push-snapshot/README.md[README.md]
 
-[[push-to-cdn]]push-to-cdn (0.2.1):: Tekton task to push content to Red Hat's CDN using exodus-rsync See also: https://github.com/konflux-ci/release-service-catalog/tree/production/tasks/push-to-cdn/README.md[README.md]
+[[push-to-cdn-]]push-to-cdn (0.2.1):: Tekton task to push content to Red Hat's CDN using exodus-rsync See also: https://github.com/konflux-ci/release-service-catalog/tree/production/tasks/push-to-cdn/README.md[README.md]
 
-[[rh-sign-image]]rh-sign-image (3.4.0):: Task to create internalrequests to sign snapshot components See also: https://github.com/konflux-ci/release-service-catalog/tree/production/tasks/rh-sign-image/README.md[README.md]
+[[rh-sign-image-]]rh-sign-image (3.4.0):: Task to create internalrequests to sign snapshot components See also: https://github.com/konflux-ci/release-service-catalog/tree/production/tasks/rh-sign-image/README.md[README.md]
 
-[[rh-sign-image-cosign]]rh-sign-image-cosign (0.2.0):: Task to sign container images in snapshot by cosign See also: https://github.com/konflux-ci/release-service-catalog/tree/production/tasks/rh-sign-image-cosign/README.md[README.md]
+[[rh-sign-image-cosign-]]rh-sign-image-cosign (0.2.0):: Task to sign container images in snapshot by cosign See also: https://github.com/konflux-ci/release-service-catalog/tree/production/tasks/rh-sign-image-cosign/README.md[README.md]
 
-[[run-file-updates]]run-file-updates (1.3.0):: Tekton task to run file updates See also: https://github.com/konflux-ci/release-service-catalog/tree/production/tasks/run-file-updates/README.md[README.md]
+[[run-file-updates-]]run-file-updates (1.3.0):: Tekton task to run file updates See also: https://github.com/konflux-ci/release-service-catalog/tree/production/tasks/run-file-updates/README.md[README.md]
 
-[[send-slack-notification]]send-slack-notification (1.3.0):: Sends message to Slack using postMessage API See also: https://github.com/konflux-ci/release-service-catalog/tree/production/tasks/send-slack-notification/README.md[README.md]
+[[send-slack-notification-]]send-slack-notification (1.3.0):: Sends message to Slack using postMessage API See also: https://github.com/konflux-ci/release-service-catalog/tree/production/tasks/send-slack-notification/README.md[README.md]
 
-[[sign-base64-blob]]sign-base64-blob (2.3.0):: Task to create an internalrequest to sign a base64 encoded blob. See also: https://github.com/konflux-ci/release-service-catalog/tree/production/tasks/sign-base64-blob/README.md[README.md]
+[[sign-base64-blob-]]sign-base64-blob (2.3.0):: Task to create an internalrequest to sign a base64 encoded blob. See also: https://github.com/konflux-ci/release-service-catalog/tree/production/tasks/sign-base64-blob/README.md[README.md]
 
-[[sign-index-image]]sign-index-image (3.3.0):: Task to create an internalrequest to sign a FBC Index Image. See also: https://github.com/konflux-ci/release-service-catalog/tree/production/tasks/sign-index-image/README.md[README.md]
+[[sign-index-image-]]sign-index-image (3.3.0):: Task to create an internalrequest to sign a FBC Index Image. See also: https://github.com/konflux-ci/release-service-catalog/tree/production/tasks/sign-index-image/README.md[README.md]
 
-[[slack-webhook-notification]]slack-webhook-notification (0.7.0):: Sends message to slack using incoming webhook See also: https://github.com/konflux-ci/release-service-catalog/tree/production/tasks/slack-webhook-notification/README.md[README.md]
+[[slack-webhook-notification-]]slack-webhook-notification (0.7.0):: Sends message to slack using incoming webhook See also: https://github.com/konflux-ci/release-service-catalog/tree/production/tasks/slack-webhook-notification/README.md[README.md]
 
-[[update-cr-status]]update-cr-status (0.3.0):: A tekton task that updates the passed CR status with the contents stored in the resultsFile. See also: https://github.com/konflux-ci/release-service-catalog/tree/production/tasks/update-cr-status/README.md[README.md]
+[[update-cr-status-]]update-cr-status (0.3.0):: A tekton task that updates the passed CR status with the contents stored in the resultsFile. See also: https://github.com/konflux-ci/release-service-catalog/tree/production/tasks/update-cr-status/README.md[README.md]
 
-[[update-infra-deployments]]update-infra-deployments (1.2.0):: This task clones a GitHub repository specified in the 'targetGHRepo' key of the input data file. See also: https://github.com/konflux-ci/release-service-catalog/tree/production/tasks/update-infra-deployments/README.md[README.md]
+[[update-infra-deployments-]]update-infra-deployments (1.2.0):: This task clones a GitHub repository specified in the 'targetGHRepo' key of the input data file. See also: https://github.com/konflux-ci/release-service-catalog/tree/production/tasks/update-infra-deployments/README.md[README.md]
 
-[[update-ocp-tag]]update-ocp-tag (1.4.0):: Tekton task to update pull-spec tag with valid OCP version from get-ocp-version task. See also: https://github.com/konflux-ci/release-service-catalog/tree/production/tasks/update-ocp-tag/README.md[README.md]
+[[update-ocp-tag-]]update-ocp-tag (1.4.0):: Tekton task to update pull-spec tag with valid OCP version from get-ocp-version task. See also: https://github.com/konflux-ci/release-service-catalog/tree/production/tasks/update-ocp-tag/README.md[README.md]
 
-[[validate-single-component]]validate-single-component (0.5.0):: Tekton task validates that the snapshot only contains a  single component. The task will fail otherwise. See also: https://github.com/konflux-ci/release-service-catalog/tree/production/tasks/validate-single-component/README.md[README.md]
+[[validate-single-component-]]validate-single-component (0.5.0):: Tekton task validates that the snapshot only contains a  single component. The task will fail otherwise. See also: https://github.com/konflux-ci/release-service-catalog/tree/production/tasks/validate-single-component/README.md[README.md]
 
-[[verify-access-to-resources]]verify-access-to-resources (0.2.0):: Tekton task to verify access to required resources & check if internal requests can be created. See also: https://github.com/konflux-ci/release-service-catalog/tree/production/tasks/verify-access-to-resources/README.md[README.md]
+[[verify-access-to-resources-]]verify-access-to-resources (0.2.0):: Tekton task to verify access to required resources & check if internal requests can be created. See also: https://github.com/konflux-ci/release-service-catalog/tree/production/tasks/verify-access-to-resources/README.md[README.md]

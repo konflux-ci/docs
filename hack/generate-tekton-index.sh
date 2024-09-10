@@ -45,14 +45,16 @@ do
         fi
     fi
 
+    url="${VCS_URL}/tree/${BRANCH}/${task_dir}"
+
+    echo >> "$WORKDIR/tasks.adoc"
+    echo -n "[[$task_name-${task_version}]]$task_name " >> "$WORKDIR/tasks.adoc"
+
     if [ "${task_version}" == "" ]; then
         task_version=$(yq '.metadata.labels."app.kubernetes.io/version" // "undefined"' "$task_dir/$task_name.yaml")
     fi
 
-    url="${VCS_URL}/tree/${BRANCH}/${task_dir}"
-
-    echo >> "$WORKDIR/tasks.adoc"
-    echo -n "[[$task_name]]$task_name ($task_version):: " >> "$WORKDIR/tasks.adoc"
+    echo -n "($task_version):: " >> "$WORKDIR/tasks.adoc"
 
     description=$(yq '.spec.description | split("\n") | .[0]' "$task_dir/$task_name.yaml")
     echo -n "$description " >> "$WORKDIR/tasks.adoc"
