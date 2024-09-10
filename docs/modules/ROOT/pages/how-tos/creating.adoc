@@ -1,43 +1,135 @@
 = Creating applications and components
 
-At the time of publication, to create applications in {ProductName}, you need to manually configure them by editing YAML files. This might change, in favor of maintaining those configurations in the {ProductName} UI.
+== Onboarding components to {ProductName}
+
+{ProductName} supports two methods for creating applications and components.
+
+Before being able to onboard a component to {ProductName}, you will need to ensure that the instance has appropriate access to the git repository. This means either installing your organization’s {ProductName} GitHub App on the source code repository or xref:/how-tos/configuring/creating-secrets.adoc#creating-source-control-secrets[create a secret] to enable access to a GitLab repository.
+
+=== With the UI
+.Prerequisites:
+
+* xref:/advanced-how-tos/installing/enabling-builds.adoc[Enabled] build pipelines for your instance of {ProductName}.
+* xref:/advanced-how-tos/installing/enabling-builds.adoc#enable-image-controller[Enabled] image controller for your instance of {ProductName}.
+
+==== Create initial Application and Component
+.*Procedures*
+
+. In the {ProductName} UI, go to the *Applications* page.
+. Click the *Create application button.
+. Enter a name for the application
+. Click the *Add a component* button.
+  . Enter the URL for the git repository.
+  . (Optional) After clicking out of the repository URL, expand the *Show advanced Git options*.
+    . Enter the branch, tag or commit reference to the *Git reference* dialogue.
+    . Enter the path to the context directory if the build context is contained somewhere other than the repository root.
+  . Enter the path to the Dockerfile within the git repository. This will be the path within the context directory.
+  . (Optional) Change the component name if desired.
+  . (Optional) Click on the *Pipeline* drop down box and select the desired pipeline to configure your component with.
+  . (Optional) Click on *Add secret* to add a secret which will be needed for the component build. See xref:/how-tos/configuring/creating-secrets.adoc[creating secrets] for more information.
+. Click *Create application*.
+
++
+NOTE: GitHub and GitLab are supported source control providers. GitLab support requires the configuration of xref:/how-tos/configuring/creating-secrets.adoc#creating-source-control-secrets[source control secrets].
+
+==== Create additional Components in an Application
+
+.*Procedures*
+
+. In the {ProductName} UI, go to the *Applications* page.
+. Click on the name of the application that you want to add a component to.
+. Click on *Actions* and *Add component*.
+. Follow the procedure above for specifying the component.
+. Click *Add component*.
+
+=== With the CLI
 
 .Prerequisites:
 
 * xref:/advanced-how-tos/installing/enabling-builds.adoc[Enabled] build pipelines for your instance of {ProductName}.
-* The following values from your {ProductName} GitHub App:
-** The private key
-** The App ID
-** The webhook secret
-* A GitHub repository with source code for your application 
-** It must have the same basic structure as our example repository
-* Read/write access to the repository for your instance of {ProductName} 
 * link:https://kubernetes.io/docs/tasks/tools/[kubectl] CLI tool
+* You have completed the steps listed in the xref:/getting-started/cli.adoc[Getting started in the CLI] page.
 
-.Procedure:
+.*Procedures*
 
-. In the GitHub repository for your application, install your organization’s {ProductName} GitHub App.
-. In the repository for your instance of {ProductName}, prepare an `application-and-component.yaml` file for your namespace. 
-.. If your namespace does not already have this YAML file, create it with the following path: `/test/resources/demo-users/user/<namespace>/application-and-component.yaml`. Use the namespace 2 file as a template.
-.. Replace the two `url` values in that YAML file as follows:
-... For the `url` value beneath `git`, provide the URL that you would use to locally clone your application’s repository. This URL ends with `.git`.
-... For the `url` value beneath `spec`, at the end of the file, provide the URL for your application’s repository that you see in your browser, without `.git` at the end.
+. Create an `ApplicationComponent.yaml` file locally.
+
 +
-NOTE: To add other components to the same namespace, reference the example YAML file beneath this procedure. 
-. Login to the Kubernetes cluster where {ProductName} is deployed. 
-. Run the following command. Be sure to replace <namespace> with your actual namespace.
+*Example `ApplicationComponent.yaml` object*
+
 +
-`kubectl create -f /test/resources/demo-users/user/<namespace>/application-and-component.yaml`
-. Run the following command. But first, be sure to export as variables or hard code the values for `PATH_PRIVATE_KEY`, `APP_ID`, and `WEBHOOK_SECRET`.
-+
-[source]
+[source,yaml]
 --
-kubectl -n pipelines-as-code create secret generic pipelines-as-code-secret \
-       --from-literal github-private-key="$(cat $PATH_PRIVATE_KEY)" \
-       --from-literal github-application-id="APP_ID" \
-       --from-literal webhook.secret="WEBHOOK_SECRET"
+---
+apiVersion: appstudio.redhat.com/v1alpha1
+kind: Application <.>
+metadata:
+  name: <application-name>
+  namespace: <namespace>
+  annotations:
+    application.thumbnail: "1"
+spec:
+  displayName: <application-name>
+---
+apiVersion: appstudio.redhat.com/v1alpha1
+kind: Component <.>
+metadata:
+  name: <component-name>
+  namespace: <namespace>
+  annotations:
+    build.appstudio.openshift.io/request: configure-pac
+    build.appstudio.openshift.io/pipeline: '{"name":"<name-of-the-pipeline-to-use>","bundle":"latest"}' <.>
+spec:
+  application: <owning-application-name> <.>
+  componentName: <component-name>
+  source:
+    git:
+      url: https://github.com/konflux-ci/testrepo.git <.>
+      revision: main <.>
+      context: ./ <.>
+      dockerfileUrl: Containerfile <.>
+  containerImage: <oci-repository-to-push-image-to> <.> 
+---
+apiVersion: appstudio.redhat.com/v1alpha1
+kind: ImageRepository <.>
+metadata:
+  annotations:
+    image-controller.appstudio.redhat.com/update-component-image: true
+  name: imagerepository-for-<application-name>-<component-name>
+  namespace: <namespace>
+  labels:
+    appstudio.redhat.com/application: <application-name>
+    appstudio.redhat.com/component: <component-name> 
+spec:
+  image:
+    name: <namespace>/<application-name>/<component-name>
+    visibility: public <.>
 --
-. Still in the context of your {ProductName} repository, run `kubectl create -f smee/smee-client`.
+
++
+<.> At least one application should be created. Multiple applications can be created by adding additional CR specifications.
+<.> A component is required to map to a git repository to build.
+<.> Optional: If used, it should point to a xref:/advanced-how-tos/installing/enabling-builds.adoc#customize-pipelines[configured pipeline]. If not specified, the default configured pipeline will be used.
+<.> Each component belongs to _one_ application. That application should be defined in the same file if it does not already exist.
+<.> URL for the source repository. This MUST use the `https://[...]` format for cloning a repository.
+<.> Optional: Revision to build in the repository (for example, tag, commit, branch). If not specified, the default branch will be used.
+<.> Optional: The context to build within the git repository. If not specified, the default defined in the configured pipeline will be used.
+<.> Optional: Path to the Containerfile within the context. If not specified, the default value of "Dockerfile" will be used.
+<.> Optional: If the xref:/advanced-how-tos/installing/enabling-builds.adoc#enable-image-controller[image controller] is not deployed, this is required. You must create a xref:/how-tos/configuring/creating-secrets.adoc#creating-registry-pull-secrets[registry secret] that has permissions to push and pull for the specified path. If an ImageRepository is created, this should be omitted.
+<.> Optional: If the `spec.containerImage` has been defined for the component, this should not be created. If the xref:/advanced-how-tos/installing/enabling-builds.adoc#enable-image-controller[image controller] is not deployed, this custom resource will have no effect.
+<.> Supported values are "public" and "private".
+
+. In your workspace, save the `ApplicationComponent.yaml` file and add the resource to your cluster by running the following command:
+
++
+[source,shell]
+----
+$ kubectl apply -f ApplicationComponent.yaml
+----
+
++
+NOTE: You can create additional components and applications with the same file locally by adding additional custom resource configurations. 
+
 . Now, you can trigger your application’s first build pipeline. In the git repository for your application, using your preferred text editor, open a pull request against the `/.tekton/pull-request.yaml` file. 
 .. Specifically, replace any existing value for the `git-url` field with the git URL for your application’s repository. (This is the URL you would use to clone the repository locally; it ends with `.git`.)
 
@@ -46,90 +138,6 @@ NOTE: The PipelineRun will run only for submitters who have permission to run Pi
 For further details on PipelineRun permissions, please refer to the https://pipelinesascode.com/docs/guide/running/[PipelinesAsCode documentation].
 
 . Once the PR is made, a build pipeline should start. You can track its progress in the {ProductName} UI or you can see the final status in GitHub after the pipeline completes. If the pipeline is successful, you can merge the PR.
-
-== Example YAML file for multiple components
-
-If you want to create an application that contains multiple components, model your `application-and-component.yaml` file after the following example.
-
-[source,yaml]
---
----
-apiVersion: appstudio.redhat.com/v1alpha1
-kind: Application
-metadata:
-  name: test-application
-  namespace: user-ns2
-  annotations:
-    application.thumbnail: "1"
-spec:
-  displayName: test-application
----
-apiVersion: appstudio.redhat.com/v1alpha1
-kind: Component
-metadata:
-  name: test-component1
-  namespace: user-ns2
-  annotations:
-    build.appstudio.openshift.io/request: configure-pac
-    image.redhat.com/generate: '{"visibility": "public"}'
-spec:
-  application: test-application
-  componentName: test-component1
-  source:
-    git:
-      revision: main
-      url: https://github.com/konflux-ci/testrepo.git
-      dockerfileUrl: Dockerfile
-      context: ./
----
-apiVersion: appstudio.redhat.com/v1alpha1
-kind: Component
-metadata:
-  name: test-component2
-  namespace: user-ns2
-  annotations:
-    build.appstudio.openshift.io/request: configure-pac
-    image.redhat.com/generate: '{"visibility": "public"}'
-spec:
-  application: test-application
-  componentName: test-component2
-  source:
-    git:
-      revision: main
-      url: https://github.com/konflux-ci/anothertestrepo.git
-      dockerfileUrl: Dockerfile
-      context: ./
----
-apiVersion: "pipelinesascode.tekton.dev/v1alpha1"
-kind: Repository
-metadata:
-  name: project-repository-testrepo
-  namespace: user-ns2
-spec:
-  url: "https://github.com/konflux-ci/testrepo"
----
-apiVersion: "pipelinesascode.tekton.dev/v1alpha1"
-kind: Repository
-metadata:
-  name: project-repository-anothertestrepo
-  namespace: user-ns2
-spec:
-  url: "https://github.com/konflux-ci/anothertestrepo"
---
-
-=== Context and Containerfile path
-
-==== With the UI
-In the UI, ensure that the "Dockerfile" value points to the path of the Containerfile. If the Containerfile is in the root directory of the repository, you can just input "Containerfile".
-
-==== Within the CR
-In the CR, ensure that `dockerfileUrl` points to the Containerfile filename and `context` points to where this Containerfile is located.
-
-[source, Dockerfile]
----
-dockerfileUrl: Containerfile
-context: path/to/Containerfile
----
 
 == Finding the built images
 
@@ -170,7 +178,7 @@ In the CLI, complete the following steps to find the latest pullspec for a compo
 +
 [source]
 ----
-$ oc get components
+$ kubectl get components
 ----
 +
 .Example output
@@ -182,12 +190,12 @@ devfile-sample-go-basic-8wqt       8m54s True     OK       Updated
 devfile-sample-python-basic-ikch   20d   True     OK       Updated
 ----
 
-. Choose which component's image you want to discover. Then use `oc get` and the `jq` CLI tool to get the component image path.
+. Choose which component's image you want to discover. Then use `kubectl get` and the `jq` CLI tool to get the component image path.
 
 +
 [source]
 ----
-$ oc get component <component name> -o json | jq '.status.containerImage'
+$ kubectl get component <component name> -o json | jq '.status.containerImage'
 ----
 
 . For convenience, you may want to save the image path to a local variable.

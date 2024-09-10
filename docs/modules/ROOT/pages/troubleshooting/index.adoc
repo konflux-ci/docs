@@ -115,7 +115,7 @@ Does your secret appear in the `secrets` section? If not, link it to the service
 ----
 secret_name=secret-for-my-registry
 
-oc secret link appstudio-pipeline "$secret_name"
+kubectl secret link appstudio-pipeline "$secret_name"
 ----
 
 === Get the merged registry auth file

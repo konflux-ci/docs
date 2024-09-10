@@ -3,8 +3,7 @@
 In {ProductName}, the integration service provides users with the ability to reset their component's Global Candidate List to a desired state with a manually created `override` snapshot which can then be a candidate for further promotion (release) if it passes all integration tests.
 
 == Prerequisites
-- You have CLI access to the specific OpenShift cluster. For information on obtaining CLI access, refer xref:/getting-started/cli.adoc[Getting started with the CLI]
-- You have an up-to-date kubectl binary. Alternatively, the `oc` binary is also compatible.
+- You have completed the steps listed in the xref:/getting-started/cli.adoc[Getting started in the CLI] page.
 - You have an existing managed workspace such as `ws-sample`, an application such as `application-sample` and a component such as `component-sample`.
 
 == Procedures
@@ -44,7 +43,7 @@ spec:
 +
 [source,terminal]
 ----
-$ oc create -f snapshot.yaml -n ws-sample-tenant
+$ kubectl create -f snapshot.yaml -n ws-sample-tenant
 ----
 This command adds the `override` snapshot to your workspace and integration service will processe the `override` snapshot and update the component `component-sample` 's `.Spec.ContainerImage` to `quay.io/redhat-user-workloads/ws-sample-tenant/application-sample/component-sample@sha256:0db0a473a6abf5c15c424ab07cfbd5c40c06622fe648d4fe6a6b6abc224a0d0c`
 
@@ -55,7 +54,7 @@ After integration service processes the created `override` snapshot, you may ver
 +
 [source,terminal]
 ----
-$ oc get snapshot snapshot-sample -n ws-sample-tenant -o yaml | yq  '.status.conditions.[] | select(.type =="AddedToGlobalCandidateList")'
+$ kubectl get snapshot snapshot-sample -n ws-sample-tenant -o yaml | yq '.status.conditions.[] | select(.type =="AddedToGlobalCandidateList")'
 lastTransitionTime: "2024-06-05T18:20:37Z"
 message: The Snapshot's component was added to the global candidate list
 reason: Added
@@ -69,7 +68,7 @@ type: AddedToGlobalCandidateList
 +
 [source,terminal]
 ----
-$ oc get component component-sample -n ws-sample-tenant -o yaml | yq .spec.containerImage
+$ kubectl get component component-sample -n ws-sample-tenant -o yaml | yq .spec.containerImage
 quay.io/redhat-user-workloads/ws-sample-tenant/application-sample/component-sample@sha256:0db0a473a6abf5c15c424ab07cfbd5c40c06622fe648d4fe6a6b6abc224a0d0c
 ----
 
@@ -77,6 +76,6 @@ quay.io/redhat-user-workloads/ws-sample-tenant/application-sample/component-samp
 +
 [source,terminal]
 ----
-$ oc get component component-sample -n ws-sample-tenant -o yaml | yq .status.lastBuiltCommit
+$ kubectl get component component-sample -n ws-sample-tenant -o yaml | yq .status.lastBuiltCommit
 fa8b89274a61ef0f1c257b7a84c37aa2ec844109
 ----

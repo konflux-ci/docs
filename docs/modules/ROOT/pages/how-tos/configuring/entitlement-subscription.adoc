@@ -24,5 +24,5 @@ Once you have the *<entitlement-id>.pem* and *<entitlement-id>-key.pem* files, y
 Alternatively, you can create the secret through the CLI. After logging into your cluster and navigating to your namespace, run the following command:
 
 ----
-oc create secret generic etc-pki-entitlement -n <your-tenant> --from-file <entitlement-id>-key.pem --from-file <entitlement-id>.pem
+kubectl create secret generic etc-pki-entitlement -n <your-tenant> --from-file <entitlement-id>-key.pem --from-file <entitlement-id>.pem
 ----

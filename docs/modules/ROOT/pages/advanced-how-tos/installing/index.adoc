@@ -8,4 +8,4 @@ Before tapping into the vast array of benefits offered by {ProductName}, the ini
 
 . *Using Kubernetes manifests*: This option supports any image registry and involves fewer initial setup steps.
 
-For detailed instructions, refer to link:https://github.com/{ProductName}-ci/{ProductName}-ci/blob/main/README.md guide.
+For detailed instructions, refer to the link:https://github.com/konflux-ci/konflux-ci/blob/main/README.md[installation guide].
