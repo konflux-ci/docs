@@ -1,6 +1,59 @@
 = Passing buildah arguments
 
-{ProductName} buildah task accepts link:https://github.com/konflux-ci/build-definitions/blob/main/task/buildah/0.1/buildah.yaml#L78[`BUILD_ARGS` parameter] that allows passing build arguments to the underlying `buildah` command through `--build-arg` flag. To enable this, make the following changes to the PipelineRuns under the `.tekton/` directory:
+It is possible to link:https://github.com/containers/buildah/blob/main/docs/buildah-build.1.md[pass arguments to buildah] which is used to build container images in {ProductName}.
+
+== Using an arguments file
+
+The {ProductName} buildah tasks accept link:https://github.com/konflux-ci/build-definitions/blob/main/task/buildah/0.2/buildah.yaml#L78[`BUILD_ARGS` parameter] that allows passing build arguments to the underlying `buildah` command through `--build-arg-file` flag. To enable this, make the following changes to the PipelineRuns under the `.tekton/` directory:
+
+. Create a build args file in your repository. This should contain lines of build arguments in the form of *arg=value*.
+. Define a `build-args-file` Pipeline parameter (if not already present) in `.spec.pipelineSpec.params` to accept the passed-in build arguments.
+
++
+[source,yaml]
+--
+spec:
+  # ...
+  pipelineSpec:
+    params:
+    # ...
+    - name: build-args-file
+      type: string
+      default: ""
+--
+
+. Pass the argument to link:https://github.com/konflux-ci/build-definitions/tree/main/task/buildah/[buildah task]. Add `BUILD_ARGS_FILE` to `build-container.params` (if not already present):
+
++
+[source,yaml]
+--
+spec:
+  # ...
+  pipelineSpec:
+    tasks:
+    # ...
+    - name: build-container
+      params:
+      # ...
+      - name: BUILD_ARGS_FILE
+        value: "$(params.build-args-file)"
+--
+
+. Set the build arguments file in the PipelineRun `.spec.params`:
+
++
+[source,yaml]
+--
+spec:
+  params:
+  # ...
+  - name: build-args-file
+    value: path/to/args-file  # Add the real path to the build args file within the build context
+--
+
+== Setting arguments in the pipeline parameters
+
+The {ProductName} buildah tasks accept link:https://github.com/konflux-ci/build-definitions/blob/main/task/buildah/0.2/buildah.yaml#L74[`BUILD_ARGS` parameter] that allows passing build arguments to the underlying `buildah` command through `--build-arg` flag. To enable this, make the following changes to the PipelineRuns under the `.tekton/` directory:
 
 . Define a `build-args` Pipeline parameter (if not already present) in `.spec.pipelineSpec.params` to accept the passed-in build arguments.
 
