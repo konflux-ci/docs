@@ -6,13 +6,26 @@ In such instances, whenever you build a new image of the common parent component
 
 However, if you build an application with {ProductName} and make references between components with image digests (`sha256:...`), {ProductName} can automatically generate pull requests to update those references. To use this functionality, simply define the relationships between your components, either in the {ProductName} UI, or in your CLI.
 
+[CAUTION]
+====
+{ProductName} only updates image digest references. If images use tag references, these will not be updated.
+====
+[CAUTION]
+====
+If image digests are pointing to an architecture-specific link:https://github.com/opencontainers/image-spec/blob/main/manifest.md[Image Manifest], nudging will update the digest to a matching architecture. In order for nudging to update to the digest to an link:https://github.com/opencontainers/image-spec/blob/main/image-index.md[Image Index], the current digest needs to be pointing to an Image Index.
+====
+
 [NOTE]
 ====
-By default, {ProductName} only looks for image digest references in Dockerfiles, Containerfiles, and YAML files. However, you can xref:./customizing-the-build.adoc[customize your build pipeline] to adjust that list of files with an annotation. This functionality is only available for push builds, so add the following annotation under `annotations` in your nudging component's `/.tekton/<component-name>-push.yaml` file:
-`build.appstudio.openshift.io/build-nudge-files: "<comma-separated list of link:https://docs.renovatebot.com/string-pattern-matching/[regex or glob patterns]>"`
-
-The existing list of patterns is: ".\*Dockerfile.*, .\*.yaml, .*Containerfile.*"
+By default, {ProductName} only looks for image digest references in Dockerfiles, Containerfiles, and YAML files. However, you can xref:./customizing-the-build.adoc[customize your build pipeline] to adjust that list of files with an annotation on the push PipelineRun definition. This annotation supports a comma-separated list of link:https://docs.renovatebot.com/string-pattern-matching/[regex or glob patterns]. The following annotation would replicate the default behavior.
 ====
+
+[source,yaml]
+----
+metadata:
+  annotations:
+    build.appstudio.openshift.io/build-nudge-files: ".*Dockerfile.*, .*.yaml, .*Containerfile.*"
+----
 
 == In the UI
 
