@@ -54,3 +54,12 @@ NOTE: If you want to update the references in your CSV to match where the operan
 
 . In the {ProductName} UI,  xref:../how-tos/creating.adoc[create a new application] for your file-based catalog (FBC) in {ProductName}.
 . In your new application, xref:../how-tos/creating.adoc[add a new component] for your FBC. Be sure to select the file-based catalog pipeline and to specify the correct path to the catalog's Containerfile within its git repository.
+
++
+NOTE: As long as the Containerfile populates the cache, the image produced with a FBC fragment can be used as a link:https://olm.operatorframework.io/docs/concepts/crds/catalogsource/[CatalogSource]. You can use *opm* to generate the cache in the final stage of your Containerfile.
+
++
+[source,dockerfile]
+----
+RUN ["/bin/opm", "serve", "/configs", "--cache-dir=/tmp/cache", "--cache-only"]
+----
