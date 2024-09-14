@@ -1,0 +1,55 @@
+= Testing Farm
+
+In this guide, you'll learn how to xref:/how-tos/testing/integration/adding.adoc[add a custom integration test] in {ProductName} that uses link:https://docs.testing-farm.io/[Testing Farm] as a third-party backend for test execution.
+
+.Prerequisites
+
+. You have xref:/how-tos/creating.adoc[created an application] in {ProductName}
+
+. You have a Testing Farm API key, which can be acquired by following the link:https://docs.testing-farm.io/Testing%20Farm/0.1/onboarding.html[Testing Farm onboarding guide].
+
+. You have have or are ready to create a git repository with link:https://fmf.readthedocs.io/[fmf] files suitable for use with the link:https://tmt.readthedocs.io/[tmt] testing tool. This is the testing technology used by Testing Farm. If you don't have a fmf tests already prepared, you can use our tmt link:https://github.com/ralphbean/tmt-hello-world[hello world repository].
+
+.Procedure
+
+You need to perform two major steps. Upload your Testing Farm API key, and register an *Integration test* to send requests to the Testing Farm API. Complete the following steps in the {ProductName} console:
+
+.Procedure - Upload your Testing Farm API key
+
+Follow the instructions in the xref:/how-tos/configuring/creating-secrets.adoc[creating secrets] guide, with the following details:
+
+. For **Secret name**, enter `testing-farm-secret`.
+
+. Under **Key/value secret**, expand **Key/value 1**, then enter the key name `testing-farm-token`.
+
+NOTE: Be sure that the secret name is `testing-farm-secret` and the key name is `testing-farm-token`. The link:https://github.com/ralphbean/testing-farm-tekton/blob/main/tasks/testing-farm.yaml[tekton task] expects the secret and key name to be named these strings exactly.
+
+. For **Upload the file with value for your key or paste its contents**, paste the value of your token into the space under **Upload**.
+
+.Procedure - Registering the Integration Test
+
+Follow the instructions in the xref:/how-tos/testing/integration/adding.adoc[adding an integration test] guide, with the following details:
+
+. In the *GitHub URL* field, enter `https://github.com/ralphbean/testing-farm-tekton`, which is a git repository containing a tekton pipeline and task that can send requests to the Testing Farm API.
+
+. In the *Path in repository* field, enter `pipelines/testing-farm.yaml`, which refers to link:https://github.com/ralphbean/testing-farm-tekton/blob/main/pipelines/testing-farm.yaml[this path in the repo].
+
+. Expand the *Parameters* field.
+
+. Select *Add parameter*. For the *Name* field, enter `GIT_URL`. For the *Value* field, enter the url to the git repository that contains your *fmf* files. If you do not have any, try using our tmt link:https://github.com/ralphbean/tmt-hello-world[hello world repository] to try it out.
+
+. Optional: Select *Add parameter*. For the *Name* field, enter `COMPOSE`. For the *Value* field, enter a valid Testing Farm compose identifier. Try `Fedora-40`.
+
+.Verification
+
+To start building a new component, either open a new pull request (PR) that targets the tracked branch of the component in the GitHub repository, or comment '/retest' on an existing PR.
+
+When the new build is finished:
+
+. Go to the *Integration tests* tab and select the highlighted name of your test.
+
+. Go to the *Pipeline runs* tab of that test and select the most recent run.
+
+. You should be able to find the testing-farm URLs in the logs.
+
+. xref:/how-tos/testing/integration/editing.adoc[Edit the integration test] if it is not properly configured.
