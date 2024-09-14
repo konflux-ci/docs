@@ -25,6 +25,8 @@
 **** xref:how-tos/testing/integration/rerunning.adoc[Rerunning an integration test]
 **** xref:how-tos/testing/integration/override-snapshots.adoc[Creating an override snapshot]
 **** xref:how-tos/testing/integration/choosing-contexts.adoc[Choosing when to run certain Integration Tests]
+**** Third Parties
+***** xref:how-tos/testing/integration/third-parties/testing-farm.adoc[Testing with Testing Farm]
 ** xref:how-tos/metadata/index.adoc[Inspecting provenance and attestations]
 *** xref:how-tos/metadata/sboms.adoc[Inspecting SBOMs]
 *** xref:how-tos/metadata/attestations.adoc[Inspecting artifact attestations]
