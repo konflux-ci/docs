@@ -12,16 +12,16 @@ For every build, Cachi2 generates a software bill of materials (SBOM) where all 
 |**Language**
 |**Package manager**
 
-|Go
+|xref:gomod[Go]
 |`gomod`
 
-|Python
+|xref:pip[Python]
 |`pip`
 
-|Node.js
+|xref:npm[Node.js]
 |`npm`
 
-|RPM*
+|xref:rpm[RPM*]
 |`rpm`
 |===
 
@@ -29,7 +29,7 @@ NOTE: To use Yarn as the package manager, see the link:https://github.com/contai
 
 NOTE: *The link:https://github.com/konflux-ci/rpm-lockfile-prototype?tab=readme-ov-file#what-is-this[rpm-lockfile-prototype] and the link:https://github.com/containerbuildsystem/cachi2/blob/8a870c9cd3b7927e1a2d974b3874140e935aa17e/cachi2/core/resolver.py#L22-L27[RPM package manager for cachi2] are not fully supported. You can use them to prefetch rpms for your hermetic builds, but the file format and technology may change in the future. If you're interested in the future of this topic, join the discussion at link:https://github.com/rpm-software-management/dnf5/issues/833[rpm-software-management/dnf5#833].
 
-== Enabling prefetch builds for `gomod`
+== [[gomod]]Enabling prefetch builds for `gomod`
 
 .Prerequisites
 * You have a `go.mod` file in your repository that lists all the dependencies.
@@ -61,7 +61,7 @@ spec:
 * From the {ProductName} *Applications* view, go to *Activity > Latest commits*.
 //include::../partials/con_hermetic_verification.adoc[]
 
-== Enabling prefetch builds for `pip`
+== [[pip]]Enabling prefetch builds for `pip`
 Cachi2 supports pip by parsing of `pip` requirements files, including but not limited to, `requirements.txt` files placed in the root of your repository. By generically parsing `pip` requirements files, Cachi2 downloads the specified dependencies.
 
 IMPORTANT: The requirements file can have a different name because you can use multiple files to provide the dependencies. These requirements files function as lockfiles, encompassing all transitive dependencies. You must actively pin each transitive dependency listed in the requirements file to a specific version.
@@ -263,7 +263,7 @@ spec:
             workspace: netrc
 ----
 
-== Enabling prefetch builds for `npm`
+== [[npm]]Enabling prefetch builds for `npm`
 Cachi2 supports `npm` by fetching any dependencies you declare in your `package.json` and `package-lock.json` project files. The npm CLI manages the `package-lock.json` file automatically, and Cachi2 fetches any dependencies and enables your build to install them without network access.
 
 .Prerequisites
@@ -295,7 +295,7 @@ spec:
 * From the {ProductName} *Applications* view, go to *Activity > Latest commits*.
 //include::../partials/con_hermetic_verification.adoc[]
 
-== Enabling prefetch builds for `rpm`
+== [[rpm]]Enabling prefetch builds for `rpm`
 
 Cachi2 has a dev-preview package manager capable of fetching `rpm` dependencies. This requires the use of a pair of `rpms.in.yaml` and `rpms.lock.yaml` files to be committed to your repository. You write a `rpms.in.yaml` file and the link:https://github.com/konflux-ci/rpm-lockfile-prototype?tab=readme-ov-file#what-is-this[rpm-lockfile-prototype] CLI tool resolves that to produce a `rpms.lock.yaml` file. Cachi2 fetches those specific rpms and enables your build to install them without network access.
 
