@@ -349,12 +349,11 @@ spec:
 ----
 <1> The `*prefetch-input*` parameter specifies the path to the directory that has the lockfile. In this example, the `.` indicates that the rpm lockfile is in the repository root. Additionally, if you have multiple directories, you can provide the path to those directories in the JSON array format. For example, `[{"path": ".", "type": "rpm"}, {"path": "subpath/to/the/other/directory", "type": "rpm"}]`.
 
-. Additionally, pass an extra parameter to the `prefetch-dependencies` task to indicate that "dev package managers" should be enabled.
+. Additionally, pass an extra parameter to the `prefetch-dependencies` task in the `.spec.pipelineSpec.tasks` section to indicate that "dev package managers" should be enabled.
 
 +
 [source,yaml]
 ----
-spec:
     tasks:
         -   ...
         -   name: prefetch-dependencies
