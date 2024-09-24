@@ -318,12 +318,13 @@ contentOrigin:
 <1> The `*packages*` list is the list of packages you want to install in your Container. You don't have to declare transitive dependencies here. The rpm-lockfile-prototype tool will resolve them for you.
 <2> This should be a reference to a repo file, like those found in `/etc/yum.repos.d/`. This tells the tooling where to find your rpm and its dependencies.
 
-. Copy any necessary yum/dnf repo files into your git repository. If you are using a fedora base image, that looks like:
+. Copy any necessary yum/dnf repo files into your git repository. If you are using a fedora rawhide base image, that looks like:
 
 +
 [source]
 ----
-$ cp /etc/yum.repos.d/fedora.repo .
+$ BASE_IMAGE=quay.io/fedora/fedora:rawhide
+$ podman run -it $BASE_IMAGE cat /etc/yum.repos.d/fedora.repo > fedora.repo
 ----
 
 +
@@ -334,7 +335,8 @@ NOTE: For every repository defined in your set of repo files, make sure to add t
 +
 [source]
 ----
-$ rpm-lockfile-prototype --image YOUR_BASE_IMAGE rpms.in.yaml <1>
+$ BASE_IMAGE=quay.io/fedora/fedora:rawhide
+$ rpm-lockfile-prototype --image $BASE_IMAGE rpms.in.yaml <1>
 ----
 <1> The produced `rpms.lock.yaml` file will include only your requested dependency plus its transitive dependencies, minus any rpms that are already installed in the provided base image.
 
