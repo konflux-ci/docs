@@ -293,6 +293,7 @@ spec:
 * From the {ProductName} *Applications* view, go to *Activity > Pipeline runs*.
 ** Go to the pipeline run with *Build* in the *Type* column and confirm that the `prefetch-dependencies` stage displays a green checkmark. This indicates that the build process successfully fetched all dependencies.
 * From the {ProductName} *Applications* view, go to *Activity > Latest commits*.
+//include::../partials/con_hermetic_verification.adoc[]
 
 == Enabling prefetch builds for `rpm`
 
@@ -314,8 +315,8 @@ packages: [nethack] <1>
 contentOrigin:
   repofiles: ["./fedora.repo"] <2>
 ----
-<1> The `*packages*` list is the list of packages you want to install in your Container. Only include first-order dependencies here, i.e. the packages you want to install.
-<2> This should be a reference to a repo file, like those found in `/etc/yum.repos.d/`. This tells the Cachi2 where to find your rpm and its dependencies.
+<1> The `*packages*` list is the list of packages you want to install in your Container. You don't have to declare transitive dependencies here. The rpm-lockfile-prototype tool will resolve them for you.
+<2> This should be a reference to a repo file, like those found in `/etc/yum.repos.d/`. This tells the tooling where to find your rpm and its dependencies.
 
 . Copy any necessary yum/dnf repo files into your git repository. If you are using a fedora base image, that looks like:
 
@@ -371,6 +372,7 @@ spec:
 * From the {ProductName} *Applications* view, go to *Activity > Pipeline runs*.
 ** Go to the pipeline run with *Build* in the *Type* column and confirm that the `prefetch-dependencies` stage displays a green checkmark. This indicates that the build process successfully fetched all dependencies.
 * From the {ProductName} *Applications* view, go to *Activity > Latest commits*.
+//include::../partials/con_hermetic_verification.adoc[]
 
 .Troubleshooting
 If your build fails, be sure to look at your logs:
