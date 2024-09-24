@@ -321,7 +321,7 @@ contentOrigin:
 . Copy any necessary yum/dnf repo files into your git repository. If you are using a fedora rawhide base image, that looks like:
 
 +
-[source]
+[source,console]
 ----
 $ BASE_IMAGE=quay.io/fedora/fedora:rawhide
 $ podman run -it $BASE_IMAGE cat /etc/yum.repos.d/fedora.repo > fedora.repo
@@ -333,7 +333,7 @@ NOTE: For every repository defined in your set of repo files, make sure to add t
 . Run the following command to resolve your `rpms.in.yaml` file and produce a `rpms.lock.yaml` file.
 
 +
-[source]
+[source,console]
 ----
 $ BASE_IMAGE=quay.io/fedora/fedora:rawhide
 $ rpm-lockfile-prototype --image $BASE_IMAGE rpms.in.yaml <1>
