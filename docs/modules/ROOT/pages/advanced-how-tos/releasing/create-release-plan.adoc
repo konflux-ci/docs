@@ -35,7 +35,7 @@ spec:
  application: <application-name> <.>
  data: <key> <.>
  pipelineRef: <pipeline-ref> <.>
- serviceAccont: <service-account> <.>
+ serviceAccount: <service-account> <.>
  target: managed-workspace <.>
 ----
 
