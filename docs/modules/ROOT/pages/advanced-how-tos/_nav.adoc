@@ -14,3 +14,4 @@
 ** xref:advanced-how-tos/managing-multiple-versions.adoc[Managing multiple software versions]
 ** xref:advanced-how-tos/managing-security-fix.adoc[Managing a security fix]
 ** xref:advanced-how-tos/using-trusted-artifacts.adoc[Using Trusted Artifacts]
+** xref:advanced-how-tos/testing-releasing-single-component.adoc[Testing and Releasing a Single Component]
