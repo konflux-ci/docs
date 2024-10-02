@@ -52,7 +52,7 @@ You can also specify additional custom tags by using *ADDITIONAL_TAGS* array par
     - name: name
       value: apply-tags
     - name: bundle
-      value: quay.io/redhat-appstudio-tekton-catalog/task-apply-tags:0.1
+      value: quay.io/konflux-ci/tekton-catalog/task-apply-tags:0.1
     - name: kind
       value: task
     resolver: bundles
