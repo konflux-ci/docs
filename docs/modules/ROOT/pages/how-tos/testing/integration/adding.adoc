@@ -31,9 +31,9 @@ NOTE: By default, all integration test scenarios are mandatory and must pass. A 
 
 . Select *Add integration test*.
 
-. To start building a new component, either open a new pull request (PR) that targets the tracked branch of the component in the GitHub repository, or comment '/retest' on an existing PR.
-
 .Verification
+
+To start building a new component, either open a new pull request (PR) that targets the tracked branch of the component in the GitHub repository, or comment '/retest' on an existing PR.
 
 When the new build is finished:
 
