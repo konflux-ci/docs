@@ -4,27 +4,32 @@ In {ProductName}, you can run a hermetic build by restricting network access to 
 
 For every build, Cachi2 generates a software bill of materials (SBOM) where all dependencies are properly declared and pinned to specific versions. Also, Cachi2 ensures that arbitrary code is never executed during the prefetch, meaning, for example, that the build doesn’t pull any undeclared dependencies. Such measures result in very accurate SBOMs and improve the build reproducibility. For more information about SBOMs, see xref:/how-tos/metadata/sboms.adoc[Inspecting SBOMs].
 
-[#supported-languages]
-.Supported languages
+[#available-languages]
+.Available languages
 
 [cols="1,1"]
 |===
 |**Language**
 |**Package manager**
 
-|Go
+|xref:gomod[Go]
 |`gomod`
 
-|Python
+|xref:pip[Python]
 |`pip`
 
-|Node.js
+|xref:npm[Node.js]
 |`npm`
+
+|xref:rpm[RPM*]
+|`rpm`
 |===
 
 NOTE: To use Yarn as the package manager, see the link:https://github.com/containerbuildsystem/cachi2/blob/main/docs/usage.md#example-yarn[Cachi2 Usage guide].
 
-== Enabling prefetch builds for `gomod`
+NOTE: *The link:https://github.com/konflux-ci/rpm-lockfile-prototype?tab=readme-ov-file#what-is-this[rpm-lockfile-prototype] and the link:https://github.com/containerbuildsystem/cachi2/blob/8a870c9cd3b7927e1a2d974b3874140e935aa17e/cachi2/core/resolver.py#L22-L27[RPM package manager for cachi2] are not fully supported. You can use them to prefetch rpms for your hermetic builds, but the file format and technology may change in the future. If you're interested in the future of this topic, join the discussion at link:https://github.com/rpm-software-management/dnf5/issues/833[rpm-software-management/dnf5#833].
+
+== [[gomod]]Enabling prefetch builds for `gomod`
 
 .Prerequisites
 * You have a `go.mod` file in your repository that lists all the dependencies.
@@ -56,7 +61,7 @@ spec:
 * From the {ProductName} *Applications* view, go to *Activity > Latest commits*.
 //include::../partials/con_hermetic_verification.adoc[]
 
-== Enabling prefetch builds for `pip`
+== [[pip]]Enabling prefetch builds for `pip`
 Cachi2 supports pip by parsing of `pip` requirements files, including but not limited to, `requirements.txt` files placed in the root of your repository. By generically parsing `pip` requirements files, Cachi2 downloads the specified dependencies.
 
 IMPORTANT: The requirements file can have a different name because you can use multiple files to provide the dependencies. These requirements files function as lockfiles, encompassing all transitive dependencies. You must actively pin each transitive dependency listed in the requirements file to a specific version.
@@ -258,11 +263,11 @@ spec:
             workspace: netrc
 ----
 
-== Enabling prefetch builds for `npm`
+== [[npm]]Enabling prefetch builds for `npm`
 Cachi2 supports `npm` by fetching any dependencies you declare in your `package.json` and `package-lock.json` project files. The npm CLI manages the `package-lock.json` file automatically, and Cachi2 fetches any dependencies and enables your build to install them without network access.
 
 .Prerequisites
-* You have an up-to-date link:https://docs.npmjs.com/cli/v9/configuring-npm/package-lock-json[`package-lock.json`] file, newer than version 1, in your source repository. To make sure that you have the latest `package-lock.json` file, or to create a lockfile, run the link:https://docs.npmjs.com/cli/v9/commands/npm-install?v=true[`npm-install`] command. You can also look at the `lockfileVersion` attribute in your `package-lock.json` file to make sure its value is a number greater than `*1*`. 
+* You have an up-to-date link:https://docs.npmjs.com/cli/v9/configuring-npm/package-lock-json[`package-lock.json`] file, newer than version 1, in your source repository. To make sure that you have the latest `package-lock.json` file, or to create a lockfile, run the link:https://docs.npmjs.com/cli/v9/commands/npm-install?v=true[`npm-install`] command. You can also look at the `lockfileVersion` attribute in your `package-lock.json` file to make sure its value is a number greater than `*1*`.
 
 .Procedure
 To prefetch dependencies for a component build, complete the following steps:
@@ -278,7 +283,7 @@ spec:
         -   ...
         -   name: prefetch-input
             value: '{"type": "npm", "path": "."}' <1>
----- 
+----
 <1> The `*prefetch-input*` parameter specifies the path to the directory that has the lockfile and the package metadata files. In this example, the `.` indicates that the package manager lockfile is in the repository root. Additionally, if you have multiple directories, you can provide the path to those directories in the JSON array format. For example, `[{"path": ".", "type": "npm"}, {"path": "subpath/to/the/other/directory", "type": "npm"}]`.
 
 . Create a pull request by committing your changes to the repository of the component.
@@ -288,6 +293,90 @@ spec:
 * From the {ProductName} *Applications* view, go to *Activity > Pipeline runs*.
 ** Go to the pipeline run with *Build* in the *Type* column and confirm that the `prefetch-dependencies` stage displays a green checkmark. This indicates that the build process successfully fetched all dependencies.
 * From the {ProductName} *Applications* view, go to *Activity > Latest commits*.
+//include::../partials/con_hermetic_verification.adoc[]
+
+== [[rpm]]Enabling prefetch builds for `rpm`
+
+Cachi2 has a dev-preview package manager capable of fetching `rpm` dependencies. This requires the use of a pair of `rpms.in.yaml` and `rpms.lock.yaml` files to be committed to your repository. You write a `rpms.in.yaml` file and the link:https://github.com/konflux-ci/rpm-lockfile-prototype?tab=readme-ov-file#what-is-this[rpm-lockfile-prototype] CLI tool resolves that to produce a `rpms.lock.yaml` file. Cachi2 fetches those specific rpms and enables your build to install them without network access.
+
+.Prerequisites
+* You have an up-to-date installation of link:https://github.com/konflux-ci/rpm-lockfile-prototype?tab=readme-ov-file#installation[rpm-lockfile-prototype].
+
+.Procedure
+
+To prefetch dependencies for a component build, complete the following steps:
+
+. Create a `rpms.in.yaml` file in your git repository, with the following contents:
+
++
+[source,yaml]
+----
+packages: [nethack] <1>
+contentOrigin:
+  repofiles: ["./fedora.repo"] <2>
+----
+<1> The `*packages*` list is the list of packages you want to install in your Container. You don't have to declare transitive dependencies here. The rpm-lockfile-prototype tool will resolve them for you.
+<2> This should be a reference to a repo file, like those found in `/etc/yum.repos.d/`. This tells the tooling where to find your rpm and its dependencies.
+
+. Copy any necessary yum/dnf repo files into your git repository. If you are using a fedora rawhide base image, that looks like:
+
++
+[source,console]
+----
+$ BASE_IMAGE=quay.io/fedora/fedora:rawhide
+$ podman run -it $BASE_IMAGE cat /etc/yum.repos.d/fedora.repo > fedora.repo
+----
+
++
+NOTE: For every repository defined in your set of repo files, make sure to add the corresponding sources repo (or make sure to enable them, if they’re already present). Otherwise, the lockfile generator will not include any SRPMs in your lockfile, cachi2 won’t download any SRPMs and the source container for your build will be incomplete.
+
+. Run the following command to resolve your `rpms.in.yaml` file and produce a `rpms.lock.yaml` file.
+
++
+[source,console]
+----
+$ BASE_IMAGE=quay.io/fedora/fedora:rawhide
+$ rpm-lockfile-prototype --image $BASE_IMAGE rpms.in.yaml <1>
+----
+<1> The produced `rpms.lock.yaml` file will include only your requested dependency plus its transitive dependencies, minus any rpms that are already installed in the provided base image.
+
+. Go to the `.tekton` directory and find the `.yaml` files related to the `*pull request*` and `*push*` processes.
+. Configure the hermetic pipeline by adding the following parameters in both `.yaml` files:
+
++
+[source,yaml]
+----
+spec:
+    params:
+        -   ...
+        -   name: prefetch-input
+            value: '{"type": "rpm", "path": "."}' <1>
+----
+<1> The `*prefetch-input*` parameter specifies the path to the directory that has the lockfile. In this example, the `.` indicates that the rpm lockfile is in the repository root. Additionally, if you have multiple directories, you can provide the path to those directories in the JSON array format. For example, `[{"path": ".", "type": "rpm"}, {"path": "subpath/to/the/other/directory", "type": "rpm"}]`.
+
+. Additionally, pass an extra parameter to the `prefetch-dependencies` task in the `.spec.pipelineSpec.tasks` section to indicate that "dev package managers" should be enabled.
+
++
+[source,yaml]
+----
+    tasks:
+        -   ...
+        -   name: prefetch-dependencies
+            params:
+                - ...
+                - name: dev-package-managers <1>
+                  value: "true"
+----
+<1> You won't find `dev-package-mangers` as a param on the `prefetch-dependencies` task. You have to add it, and set it to true. This is because Cachi2 hasn't declared stable support for rpm lockfile processing yet. It's new technology and the link:https://github.com/rpm-software-management/dnf5/issues/833[conversation] about which way forward in the dnf community is still ongoing.
+
+. Create a pull request by committing your changes to the repository of the component.
+. Review and merge the pull request.
+
+.Verification
+* From the {ProductName} *Applications* view, go to *Activity > Pipeline runs*.
+** Go to the pipeline run with *Build* in the *Type* column and confirm that the `prefetch-dependencies` stage displays a green checkmark. This indicates that the build process successfully fetched all dependencies.
+* From the {ProductName} *Applications* view, go to *Activity > Latest commits*.
+//include::../partials/con_hermetic_verification.adoc[]
 
 .Troubleshooting
 If your build fails, be sure to look at your logs:
