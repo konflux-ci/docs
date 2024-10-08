@@ -365,7 +365,7 @@ spec:
             params:
                 - ...
                 - name: dev-package-managers <1>
-                  value: "true"
+                  default: "true"
 ----
 <1> You won't find `dev-package-mangers` as a param on the `prefetch-dependencies` task. You have to add it, and set it to true. This is because Cachi2 hasn't declared stable support for rpm lockfile processing yet. It's new technology and the link:https://github.com/rpm-software-management/dnf5/issues/833[conversation] about which way forward in the dnf community is still ongoing.
 
