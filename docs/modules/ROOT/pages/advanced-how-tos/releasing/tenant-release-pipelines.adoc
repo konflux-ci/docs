@@ -1,0 +1,79 @@
+= Tenant Release Pipelines
+
+The usual release process in {ProductName} involves two different teams: a *Development team* and a *Managed environment team* as described in
+xref:/advanced-how-tos/releasing/index.adoc[Releasing an application]. But, sometimes the Development team wants to release their software to some destination that is directly under their control, using their own secrets, without depending on a Managed environment team. In {ProductName} we call this model a *tenant release pipeline*. It's a release pipeline that runs in the tenant namespace of the Development team, rather than in that of the Managed environment team.
+
+The gist here is that you are going to follow the regular instructions to xref:/advanced-how-tos/releasing/create-release-plan.adoc[create a ReleasePlan], but you will omit the `target` and specify the `pipelineRef` directly on your `ReleasePlan`.
+
+
+.*Prerequisites*
+
+* You have an existing Development workspace.
+* You have completed the steps listed in the xref:/getting-started/cli.adoc[Getting started in the CLI] page.
+* Either choose one of the link:https://github.com/konflux-ci/release-service-catalog[konflux release pipelines], or write your own.
+
+NOTE: If you write a good reusable release pipeline, please submit it to our link:https://github.com/konflux-ci/release-service-catalog[catalog] so others can use it.
+
+.Procedure
+
+. Create a `ReleasePlan.yaml` object locally.
+
++
+*Example `ReleasePlan.yaml` object*
+
++
+[source,yaml]
+----
+apiVersion: appstudio.redhat.com/v1alpha1
+kind: ReleasePlan
+metadata:
+ labels:
+   release.appstudio.openshift.io/auto-release: 'true' <.>
+   release.appstudio.openshift.io/standing-attribution: 'true'
+ name: publish <.>
+ namespace: dev-workspace <.>
+spec:
+ application: <application-name> <.>
+ data:
+   mapping:
+     components: <.>
+       - name: demo-component-1
+         repository: registry/destination-image-repository-1
+         tags: [latest]
+       - name: demo-component-2
+         repository: registry/destination-image-repository-2
+         tags: [latest]
+ pipelineRef: <.>
+   resolver: git
+   params:
+     - name: url
+       value: "https://github.com/konflux-ci/release-service-catalog.git"
+     - name: revision
+       value: production
+     - name: pathInRepo
+       value: "pipelines/push-to-external-registry/push-to-external-registry.yaml"
+ serviceAccont: appstudio-pipeline <.>
+----
+
++
+<.> Optional: Control if Releases should be created automatically for this ReleasePlan when tests pass. Defaults to true.
+<.> The name of the release plan.
+<.> The development team's workspace.
+<.> The name of the application that you want to release via a pipeline in the development workspace.
+<.> A list containing the destination repository for each component
+<.> Reference to the Pipeline to be executed in the development workspace.
+<.> The name of the service account used to execute the tenant pipeline.
+
+. In the Development workspace, apply the `ReleasePlan.yaml` file and add the resource to your cluster by running the following command:
+
++
+[source,shell]
+----
+kubectl apply -f ReleasePlan.yaml -n dev
+----
+
+. Provision any secrets needed by the particular release pipeline you chose and xref:/how-tos/configuring/creating-secrets.adoc[upload them to the Development workspace].
+
+.Next steps
+
+* *Create a `release` object:* The development team creates a Release object to references a specific Snapshot and ReleasePlan. It indicates the users' intent to release that Snapshot via the tenant release pipeline defined in the ReleasePlan.
