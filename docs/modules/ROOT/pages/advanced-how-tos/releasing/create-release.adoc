@@ -1,6 +1,6 @@
 = Creating a release
 
-A Release CR is created to submit a specific Application Snapshot to be processed according to teh referenced ReleasePlan.
+A Release CR is created to submit a specific Application Snapshot to be processed according to the referenced ReleasePlan.
 
 == Creating a `Release` object
 
