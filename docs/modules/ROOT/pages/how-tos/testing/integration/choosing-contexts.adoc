@@ -15,7 +15,7 @@ The full list of supported contexts is:
 ** See more in xref:how-tos/testing/integration/override-snapshots.adoc[Creating an override snapshot]
 
 +
-NOTE: Setting more than one context in the list will run the IntegrationTestScenario for all included contexts.
+NOTE: When multiple contexts are defined, the IntegrationTestScenario will execute if any of the specified contexts match the snapshot. This approach ensures that the test runs as long as at least one context applies, without requiring all defined contexts to be met.
 
 .Prerequisites
 - You have CLI access to the specific OpenShift cluster. For information on obtaining CLI access, refer link:https://konflux-ci.dev/docs/getting-started/cli/[Getting started with the CLI].
