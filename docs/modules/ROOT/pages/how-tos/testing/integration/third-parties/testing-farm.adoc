@@ -8,7 +8,7 @@ In this guide, you'll learn how to xref:/how-tos/testing/integration/adding.adoc
 
 . You have a Testing Farm API key, which can be acquired by following the link:https://docs.testing-farm.io/Testing%20Farm/0.1/onboarding.html[Testing Farm onboarding guide].
 
-. You have have or are ready to create a git repository with link:https://fmf.readthedocs.io/[fmf] files suitable for use with the link:https://tmt.readthedocs.io/[tmt] testing tool. This is the testing technology used by Testing Farm. If you don't have a fmf tests already prepared, you can use our tmt link:https://github.com/ralphbean/tmt-hello-world[hello world repository].
+. You have or are ready to create a git repository with link:https://fmf.readthedocs.io/[fmf] files suitable for use with the link:https://tmt.readthedocs.io/[tmt] testing tool. This is the testing technology used by Testing Farm. If you don't have fmf tests already prepared, you can use our tmt link:https://github.com/ralphbean/tmt-hello-world[hello world repository].
 
 .Procedure
 
