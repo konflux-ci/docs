@@ -21,7 +21,7 @@ Before being able to onboard a component to {ProductName}, you will need to ensu
 . Click the *Add a component* button.
   . Enter the URL for the git repository.
   . (Optional) After clicking out of the repository URL, expand the *Show advanced Git options*.
-    . Enter the branch, tag or commit reference to the *Git reference* dialogue.
+    . Enter the branch name to the *Git reference* dialogue.
     . Enter the path to the context directory if the build context is contained somewhere other than the repository root.
   . Enter the path to the Dockerfile within the git repository. This will be the path within the context directory.
   . (Optional) Change the component name if desired.
@@ -112,7 +112,7 @@ spec:
 <.> Optional: If used, it should point to a xref:/advanced-how-tos/installing/enabling-builds.adoc#customize-pipelines[configured pipeline]. If not specified, the default configured pipeline will be used.
 <.> Each component belongs to _one_ application. That application should be defined in the same file if it does not already exist.
 <.> URL for the source repository. This MUST use the `https://[...]` format for cloning a repository.
-<.> Optional: Revision to build in the repository (for example, tag, commit, branch). If not specified, the default branch will be used.
+<.> Optional: Branch to build in the repository. If not specified, the default branch will be used.
 <.> Optional: The context to build within the git repository. If not specified, the default defined in the configured pipeline will be used.
 <.> Optional: Path to the Containerfile within the context. If not specified, the default value of "Dockerfile" will be used.
 <.> Optional: If the xref:/advanced-how-tos/installing/enabling-builds.adoc#enable-image-controller[image controller] is not deployed, this is required. You must create a xref:/how-tos/configuring/creating-secrets.adoc#creating-registry-pull-secrets[registry secret] that has permissions to push and pull for the specified path. If an ImageRepository is created, this should be omitted.
