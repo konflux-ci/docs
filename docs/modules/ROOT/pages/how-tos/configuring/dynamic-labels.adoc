@@ -1,0 +1,132 @@
+= Using dynamic labels
+
+Konflux allows applying some dynamic labels to images derived from properties and params of the build pipeline. The labelling is supported directly by the `LABELS` param of the *build-container* tasks. A supporting *generate-labels* task can optionally be used to produce some dynamic labels.
+
+. <<supplying-labels-to-the-build-container-task>>
+. <<generating-dynamic-labels>>
+. <<incrementing-release-label>>
+
+[NOTE]
+====
+These can be combined and used together.
+====
+
+[[supplying-labels-to-the-build-container-task]]
+== Supplying labels to the build-container task with the LABELS param
+
+You can specify additional labels to be applied to your image with the LABELS param, e.g.:
+
+[source,yaml]
+----
+tasks:
+...
+- name: build-container
+  ...
+  params:
+    - name: IMAGE
+      value: "$(params.output-image)"
+    - name: DOCKERFILE
+      value: "$(params.dockerfile)"
+    - name: HERMETIC
+      value: "$(params.hermetic)"
+    - name: LABELS <.>
+      value:
+        - from-pull-request=true
+        - hermetic-param=$(params.hermetic)
+...
+----
+
+<.> The LABELS param accepts an array of labels to be applied to the image after it is built.
+
+[[generating-dynamic-labels]]
+== Generating dynamic labels
+
+You can use the *generate-labels* task to produce some dynamic labels. To do so, add the generate-labels task to the list of tasks in your pipeline, e.g.:
+
+[source,yaml]
+----
+tasks:
+...
+    - name: generate-labels
+      params:
+        - name: label-templates
+          value: 
+             - "build-date=$SOURCE_DATE" <.>
+             - "short-commit=$(tasks.clone-repository.results.short-commit)"
+        - name: source-date-epoch
+          value: '$(tasks.clone-repository.results.commit-timestamp)'
+      runAfter:
+        - clone-repository
+      taskRef:
+        params:
+          - name: name
+            value: generate-labels
+          - name: bundle
+            value: quay.io/konflux-ci/tekton-catalog/task-generate-labels:0.1@sha256:0068fe8b3c5d010daee5a922781a74cfb82251e775c260d14d9e50dd1a7aca65
+          - name: kind
+            value: task
+        resolver: bundles
+...
+----
+
+<.> The generate-labels task defines a small number of environment variables that can usefully be applied to labels, like $SOURCE_DATE and $SOURCE_DATE_EPOCH. See its documentation at link:https://github.com/konflux-ci/tekton-catalog/build-definitions/tree/main/task/generate-labels/0.1[task/generate-labels].
+
+The *generate-labels* task exposes a *labels* result that can be passed to the build-container task. To be useful, you need to supply the labels result from the generate-labels task to the labels param of the build-container task, e.g.:
+
+[source,yaml]
+----
+tasks:
+...
+- name: build-container
+  ...
+  params:
+    ...
+    - name: LABELS
+      value: $(tasks.generate-labels.results.labels)
+...
+----
+
+
+[[incrementing-release-label]]
+== An incrementing release label
+
+A common use case for dynamic labels is to introduce a monotonically incrementing release label.
+
+To achieve this, use either the $SOURCE_DATE or the $ACTUAL_DATE as the value for your release label, depending on your team's preference.
+
+NOTE: Use of $SOURCE_DATE will tie your release label to the timestamp of the commit that produces the build, and is more reproducible. Use of $ACTUAL_DATE will tie your release label to the timestamp at the time the build actually takes place, which yields builds that are less reproducible, but which may make more sense for your team's expectations and working model.
+
+[source,yaml]
+----
+tasks:
+...
+    - name: generate-labels
+      params:
+        - name: label-templates
+          value: 
+             - "release=$SOURCE_DATE_EPOCH"
+        - name: source-date-epoch
+          value: '$(tasks.clone-repository.results.commit-timestamp)'
+      runAfter:
+        - clone-repository
+      taskRef:
+        params:
+          - name: name
+            value: generate-labels
+          - name: bundle
+            value: quay.io/konflux-ci/tekton-catalog/task-generate-labels:0.1@sha256:0068fe8b3c5d010daee5a922781a74cfb82251e775c260d14d9e50dd1a7aca65
+          - name: kind
+            value: task
+        resolver: bundles
+...
+    - name: build-container
+      ...
+      runAfter:
+        ...
+        - generate-labels
+      params:
+        ...
+        - name: LABELS
+          value: $(tasks.generate-labels.results.labels)
+...
+----
