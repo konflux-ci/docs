@@ -11,6 +11,7 @@
 *** xref:how-tos/configuring/redundant-rebuilds.adoc[Preventing redundant rebuilds]
 *** xref:how-tos/configuring/build-with-args.adoc[Passing buildah arguments]
 *** xref:how-tos/configuring/custom-tags.adoc[Using custom tags]
+*** xref:how-tos/configuring/dynamic-labels.adoc[Using dynamic labels]
 *** xref:how-tos/configuring/overriding-compute-resources.adoc[Overriding compute resources]
 *** xref:how-tos/configuring/entitlement-subscription.adoc[Using Red Hat entitlement subscription]
 *** xref:how-tos/configuring/reconfiguring-build-pipeline.adoc[Reconfiguring the build pipeline]
