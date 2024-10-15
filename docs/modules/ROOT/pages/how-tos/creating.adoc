@@ -99,10 +99,10 @@ metadata:
   namespace: <namespace>
   labels:
     appstudio.redhat.com/application: <application-name>
-    appstudio.redhat.com/component: <component-name> 
+    appstudio.redhat.com/component: <component-name>
 spec:
   image:
-    name: <namespace>/<application-name>/<component-name>
+    name: <namespace>/<component-name>
     visibility: public <.>
 --
 

@@ -72,7 +72,7 @@ spec:
     metadata:
       annotations:
         build.appstudio.openshift.io/pipeline: '{"name":"docker-build","bundle":"latest"}'
-        build.appstudio.openshift.io/status: '{"pac":{"state":"enabled","merge-url":"https://github.com/konflux-ci/multi-version-konflux-sample/pull/1","configuration-time":"Wed, 07 Aug 2024 08:59:18 UTC"},"message":"done"}'      
+        build.appstudio.openshift.io/status: '{"pac":{"state":"enabled","merge-url":"https://github.com/konflux-ci/multi-version-konflux-sample/pull/1","configuration-time":"Wed, 07 Aug 2024 08:59:18 UTC"},"message":"done"}'
       name: multi-version-konflux-sample-{{.versionName}}
     spec:
       application: "multi-version-konflux-sample-{{.versionName}}"
@@ -93,7 +93,7 @@ spec:
         appstudio.redhat.com/component: multi-version-konflux-sample-{{.versionName}}
     spec:
       image:
-        name: konflux-samples-tenant/multi-version-konflux-sample-{{.versionName}}/multi-version-konflux-sample-{{.versionName}}
+        name: konflux-samples-tenant/multi-version-konflux-sample-{{.versionName}}
         visibility: public
       notifications:
         - config:
