@@ -5,11 +5,7 @@ Konflux allows applying some dynamic labels to images derived from properties an
 . <<supplying-labels-to-the-build-container-task>>
 . <<generating-dynamic-labels>>
 . <<incrementing-release-label>>
-
-[NOTE]
-====
-These can be combined and used together.
-====
+. <<combining-approaches>>
 
 [[supplying-labels-to-the-build-container-task]]
 == Supplying labels to the build-container task with the LABELS param
@@ -130,5 +126,25 @@ tasks:
         - name: LABELS
           value:
           - $(tasks.generate-labels.results.labels[*])
+...
+----
+
+[[combining-approaches]]
+== Combining approaches
+
+You can combine the approaches described above and supply a list of labels to the build-container task constructed from multiple sources.
+
+[source,yaml]
+----
+tasks:
+...
+    - name: build-container
+      ...
+      params:
+        ...
+        - name: LABELS
+          value:
+          - $(tasks.generate-labels.results.labels[*])
+          - "short-commit=$(tasks.clone-repository.results.short-commit)"
 ...
 ----
