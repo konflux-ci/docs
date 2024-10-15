@@ -82,7 +82,8 @@ tasks:
   params:
     ...
     - name: LABELS
-      value: $(tasks.generate-labels.results.labels)
+      value:
+      - $(tasks.generate-labels.results.labels[*])
 ...
 ----
 
@@ -127,6 +128,7 @@ tasks:
       params:
         ...
         - name: LABELS
-          value: $(tasks.generate-labels.results.labels)
+          value:
+          - $(tasks.generate-labels.results.labels[*])
 ...
 ----
