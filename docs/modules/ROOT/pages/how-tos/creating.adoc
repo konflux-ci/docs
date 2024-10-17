@@ -16,7 +16,7 @@ Before being able to onboard a component to {ProductName}, you will need to ensu
 .*Procedures*
 
 . In the {ProductName} UI, go to the *Applications* page.
-. Click the *Create application button.
+. Click the *Create application* button.
 . Enter a name for the application
 . Click the *Add a component* button.
   . Enter the URL for the git repository.
