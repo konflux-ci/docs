@@ -19,6 +19,8 @@ Before being able to onboard a component to {ProductName}, you will need to ensu
 . Click the *Create application* button.
 . Enter a name for the application
 . Click the *Add a component* button.
++
+NOTE: For *Gitlab* provider, make sure to xref:/how-tos/configuring/creating-secrets.adoc#creating-source-control-secrets[create a source control secret] before creating the component.
   . Enter the URL for the git repository.
   . (Optional) After clicking out of the repository URL, expand the *Show advanced Git options*.
     . Enter the branch name to the *Git reference* dialogue.
