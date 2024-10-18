@@ -33,8 +33,10 @@ $ kubectl edit integrationtestscenario [integrationtestscenario name]
 ----
 
 . Modify the `contexts` field by setting the list of contexts you wish the IntegrationTestScenario.
+.. The `name` field of every entry needs to be set to the chosen context name from the above list
+.. The `description` can be used to note down why this context is set for the given IntegrationTestScenario
 +
-Example integrationTestScenario configuration with the pull_request context:
+Example integrationTestScenario configuration with the single component context for the Component named `sample-component`:
 
 +
 [source,yaml]
@@ -47,8 +49,8 @@ metadata:
 spec:
   application: application-sample
   contexts:
-    - description: PR testing
-      name: pull_request
+    - description: Single component testing
+      name: component_sample-component
   resolverRef:
     resolver: git
     params:
