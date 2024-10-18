@@ -76,4 +76,4 @@ kubectl apply -f ReleasePlan.yaml -n dev
 
 .Next steps
 
-* *Create a `release` object:* The development team creates a Release object to references a specific Snapshot and ReleasePlan. It indicates the users' intent to release that Snapshot via the tenant release pipeline defined in the ReleasePlan.
+* *Create a `release` object:* The development team creates a Release object to reference a specific Snapshot and ReleasePlan. It indicates the users' intent to release that Snapshot via the tenant release pipeline defined in the ReleasePlan.
