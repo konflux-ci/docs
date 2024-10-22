@@ -27,11 +27,14 @@ spec:
     - name: workspace
       volumeClaimTemplate:
         spec:
+          accessModes:
+            - ReadWriteOnce
           resources:
             requests:
               storage: 1Gi  # increase accordingly
 ----
 
+For other accessModes, refer to the kubernetes documentation link:https://kubernetes.io/docs/concepts/storage/persistent-volumes/#access-modes[here].
 
 == Pipeline Run Times Out
 
