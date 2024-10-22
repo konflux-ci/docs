@@ -99,7 +99,7 @@ NOTE: This example shows a separate Pipeline file, but your pipeline may also be
 
 == Extending the build pipeline with your own tasks
 
-Before you extend your build pipeline, be aware that doing so may cause builds to fail an link:https://enterprisecontract.dev/docs/ec/main/index.html[Enterprise Contract] check, if you are using EC. To resolve this issue, please reference the xref:./customizing-the-build.adoc#preventing-issues-with-the-enterprise-contract[next procedure].
+Before you extend your build pipeline, be aware that doing so may cause builds to fail an link:https://enterprisecontract.dev/docs[Enterprise Contract] check, if you are using EC. To resolve this issue, please reference the xref:./customizing-the-build.adoc#preventing-issues-with-the-enterprise-contract[next procedure].
 
 .Procedure
 
