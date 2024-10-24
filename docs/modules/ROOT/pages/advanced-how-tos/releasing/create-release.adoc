@@ -56,3 +56,11 @@ $ kubectl apply -f Release.yaml -n dev
 . Click on the *Releases* tab
 . See the recent releases that have been created for the application.
 . You can find a link to the release pipeline run by clicking on the name of the release that you created.
+
+== Finding your release in the registry
+
+In order to access the target registry for the release, you will likely need to update RBAC configuration for the quay organization.
+
+https://gitlab.cee.redhat.com/exd/quay/quay-access-management
+
+Open a merge request against the `quay-access-management` repository to add yourself or your team to the relevant organization.
