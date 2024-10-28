@@ -13,6 +13,9 @@ The full list of supported contexts is:
 * “push” - runs the integration test in case of the Snapshot being created for a `push` event
 * "override” - runs the integration test for an `override`  Snapshot
 ** See more in xref:how-tos/testing/integration/override-snapshots.adoc[Creating an override snapshot]
+* "disabled" - disables the execution of the given integration test if it's the only context that's defined
+** This can be useful if the scenario in question needs to only be executed manually, see more about running
+integration tests manually in xref:how-tos/testing/integration/rerunning.adoc[Rerunning an integration test]
 
 +
 NOTE: When multiple contexts are defined, the IntegrationTestScenario will execute if any of the specified contexts match the snapshot. This approach ensures that the test runs as long as at least one context applies, without requiring all defined contexts to be met.
@@ -33,8 +36,10 @@ $ kubectl edit integrationtestscenario [integrationtestscenario name]
 ----
 
 . Modify the `contexts` field by setting the list of contexts you wish the IntegrationTestScenario.
+.. The `name` field of every entry needs to be set to the chosen context name from the above list
+.. The `description` can be used to note down why this context is set for the given IntegrationTestScenario
 +
-Example integrationTestScenario configuration with the pull_request context:
+Example integrationTestScenario configuration with the single component context for the Component named `sample-component`:
 
 +
 [source,yaml]
@@ -47,8 +52,8 @@ metadata:
 spec:
   application: application-sample
   contexts:
-    - description: PR testing
-      name: pull_request
+    - description: Single component testing
+      name: component_sample-component
   resolverRef:
     resolver: git
     params:

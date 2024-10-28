@@ -25,4 +25,4 @@ Two teams work together to release an application:
 
 * *Create a `releasePlanAdmission` object:* The Managed Environment team creates or updates the ReleasePlanAdmission object in response to the ReleasePlan object created by the development team. It indicates that the Managed Environment team has approved the application specified in the ReleasePlan object.
 
-* *Create a `release` object:* The development team creates a Release object to references a specific Snapshot and ReleasePlan. It indicates the users' intent to operate on the Snapshot with the matched ReleasePlanAdmission.
+* *Create a `release` object:* The development team creates a Release object to reference a specific Snapshot and ReleasePlan. It indicates the users' intent to operate on the Snapshot with the matched ReleasePlanAdmission.
