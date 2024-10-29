@@ -104,12 +104,15 @@ Note: works for `dockercfg` and `dockerconfigjson` secrets, not `basic-auth`.
 
 === Check if the secret is linked to the `appstudio-pipeline` service account
 
+In order to connect the new secret to pipeline run, you need to link it from service account used by Tekton to run the pipeline run.
+Check if your secret appears in the `secrets` section:
+
 [source,bash]
 ----
 kubectl get sa appstudio-pipeline -o json
 ----
 
-Does your secret appear in the `secrets` section? If not, link it to the service account with:
+If not, link it to the `appstudio-pipeline` service account with:
 
 [source,bash]
 ----
