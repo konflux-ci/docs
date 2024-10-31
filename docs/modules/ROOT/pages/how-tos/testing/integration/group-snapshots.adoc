@@ -1,0 +1,81 @@
+= Creating a group snapshot
+
+In {ProductName}, the integration service provides extra `group` snapshot to allow users to submit multiple related pull/merge requests under one application to their repos, have them tested together and have the CI results posted back to pull/merge requests, along with the component snapshot created for each component.
+
+== Procedures
+To have a `group` snapshot created for multiple pull/merge requests, complete the following steps:
+
+. Identify the application and components that are related and need to be updated.
+. Navigate to their git repos.
+. Create branches with the same branch name for all of these git repos.
+. Commit code changes to branches created above and create pull/merge requests.
+
+After every build pipelinerun succeeds and component snapshot is created, a group snapshot will be created containing the new built component container images and other components. The default configured ItegrationTestScenario(s) will then all be run with all snapshot. The IntegrationTestScenario(s) with `group` context will be run only with `group` snapshot.
+
+NOTE: Component snapshots are always created and tested for each pull/merge reqeuest. A group snapshot is created only when there are at least two components with open pull/merge request and the same source branch name. 
+
+The created group snapshot is like below:
+
+[source]
+----
+apiVersion: appstudio.redhat.com/v1alpha1
+kind: Snapshot
+metadata:
+  name: snapshot-sample
+  namespace: ws-sample-tenant
+  labels:
+    test.appstudio.openshift.io/type: group <1>
+    test.appstudio.openshift.io/pr-group-sha: bc3c81ad3d0140f3fe63c61a0b2389cb76663d226fbd28b00fb0d9f050fb21 <2>
+  annotations:
+    test.appstudio.openshift.io/pr-group: feature-2 <3>
+    test.appstudio.openshift.io/group-test-info: [{"namespace":"ws-sample-tenant","component":"component-sample-1","buildPipelineRun":"component-sample-1-on-pull-request-nk2ds","snapshot":"application-sample-ea1fs","pullRuestNumber":"1","repoUrl":"https://github.com/sample-org/sample-repo1"},{"namespace":"ws-sample-tenant","component":"component-sample-2","buildPipelineRun":"component-sample-2-on-pull-request-aw3rs","snapshot":"application-sample-chzj2","pullRuestNumber":"1","repoUrl":"https://github.com/sample-org/sample-repo2"}] <4>
+spec:
+  application: application-sample
+  components: <5>
+    - name: component-sample-1
+      containerImage: quay.io/redhat-user-workloads/ws-sample-tenant/application-sample/component-sample1@sha256:0db0a473a6abf5c15c424ab07cfbd5c40c06622fe648d4fe6a6b6abc224a0d0c
+      source:
+        git:
+          url: https://github.com/sample-org/sample-repo1
+          revision: fa8b89274a61ef0f1c257b7a84c37aa2ec844109
+    - name: component-sample-2
+      containerImage: quay.io/redhat-user-workloads/ws-sample-tenant/application-sample/component-sample2@sha256:93bc2f55e2d36e50d9915fd89da7d0bfd2499f0d49becf7cd6ff3a25b40d68f6
+      source:
+        git:
+          url: https://github.com/sample-org/sample-repo2
+          revision: ff13da0159d2a556c1fc9859a0f19f6b4472c4ad
+----
+<1> The label `test.appstudio.openshift.io/type: group` that indicates this is a `group` snapshot.
+<2> The label `test.appstudio.openshift.io/pr-group-sha: bc3c81ad3d0140f3fe63c61a0b2389cb76663d226fbd28b00fb0d9f050fb21` that indicates the sha256 of pr group derived from branch name and is used to query the k8s resource build pipelinerun and snapshots belonging to the same pr group. Build pipelineruns and snapshots built for the branch with the same branch name have the same pr group.
+<3> The annotation `test.appstudio.openshift.io/pr-group: feature-2` that indicates the readable pr group derived from branch name.
+<4> The annotation `test.appstudio.openshift.io/group-test-info` indicates the component snapshots info forming the group snapshot.
+<5> The list of components and their container images. All components updated by pull/merge request with the same pr group will be included. For components which are not updated, the data from Global Candidate List will be used.
+
+== Verification
+Integration test results from `group` snapshot are posted back to the git pull/merge request in addition to any integration tests results for the component snapshots.
+
+Then there will be multiple Integration test run:
+. One for the component build itself (i.e. application or component context)
+. One of each of the group Integration Test Scenario (i.e. after each component in the group has a finished build). In a monorepo, this might still happen out of synchronization as some artifacts may take longer to build than others.
+
+These group snapshot results will have the group name in the title.
+
+image::groupsnapshot.png[role="border" alt="Test Report"]
+
+NOTE: For monorepo, since the code changes of multiple components are from the same pull/merge request, the integration test result for group snapshot will be posted back to git pull/merge request only once.
+
+== Troubleshoot
+Sometimes, there are multiple components updated in open pull/merge request with the same source branch name, but integration test result is posted back to pull/merge request, it might be because the group snapshot is not created for some reason. You may check by the following steps to debug the reason/failure:
+
+. Find the annotation `appstudio.openshift.io/snapshot` on the details page of successful build pipelinerun to get its created component snapshot.
+
++
+image::buildplr.png[role="border" alt="Annotation"]
+
+. Check the annotation `test.appstudio.openshift.io/create-groupsnapshot-status` of the found component snapshot above to find its group snapshot creation status:
++
+[source,terminal]
+----
+$ oc get snapshot snapshot-sample-htbsz -n ws-sample-tenant -o json | jq '.metadata.annotations["test.appstudio.openshift.io/create-groupsnapshot-status"]'
+"Failed to create group snapshot for pr group feature-2 due to error invalid name"
+----

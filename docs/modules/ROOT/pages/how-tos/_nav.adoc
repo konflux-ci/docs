@@ -25,6 +25,7 @@
 **** xref:how-tos/testing/integration/debugging.adoc[Debugging an integration test]
 **** xref:how-tos/testing/integration/rerunning.adoc[Rerunning an integration test]
 **** xref:how-tos/testing/integration/override-snapshots.adoc[Creating an override snapshot]
+**** xref:how-tos/testing/integration/group-snapshots.adoc[Creating a group snapshot]
 **** xref:how-tos/testing/integration/choosing-contexts.adoc[Choosing when to run certain Integration Tests]
 **** Third Parties
 ***** xref:how-tos/testing/integration/third-parties/testing-farm.adoc[Testing with Testing Farm]
