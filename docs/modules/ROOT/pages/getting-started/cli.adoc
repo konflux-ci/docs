@@ -92,7 +92,7 @@ export $KUBECONFIG=<path to your kubeconfig file>
 `kubectl config get-contexts`
 . Still in your CLI, set `konflux` as the default context:
 +
-`kubectl config set-context konflux` 
+`kubectl config use-context konflux` 
 . Trigger a round trip from your machine to the cluster and back, to verify the connection:
 +
 `kubectl get cm`
