@@ -11,5 +11,4 @@ If you ever need to restore the default EC integration test to an application, o
 * For information on the source code for the Tekton pipelines defined in the bundle, see the link:https://github.com/redhat-appstudio/build-definitions/blob/main/pipelines/enterprise-contract.yaml[build-definitions] and
 link:https://github.com/enterprise-contract/ec-cli/blob/main/tasks/verify-enterprise-contract/0.1/verify-enterprise-contract.yaml[ec-cli] repositories.
 * To use a specific version of the pipeline bundle instead of the devel tag, you can select one of the link:https://quay.io/repository/konflux-ci/tekton-catalog/pipeline-enterprise-contract?tab=tags[pinned tags].
-* For information on components in Enterprise Contract, see the link:https://enterprisecontract.dev/docs/ec/main/index.html#_components[Components].
 * For information on the Enterprise Contract policies designed for {ProductName}, see the link:https://enterprisecontract.dev/docs/ec-policies/index.html[Enterprise Contract Policies].

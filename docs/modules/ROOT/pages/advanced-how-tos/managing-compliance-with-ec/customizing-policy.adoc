@@ -16,7 +16,7 @@ Adding an exception to a shared Policy may not be in the best interest of all us
 Policy for your particular use case may be a better approach. You can copy an existing Policy as a
 starting point.
 * Update your Policy to exclude a certain violation. See the
-link:https://enterprisecontract.dev/docs/ec-cli/main/configuration.html[Policy Configuration] docs
+link:https://enterprisecontract.dev/docs/ec-cli/configuration.html[Policy Configuration] docs
 for details and examples.
 * Update your xref:/how-tos/testing/integration/editing.adoc[integration tests] and the
 xref:/advanced-how-tos/releasing/create-release-plan-admission.adoc[ReleasePlanAdmission] to use the
