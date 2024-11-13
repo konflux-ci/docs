@@ -8,7 +8,6 @@ nav:
 - modules/ROOT/pages/advanced-how-tos/_nav.adoc
 - modules/ROOT/pages/troubleshooting/_nav.adoc
 - modules/ROOT/pages/glossary/_nav.adoc
-- modules/ROOT/pages/contribute/_nav.adoc
 
 asciidoc:
   attributes:
