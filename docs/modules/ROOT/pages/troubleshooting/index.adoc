@@ -118,7 +118,11 @@ If not, link it to the `appstudio-pipeline` service account with:
 ----
 secret_name=secret-for-my-registry
 
-kubectl secret link appstudio-pipeline "$secret_name"
+# using oc
+oc secrets link appstudio-pipeline "$secret_name"
+
+# using kubectl
+kubectl patch serviceaccount appstudio-pipeline -p '{"secrets": [{"name": "$secret_name"}]}'
 ----
 
 === Get the merged registry auth file
