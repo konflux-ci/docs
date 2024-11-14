@@ -102,6 +102,7 @@ skopeo login --authfile /tmp/auth.json "$should_have_access_to"
 
 Note: works for `dockercfg` and `dockerconfigjson` secrets, not `basic-auth`.
 
+[#check-if-the-secret-is-linked-to-the-service-account]
 === Check if the secret is linked to the `appstudio-pipeline` service account
 
 In order to connect the new secret to pipeline run, you need to link it from service account used by Tekton to run the pipeline run.
@@ -118,11 +119,11 @@ If not, link it to the `appstudio-pipeline` service account with:
 ----
 secret_name=secret-for-my-registry
 
+# using kubectl
+kubectl patch serviceaccount appstudio-pipeline -p "{\"secrets\": [{\"name\": \"$secret_name\"}]}"
+
 # using oc
 oc secrets link appstudio-pipeline "$secret_name"
-
-# using kubectl
-kubectl patch serviceaccount appstudio-pipeline -p '{"secrets": [{"name": "$secret_name"}]}'
 ----
 
 === Get the merged registry auth file
