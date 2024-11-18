@@ -49,7 +49,7 @@ Safeguard sensitive data with {ProductName}'s stringent access controls and gove
 
 === Supply-chain Levels for Software Artifacts (SLSA)
 
-Supply-chain Levels for Software Artifacts (SLSA) is a security framework produced through industry collaboration. We use this framework as a guide for reinforcing the build process we use for your applications, to better secure your software supply chain.
+link:https://slsa.dev[Supply-chain Levels for Software Artifacts (SLSA)] is a security framework produced through industry collaboration. We use this framework as a guide for reinforcing the build process we use for your applications, to better secure your software supply chain.
 
 The SLSA Build (v1.0) specification assigns two primary responsibilities to build platforms like {ProductName}:
 
@@ -94,7 +94,7 @@ According to the SLSA framework, our other primary responsibility is to guarante
 
 If builds run on an individual’s workstation, they become inconsistent. This inconsistency can cause mundane technical issues, but it also introduces security risks. What if undetected malware is lurking on that person’s machine? 
 
-To shrink the attack plane, SLSA dicates that builds should execute “using a hosted build platform on shared or dedicated infrastructure, not on an individual’s workstation.” By using an environment that comes from a known, auditable state, build platforms can largely ensure that they generate artifacts in the same way every time.
+To shrink the attack plane, SLSA dictates that builds should execute “using a hosted build platform on shared or dedicated infrastructure, not on an individual’s workstation.” By using an environment that comes from a known, auditable state, build platforms can largely ensure that they generate artifacts in the same way every time.
 
 {ProductName} is a hosted build platform. We execute builds on Amazon Web Services (AWS) through Red Hat OpenShift Service on AWS (ROSA). 
 
