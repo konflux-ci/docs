@@ -226,11 +226,7 @@ Please note that the examples in this document do not allow for this setup becau
 
 The following limitations exist in the current controller implementation and are likely to be resolved in the future.
 
-* Resource creation order is important. You must first create *Project* resources followed by *ProjectDevelopmentStreamTemplate* resources and only then *ProjectDevelopmentStream* resources.
-* If a *ProjectDevelopmentStreamTemplate* is modified, resources that were already created using that template do not get updated unless either:
-** The controller gets restarted
-** The *ProjectDevelopmentStream* resource referring to the template is modified
 * If a resource created by a template is modified, the configuration is not aligned back with the template unless either:
 ** The controller gets restarted
-** The *ProjectDevelopmentStream* resource referring to the template is modified
+** The *ProjectDevelopmentStream*, *ProjectDevelopmentStreamTemplate* or the *Project* resources that generated the resource are modified
 * A *ProjectDevelopmentStream* that isn't referring a template may be modified to refer to a template. Similarly, the template *ProjectDevelopmentStream* it's referring to may be changed. In both those cases, resources owned by the *ProjectDevelopmentStream* but not defined by the new template do not get deleted.
