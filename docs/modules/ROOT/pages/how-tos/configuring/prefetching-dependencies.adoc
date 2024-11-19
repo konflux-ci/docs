@@ -23,6 +23,9 @@ For every build, Cachi2 generates a software bill of materials (SBOM) where all 
 
 |xref:rpm[RPM*]
 |`rpm`
+
+|xref:generic[Generic dependencies]
+|`generic fetcher`
 |===
 
 NOTE: To use Yarn as the package manager, see the link:https://github.com/containerbuildsystem/cachi2/blob/main/docs/usage.md#example-yarn[Cachi2 Usage guide].
@@ -371,6 +374,58 @@ spec:
 
 . Create a pull request by committing your changes to the repository of the component.
 . Review and merge the pull request.
+
+.Verification
+* From the {ProductName} *Applications* view, go to *Activity > Pipeline runs*.
+** Go to the pipeline run with *Build* in the *Type* column and confirm that the `prefetch-dependencies` stage displays a green checkmark. This indicates that the build process successfully fetched all configured dependencies.
+* From the {ProductName} *Applications* view, go to *Activity > Latest commits*.
+//include::../partials/con_hermetic_verification.adoc[]
+
+.Troubleshooting
+If your build fails, be sure to look at your logs:
+
+In {ProductName}, from the *Applications* view, select the application build you want to troubleshoot, then from the resulting *Overview* page, select the *Activity* tab. From there, under *Activity By*, select *Pipeline runs*. From the *Name* column, select the build whose logs you want to check, then from the resulting *Pipeline run details* view, do one of the following:
+
+* Select the *Logs* tab.
+* Alternatively, you can click *build-container*. When the right panel opens, select the *Logs* tab to see a partial view of the log for that build.
+
+== [[generic]]Enabling prefetch builds for `Generic dependencies`
+If you need to prefetch arbitrary files for your build, Cachi2 supports `generic fetcher` for that purpose. It uses a custom lockfile named `artifacts.lock.yaml` to achieve this. This file needs to be either commited in the source repository, or explicitly specified as an absolute path. The latter is useful in case you for some reason need the lockfile to be dynamic and committing it to the repository would be problematic. For more information on supported types of artifacts, see link:https://github.com/containerbuildsystem/cachi2/blob/main/docs/generic.md[Cachi2 documentation].
+
+.Procedure
+To prefetch dependencies for a component build, complete the following steps:
+
+. Create a `artifacts.lock.yaml` file in your git repository, with a list of files to prefetch, their checksums, and optionally their filenames. See link:https://github.com/containerbuildsystem/cachi2/blob/main/docs/generic.md[Cachi2 documentation] for complete overview of the lockfile format.
+
++
+[source,yaml]
+----
+---
+metadata: <1>
+  version: "1.0"
+artifacts:
+  - download_url: "https://github.com/jeremylong/DependencyCheck/releases/download/v11.1.0/dependency-check-11.1.0-release.zip"
+    checksum: "sha256:c5b5b9e592682b700e17c28f489fe50644ef54370edeb2c53d18b70824de1e22" <2>
+    filename: "dependency-check.zip" <3>
+----
+<1> `metadata` section is required and needs to specify lockfile version
+<2> `checksum` is expected to be specified as `algorith:hash`
+<3> If no `filename` is specified, it will be derived from the URL.
+
+. Go to the `.tekton` directory and find the `.yaml` files related to the `*pull request*` and `*push*` processes.
+. Configure the hermetic pipeline by adding the following parameters in both `.yaml` files:
+
++
+[source,yaml]
+----
+spec:
+    params:
+        -   ...
+        -   name: prefetch-input
+            value: '{"type": "generic", "path": "."}' <1>
+----
+<1> The `*prefetch-input*` parameter specifies the path to the directory that has the lockfile. In this example, the `.` indicates that the lockfile is in the repository root. Additionally, if you have multiple directories, you can provide the path to those directories in the JSON array format. For example, `[{"path": ".", "type": "generic"}, {"path": "subpath/to/the/other/directory", "type": "generic"}]`. Alternatively, if your lockfile is generated as part of your pipeline and is not commited to the repository, you can specify an absolute path to it, like this: `{"type": "generic", "path": ".", "lockfile": "/absolute/path/to/artifacts.lock.yaml"}`.
+
 
 .Verification
 * From the {ProductName} *Applications* view, go to *Activity > Pipeline runs*.
