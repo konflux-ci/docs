@@ -10,7 +10,7 @@
 This approach allows a team or an individual contributor to manage multiple custom Pipelines from a single repository as source of truth. But there also other good reasons:
 
 . Pipelines are stored in a Git repository and fetched during execution, eliminating the need to maintain local or static pipeline definitions.
-. Teams can leverage Git’s versioning to access specific pipeline branches
+. Teams can leverage Git’s versioning to access specific pipeline branches.
 . In case of issues, it's very simple to rollback to a previous pipeline version, and apply it globally among the Konflux Components.
 . Reduced maintenance overhead of keeping task references up to date across multiple components.
 
