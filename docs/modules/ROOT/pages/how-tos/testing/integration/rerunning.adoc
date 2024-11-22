@@ -13,20 +13,40 @@ See also xref:/how-tos/configuring/rerunning.adoc[Retriggering build pipelines].
 
 .Procedure
 
-. Identify the IntegrationTestScenario that needs to be rerun. For a given snapshot, you can only rerun one IntegrationTestScenario. The related snapshot can be found on the pipelineRun details page in the UI, as shown in the example below:
+- If you want to rerun *all* the IntegrationTestScenarios, directly go to step `3.a.`
+
+. Identify the IntegrationTestScenario that needs to be rerun. For a given snapshot, if you like, you can only rerun one IntegrationTestScenario. The related snapshot can be found on the pipelineRun details page in the UI, as shown in the example below:
 
 +
 image::snapshot.png[role="border" alt="IntegrationTestScenario Snapshot"]
 
 . To rerun within the UI, click on the three vertical dots on the right side of the details page mentioned above. From the expanded menu, select "Rerun". Alternatively, follow the below steps to rerun via the CLI.
 
-. Label the snapshot with `test.appstudio.openshift.io/run`, assigning the scenario name you wish to rerun as its value.
+. To rerun integration tests via CLI:
+
+.. If you want to rerun all the IntegrationTestScenarios, label the snapshot with `test.appstudio.openshift.io/run`, assigning *all* as its value.
+
++
+[source]
+----
+$ kubectl label snapshot [snapshot name] test.appstudio.openshift.io/run=all
+----
+
++
+[NOTE]
+This will rerun all IntegrationTestScenarios, both optional and required, provided their context matches the Snapshot.
+
+.. Or, if you just want to rerun a specific IntegrationTestScenario, label the snapshot with `test.appstudio.openshift.io/run`, assigning the scenario name you wish to rerun as its value.
 
 +
 [source]
 ----
 $ kubectl label snapshot [snapshot name] test.appstudio.openshift.io/run=[scenario name]
 ----
+
++
+[NOTE]
+This will rerun the specified IntegrationTestScenario, regardless of whether its context matches the Snapshot.
 
 . The tests are re-triggered automatically.  Once they are re-triggered, the system removes the label, allowing you to apply a new label for a different scenario if you wish to test multiple scenarios.
 
