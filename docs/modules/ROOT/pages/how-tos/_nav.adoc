@@ -2,6 +2,7 @@
 ** xref:how-tos/creating.adoc[Creating applications and components]
 ** xref:how-tos/configuring/index.adoc[Configuring your builds]
 *** xref:how-tos/configuring/customizing-the-build.adoc[Customizing the build pipeline]
+*** xref:how-tos/configuring/adding-custom-tasks.adoc[Adding custom tasks]
 *** xref:how-tos/configuring/creating-secrets.adoc[Creating secrets for your builds]
 *** xref:how-tos/configuring/configuration-as-code.adoc[Configuration as code]
 *** xref:how-tos/configuring/hermetic-builds.adoc[Enabling hermetic builds]

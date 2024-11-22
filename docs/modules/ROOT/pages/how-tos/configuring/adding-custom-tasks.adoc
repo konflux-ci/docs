@@ -1,0 +1,146 @@
+= Adding custom tasks
+
+If your pipeline uses xref:advanced-how-tos/using-trusted-artifacts.adoc[Trusted Artifacts],
+you can add custom tasks to the pipeline without compromising the chain of trust.
+These tasks can do just about anything you'd like: set dynamic arguments for the build, run unit tests, send emails, etc.
+With one major restriction: they *cannot modify your source repo or the prefetched content* before the build.
+Doing so would violate the link:https://enterprisecontract.dev/docs/ec-policies/release_policy.html#trusted_task__trusted[Trusted Tasks] Enterprise Contract rule.
+
+What this means in Trusted Artifacts terms:
+
+* To operate on your repo, your Task must declare a `SOURCE_ARTIFACT` parameter and use a special step to download this artifact
+  (refer to the ready-to-use examples below).
+* Your Task must *not* return a modified `SOURCE_ARTIFACT`.
+  It's ok if the task modifies the source repo as it executes, but the modifications will be discarded.
+  The build will use the original, unmodified `SOURCE_ARTIFACT`.
++
+NOTE: If you do return a modified `SOURCE_ARTIFACT` from a custom task and pass it to the build task,
+    Enterprise Contract will detect that the chain of trust contains an untrusted task and report the violation.
+
+.Prerequisites:
+
+. Your pipeline uses xref:advanced-how-tos/using-trusted-artifacts.adoc[Trusted Artifacts].
+
+.Procedure:
+
+. Implement the custom Task in the `.tekton/tasks/` directory in your repo.
++
+NOTE: The presence of the Task in `.tekton/**` is enough to make it available for use in your Pipelines without any extra configuration;
+    see link:https://pipelinesascode.com/docs/guide/resolver/[Pipelines-as-Code resolver].
+. Use the Task in your Pipelines as desired.
+
+Useful resources for writing Tekton tasks:
+
+* link:https://tekton.dev/docs/pipelines/tasks/[Tekton Task docs]
+* link:https://github.com/konflux-ci/build-definitions/tree/main/task[Existing Konflux tasks]
+
+== Examples
+
+=== Dynamically set the ARGs and LABELs for the container build
+
+Implement the task in e.g. `.tekton/tasks/get-buildah-args.yaml`:
+
+[source,yaml]
+----
+---
+apiVersion: tekton.dev/v1
+kind: Task
+metadata:
+  name: get-buildah-args
+spec:
+  params:
+    - name: SOURCE_ARTIFACT
+      type: string
+      description: >-
+        The Trusted Artifact URI pointing to the artifact with the application source code.
+  results:
+    - name: args
+      type: array
+      description: ARG values for the container build
+    - name: labels
+      type: array
+      description: LABEL values for the container build
+  steps:
+    - name: use-trusted-artifact
+      # pin the image to a digest, Konflux will automatically send you updates
+      image: quay.io/redhat-appstudio/build-trusted-artifacts:latest@sha256:81c4864dae6bb11595f657be887e205262e70086a05ed16ada827fd6391926ac
+      args:
+        # downloads and unpacks the source repo into /tekton/home/source
+        - use
+        - $(params.SOURCE_ARTIFACT)=/tekton/home/source
+
+    - name: set-results
+      # use any image you want, but prefer Red Hat images for security
+      image: registry.access.redhat.com/ubi9/ubi-minimal:9.5@sha256:d85040b6e3ed3628a89683f51a38c709185efc3fb552db2ad1b9180f2a6c38be
+      env:
+        - name: ARGS_RESULT
+          value: $(results.args.path)
+        - name: LABELS_RESULT
+          value: $(results.labels.path)
+      # run in the root of the source repo
+      workingDir: /tekton/home/source
+      script: |
+        #!/bin/bash
+        set -euo pipefail
+
+        microdnf -y install git-core
+
+        version=$(git describe --tags --abbrev=0)
+        exact_version=$(git describe --tags)
+
+        # return the results as JSON arrays
+        printf '["version=%s"]' "$version" > "$LABELS_RESULT"
+        printf '["VERSION=%s", "EXACT_VERSION=%s"]' "$version" "$exact_version" > "$ARGS_RESULT"
+----
+
+Use it in the Pipelines / PipelineRuns in `.tekton/*`:
+
+* Insert the task into the `tasks` array
+* Pass the `SOURCE_ARTIFACT` result to the task
+* Pass the results of the task to the `build-container` / `build-images` task
+
+[source,diff]
+----
+ spec:
+   pipelineSpec:
+     tasks:
+       # ...
++
++      - name: get-buildah-args
++        taskRef:
++          # must match the metadata.name of the Task
++          name: get-buildah-args
++        params:
++          - name: SOURCE_ARTIFACT
++            value: $(tasks.clone-repository.results.SOURCE_ARTIFACT)
++
+       # ...
+
+       - name: build-images
+         params:
+           - name: BUILD_ARGS
+             value:
+             - $(params.build-args[*])
++            - $(tasks.get-buildah-args.results.args[*])
++          - name: LABELS
++            value:
++            - $(tasks.get-buildah-args.results.labels[*])
+----
+
+In this specific case, the custom task needs git tags to work, so reconfigure the pipeline to fetch them. Make sure the `clone-repository` task has these params set:
+
+[source,diff]
+----
+ spec:
+   pipelineSpec:
+     tasks:
+       # ...
+       - name: clone-repository
+         params:
+           # ...
++          - name: fetchTags
++            value: 'true'
++          # tags don't work with a shallow clone, do a full clone
++          - name: depth
++            value: '0'
+----
