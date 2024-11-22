@@ -12,7 +12,7 @@ This approach allows a team or an individual contributor to manage multiple cust
 . Pipelines are stored in a Git repository and fetched during execution, eliminating the need to maintain local or static pipeline definitions.
 . Teams can leverage Git’s versioning to access specific pipeline branches
 . In case of issues, it's very simple to rollback to a previous pipeline version, and apply it globally among the Konflux Components.
-. Reduced maintenance overhead
+. Reduced maintenance overhead of keeping task references up to date across multiple components.
 
 To start referencing a remote Pipeline from a PipelineRun using a *git resolver*, replace *pipelineSpec* with *pipelineRef*:
 
