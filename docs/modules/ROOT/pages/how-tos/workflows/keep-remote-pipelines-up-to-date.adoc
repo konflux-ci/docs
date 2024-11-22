@@ -2,7 +2,7 @@
 
 [IMPORTANT]
 ====
-* This article took for granted the reader knows what a link:https://tekton.dev/docs/pipelines/resolution/[Tekton remote pipeline] is. If this is not the case, please read more about this feature before proceeding.
+* This article assumed knowledge of link:https://tekton.dev/docs/pipelines/resolution/[Tekton remote pipelines]. If this is not the case, please read more about this feature before proceeding.
 ====
 
 == The advantage of using a remote pipeline
