@@ -7,7 +7,7 @@
 
 == The advantage of using a remote pipeline
 
-This approach allows a team or an individual contributor to manage plenty of Pipelines from a single repository as source of truth. But there also other good reasons:
+This approach allows a team or an individual contributor to manage multiple custom Pipelines from a single repository as source of truth. But there also other good reasons:
 
 . Pipelines are stored in a Git repository and fetched during execution, eliminating the need to maintain local or static pipeline definitions.
 . Teams can leverage Git’s versioning to access specific pipeline branches
