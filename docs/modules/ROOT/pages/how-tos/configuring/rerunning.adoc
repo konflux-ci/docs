@@ -32,10 +32,13 @@ NOTE: For additional options, refer to the link:https://pipelinesascode.com/docs
 . Comment `/retest` on the commit.
 
 +
-The pipeline run should resume in the *Activity* > *Pipeline runs* tab.
+All pipeline runs associated with that commit should resume in the *Activity* > *Pipeline runs* tab.
 
 +
 NOTE: This procedure only works to retrigger the build pipeline for the latest commit on the branch.
+
++
+NOTE: For instructions on how to retrigger only individual build pipelines, not all, see link:https://pipelinesascode.com/docs/guide/gitops_commands/[pipelinesascode documentation].
 
 +
 NOTE: If you only want to retrigger the integration tests, see xref:/how-tos/testing/integration/rerunning.adoc[retriggering integration tests].
