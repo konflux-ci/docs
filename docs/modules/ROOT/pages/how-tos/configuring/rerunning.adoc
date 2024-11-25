@@ -18,7 +18,7 @@ See also xref:/how-tos/testing/integration/rerunning.adoc[Retriggering integrati
 The pipeline run should start executing in the *Activity* > *Pipeline runs* tab and in the pull request
 
 +
-NOTE: For additional options, refer to the link:https://pipelinesascode.com/docs/guide/running/#gitops-command-on-pull-or-merge-request[pipelinesascode documentation].
+NOTE: For additional options, refer to the link:https://pipelinesascode.com/docs/guide/gitops_commands/[pipelinesascode documentation].
 
 == Retriggering a post-merge build from from GitHub
 
