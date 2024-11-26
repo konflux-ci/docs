@@ -1,34 +1,49 @@
 = Retriggering Integration Tests
 
-Integration test scenarios for a given snapshot can be re-triggered by adding a label to the snapshot.
+Integration test(s) for a given snapshot can be re-triggered by adding the `test.appstudio.openshift.io/run` label to the snapshot.
 
 See also xref:/how-tos/configuring/rerunning.adoc[Retriggering build pipelines].
 
-.Prerequisites
-- You have a snapshot that has completed all its initial tests. All initial tests must be finished before you trigger subsequent tests.
+== Supported Values for the label
 
-- The snapshot for which tests will be retriggered has completed its initial tests.
+* `all`: Reruns all the IntegrationTestScenarios (both optional and required) whose contexts match the snapshot.
+Example command:
 
-- You have CLI access to the specific OpenShift cluster. For information on obtaining CLI access, refer xref:/getting-started/cli.adoc[Getting started with the CLI].
+[source]
+----
+$ kubectl label snapshot [snapshot name] test.appstudio.openshift.io/run=all
+----
 
-.Procedure
+* `[scenario name]`: Reruns a specific IntegrationTestScenario, regardless of whether its context matches the snapshot. Replace [scenario name] with the name of the IntegrationTestScenario you want to retrigger.
+Example command:
 
-. Identify the IntegrationTestScenario that needs to be rerun. For a given snapshot, you can only rerun one IntegrationTestScenario. The related snapshot can be found on the pipelineRun details page in the UI, as shown in the example below:
-
-+
-image::snapshot.png[role="border" alt="IntegrationTestScenario Snapshot"]
-
-. To rerun within the UI, click on the three vertical dots on the right side of the details page mentioned above. From the expanded menu, select "Rerun". Alternatively, follow the below steps to rerun via the CLI.
-
-. Label the snapshot with `test.appstudio.openshift.io/run`, assigning the scenario name you wish to rerun as its value.
-
-+
 [source]
 ----
 $ kubectl label snapshot [snapshot name] test.appstudio.openshift.io/run=[scenario name]
 ----
 
-. The tests are re-triggered automatically.  Once they are re-triggered, the system removes the label, allowing you to apply a new label for a different scenario if you wish to test multiple scenarios.
+== Prerequisites
+
+- You have a snapshot that has completed all its initial tests. All initial tests must be finished before you trigger subsequent tests.
+- The snapshot for which tests will be retriggered has completed its initial tests.
+- You have CLI access to the specific OpenShift cluster. For information on obtaining CLI access, refer xref:/getting-started/cli.adoc[Getting started with the CLI].
+
+== Procedure
+
+Identify the snapshot to retrigger tests for. You can find the related snapshot on the pipelineRun details page in the UI.
+Example:
+
+image::snapshot.png[role="border" alt="IntegrationTestScenario Snapshot"]
+
+Retrigger via UI:
+
+. Click on the three vertical dots on the right side of the pipelineRun details page seen above.
+. From the expanded menu, select "Rerun".
+
+Retrigger via CLI:
+
+. Add the `test.appstudio.openshift.io/run` label to the snapshot, with any of the supported values as shown above.
+. The tests are re-triggered automatically.  Once they are re-triggered, the system removes the label, allowing you to apply a new label for a different scenario if you wish to test multiple scenarios. Verify that the test(s) have started.
 
 +
 [source]
@@ -41,9 +56,9 @@ integration-pipelinerun-jfrdb   4 seconds ago   ---        Running
 ----
 
 +
-NOTE: This command is used to verify that a re-triggered integration pipelineRun has started. If you run this command long after the re-trigger command, it may not show any output because pipelineRun resources are pruned after completion. Additionally, the command may display other unrelated pipelineRuns that are in progress at the same time.
+NOTE: If you run the command long after retriggering, the pipelineRun might have been pruned. The output may also include other unrelated pipelineRuns.
 
-.Verification
+== Verification
 
 . To verify the tests, run `tkn pipelinerun describe [pipelinerun]` and ensure that the labels `appstudio.openshift.io/snapshot` and `test.appstudio.openshift.io/scenario` reference the correct snapshot and scenario.
 
