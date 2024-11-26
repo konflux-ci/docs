@@ -87,7 +87,7 @@ spec:
   - apiVersion: appstudio.redhat.com/v1alpha1
     kind: ImageRepository
     metadata:
-      name: imagerepository-for-multi-version-konflux-sample-{{.versionName}}
+      name: multi-version-konflux-sample-{{.versionName}}
       labels:
         appstudio.redhat.com/application: multi-version-konflux-sample-{{.versionName}}
         appstudio.redhat.com/component: multi-version-konflux-sample-{{.versionName}}
