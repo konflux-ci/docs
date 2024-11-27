@@ -97,7 +97,7 @@ kind: ImageRepository <.>
 metadata:
   annotations:
     image-controller.appstudio.redhat.com/update-component-image: 'true'
-  name: imagerepository-for-<application-name>-<component-name>
+  name: <component-name>
   namespace: <namespace>
   labels:
     appstudio.redhat.com/application: <application-name>
