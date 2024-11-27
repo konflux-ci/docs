@@ -43,7 +43,7 @@ spec:
        - name: demo-component-2
          repository: registry/destination-image-repository-2
          tags: [latest]
- pipeline:
+ tenantPipeline:
    pipelineRef: <.>
      resolver: git
      params:
