@@ -50,4 +50,4 @@ subscription-manager --refresh
 
 === Explicit registration
 
-If you include a `+subscription-manager+` register command in your Containerfile, automatic registration will be disabled. You can control subscription-manager directly using the normal commands.
+If you include a `+subscription-manager register+`  command in your Containerfile, automatic registration will be disabled. You can control subscription-manager directly using the normal commands.
