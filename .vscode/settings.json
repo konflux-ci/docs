@@ -1,4 +1,4 @@
 {
-    "asciidoc.antora.enableAntoraSupport": true,
-    "editor.wordWrap": "on"
+    "editor.wordWrap": "on",
+    "asciidoc.antora.enableAntoraSupport": true
 }
