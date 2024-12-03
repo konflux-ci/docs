@@ -1,0 +1,53 @@
+= Using Red Hat activation keys to access subscription content
+
+Most Red Hat software requires a subscripition to access. Activation keys are the preferred method for using Red Hat subscriptions with Konflux builds.
+
+NOTE: Previously, mounting entitlement certificates directly as secrets was advocated but this is discouraged by Red Hat since those certificates are intended to be regularly revoked and refreshed by the subscription-manager system. Direct use of entitlement certificates is still supported by Konflux but discouraged. Entitlement certificate docs are xref:entitlement-subscription.adoc[here].
+
+To learn how to create an activation keys see the https://docs.redhat.com/en/documentation/subscription_central/1-latest/html/getting_started_with_activation_keys_on_the_hybrid_cloud_console/index[Red Hat documentation].
+
+When your activation key is created, you will need to create a secret with two values: your "org id" and the name of your activation key.
+
+
+== Create activation key secrets
+
+You will need to create a secret in your Konflux namespace. You can do it in two ways:
+
+. <<Create-activation-key-through-the-UI>>
+. <<Create-activation-key-through-console>>
+
+
+[[Create-activation-key-through-the-UI]]
+=== Create activation key secret through the UI
+
+1. Access the Secrets section in the konflux UI and click on *Add secret*.
+2. Set the secret name to activation-key.
+3. Add the first key with the name *org* and and set the value to your org id.
+4. Add a second key with the name *activationkey* and set the value to the name of your activation key.
+5. Save the secret by clicking *Add secret*
+
+[[Create-activation-key-through-console]]
+=== Create activation key secret through console
+
+Alternatively, you can create the secret through the CLI. After logging into your cluster and navigating to your namespace, run the following command:
+
+----
+kubectl create secret generic activation-key -n <your-tenant> --from-literal=org=<your org id> --from-literal=activationkey=<your activation key name>
+----
+
+
+== Using subscription content in a build
+
+=== Automatic registration
+
+The buildah task will use a provided activation key to register itself with Red Hat subscription manager and moount the necessary credentials so that can be used by the builds. 
+
+TIP: If your activation key includes more repositories than the defaults add the following command inside your Containerfile in order update repository metadata.
+
+----
+subscription-manager --refresh
+----
+
+=== Explicit registration
+
+If you include a `+subscription-manager+` register command in your Containerfile, automatic registration will be disabled. You can control subscription-manager directly using the normal commands.
