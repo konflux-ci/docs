@@ -9,9 +9,22 @@ To learn how to create an activation keys see the https://docs.redhat.com/en/doc
 When your activation key is created, you will need to create a secret with two values: your "org id" and the name of your activation key.
 
 
-== Create activation key secrets
+== Adding activation keys to the workspace
 
-You will need to create a secret in your Konflux namespace. You can do it in two ways:
+You will need to create one or more secrets in your Konflux namespace (one per activation key). First, decide what to name the secrets and the scope they should have.
+
+=== Adding subscription entitlement for an entire workspace or an individual build
+
+You can control the scope of the activation key you add with the name. The `+buildah+` tasks expect an activation key with a default name of `+activation-key+`. If you use this name for your secret, all of the builds in your workspace will automatically use the activation key.
+
+Sometimes, you only want certain builds to have the activation key, particularly when you need to have more than one key with different repository configurations in the same workspace. To do this, just select a different name for the activation key (not `+activation-key+`). Then, add a parameter to your pipeline:
+
+----
+- name: ACTIVATION_KEY
+  value: my-custom-key-name
+----
+
+== Create the activation key secrets
 
 . <<Create-activation-key-through-the-UI>>
 . <<Create-activation-key-through-console>>
@@ -20,11 +33,11 @@ You will need to create a secret in your Konflux namespace. You can do it in two
 [[Create-activation-key-through-the-UI]]
 === Create activation key secret through the UI
 
-1. Access the Secrets section in the konflux UI and click on *Add secret*.
-2. Set the secret name to activation-key.
-3. Add the first key with the name *org* and and set the value to your org id.
-4. Add a second key with the name *activationkey* and set the value to the name of your activation key.
-5. Save the secret by clicking *Add secret*
+. Access the Secrets section in the konflux UI and click on *Add secret*.
+. Set the secret name to activation-key.
+. Add the first key with the name *org* and and set the value to your org id.
+. Add a second key with the name *activationkey* and set the value to the name of your activation key.
+. Save the secret by clicking *Add secret*
 
 [[Create-activation-key-through-console]]
 === Create activation key secret through console
