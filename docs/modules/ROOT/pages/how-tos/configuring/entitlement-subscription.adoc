@@ -1,5 +1,8 @@
 = Using Red Hat entitlement subscription
 
+WARNING: This page has been superceded by xref:./activation-keys-subscription.adoc[Using Red Hat activation keys to access subscription content]. While the instructions here still work, this method is discouraged by Red Hat and users are advised that subscription entitlement certificates may be revoked as part of normal operations. Under normal circumstances this is intentional and managed by subscription-manager in order to refresh entitlement data but with these instructions it will results in build failures and require manual user intervention.
+
+
 Entitlement subscription allows users to install RPMs that are not accessible without it. In order to use it in your builds, you must have access to an entitlement subscription 
 and possess the neccessary entitlement certificate files. To obtain them, review https://developers.redhat.com/articles/2022/01/24/create-entitled-builds-red-hat-subscriptions-openshift[Subscription benefits for secure deployments] guide.
 
