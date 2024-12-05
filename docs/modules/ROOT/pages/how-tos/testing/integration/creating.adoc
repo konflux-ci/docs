@@ -200,6 +200,10 @@ link:https://github.com/konflux-ci/integration-examples/blob/main/tasks/test_met
 link:https://github.com/konflux-ci/integration-examples/blob/main/pipelines/integration_resolver_pipeline_pass_metadata.yaml[example integration pipeline]
 which uses the information from that task's results to influence its workflow.
 
+.Timeouts
+
+Setting custom timeouts can be done as described in the `Timeouts` section of xref:./editing.adoc[editing a custom integration test] guide.
+
 .Verification
 
 After adding the integration test to an application, you need to trigger a new build of its components to make {ProductName} run the integration test. Make a commit to the GitHub repositories of your components to trigger a new build.

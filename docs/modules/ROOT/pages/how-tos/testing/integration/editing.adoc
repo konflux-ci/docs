@@ -31,6 +31,28 @@ NOTE: A failing integration test marks the application snapshot as failed. A fai
 
 . To start building a new component (and afterwards trigger a new integration test), either open a new pull request (PR) that targets the tracked branch of a component in the application, or comment '/retest' on an existing PR.
 
+.Timeouts
+
+It is possible to define custom timeouts on the pipeline level for individual IntegrationTestScenarios.
+There are three timeouts that need to be defined:
+
+* `Tasks` - specifies the timeout for the cumulative time taken by Tasks specified in `pipeline.spec.tasks`
+* `Finally` - specifies the timeout for the cumulative time taken by finally Tasks specified in `pipeline.spec.finally`
+* `Pipeline` - specifies the timeout for the entire PipelineRun.
+** The sum of the other two timeouts must be equal to this timeout, otherwise the integration pipelineRuns will fail on creation.
+
+NOTE: Since the integration service already sets default timeouts to integration pipelineRuns, it is necessary to set all of the above timeouts to prevent errors.
+
+You can define the above timeouts by setting the annotations on the IntegrationTestScenario in the following
+way through the CLI (consult the steps listed in the xref:/getting-started/cli.adoc[Getting started in the CLI] page):
+
+[source,bash]
+----
+kubectl annotate integrationtestscenario/[scenario name] test.appstudio.openshift.io/finally_timeout=3h --overwrite
+kubectl annotate integrationtestscenario/[scenario name] test.appstudio.openshift.io/tasks_timeout=5h --overwrite
+kubectl annotate integrationtestscenario/[scenario name] test.appstudio.openshift.io/pipeline_timeout=8h --overwrite
+----
+
 == Configuring the enterprise contract policy
 
 All applications created in {ProductName} will have one integration test scenario to enable xref:/advanced-how-tos/managing-compliance-with-ec[manage compliance with Enterprise Contract] by default. You can configure your tests to use a customized link:https://enterprisecontract.dev/docs/user-guide/custom-config.html#_using_an_enterprisecontractpolicy_kubernetes_custom_resource_cr[Kubernetes Custom Resource] policy on the cluster.
