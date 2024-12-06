@@ -1,0 +1,107 @@
+= Maintaining remote Tekton pipelines up to date
+
+[IMPORTANT]
+====
+* This article assumed knowledge of link:https://tekton.dev/docs/pipelines/resolution/[Tekton remote pipelines]. If this is not the case, please read more about this feature before proceeding.
+====
+
+== The advantage of using a remote pipeline
+
+This approach allows a team or an individual contributor to manage multiple custom Pipelines from a single repository as source of truth. But there also other good reasons:
+
+. Pipelines are stored in a Git repository and fetched during execution, eliminating the need to maintain local or static pipeline definitions.
+. Teams can leverage Git’s versioning to access specific pipeline branches.
+. In case of issues, it's very simple to rollback to a previous pipeline version, and apply it globally among the Konflux Components.
+. Reduced maintenance overhead of keeping task references up to date across multiple components.
+
+To start referencing a remote Pipeline from a PipelineRun using a *git resolver*, replace *pipelineSpec* with *pipelineRef*:
+
+[source,yaml]
+----
+apiVersion: tekton.dev/v1
+kind: PipelineRun
+metadata: ... # Omitted for brevity
+spec:
+  params: ... # Omitted for brevity
+  pipelineRef:
+    resolver: git
+    params:
+      - name: org
+        value: redhat
+      - name: scmType
+        value: gitlab
+      - name: serverURL
+        value: https://gitlab.cee.redhat.com
+      - name: url
+        value: "https://gitlab.cee.redhat.com/your-group-name/your-repo-name.git"
+      - name: revision
+        value: main # Specify a branch to target
+      - name: pathInRepo
+        value: "pipelines/your-pipeline-name.yaml" # Internal repository path to your pipeline definition YAML file
+      - name: token
+        value: pipelines-as-code-secret # Name of the Secret
+      - name: tokenKey
+        value: password # Name of the attribute within your Secret, that stores the password/token
+  workspaces: ... # Omitted for brevity
+----
+
+== The drawback of having a remote pipeline
+
+Although Tekton remote pipelines is a huge improvement, it comes with a drawback; the Pipeline CRDs will not be stored in the Konflux Component repository anymore, so MintMaker will not be able to update the TaskRef digests for us.
+
+== The solution
+
+To workaround the above issue, the suggested approach is to onboard the repository where the shared pipelines are stored as a Konflux Component, so that Konflux and MintMaker will be able to discover and update digests for us.
+
+.*Prerequisites*
+
+* Having a repository where to store shared Pipelines and Tasks.
+
+[IMPORTANT]
+====
+If the repository is private, be sure to have a Secret in place on Konflux to be able to clone it
+====
+
+.*Procedures*
+
+. Add Tekton Pipelines and Tasks in the repository. A suggested repository structure would be:
+
++
+[source,shell]
+----
+.
+├── .tekton
+│   ├── <repository-name>-pipelines-pull-request.yaml # Used by Konflux to listen to pull requests
+│   └── <repository-name>-pipelines-push.yaml # Used by Konflux to listen to pushes
+├── pipelines
+│   ├── remote-pipeline1.yaml
+│   └── remote-pipeline2.yaml
+├── tasks
+│   ├── remote-task1.yaml
+│   └── remote-task2.yaml
+└── renovate.json #Renovate/MintMaker configuration
+----
+
+. Configure and extend MintMaker properly, so that it will be able to discover Tekton Pipelines and take care of them in custom paths:
+
++
+[source,json]
+.renovate.json
+----
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "tekton": {
+    "fileMatch": ["\\.yaml$", "\\.yml$"], // Tekton pipelines to match
+    "includePaths": ["pipelines/**", "tasks/**"], // Paths where to look for Tekton Pipelines to update
+    "automerge": true // Define whether MintMaker must take care of PRs and automerge them or not
+  }
+}
+----
+
++
+[NOTE]
+====
+* MintMaker will read the default configuration from "https://docs.renovatebot.com/renovate-schema.json" and will extend it using the subsequent custom settings.
+====
+
+. xref:how-tos/creating.adoc[Create a Konflux Application and a Konflux Component] where to reference the repository and branch name.
