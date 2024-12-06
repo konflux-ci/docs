@@ -1,6 +1,6 @@
 = Using Red Hat activation keys to access subscription content
 
-Most Red Hat software requires a subscripition to access. Activation keys are the preferred method for using Red Hat subscriptions with Konflux builds and are supported for *both* normal and hermetic builds
+Most Red Hat software requires a subscripition to access. Activation keys are the preferred method for using Red Hat subscriptions with Konflux builds and are supported by the all types of container builds, including hermetic builds using the prefetch-dependencies task.
 
 NOTE: Previously, mounting entitlement certificates directly as secrets was advocated but this is discouraged by Red Hat since those certificates are intended to be regularly revoked and refreshed by the subscription-manager system. Direct use of entitlement certificates is still supported by Konflux but discouraged. Entitlement certificate docs are xref:./entitlement-subscription.adoc[here].
 
@@ -51,7 +51,7 @@ kubectl create secret generic activation-key -n <your-tenant> --from-literal=org
 
 == Using subscription content in a build
 
-=== Normal (non-hermetic) builds:
+=== Non-hermetic (network connected) builds:
 
 ==== Automatic registration
 
@@ -67,7 +67,7 @@ subscription-manager --refresh
 
 If you include a `+subscription-manager register+`  command in your Containerfile, automatic registration will be disabled. You can control subscription-manager directly using the normal commands.
 
-=== Hermetic builds:
+=== Hermetic (network isolated) builds:
 
-The prefetch-dependencies task will can use an activation key to register and fetch RPMs. All repositories configured for the activation key will be enabled for prefetch. 
-If the default name was used for the secret (activation-key) no configuration is necessary, otherwise provide the ACTIVATION_KEY parameter to the build pipeline as noted above.
+The prefetch-dependencies task can use an activation key to register and fetch RPMs. All repositories configured for the activation key will be enabled for prefetch. 
+If the default name was used for the secret (activation-key) no configuration is necessary. Otherwise, provide the ACTIVATION_KEY parameter to the build pipeline as noted above.
