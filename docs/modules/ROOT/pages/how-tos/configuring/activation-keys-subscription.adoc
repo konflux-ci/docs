@@ -52,9 +52,9 @@ kubectl create secret generic activation-key -n <your-tenant> --from-literal=org
 
 ==== Automatic registration
 
-The buildah task will use a provided activation key to register itself with Red Hat subscription manager and moount the necessary credentials so that can be used by the builds. 
+The buildah task will use a provided activation key to register itself with Red Hat subscription manager and mount the necessary certificates to the build environment. Simply add `+dnf+` or `+yum install+` commands to your Containerfile. 
 
-TIP: If your activation key includes more repositories than the defaults add the following command inside your Containerfile in order update repository metadata.
+TIP: If your activation key includes more than the default repositories, add the following command inside your Containerfile in order update repository metadata:
 
 ----
 subscription-manager --refresh
