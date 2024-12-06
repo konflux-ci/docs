@@ -1,6 +1,6 @@
 = Using Red Hat activation keys to access subscription content
 
-Most Red Hat software requires a subscripition to access. Activation keys are the preferred method for using Red Hat subscriptions with Konflux builds.
+Most Red Hat software requires a subscripition to access. Activation keys are the preferred method for using Red Hat subscriptions with Konflux builds and are supported for *both* normal and hermetic builds
 
 NOTE: Previously, mounting entitlement certificates directly as secrets was advocated but this is discouraged by Red Hat since those certificates are intended to be regularly revoked and refreshed by the subscription-manager system. Direct use of entitlement certificates is still supported by Konflux but discouraged. Entitlement certificate docs are xref:./entitlement-subscription.adoc[here].
 
@@ -15,7 +15,7 @@ You will need to create one or more secrets in your Konflux namespace (one per a
 
 === Adding subscription entitlement for an entire workspace or an individual build
 
-You can control the scope of the activation key you add with the name. The `+buildah+` tasks expect an activation key with a default name of `+activation-key+`. If you use this name for your secret, all of the builds in your workspace will automatically use the activation key.
+You can control the scope of the activation key you add with the name. Both the `+buildah+` and `+prefetch-dependencies+` tasks accept an activation key with a default name of `+activation-key+`. If you use this name for your secret, all of the builds in your workspace will automatically use the activation key.
 
 Sometimes, you only want certain builds to have the activation key, particularly when you need to have more than one key with different repository configurations in the same workspace. To do this, just select a different name for the activation key (not `+activation-key+`). Then, add a parameter to your pipeline:
 
@@ -51,7 +51,9 @@ kubectl create secret generic activation-key -n <your-tenant> --from-literal=org
 
 == Using subscription content in a build
 
-=== Automatic registration
+=== Normal (non-hermetic) builds:
+
+==== Automatic registration
 
 The buildah task will use a provided activation key to register itself with Red Hat subscription manager and moount the necessary credentials so that can be used by the builds. 
 
@@ -61,6 +63,11 @@ TIP: If your activation key includes more repositories than the defaults add the
 subscription-manager --refresh
 ----
 
-=== Explicit registration
+==== Explicit registration
 
 If you include a `+subscription-manager register+`  command in your Containerfile, automatic registration will be disabled. You can control subscription-manager directly using the normal commands.
+
+=== Hermetic builds:
+
+The prefetch-dependencies task will can use an activation key to register and fetch RPMs. All repositories configured for the activation key will be enabled for prefetch. 
+If the default name was used for the secret (activation-key) no configuration is necessary, otherwise provide the ACTIVATION_KEY parameter to the build pipeline as noted above.
