@@ -27,10 +27,6 @@ Sometimes, you only want certain builds to have the activation key, particularly
 
 == Create the activation key secrets
 
-. <<Create-activation-key-through-the-UI>>
-. <<Create-activation-key-through-console>>
-
-
 [[Create-activation-key-through-the-UI]]
 === Create activation key secret through the UI
 
