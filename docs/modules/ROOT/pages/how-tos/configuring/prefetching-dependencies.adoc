@@ -389,6 +389,8 @@ In {ProductName}, from the *Applications* view, select the application build you
 * Select the *Logs* tab.
 * Alternatively, you can click *build-container*. When the right panel opens, select the *Logs* tab to see a partial view of the log for that build.
 
+NOTE: Konflux also supports prefetching RPM content which requires a Red Hat subscription. For more information see xref:./activation-keys-subscription.adoc#hermetic-network-isolated-builds[Using Red Hat activation keys to access subscription content].
+
 == [[generic]]Enabling prefetch builds for `Generic dependencies`
 If you need to prefetch arbitrary files for your build, Cachi2 supports `generic fetcher` for that purpose. It uses a custom lockfile named `artifacts.lock.yaml` to achieve this. This file needs to be either commited in the source repository, or explicitly specified as an absolute path. The latter is useful in case you for some reason need the lockfile to be dynamic and committing it to the repository would be problematic. For more information on supported types of artifacts, see link:https://github.com/containerbuildsystem/cachi2/blob/main/docs/generic.md[Cachi2 documentation].
 
