@@ -57,7 +57,7 @@ The buildah task will use a provided activation key to register itself with Red 
 TIP: If your activation key includes more than the default repositories, add the following command inside your Containerfile in order update repository metadata:
 
 ----
-subscription-manager --refresh
+subscription-manager refresh
 ----
 
 ==== Explicit registration
