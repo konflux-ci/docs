@@ -68,3 +68,162 @@ If you include a `+subscription-manager register+`  command in your Containerfil
 
 The prefetch-dependencies task can use an activation key to register and fetch RPMs. All repositories configured for the activation key will be enabled for prefetch. 
 If the default name was used for the secret (activation-key) no configuration is necessary. Otherwise, provide the ACTIVATION_KEY parameter to the build pipeline as noted above.
+
+=== Configuring an rpm lockfile for hermetic builds
+
+The rpm-lockfile-prototype tool uses live dnf metadata to resolve a given rpms.in.yaml file into an rpms.lock.yaml file in which every rpm is exactly specified by location and version. Because it uses live metadata, the configuration of dnf repositories on the system will influence the results.
+
+Let's explore a simple scenario that should illustrate all pertinent parts of the process.
+
+We will create a lockfile that includes the OpenShift clients rpm `+openshift-clients+` which:
+
+* requires a subscription to the OpenShift product
+* is not located in the default Red Hat Enterprise Linux repositories
+* is available for multiple architectures
+
+
+This RPM is available in the following repositories:
+
+[cols="2,1"]
+|===
+|*architecture* |*repository*
+|x86_64 |rhocp-4.17-for-rhel-9-x86_64-rpms
+|aarch64 |rhocp-4.17-for-rhel-9-aarch64-rpms
+|===
+
+
+==== Create the activation key
+
+===== Create a new key.
+Navigate to https://console.redhat.com/insights/connector/activation-keys and create a new activation key. Follow the instructions in the wizard. 
+
+Refer to the https://docs.redhat.com/en/documentation/subscription_central/1-latest/html/getting_started_with_activation_keys_on_the_hybrid_cloud_console/index[Red Hat documentation] for additional information.
+
+
+===== Add additional repositories to the key
+Once the key is created, click "add repositories". Add all the applicable repositories for all architectures. If you want to build source containers include the corresponding source repositories as well.
+
+.Selecting additional repositories for an actviation keys
+image::activation-key-choose-repos.png[redhat-activation-key-configuration]
+
+When saved, your key should look something like this:
+
+.Activation Key with additoinal repositories configured
+image::activation-key-additional-repos-view.png[redhat-activation-key-additional-respositories]
+
+IMPORTANT: Note the *name* of the activation key and the *org ID* which can be found in the dropdown under your name in the top right corner of the screen. You will need both in a subsequent step.
+
+==== Configure rpm-lockfile-prototype
+
+NOTE: For this step we willl assume that you have source code in your current working directory `+$(pwd)+`.
+
+
+1. Start a new container using the right version of Red Hat Enterprise Linux (the one you will eventually be building on) and mounting your source code directory:
+
+----
+podman run --rm -it -v $(pwd):/source registry.access.redhat.com/ubi9 
+----
+
+[start=2]
+. Register with your activation key:
+----
+subscription-manager register --activationkey="$KEY_NAME" --org="$ORG_ID"
+----
+
+
+[start=3]
+. Verify that you have the correct repositories and enable missing source repositories.
+NOTE: It is normal to only see the repositories for your current architecture at this stagitge.
+----
+[root@ yum.repos.d]# dnf repolist --enabled
+Updating Subscription Management repositories.
+repo id                                                                                                                           repo name
+rhel-9-for-aarch64-appstream-rpms                                                                                                 Red Hat Enterprise Linux 9 for ARM 64 - AppStream (RPMs)
+rhel-9-for-aarch64-baseos-rpms                                                                                                    Red Hat Enterprise Linux 9 for ARM 64 - BaseOS (RPMs)
+rhocp-4.17-for-rhel-9-aarch64-rpms                                                                                                Red Hat OpenShift Container Platform 4.17 for RHEL 9 ARM 64 (RPMs)
+rhocp-4.17-for-rhel-9-aarch64-source-rpms                                                                                         Red Hat OpenShift Container Platform 4.17 for RHEL 9 ARM 64 (Source RPMs)
+ubi-9-appstream-rpms                                                                                                              Red Hat Universal Base Image 9 (RPMs) - AppStream
+ubi-9-baseos-rpms                                                                                                                 Red Hat Universal Base Image 9 (RPMs) - BaseOS
+ubi-9-codeready-builder                                                                                                           Red Hat Universal Base Image 9 (RPMs) - CodeReady Builder`
+----
+
+In the example above, the source RPM repositories are not enabled for
+----
+ubi-9-appstream-rpms                                                                                                           
+ubi-9-baseos-rpms                                                                                                               
+ubi-9-codeready-builder    
+----
+
+You must locate the source repos in redhat.repo and change `+ENABLED = 0+` to `+ENABLED = 1+`.
+
+
+[start=4]
+. Install pip, skopeo and rpm-lockfile-prototype
+----
+dnf install -y pip skopeo
+pip install --user https://github.com/konflux-ci/rpm-lockfile-prototype/archive/refs/tags/v0.13.1.tar.gz
+----
+
+[start=5]
+. add repo file configured by subscription manager to source directory
+----
+cp /etc/yum.repos.d/redhat.repo /source/redhat.repo
+----
+
+[start=6]
+. substitute the current arch with `$basearch` in redhat.repo to facilitate fetching for multiple architectures.
+----
+sed -i "s/$(uname -m)/\$basearch/g" redhat.repo
+----
+
+
+
+[start=8]
+. configure rpms.in.yaml
+There are three things to configure:
+.. Add `./redhat.repo` under `contentOrigin.repofiles` in rpms.in.yaml and added
+.. Add the rpm we want (openshift-clients)
+.. Configure the enabled architectures
+
+Example `+rpms.in.yaml+` file:
+----                                                                                                                            
+contentOrigin:
+  # Define at least one source of packages, but you can have as many as you want.
+  repofiles:
+     - ./redhat.repo
+
+packages:
+  # list of rpm names to resolve
+  - ocp-clients
+
+#reinstallPackages: []
+  # list of rpms already provided in the base image, but which should be
+  # reinstalled
+
+arches:
+  # The list of architectures can be set in the config file. Any `--arch` option set
+  # on the command line will override this list.
+  - aarch64
+  - x86_64
+  # - s390x
+  # - ppc64le
+
+context:
+    # Alternative to setting command line options. Usually you will only want
+    # to include one of these options, with the exception of `flatpak` that
+    # can be combined with `image` and `containerfile` 
+    containerfile: Containerfile
+----
+
+NOTE: In the source directory for this example there is a Containerfile named `+Containerfile+` which starts with the line `FROM registry.access.redhat.com/ubi9/ubi`
+
+[start=9]
+Create the lockfile:
+----
+cd /source rpm-lockfile-prototype -f Containerfile rpms.in.yaml
+----
+
+TIP: if you see output like "`+WARNING:root:No sources found for...+`" then there is a source repository that still needs to be enabled in your repository configuraiton.
+
+[start=10]
+Finally, commit the rpms.in.yaml, rpms.lock.yaml and redhat.repo to source control for use with the rpm prefetch task.
