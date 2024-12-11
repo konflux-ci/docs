@@ -2,7 +2,7 @@
 
 In {ProductName}, you can create your own integration tests to run on all components of a given application before they are deployed.
 
-.Procedure
+== Procedure
 
 To create any custom test, complete the following steps:
 
@@ -12,7 +12,7 @@ To create any custom test, complete the following steps:
 
 . Commit the `.yaml` file to a GitHub repo and add it as an integration test in {ProductName}.
 
-.Procedure with example
+=== Procedure with example
 
 To create a custom test that checks that your app serves the text “Hello world!”, complete the following steps:
 
@@ -133,7 +133,7 @@ spec:
 
 .. For additional instructions on adding an integration test, see Adding an integration test.
 
-.Data injected into the PipelineRun of the integration test
+== Data injected into the PipelineRun of the integration test
 
 When you create a custom integration test, {ProductName} automatically adds certain parameters and labels to the PipelineRun of the integration test. This section explains what those parameters and labels are, and how they can help you.
 
@@ -157,7 +157,7 @@ NOTE: It is also possible to set custom labels or annotations in the build pipel
 to all integration pipelineRuns associated with that build. The labels/annotations have to have the
 `custom.appstudio.openshift.io` prefix in order to be copied in this manner.
 
-.Utilizing the labels and annotations within the integration pipeline run
+=== Utilizing the labels and annotations within the integration pipeline run
 
 It is possible to use the injected metadata within the integration PipelineRun itself in order to influence the testing behavior.
 This can be done by exposing the pipelineRun labels as environment variables within a Task and then referencing them within the Task logic.
@@ -200,11 +200,11 @@ link:https://github.com/konflux-ci/integration-examples/blob/main/tasks/test_met
 link:https://github.com/konflux-ci/integration-examples/blob/main/pipelines/integration_resolver_pipeline_pass_metadata.yaml[example integration pipeline]
 which uses the information from that task's results to influence its workflow.
 
-.Timeouts
+== Timeouts
 
 Setting custom timeouts can be done as described in the `Timeouts` section of xref:./editing.adoc[editing a custom integration test] guide.
 
-.Verification
+== Verification
 
 After adding the integration test to an application, you need to trigger a new build of its components to make {ProductName} run the integration test. Make a commit to the GitHub repositories of your components to trigger a new build.
 
