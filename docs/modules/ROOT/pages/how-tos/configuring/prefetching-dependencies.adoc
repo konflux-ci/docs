@@ -4,33 +4,33 @@ In {ProductName}, you can run a hermetic build by restricting network access to 
 
 For every build, Cachi2 generates a software bill of materials (SBOM) where all dependencies are properly declared and pinned to specific versions. Also, Cachi2 ensures that arbitrary code is never executed during the prefetch, meaning, for example, that the build doesn’t pull any undeclared dependencies. Such measures result in very accurate SBOMs and improve the build reproducibility. For more information about SBOMs, see xref:/how-tos/metadata/sboms.adoc[Inspecting SBOMs].
 
-[#available-languages]
-.Available languages
+[#available-package-managers]
+.Available package managers
 
 [cols="1,1"]
 |===
-|**Language**
 |**Package manager**
+|**Programming language**
 
-|xref:gomod[Go]
-|`gomod`
+|xref:gomod[gomod]
+|`Go`
 
-|xref:pip[Python]
-|`pip`
+|xref:pip[pip]
+|`Python`
 
-|xref:npm[Node.js]
-|`npm`
+|xref:npm[npm]
+|`JavaScript`
 
-|xref:rpm[RPM*]
-|`rpm`
+|xref:rpm*[rpm]
+|`N/A`
 
-|xref:generic[Generic dependencies]
-|`generic fetcher`
+|xref:generic[generic]
+|`N/A`
 |===
 
 NOTE: To use Yarn as the package manager, see the link:https://github.com/containerbuildsystem/cachi2/blob/main/docs/usage.md#example-yarn[Cachi2 Usage guide].
 
-NOTE: *The link:https://github.com/konflux-ci/rpm-lockfile-prototype?tab=readme-ov-file#what-is-this[rpm-lockfile-prototype] and the link:https://github.com/containerbuildsystem/cachi2/blob/8a870c9cd3b7927e1a2d974b3874140e935aa17e/cachi2/core/resolver.py#L22-L27[RPM package manager for cachi2] are not fully supported. You can use them to prefetch rpms for your hermetic builds, but the file format and technology may change in the future. If you're interested in the future of this topic, join the discussion at link:https://github.com/rpm-software-management/dnf5/issues/833[rpm-software-management/dnf5#833].
+NOTE: *The link:https://github.com/konflux-ci/rpm-lockfile-prototype?tab=readme-ov-file#what-is-this[rpm-lockfile-prototype] and the link:https://github.com/containerbuildsystem/cachi2/blob/8a870c9cd3b7927e1a2d974b3874140e935aa17e/cachi2/core/resolver.py#L22-L27[rpm package manager for cachi2] are not fully supported. You can use them to prefetch rpms for your hermetic builds, but the file format and technology may change in the future. If you're interested in the future of this topic, join the discussion at link:https://github.com/rpm-software-management/dnf5/issues/833[rpm-software-management/dnf5#833].
 
 == [[gomod]]Enabling prefetch builds for `gomod`
 
@@ -391,7 +391,7 @@ In {ProductName}, from the *Applications* view, select the application build you
 
 NOTE: Konflux also supports prefetching RPM content which requires a Red Hat subscription. For more information see xref:./activation-keys-subscription.adoc#hermetic-network-isolated-builds[Using Red Hat activation keys to access subscription content].
 
-== [[generic]]Enabling prefetch builds for `Generic dependencies`
+== [[generic]]Enabling prefetch builds for `generic fetcher`
 If you need to prefetch arbitrary files for your build, Cachi2 supports `generic fetcher` for that purpose. It uses a custom lockfile named `artifacts.lock.yaml` to achieve this. This file needs to be either commited in the source repository, or explicitly specified as an absolute path. The latter is useful in case you for some reason need the lockfile to be dynamic and committing it to the repository would be problematic. For more information on supported types of artifacts, see link:https://github.com/containerbuildsystem/cachi2/blob/main/docs/generic.md[Cachi2 documentation].
 
 .Procedure
