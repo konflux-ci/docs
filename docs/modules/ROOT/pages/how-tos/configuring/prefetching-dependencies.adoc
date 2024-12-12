@@ -21,6 +21,9 @@ For every build, Cachi2 generates a software bill of materials (SBOM) where all 
 |xref:npm[npm]
 |`JavaScript`
 
+|xref:bundler[bundler]
+|`Ruby`
+
 |xref:rpm*[rpm]
 |`N/A`
 
@@ -297,6 +300,33 @@ spec:
 ** Go to the pipeline run with *Build* in the *Type* column and confirm that the `prefetch-dependencies` stage displays a green checkmark. This indicates that the build process successfully fetched all dependencies.
 * From the {ProductName} *Applications* view, go to *Activity > Latest commits*.
 //include::../partials/con_hermetic_verification.adoc[]
+
+== [[bundler]]Enabling prefetch builds for `bundler`
+
+.Prerequisites
+
+You have a `Gemfile` and a `Gemfile.lock` file in your repository that lists all the dependencies. The `Gemfile.lock` is generated from the `Gemfile` and contains all transitive dependencies pinned to specific versions.
+
+.Procedure
+
+To prefetch dependencies for a component build, complete the following steps:
+
+. Go to the `.tekton` directory and find the `.yaml` files related to the `*pull request*` and `*push*` processes.
+. Configure the hermetic pipeline by adding the following parameters in both `.yaml` files:
+
++
+[source,yaml]
+----
+spec:
+  params:
+    - ...
+    - name: prefetch-input
+      value: '{"type": "bundler", "path": ".", "allow_binary": "false"}' <1>
+----
+<1> The `*allow_binary*` parameter specifies whether to allow gems for specific platforms. By default, the value is `false`. If you want to allow gems for specific platforms, set the value to `true`.
+
+. Create a pull request by committing your changes to the repository of the component.
+. Review and merge the pull request.
 
 == [[rpm]]Enabling prefetch builds for `rpm`
 
