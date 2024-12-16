@@ -109,24 +109,3 @@ NOTE: You can also use **kubectl edit** to add the build-nudges-ref instead of p
 
 * Ensure that the existing references in the repositories of your components are correct.
 * Try running the necessary commands again, and ensure you have the correct syntax.
-
-== Customizing nudging PRs
-Nudging feature is using renovate `https://docs.renovatebot.com/` to actually do the job,
-for which you can supply your own renovate config, which will be used during nudging.
-Renovate config has to be specified in ConfigMap in your namespace.
-
-.There are two possible options:
-. Create namespace wide config in ConfigMap named `namespace-wide-nudging-renovate-config` which will be used for all nudged components in your namespace,
-unless component specific config exists.
-. Create config for specific nudged component in ConfigMap named `nudging-renovate-config-<component-name>` and
-it will be used for the component in your namespace.
-
-Both ConfigMaps have the same format, can contain `config.json` or `config.js` keys, if both specified `config.json` has precedence.
-In the value of the key is js or json in the string.
-
-When you have either of ConfigMaps, your config will be used unmodified and it is user's responsibility to fix it when renovate pipeline will be failing because of it.
-
-.Examples
-`config.json: '{"platform":"gitlab","username":"red-hat-konflux",`
-
-`config.js: 'module.exports = {platform: "gitlab",\n\t\tusername: "red-hat-konflux",`
