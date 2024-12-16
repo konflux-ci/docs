@@ -2,7 +2,7 @@
   "devDependencies": {
     "@antora/collector-extension": "^1.0.1",
     "@antora/lunr-extension": "^1.0.0-alpha.8",
-    "antora": "^3.1.9"
+    "antora": "^3.1.10"
   },
   "overrides": {
     "glob-parent": "6.0.2"
