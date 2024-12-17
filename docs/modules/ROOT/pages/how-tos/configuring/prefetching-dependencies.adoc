@@ -21,6 +21,9 @@ For every build, Cachi2 generates a software bill of materials (SBOM) where all 
 |xref:npm[npm]
 |`JavaScript`
 
+|xref:yarn[yarn]
+|`JavaScript`
+
 |xref:bundler[bundler]
 |`Ruby`
 
@@ -30,8 +33,6 @@ For every build, Cachi2 generates a software bill of materials (SBOM) where all 
 |xref:generic[generic]
 |`N/A`
 |===
-
-NOTE: To use Yarn as the package manager, see the link:https://github.com/containerbuildsystem/cachi2/blob/main/docs/usage.md#example-yarn[Cachi2 Usage guide].
 
 NOTE: *The link:https://github.com/konflux-ci/rpm-lockfile-prototype?tab=readme-ov-file#what-is-this[rpm-lockfile-prototype] and the link:https://github.com/containerbuildsystem/cachi2?tab=readme-ov-file#package-managers[rpm package manager for cachi2] are not fully supported. You can use them to prefetch rpms for your hermetic builds, but the file format and technology may change in the future. If you're interested in the future of this topic, join the discussion at link:https://github.com/rpm-software-management/dnf5/issues/833[rpm-software-management/dnf5#833].
 
@@ -300,6 +301,31 @@ spec:
 ** Go to the pipeline run with *Build* in the *Type* column and confirm that the `prefetch-dependencies` stage displays a green checkmark. This indicates that the build process successfully fetched all dependencies.
 * From the {ProductName} *Applications* view, go to *Activity > Latest commits*.
 //include::../partials/con_hermetic_verification.adoc[]
+
+== [[yarn]]Enabling prefetch builds for `yarn`
+
+Supported versions: 1.x and 3.x. Cachi2 automatically detects the version of `yarn` and fetches any dependencies you declare in your `package.json` and `yarn.lock` project files.
+
+.Prerequisites
+
+* You have an up-to-date `yarn.lock` file in your source repository. To ensure you have the latest `yarn.lock` file or to create it, run the `yarn install` command. If `yarn.lock` is not up-to-date, Cachi2 will not fetch the dependencies.
+
+.Procedure
+
+To prefetch dependencies for a component build, complete the following steps:
+
+. Go to the `.tekton` directory and find the `.yaml` files related to the `*pull request*` and `*push*` processes.
+. Configure the hermetic pipeline by adding the following parameters in both `.yaml` files:
+
++
+[source,yaml]
+----
+spec:
+  params:
+    - ...
+    - name: prefetch-input
+      value: '{"type": "yarn", "path": "."}'
+----
 
 == [[bundler]]Enabling prefetch builds for `bundler`
 
