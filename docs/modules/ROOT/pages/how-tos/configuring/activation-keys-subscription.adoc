@@ -69,18 +69,17 @@ If you include a `+subscription-manager register+`  command in your Containerfil
 The prefetch-dependencies task can use an activation key to register and fetch RPMs. All repositories configured for the activation key will be enabled for prefetch. 
 If the default name was used for the secret (activation-key) no configuration is necessary. Otherwise, provide the ACTIVATION_KEY parameter to the build pipeline as noted above.
 
-=== Configuring an rpm lockfile for hermetic builds
+=== Configuring an RPM lockfile for hermetic builds
 
-The rpm-lockfile-prototype tool uses live dnf metadata to resolve a given rpms.in.yaml file into an rpms.lock.yaml file in which every rpm is exactly specified by location and version. Because it uses live metadata, the configuration of dnf repositories on the system will influence the results.
+The `+rpm-lockfile-prototype+` tool uses live dnf metadata to resolve a given `+rpms.in.yaml+` file into an `+rpms.lock.yaml+` file in which every RPM is pinned to a repository and version. Because it uses live metadata, the configuration of package repositories on the system will influence the results.
 
 Let's explore a simple scenario that should illustrate all pertinent parts of the process.
 
-We will create a lockfile that includes the OpenShift clients rpm `+openshift-clients+` which:
+We will create a lockfile that includes the `+openshift-clients+` RPM which:
 
 * requires a subscription to the OpenShift product
 * is not located in the default Red Hat Enterprise Linux repositories
 * is available for multiple architectures
-
 
 This RPM is available in the following repositories:
 
@@ -91,14 +90,12 @@ This RPM is available in the following repositories:
 |aarch64 |rhocp-4.17-for-rhel-9-aarch64-rpms
 |===
 
-
 ==== Create the activation key
 
-===== Create a new key.
+===== Create a new activation key
 Navigate to https://console.redhat.com/insights/connector/activation-keys and create a new activation key. Follow the instructions in the wizard. 
 
 Refer to the https://docs.redhat.com/en/documentation/subscription_central/1-latest/html/getting_started_with_activation_keys_on_the_hybrid_cloud_console/index[Red Hat documentation] for additional information.
-
 
 ===== Add additional repositories to the key
 Once the key is created, click "add repositories". Add all the applicable repositories for all architectures. If you want to build source containers include the corresponding source repositories as well.
@@ -111,29 +108,35 @@ When saved, your key should look something like this:
 .Activation Key with additional repositories configured
 image::activation-key-additional-repos-view.png[redhat-activation-key-additional-repositories]
 
-IMPORTANT: Note the *name* of the activation key and the *org ID* which can be found in the dropdown under your name in the top right corner of the screen. You will need both in a subsequent step.
+IMPORTANT: Note the *name* of the activation key and the *org ID* which can be found in the drop-down under your name in the top right corner of the screen. You will need both in a subsequent step to register the container using `+subscription-manager+`.
 
 ==== Configure rpm-lockfile-prototype
 
 NOTE: For this step we will assume that you have source code in your current working directory `+$(pwd)+`.
 
+1. Start a new container using the same version of Red Hat Enterprise Linux as what you will be building on and mount your source code directory:
 
-1. Start a new container using the right version of Red Hat Enterprise Linux (the one you will eventually be building on) and mounting your source code directory:
+In this example, we'll using the Red Hat Enterprise Linux 9 Universal Base Image (UBI 9).
 
 ----
-podman run --rm -it -v $(pwd):/source registry.access.redhat.com/ubi9 
+podman run --rm -it -v $(pwd):/source:Z registry.access.redhat.com/ubi9
 ----
 
 [start=2]
-. Register with your activation key:
+. Register with your activation key from the previous step:
+
 ----
 subscription-manager register --activationkey="$KEY_NAME" --org="$ORG_ID"
 ----
 
+IMPORTANT: You may see a message saying `+subscription-manager is operating in
+container mode. Use your host system to manage subscriptions.+`, which is not
+applicable if you're running the container on Fedora or MacOS.
 
 [start=3]
 . Verify that you have the correct repositories and enable missing source repositories.
 NOTE: It is normal to only see the repositories for your current architecture at this stage.
+
 ----
 [root@ yum.repos.d]# dnf repolist --enabled
 Updating Subscription Management repositories.
@@ -147,45 +150,70 @@ ubi-9-baseos-rpms                                                               
 ubi-9-codeready-builder                                                                                                           Red Hat Universal Base Image 9 (RPMs) - CodeReady Builder`
 ----
 
-In the example above, the source RPM repositories are not enabled for
+In the example above, the source RPM repositories are not enabled for the following repositories:
+
 ----
 ubi-9-appstream-rpms                                                                                                           
 ubi-9-baseos-rpms                                                                                                               
 ubi-9-codeready-builder    
 ----
 
-You must locate the source repos in redhat.repo and change `+ENABLED = 0+` to `+ENABLED = 1+`.
+You must locate and enable the appropriate RPM repositories in `+redhat.repo+` by changing `+enabled = 0+` to `+enabled = 1+`.
 
+----
+[rhocp-4.16-for-rhel-9-$basearch-rpms]
+name = Red Hat OpenShift Container Platform 4.16 for RHEL 9 $basearch (RPMs)
+baseurl = https://cdn.redhat.com/content/dist/layered/rhel9/$basearch/rhocp/4.16/os
+enabled = 1
+...
+
+[rhocp-4.16-for-rhel-9-$basearch-source-rpms]
+name = Red Hat OpenShift Container Platform 4.16 for RHEL 9 $basearch (Source RPMs)
+baseurl = https://cdn.redhat.com/content/dist/layered/rhel9/$basearch/rhocp/4.16/source/SRPMS
+enabled = 1
+...
+----
 
 [start=4]
-. Install pip, skopeo and rpm-lockfile-prototype
+. Install necessary tooling
+
 ----
 dnf install -y pip skopeo
 pip install --user https://github.com/konflux-ci/rpm-lockfile-prototype/archive/refs/tags/v0.13.1.tar.gz
 ----
 
+NOTE: You can find the latest version of `+rpm-lockfile-prototype+` on https://github.com/konflux-ci/rpm-lockfile-prototype[GitHub], or viewing the repository https://github.com/konflux-ci/rpm-lockfile-prototype/tags[tags].
+
 [start=5]
-. add repo file configured by subscription manager to source directory
+. Copy the default repository file configured by `+subscription-manager+` to the `+source/+` directory
+
 ----
 cp /etc/yum.repos.d/redhat.repo /source/redhat.repo
 ----
 
 [start=6]
-. substitute the current arch with `$basearch` in redhat.repo to facilitate fetching for multiple architectures.
+. Substitute the current architecture with `$basearch` in `+redhat.repo+` to facilitate fetching for multiple architectures
+
 ----
 sed -i "s/$(uname -m)/\$basearch/g" redhat.repo
 ----
 
+[start=7]
+. Authenticate to the Red Hat container registry
 
+----
+skopeo login registry.redhat.io
+----
 
 [start=8]
-. configure rpms.in.yaml
+. Configure `+rpms.in.yaml+`
 There are three things to configure:
-.. Add `./redhat.repo` under `contentOrigin.repofiles` in rpms.in.yaml and added
-.. Add the rpm we want (openshift-clients)
+.. Add `./redhat.repo` under `contentOrigin.repofiles` in `+rpms.in.yaml+`
+.. Add the RPM we want Konflux to prefetch for hermetic builds (`+openshift-clients+`)
 .. Configure the enabled architectures
 
-Example `+rpms.in.yaml+` file:
+The following is an example of what your `+rpms.in.yaml+` file should look like:
+
 ----                                                                                                                            
 contentOrigin:
   # Define at least one source of packages, but you can have as many as you want.
@@ -194,7 +222,7 @@ contentOrigin:
 
 packages:
   # list of rpm names to resolve
-  - ocp-clients
+  - openshift-clients
 
 #reinstallPackages: []
   # list of rpms already provided in the base image, but which should be
@@ -215,15 +243,44 @@ context:
     containerfile: Containerfile
 ----
 
-NOTE: In the source directory for this example there is a Containerfile named `+Containerfile+` which starts with the line `FROM registry.access.redhat.com/ubi9/ubi`
+NOTE: In the source directory for this example there is a Containerfile named `+Containerfile+` which starts with the line `FROM registry.access.redhat.com/ubi9/ubi`, which is the reason why we're using a RHEL 9 UBI image to generate the lock file.
 
 [start=9]
-Create the lockfile:
+. Create the lock file
 ----
-cd /source rpm-lockfile-prototype -f Containerfile rpms.in.yaml
+cd /source; rpm-lockfile-prototype -f Containerfile rpms.in.yaml
 ----
 
-TIP: if you see output like "`+WARNING:root:No sources found for...+`" then there is a source repository that still needs to be enabled in your repository configurations.
+If you encounter SSL errors (`+Problem with the local SSL certificates+`), make
+sure the `+sslclientkey+` and `+sslclientcert+` options in `+redhat.repo+`
+resolve to the correct path on the file system. These options point to
+certificates and keys that use a unique identifier (e.g., `+sslclientcert =
+/etc/pki/entitlement-host/$ID.pem+`). You may see SSL issues if you copied a
+repository configuration file from a different system registered with a
+different entitlement or activation key.
+
+If successful, you should see a `+rpms.lock.yaml+` file in the source directory:
+
+----
+---
+lockfileVersion: 1
+lockfileVendor: redhat
+arches:
+- arch: x86_64
+  packages:
+  - url: https://cdn.redhat.com/content/dist/layered/rhel9/x86_64/rhocp/4.16/os/Packages/o/openshift-clients-4.16.0-202410172045.p0.gcf533b5.assembly.stream.el9.x86_64.rpm
+    repoid: rhocp-4.16-for-rhel-9-x86_64-rpms
+    size: 54912665
+    checksum: sha256:0ffd7347620fd10bb75774520e571702361a6d0352de9112979693d003964038
+    name: openshift-clients
+    evr: 4.16.0-202410172045.p0.gcf533b5.assembly.stream.el9
+    sourcerpm: openshift-clients-4.16.0-202410172045.p0.gcf533b5.assembly.stream.el9.src.rpm
+...
+----
+
+TIP: If you see warnings like "`+WARNING:root:No sources found for...+`" then there is a source repository that still needs to be enabled in your repository configuration. If so, and you need source RPMs, be sure to enable the source RPM repositories in `+redhat.repo+` and regenerate the lock file.
 
 [start=10]
-Finally, commit the rpms.in.yaml, rpms.lock.yaml and redhat.repo to source control for use with the rpm prefetch task.
+Finally, commit the `+rpms.in.yaml+`, `+rpms.lock.yaml+` and `+redhat.repo+` to
+source control. Konflux will use these files to prefetch RPMs for hermetic
+builds.
