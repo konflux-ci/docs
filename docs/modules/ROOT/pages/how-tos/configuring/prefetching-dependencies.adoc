@@ -216,6 +216,8 @@ spec:
 * From the {ProductName} *Applications* view, go to *Activity > Latest commits*.
 //include::../partials/con_hermetic_verification.adoc[]
 
+NOTE: To troubleshoot any issues you might experience when you enable prefetch builds for `pip` with source dependencies, see link:https://github.com/containerbuildsystem/cachi2/blob/main/docs/pip.md#troubleshooting[cachi2 documentation].
+
 === Prefetching `pip` dependencies from custom index servers
 
 Cachi2 supports the link:https://pip.pypa.io/en/stable/cli/pip_install/#install-index-url[--index-url] option.
@@ -437,14 +439,6 @@ spec:
 * From the {ProductName} *Applications* view, go to *Activity > Latest commits*.
 //include::../partials/con_hermetic_verification.adoc[]
 
-.Troubleshooting
-If your build fails, be sure to look at your logs:
-
-In {ProductName}, from the *Applications* view, select the application build you want to troubleshoot, then from the resulting *Overview* page, select the *Activity* tab. From there, under *Activity By*, select *Pipeline runs*. From the *Name* column, select the build whose logs you want to check, then from the resulting *Pipeline run details* view, do one of the following:
-
-* Select the *Logs* tab.
-* Alternatively, you can click *build-container*. When the right panel opens, select the *Logs* tab to see a partial view of the log for that build.
-
 NOTE: Konflux also supports prefetching RPM content which requires a Red Hat subscription. For more information see xref:./activation-keys-subscription.adoc#hermetic-network-isolated-builds[Using Red Hat activation keys to access subscription content].
 
 == [[generic]]Enabling prefetch builds for `generic fetcher`
@@ -491,7 +485,7 @@ spec:
 * From the {ProductName} *Applications* view, go to *Activity > Latest commits*.
 //include::../partials/con_hermetic_verification.adoc[]
 
-.Troubleshooting
+== Troubleshooting
 If your build fails, be sure to look at your logs:
 
 In {ProductName}, from the *Applications* view, select the application build you want to troubleshoot, then from the resulting *Overview* page, select the *Activity* tab. From there, under *Activity By*, select *Pipeline runs*. From the *Name* column, select the build whose logs you want to check, then from the resulting *Pipeline run details* view, do one of the following:
@@ -501,5 +495,4 @@ In {ProductName}, from the *Applications* view, select the application build you
 
 == Additional resources
 
-* To troubleshoot any issues you might experience when you enable prefetch builds for `pip` or `pip` with source dependencies, see link:https://github.com/containerbuildsystem/cachi2/blob/main/docs/pip.md#troubleshooting[Troubleshooting].
 * For more information about Cachi2, see link:https://github.com/containerbuildsystem/cachi2/blob/main/docs/usage.md[Cachi2].
