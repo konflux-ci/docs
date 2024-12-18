@@ -1,6 +1,6 @@
 = Using Red Hat activation keys to access subscription content
 
-Most Red Hat software requires a subscripition to access. Activation keys are the preferred method for using Red Hat subscriptions with Konflux builds and are supported by the all types of container builds, including hermetic builds using the prefetch-dependencies task.
+Most Red Hat software requires a subscription to access. Activation keys are the preferred method for using Red Hat subscriptions with Konflux builds and are supported by the all types of container builds, including hermetic builds using the prefetch-dependencies task.
 
 NOTE: Previously, mounting entitlement certificates directly as secrets was advocated but this is discouraged by Red Hat since those certificates are intended to be regularly revoked and refreshed by the subscription-manager system. Direct use of entitlement certificates is still supported by Konflux but discouraged. Entitlement certificate docs are xref:./entitlement-subscription.adoc[here].
 
@@ -18,7 +18,7 @@ You will need to create one or more secrets in your Konflux namespace (one per a
 Both the `+buildah+` and `+prefetch-dependencies+` tasks accept an activation key with a default name of `+activation-key+`. If you use this name for your secret, all of the builds in your workspace will automatically use the activation key.
 
 === Adding subscription entitlement for a specific component build
-Sometimes, you only want certain builds to have the activation key, particularly when you need to have more than one key with different repository configurations in the same workspace. To do this, choose a different name for your activation key secret (not `+activation-key+`). Then, add a parameter to your ccomponent's pipeline yaml:
+Sometimes, you only want certain builds to have the activation key, particularly when you need to have more than one key with different repository configurations in the same workspace. To do this, choose a different name for your activation key secret (not `+activation-key+`). Then, add a parameter to your component's pipeline yaml:
 
 ----
 - name: ACTIVATION_KEY
@@ -103,19 +103,19 @@ Refer to the https://docs.redhat.com/en/documentation/subscription_central/1-lat
 ===== Add additional repositories to the key
 Once the key is created, click "add repositories". Add all the applicable repositories for all architectures. If you want to build source containers include the corresponding source repositories as well.
 
-.Selecting additional repositories for an actviation keys
+.Selecting additional repositories for an activation key
 image::activation-key-choose-repos.png[redhat-activation-key-configuration]
 
 When saved, your key should look something like this:
 
-.Activation Key with additoinal repositories configured
-image::activation-key-additional-repos-view.png[redhat-activation-key-additional-respositories]
+.Activation Key with additional repositories configured
+image::activation-key-additional-repos-view.png[redhat-activation-key-additional-repositories]
 
 IMPORTANT: Note the *name* of the activation key and the *org ID* which can be found in the dropdown under your name in the top right corner of the screen. You will need both in a subsequent step.
 
 ==== Configure rpm-lockfile-prototype
 
-NOTE: For this step we willl assume that you have source code in your current working directory `+$(pwd)+`.
+NOTE: For this step we will assume that you have source code in your current working directory `+$(pwd)+`.
 
 
 1. Start a new container using the right version of Red Hat Enterprise Linux (the one you will eventually be building on) and mounting your source code directory:
@@ -133,7 +133,7 @@ subscription-manager register --activationkey="$KEY_NAME" --org="$ORG_ID"
 
 [start=3]
 . Verify that you have the correct repositories and enable missing source repositories.
-NOTE: It is normal to only see the repositories for your current architecture at this stagitge.
+NOTE: It is normal to only see the repositories for your current architecture at this stage.
 ----
 [root@ yum.repos.d]# dnf repolist --enabled
 Updating Subscription Management repositories.
@@ -223,7 +223,7 @@ Create the lockfile:
 cd /source rpm-lockfile-prototype -f Containerfile rpms.in.yaml
 ----
 
-TIP: if you see output like "`+WARNING:root:No sources found for...+`" then there is a source repository that still needs to be enabled in your repository configuraiton.
+TIP: if you see output like "`+WARNING:root:No sources found for...+`" then there is a source repository that still needs to be enabled in your repository configurations.
 
 [start=10]
 Finally, commit the rpms.in.yaml, rpms.lock.yaml and redhat.repo to source control for use with the rpm prefetch task.
