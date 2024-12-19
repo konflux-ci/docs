@@ -467,7 +467,3 @@ In {ProductName}, from the *Applications* view, select the application build you
 
 * Select the *Logs* tab.
 * Alternatively, you can click *build-container*. When the right panel opens, select the *Logs* tab to see a partial view of the log for that build.
-
-== Additional resources
-
-* For more information about Cachi2, see link:https://github.com/containerbuildsystem/cachi2/blob/main/docs/usage.md[Cachi2].
