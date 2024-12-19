@@ -62,12 +62,6 @@ spec:
 
 . Review and merge the pull request.
 
-.Verification
-* From the {ProductName} *Applications* view, go to *Activity > Pipeline runs*.
-** Go to the pipeline run with *Build* in the *Type* column and confirm that the `prefetch-dependencies` stage displays a green checkmark. This indicates that the build process successfully fetched all dependencies.
-* From the {ProductName} *Applications* view, go to *Activity > Latest commits*.
-//include::../partials/con_hermetic_verification.adoc[]
-
 == [[pip]]Enabling prefetch builds for `pip`
 Cachi2 supports pip by parsing of `pip` requirements files, including but not limited to, `requirements.txt` files placed in the root of your repository. By generically parsing `pip` requirements files, Cachi2 downloads the specified dependencies.
 
@@ -210,12 +204,6 @@ spec:
 
 . Review and merge the pull request.
 
-.Verification
-* From the {ProductName} *Applications* view, go to *Activity > Pipeline runs*.
-** Go to the pipeline run with *Build* in the *Type* column and confirm that the `prefetch-dependencies` stage displays a green checkmark. This indicates that the build process successfully fetched all dependencies.
-* From the {ProductName} *Applications* view, go to *Activity > Latest commits*.
-//include::../partials/con_hermetic_verification.adoc[]
-
 NOTE: To troubleshoot any issues you might experience when you enable prefetch builds for `pip` with source dependencies, see link:https://github.com/containerbuildsystem/cachi2/blob/main/docs/pip.md#troubleshooting[cachi2 documentation].
 
 === Prefetching `pip` dependencies from custom index servers
@@ -297,12 +285,6 @@ spec:
 
 . Create a pull request by committing your changes to the repository of the component.
 . Review and merge the pull request.
-
-.Verification
-* From the {ProductName} *Applications* view, go to *Activity > Pipeline runs*.
-** Go to the pipeline run with *Build* in the *Type* column and confirm that the `prefetch-dependencies` stage displays a green checkmark. This indicates that the build process successfully fetched all dependencies.
-* From the {ProductName} *Applications* view, go to *Activity > Latest commits*.
-//include::../partials/con_hermetic_verification.adoc[]
 
 == [[yarn]]Enabling prefetch builds for `yarn`
 
@@ -433,12 +415,6 @@ spec:
 . Create a pull request by committing your changes to the repository of the component.
 . Review and merge the pull request.
 
-.Verification
-* From the {ProductName} *Applications* view, go to *Activity > Pipeline runs*.
-** Go to the pipeline run with *Build* in the *Type* column and confirm that the `prefetch-dependencies` stage displays a green checkmark. This indicates that the build process successfully fetched all configured dependencies.
-* From the {ProductName} *Applications* view, go to *Activity > Latest commits*.
-//include::../partials/con_hermetic_verification.adoc[]
-
 NOTE: Konflux also supports prefetching RPM content which requires a Red Hat subscription. For more information see xref:./activation-keys-subscription.adoc#hermetic-network-isolated-builds[Using Red Hat activation keys to access subscription content].
 
 == [[generic]]Enabling prefetch builds for `generic fetcher`
@@ -479,11 +455,10 @@ spec:
 <1> The `*prefetch-input*` parameter specifies the path to the directory that has the lockfile. In this example, the `.` indicates that the lockfile is in the repository root. Additionally, if you have multiple directories, you can provide the path to those directories in the JSON array format. For example, `[{"path": ".", "type": "generic"}, {"path": "subpath/to/the/other/directory", "type": "generic"}]`. Alternatively, if your lockfile is generated as part of your pipeline and is not commited to the repository, you can specify an absolute path to it, like this: `{"type": "generic", "path": ".", "lockfile": "/absolute/path/to/artifacts.lock.yaml"}`.
 
 
-.Verification
+== Verification
 * From the {ProductName} *Applications* view, go to *Activity > Pipeline runs*.
 ** Go to the pipeline run with *Build* in the *Type* column and confirm that the `prefetch-dependencies` stage displays a green checkmark. This indicates that the build process successfully fetched all dependencies.
 * From the {ProductName} *Applications* view, go to *Activity > Latest commits*.
-//include::../partials/con_hermetic_verification.adoc[]
 
 == Troubleshooting
 If your build fails, be sure to look at your logs:
