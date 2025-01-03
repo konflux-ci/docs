@@ -36,6 +36,55 @@ For every build, Cachi2 generates a software bill of materials (SBOM) where all 
 
 NOTE: *The link:https://github.com/konflux-ci/rpm-lockfile-prototype?tab=readme-ov-file#what-is-this[rpm-lockfile-prototype] and the link:https://github.com/containerbuildsystem/cachi2?tab=readme-ov-file#package-managers[rpm package manager for cachi2] are not fully supported. You can use them to prefetch rpms for your hermetic builds, but the file format and technology may change in the future. If you're interested in the future of this topic, join the discussion at link:https://github.com/rpm-software-management/dnf5/issues/833[rpm-software-management/dnf5#833].
 
+== Procedure
+To prefetch dependencies for a component build, complete the following steps:
+
+. Go to the `.tekton` directory and find the `.yaml` files related to the `*pull request*` and `*push*` processes.
+
+. Configure the hermetic pipeline by adding the following parameters in both `.yaml` files:
+
++
+[source,yaml]
+----
+pipelineSpec:
+  params:
+    ...
+    - name: hermetic
+      type: string
+      description: Execute the build with network isolation
+      default: "true"
+----
+
++
+[source,yaml]
+----
+spec:
+  params:
+    ...
+    - name: prefetch-input
+      value: '{"type": "<package_manager>", "path": "."}' <1>
+----
+NOTE: The prefetch-input parameter specifies the path to the directory of the project. In this example, the `.` indicates the repository root. If you have multiple directories, you can provide the path to those directories in the JSON array format: `[{"type": "<package_manager>", "path": "."}, {"type": "<package_manager>", "path": "subpath/to/the/other/directory"}]`.
+
+. Additionally, pass an extra parameter to the `prefetch-dependencies` task in the `.spec.pipelineSpec.tasks` section to indicate that "dev package managers" should be enabled.
+
++
+[source,yaml]
+----
+tasks:
+  ...
+  - name: prefetch-dependencies
+    params:
+    ...
+    - name: dev-package-managers
+      value: "true"
+----
+NOTE: You won't find `dev-package-managers` as a param on the `prefetch-dependencies` task. You have to add it, and set it to true. This is because Cachi2 hasn't declared stable support for the feature yet. Use it at your own risk.
+
+. Create a pull request by committing your changes to the repository of the component.
+
+. Review and merge the pull request.
+
 == Verification
 * From the {ProductName} *Applications* view, go to *Activity > Pipeline runs*.
 ** Go to the pipeline run with *Build* in the *Type* column and confirm that the `prefetch-dependencies` stage displays a green checkmark. This indicates that the build process successfully fetched all dependencies.
