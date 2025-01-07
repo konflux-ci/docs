@@ -1,0 +1,5 @@
+lockfile
+prefetch
+Snyk
+Konflux
+kubectl
