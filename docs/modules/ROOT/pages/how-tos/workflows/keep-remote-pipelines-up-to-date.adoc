@@ -1,0 +1,124 @@
+= Maintaining remote Tekton pipelines
+
+[IMPORTANT]
+====
+* This article assumes knowledge of link:https://tekton.dev/docs/pipelines/resolution/[Tekton remote pipelines]. If this is not the case, please read more about this feature before proceeding.
+====
+
+== Implementing this guideline
+
+.*Prerequisites*
+
+* Having a repository to store shared Pipelines and Tasks.
+
+[IMPORTANT]
+====
+If the repository is private, be sure to have a Secret in your {ProductName} workspace to be able to clone it
+====
+
+=== Basic definitions
+
+.*Procedures*
+
+. Add Tekton Pipelines and Tasks in the repository. A suggested repository structure would be:
+
++
+[source,shell]
+----
+.
+├── .tekton
+│   ├── <repository-name>-pipelines-pull-request.yaml <.>
+│   └── <repository-name>-pipelines-push.yaml <.>
+├── pipelines
+│   ├── remote-pipeline1.yaml
+│   └── remote-pipeline2.yaml
+├── tasks
+│   ├── remote-task1.yaml
+│   └── remote-task2.yaml
+└── renovate.json <.>
+----
+
++
+<.> Used by {ProductName} to monitor pull requests.
+<.> Used by {ProductName} to monitor pushes.
+<.> Renovate/MintMaker configuration.
+
+=== Use git resolver
+
+To start referencing a remote Pipeline from a PipelineRun using a *git resolver*, replace *pipelineSpec* with *pipelineRef*:
+
+[source,yaml]
+----
+apiVersion: tekton.dev/v1
+kind: PipelineRun
+metadata: ... <.>
+spec:
+  pipelineRef:
+    resolver: git
+    params:
+      - name: org
+        value: redhat
+      - name: scmType
+        value: gitlab
+      - name: serverURL
+        value: https://gitlab.com
+      - name: url
+        value: "https://gitlab.com/your-group-name/your-repo-name.git"
+      - name: revision
+        value: main <.>
+      - name: pathInRepo
+        value: "pipelines/your-pipeline-name.yaml" <.>
+      - name: token
+        value: pipelines-as-code-secret <.>
+      - name: tokenKey
+        value: password <.>
+----
+
+<.> Omitted for brevity.
+<.> Specify a branch to target.
+<.> Repository path to the pipeline definition YAML file.
+<.> Name of the Secret. Read xref:how-tos/configuring/creating-secrets.adoc[how to create secrets for your builds] section for more information on how to create this.
+<.> Name of the attribute within your Secret, that stores the password/token.
+
+== Benefits of this guideline
+
+This approach allows a team or an individual contributor to manage multiple custom Pipelines from a single repository as source of truth. But there also other good reasons:
+
+. Pipelines are stored in a Git repository and fetched during execution, eliminating the need to maintain local or static pipeline definitions.
+. Teams can leverage Git’s versioning to access specific pipeline branches.
+. In case of issues, it's very simple to rollback to a previous pipeline version, and apply it globally among the {ProductName} Components.
+. Reduced maintenance overhead of keeping task references up to date across multiple components.
+
+== Potential drawbacks
+
+Although Tekton remote pipelines is a huge improvement, it comes with a drawback; the Pipeline CRDs will not be stored in the {ProductName} Component repository anymore, so MintMaker will not be able to update the TaskRef digests for us.
+
+The suggested approach is to onboard the repository where the shared pipelines are stored as a {ProductName} Component, so that {ProductName} and MintMaker will be able to discover and update digests for us.
+
+To achieve this, configure and extend MintMaker properly, so that it will be able to discover Tekton Pipelines and take care of them in custom paths:
+
+[source,json]
+.renovate.json
+----
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "tekton": {
+    "fileMatch": ["\\.yaml$", "\\.yml$"], <.>
+    "includePaths": ["pipelines/**", "tasks/**"], <.>
+    "automerge": true <.>
+  }
+}
+----
+
+<.> Tekton pipelines to match.
+<.> Paths where to look for Tekton Pipelines to update.
+<.> Define whether MintMaker must take care of PRs and automerge them or not.
+
++
+[NOTE]
+====
+* MintMaker will read the default configuration from "https://docs.renovatebot.com/renovate-schema.json" and will extend it using the subsequent custom settings.
+====
+
+. xref:how-tos/creating.adoc[Create a {ProductName} Application and a {ProductName} Component] to reference the repository and branch name.
+
