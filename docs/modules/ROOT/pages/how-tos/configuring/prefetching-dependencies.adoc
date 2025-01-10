@@ -36,6 +36,68 @@ For every build, Cachi2 generates a software bill of materials (SBOM) where all 
 
 NOTE: *The link:https://github.com/konflux-ci/rpm-lockfile-prototype?tab=readme-ov-file#what-is-this[rpm-lockfile-prototype] and the link:https://github.com/containerbuildsystem/cachi2?tab=readme-ov-file#package-managers[rpm package manager for cachi2] are not fully supported. You can use them to prefetch rpms for your hermetic builds, but the file format and technology may change in the future. If you're interested in the future of this topic, join the discussion at link:https://github.com/rpm-software-management/dnf5/issues/833[rpm-software-management/dnf5#833].
 
+== Procedure
+To prefetch dependencies for a component build, complete the following steps:
+
+. Go to the `.tekton` directory and find the `.yaml` files related to the `*pull request*` and `*push*` processes.
+
+. Configure the hermetic pipeline by adding the following parameters in both `.yaml` files:
+
++
+[source,yaml]
+----
+pipelineSpec:
+  params:
+    ...
+    - name: hermetic
+      type: string
+      description: Execute the build with network isolation
+      default: "true"
+----
+
++
+[source,yaml]
+----
+spec:
+  params:
+    ...
+    - name: prefetch-input
+      value: '{"type": "<package_manager>", "path": "."}' <1>
+----
+NOTE: The prefetch-input parameter specifies the path to the directory of the project. In this example, the `.` indicates the repository root. If you have multiple directories, you can provide the path to those directories in the JSON array format: `[{"type": "<package_manager>", "path": "."}, {"type": "<package_manager>", "path": "subpath/to/the/other/directory"}]`.
+
+. Additionally, pass an extra parameter to the `prefetch-dependencies` task in the `.spec.pipelineSpec.tasks` section to indicate that "dev package managers" should be enabled.
+
++
+[source,yaml]
+----
+tasks:
+  ...
+  - name: prefetch-dependencies
+    params:
+    ...
+    - name: dev-package-managers
+      value: "true"
+----
+NOTE: You won't find `dev-package-managers` as a param on the `prefetch-dependencies` task. You have to add it, and set it to true. This is because Cachi2 hasn't declared stable support for the feature yet. Use it at your own risk.
+
+. Create a pull request by committing your changes to the repository of the component.
+
+. Review and merge the pull request.
+
+== Verification
+* From the {ProductName} *Applications* view, go to *Activity > Pipeline runs*.
+** Go to the pipeline run with *Build* in the *Type* column and confirm that the `prefetch-dependencies` stage displays a green checkmark. This indicates that the build process successfully fetched all dependencies.
+* From the {ProductName} *Applications* view, go to *Activity > Latest commits*.
+
+== Troubleshooting
+If your build fails, be sure to look at your logs:
+
+In {ProductName}, from the *Applications* view, select the application build you want to troubleshoot, then from the resulting *Overview* page, select the *Activity* tab. From there, under *Activity By*, select *Pipeline runs*. From the *Name* column, select the build whose logs you want to check, then from the resulting *Pipeline run details* view, do one of the following:
+
+* Select the *Logs* tab.
+* Alternatively, you can click *build-container*. When the right panel opens, select the *Logs* tab to see a partial view of the log for that build.
+
 == [[gomod]]Enabling prefetch builds for `gomod`
 
 .Prerequisites
@@ -61,12 +123,6 @@ spec:
 . Create a pull request by committing your changes to the repository of the component.
 
 . Review and merge the pull request.
-
-.Verification
-* From the {ProductName} *Applications* view, go to *Activity > Pipeline runs*.
-** Go to the pipeline run with *Build* in the *Type* column and confirm that the `prefetch-dependencies` stage displays a green checkmark. This indicates that the build process successfully fetched all dependencies.
-* From the {ProductName} *Applications* view, go to *Activity > Latest commits*.
-//include::../partials/con_hermetic_verification.adoc[]
 
 == [[pip]]Enabling prefetch builds for `pip`
 Cachi2 supports pip by parsing of `pip` requirements files, including but not limited to, `requirements.txt` files placed in the root of your repository. By generically parsing `pip` requirements files, Cachi2 downloads the specified dependencies.
@@ -136,13 +192,7 @@ $ pip-compile pyproject.toml --generate-hashes
 . In the root of your repository create a `requirements-build.in` file.
 
 . Copy the build system requirements from the `pyproject.toml` file to the `requirements-build.in` file.
-////
-+
-*For example:*
-+
-image::build-requirements.png[Build requirements, role="image"]
-////
-[start=10]
+
 . Run the `pip_find_builddeps.py` script and `pip-compile` the outputs by using the following command:
 
 +
@@ -210,11 +260,7 @@ spec:
 
 . Review and merge the pull request.
 
-.Verification
-* From the {ProductName} *Applications* view, go to *Activity > Pipeline runs*.
-** Go to the pipeline run with *Build* in the *Type* column and confirm that the `prefetch-dependencies` stage displays a green checkmark. This indicates that the build process successfully fetched all dependencies.
-* From the {ProductName} *Applications* view, go to *Activity > Latest commits*.
-//include::../partials/con_hermetic_verification.adoc[]
+NOTE: To troubleshoot any issues you might experience when you enable prefetch builds for `pip` with source dependencies, see link:https://github.com/containerbuildsystem/cachi2/blob/main/docs/pip.md#troubleshooting[cachi2 documentation].
 
 === Prefetching `pip` dependencies from custom index servers
 
@@ -295,12 +341,6 @@ spec:
 
 . Create a pull request by committing your changes to the repository of the component.
 . Review and merge the pull request.
-
-.Verification
-* From the {ProductName} *Applications* view, go to *Activity > Pipeline runs*.
-** Go to the pipeline run with *Build* in the *Type* column and confirm that the `prefetch-dependencies` stage displays a green checkmark. This indicates that the build process successfully fetched all dependencies.
-* From the {ProductName} *Applications* view, go to *Activity > Latest commits*.
-//include::../partials/con_hermetic_verification.adoc[]
 
 == [[yarn]]Enabling prefetch builds for `yarn`
 
@@ -431,20 +471,6 @@ spec:
 . Create a pull request by committing your changes to the repository of the component.
 . Review and merge the pull request.
 
-.Verification
-* From the {ProductName} *Applications* view, go to *Activity > Pipeline runs*.
-** Go to the pipeline run with *Build* in the *Type* column and confirm that the `prefetch-dependencies` stage displays a green checkmark. This indicates that the build process successfully fetched all configured dependencies.
-* From the {ProductName} *Applications* view, go to *Activity > Latest commits*.
-//include::../partials/con_hermetic_verification.adoc[]
-
-.Troubleshooting
-If your build fails, be sure to look at your logs:
-
-In {ProductName}, from the *Applications* view, select the application build you want to troubleshoot, then from the resulting *Overview* page, select the *Activity* tab. From there, under *Activity By*, select *Pipeline runs*. From the *Name* column, select the build whose logs you want to check, then from the resulting *Pipeline run details* view, do one of the following:
-
-* Select the *Logs* tab.
-* Alternatively, you can click *build-container*. When the right panel opens, select the *Logs* tab to see a partial view of the log for that build.
-
 NOTE: Konflux also supports prefetching RPM content which requires a Red Hat subscription. For more information see xref:./activation-keys-subscription.adoc#hermetic-network-isolated-builds[Using Red Hat activation keys to access subscription content].
 
 == [[generic]]Enabling prefetch builds for `generic fetcher`
@@ -483,23 +509,3 @@ spec:
             value: '{"type": "generic", "path": "."}' <1>
 ----
 <1> The `*prefetch-input*` parameter specifies the path to the directory that has the lockfile. In this example, the `.` indicates that the lockfile is in the repository root. Additionally, if you have multiple directories, you can provide the path to those directories in the JSON array format. For example, `[{"path": ".", "type": "generic"}, {"path": "subpath/to/the/other/directory", "type": "generic"}]`. Alternatively, if your lockfile is generated as part of your pipeline and is not commited to the repository, you can specify an absolute path to it, like this: `{"type": "generic", "path": ".", "lockfile": "/absolute/path/to/artifacts.lock.yaml"}`.
-
-
-.Verification
-* From the {ProductName} *Applications* view, go to *Activity > Pipeline runs*.
-** Go to the pipeline run with *Build* in the *Type* column and confirm that the `prefetch-dependencies` stage displays a green checkmark. This indicates that the build process successfully fetched all dependencies.
-* From the {ProductName} *Applications* view, go to *Activity > Latest commits*.
-//include::../partials/con_hermetic_verification.adoc[]
-
-.Troubleshooting
-If your build fails, be sure to look at your logs:
-
-In {ProductName}, from the *Applications* view, select the application build you want to troubleshoot, then from the resulting *Overview* page, select the *Activity* tab. From there, under *Activity By*, select *Pipeline runs*. From the *Name* column, select the build whose logs you want to check, then from the resulting *Pipeline run details* view, do one of the following:
-
-* Select the *Logs* tab.
-* Alternatively, you can click *build-container*. When the right panel opens, select the *Logs* tab to see a partial view of the log for that build.
-
-== Additional resources
-
-* To troubleshoot any issues you might experience when you enable prefetch builds for `pip` or `pip` with source dependencies, see link:https://github.com/containerbuildsystem/cachi2/blob/main/docs/pip.md#troubleshooting[Troubleshooting].
-* For more information about Cachi2, see link:https://github.com/containerbuildsystem/cachi2/blob/main/docs/usage.md[Cachi2].
