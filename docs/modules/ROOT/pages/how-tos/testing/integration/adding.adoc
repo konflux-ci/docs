@@ -45,4 +45,4 @@ When the new build is finished:
 
 . xref:./editing.adoc[Edit the integration test] if it is not properly configured.
 
-The test results will also be available from the PR in Github or Gitlab.  In Github the test results can be viewed in the *Checks* tab.  In Gitlab the test results will show up in the *Pipelines* tab.  In both cases comments will be created once the integration tests finish running showing the results of the most recent test run
+The test results will also be available from the PR in GitHub or the MR in GitLab. In GitHub, the test results can be viewed in the *Checks* tab. In GitLab, the test results will show up in the *Pipelines* tab. In both cases, comments will be created once the integration tests finish running, showing the results of the most recent test run.
