@@ -83,7 +83,7 @@ users:
 +
 [source]
 --
-export $KUBECONFIG=<path to your kubeconfig file>
+export KUBECONFIG=<path to your kubeconfig file>
 --
 +
 .. Or, overwrite the file located at `~/.kube/config` with your `kubeconfig` file.
