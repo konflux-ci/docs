@@ -34,3 +34,7 @@ public/
 # Netlify deploy output from preview workflow
 deploy.json
 .DS_Store
+
+# Vale styles
+.vale/styles/*
+!.vale/styles/config
