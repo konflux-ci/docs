@@ -48,6 +48,7 @@ NOTE: If you only want to retrigger the integration tests, see xref:/how-tos/tes
 .**Prerequisite**
 
 - You have already merged a pull request, but the subsequent build failed, prompting a need for retriggering.
+- You didn't rename push pipeline run name, and it is in format `component_name + '-on-push'`
 
 .**Procedure**
 
@@ -66,6 +67,7 @@ The pipeline run should resume in the *Activity* > *Pipeline runs* tab.
 .**Prerequisite**
 
 - You have already merged a pull request, but the subsequent build failed, prompting a need for retriggering.
+- You didn't rename push pipeline run name, and it is in format `component_name + '-on-push'`
 - You have CLI access to {ProductName}. For information on obtaining CLI access, refer to  xref:/getting-started/cli.adoc[Getting started in CLI]
 
 .**Procedure**
