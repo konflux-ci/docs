@@ -48,6 +48,18 @@ NOTE: You can run a Snyk task only if you have a Snyk token configured in a name
 
 You've enabled the Snyk task for your build pipeline.
 
+In case multiple components are maintained in a single git repository, Snyk Code is unable to distinguish which directories contain the source code for which component. Consequently, Snyk Code reports duplicated findings because it always scans the whole git repository rather than scanning each component separately. As a workaround for this limitation of Snyk Code, one can use the `IGNORE_FILE_PATHS` parameter of the sast-snyk-check task to specify which directories should be ignored while scanning a specific component. Namely, one can use the parameter to make Snyk Code ignore directories that are used for build of other components maintained in the same git repository.
+
+This parameter takes a list of comma-separated file paths (directories and files) to be ignored.
+
+Example:
+----
+ - name: IGNORE_FILE_PATHS
+   value: "tests/,Dockerfile,README.md"
+----
+
+This action will make use of the `snyk ignore` command.
+
 [role="_additional-resources"]
 == Additional resources
 
