@@ -27,7 +27,7 @@ For every build, Cachi2 generates a software bill of materials (SBOM) where all 
 |xref:bundler[bundler]
 |`Ruby`
 
-|xref:rpm*[rpm]
+|xref:rpm[rpm]*
 |`N/A`
 
 |xref:generic[generic]
