@@ -29,7 +29,7 @@ NOTE: For additional options, refer to the link:https://pipelinesascode.com/docs
 .**Procedure**
 
 . On the GitHub UI, navigate to the latest commit on your branch that that you want to rebuild.
-. Comment `/retest` on the commit.
+. Comment `/retest` on the commit. If the commit is not on the default branch, use `/retest branch:<branch-name>`
 
 +
 All pipeline runs associated with that commit should resume in the *Activity* > *Pipeline runs* tab.
