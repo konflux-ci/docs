@@ -68,6 +68,12 @@ spec:
 * From the {ProductName} *Applications* view, go to *Activity > Latest commits*.
 //include::../partials/con_hermetic_verification.adoc[]
 
+=== [[go-private]]Prefetching Go modules from private repos
+
+To enable downloading modules from private repos, Go supports authentication via `.netrc`.
+You can create a netrc Secret for your pipeline as described xref:netrc[below].
+For more Go-specific `.netrc` details, see link:https://go.dev/doc/faq#git_https[the Go docs].
+
 == [[pip]]Enabling prefetch builds for `pip`
 Cachi2 supports pip by parsing of `pip` requirements files, including but not limited to, `requirements.txt` files placed in the root of your repository. By generically parsing `pip` requirements files, Cachi2 downloads the specified dependencies.
 
@@ -470,6 +476,7 @@ The `prefetch-dependencies` task supports link:https://everything.curl.dev/using
 For example, it is useful for:
 
 * xref:custom-index-servers[pip packages from private index servers]
+* xref:go-private[Go modules from private repos]
 
 To create a netrc Secret for use in your pipelines:
 
