@@ -216,7 +216,7 @@ spec:
 * From the {ProductName} *Applications* view, go to *Activity > Latest commits*.
 //include::../partials/con_hermetic_verification.adoc[]
 
-=== Prefetching `pip` dependencies from custom index servers
+=== [[custom-index-servers]]Prefetching `pip` dependencies from custom index servers
 
 Cachi2 supports the link:https://pip.pypa.io/en/stable/cli/pip_install/#install-index-url[--index-url] option.
 You can add this option to your `requirements.txt` file(s), instructing Cachi2 to download packages from the specified
@@ -232,43 +232,8 @@ requests==2.32.2 \
 # ...other packages
 ----
 
-WARNING: Do not include credentials in the index url. If needed, provide authentication through a `.netrc` file (as described below).
-
-To provide `.netrc` authentication for the index server:
-
-. Create a key/value secret (see xref:/how-tos/configuring/creating-secrets.adoc[creating secrets for your builds]).
-  Set `.netrc` as the key. Upload the content of your `.netrc` file as the value. For more details on netrc files,
-  review the link:https://pip.pypa.io/en/stable/topics/authentication/#netrc-support[pip documentation for netrc support].
-
-. In your `.tekton/` PipelineRun files, add the newly created secret to the `.spec.workspaces` section:
-
-+
-[source,yaml]
-----
-spec:
-  # ...
-  workspaces:
-    # ...
-    - name: netrc
-      secret:
-        secretName: my-netrc  # the name you assigned to the secret in step 1
-----
-
-. In the `.spec.pipelineSpec.tasks` section, find the entry with `name: prefetch-dependencies`.
-  Add the `netrc` workspace to the list of workspaces (if not present):
-
-+
-[source,yaml]
-----
-    tasks:
-      # ...
-      - name: prefetch-dependencies
-        # ...
-        workspaces:
-          # ...
-          - name: netrc
-            workspace: netrc
-----
+WARNING: Do not include credentials in the index URL. If needed, provide authentication through a `.netrc` file (as described xref:netrc[below]).
+For more pip-specific details on netrc files, review the link:https://pip.pypa.io/en/stable/topics/authentication/#netrc-support[pip documentation for netrc support].
 
 == [[npm]]Enabling prefetch builds for `npm`
 Cachi2 supports `npm` by fetching any dependencies you declare in your `package.json` and `package-lock.json` project files. The npm CLI manages the `package-lock.json` file automatically, and Cachi2 fetches any dependencies and enables your build to install them without network access.
@@ -498,6 +463,48 @@ In {ProductName}, from the *Applications* view, select the application build you
 
 * Select the *Logs* tab.
 * Alternatively, you can click *build-container*. When the right panel opens, select the *Logs* tab to see a partial view of the log for that build.
+
+== [[netrc]]Creating the netrc secret
+
+The `prefetch-dependencies` task supports link:https://everything.curl.dev/usingcurl/netrc.html[.netrc] files for authentication.
+For example, it is useful for:
+
+* xref:custom-index-servers[pip packages from private index servers]
+
+To create a netrc Secret for use in your pipelines:
+
+. Create the `.netrc` file locally. See the link:https://everything.curl.dev/usingcurl/netrc.html[.netrc] docs for more details on the file format.
+. Create a key/value secret (see xref:/how-tos/configuring/creating-secrets.adoc[creating secrets for your builds]).
+  Set `.netrc` as the key. Upload the content of your `.netrc` file as the value.
+. In your `.tekton/` PipelineRun files, add the newly created secret to the `.spec.workspaces` section:
+
++
+[source,yaml]
+----
+spec:
+  # ...
+  workspaces:
+    # ...
+    - name: netrc
+      secret:
+        secretName: my-netrc  # the name you assigned to the secret in step 2
+----
+
+. In the `.spec.pipelineSpec.tasks` section, find the entry with `name: prefetch-dependencies`.
+  Add the `netrc` workspace to the list of workspaces (if not present):
+
++
+[source,yaml]
+----
+    tasks:
+      # ...
+      - name: prefetch-dependencies
+        # ...
+        workspaces:
+          # ...
+          - name: netrc
+            workspace: netrc
+----
 
 == Additional resources
 
