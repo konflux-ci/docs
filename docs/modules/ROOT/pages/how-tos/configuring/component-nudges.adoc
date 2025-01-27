@@ -109,3 +109,48 @@ NOTE: You can also use **kubectl edit** to add the build-nudges-ref instead of p
 
 * Ensure that the existing references in the repositories of your components are correct.
 * Try running the necessary commands again, and ensure you have the correct syntax.
+
+== Customizing nudging PRs
+Nudging feature is using renovate `https://docs.renovatebot.com/` to actually do the job,
+for which you can customize some options specified in ConfigMap in your namespace.
+
+Only following options are possible to customize via ConfigMap (for more details about those options refer to `https://docs.renovatebot.com/`.):
+* automerge
+* automergeType
+* commitMessagePrefix
+* commitMessageSuffix
+* fileMatch,omitempty
+* ignoreTests
+* platformAutomerge
+
+
+.There are two possible ways to customize:
+. Create namespace wide config in ConfigMap named `namespace-wide-nudging-renovate-config` which will be used for all nudged components in your namespace,
+unless component specific config exists.
+. Create config for specific nudged component in ConfigMap in your namespace and add annotation `build.appstudio.openshift.io/nudge_renovate_config_map` to the component with value of ConfigMap name and
+it will be used for the component in your namespace.
+
+Both ConfigMaps have the same format, where keys are allowed options in the list above, values
+are always strings, so in case option is boolean, you will have to specify "true" or "false".
+
+When you have either of ConfigMaps, nudging default renovate config will use additionally options from your ConfigMap.
+
+.ConfigMap Example
+
+[source,yaml]
+--
+---
+apiVersion: appstudio.redhat.com/v1alpha1
+kind: ConfigMap
+metadata:
+  name: namespace-wide-nudging-renovate-config
+  namespace: <namespace>
+data:
+  automerge: "true"
+  automergeType: "pr"
+  commitMessagePrefix: "custom namespace prefix message"
+  commitMessageSuffix: "custom namespace suffix message"
+  fileMatch: ".*Dockerfile.*, .*.yaml, .*Containerfile.*"
+  ignoreTests: "true"
+  platformAutomerge: "true"
+--
