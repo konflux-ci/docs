@@ -28,7 +28,7 @@ Whether you need to enable CLI access, or to gain access once it is available, r
 
 .Procedure
 
-. Follow link:https://docs.nginx.com/nginx-management-suite/admin-guides/authentication/oidc/oidc-keycloak/[these instructions] to set up Keycloak as an OpenID Connect (OIDC) identity provider. Be aware that, when installing {ProductName}, you already set up a Keycloak server and created a realm called `redhat-external`. 
+. Follow link:https://docs.nginx.com/nginx-instance-manager/admin-guide/authentication/oidc/keycloak-setup/[these instructions] to set up Keycloak as an OpenID Connect (OIDC) identity provider. Be aware that, when installing {ProductName}, you already set up a Keycloak server and created a realm called `redhat-external`.
 . In your preferred text editor, use the `kubeconfig` template below to create a template specific to your organization. Be sure to provide the following values, specific to your organization, for the corresponding fields in the template file:
 .. The API URL for your cluster, for example: `https://api-toolchain-host-operator.apps.stone-prd-host1.wdlc.p1.openshiftapps.com`
 .. Your OIDC issuer URL, for example: `https://sso.redhat.com/auth/realms/redhat-external`
