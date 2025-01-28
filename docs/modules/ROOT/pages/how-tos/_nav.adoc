@@ -24,9 +24,11 @@
 **** xref:how-tos/testing/integration/editing.adoc[Editing integration tests]
 **** xref:how-tos/testing/integration/debugging.adoc[Debugging an integration test]
 **** xref:how-tos/testing/integration/rerunning.adoc[Rerunning an integration test]
-**** xref:how-tos/testing/integration/override-snapshots.adoc[Creating an override snapshot]
-**** xref:how-tos/testing/integration/group-snapshots.adoc[Creating a group snapshot]
 **** xref:how-tos/testing/integration/choosing-contexts.adoc[Choosing when to run certain Integration Tests]
+**** Snapshots
+***** xref:how-tos/testing/integration/snapshots/working-with-snapshots.adoc[Working with Snapshots]
+***** xref:how-tos/testing/integration/snapshots/override-snapshots.adoc[Creating an override snapshot]
+***** xref:how-tos/testing/integration/snapshots/group-snapshots.adoc[Creating a group snapshot]
 **** Third Parties
 ***** xref:how-tos/testing/integration/third-parties/testing-farm.adoc[Testing with Testing Farm]
 ** xref:how-tos/metadata/index.adoc[Inspecting provenance and attestations]

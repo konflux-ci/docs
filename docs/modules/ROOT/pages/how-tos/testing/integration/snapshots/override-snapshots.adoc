@@ -37,7 +37,7 @@ spec:
 <1> The label `test.appstudio.openshift.io/type: override` that indicates this is an `override` snapshot.
 <2> The component name you will reset its Global Candidate List.
 <3> The container image with valid digest you will reset the component <2> to.
-<4> Optional, but may cause an Enterprise Contract check to fail if it's incorrect or missing. The component source containing the git url and revision that the container image was built from.
+<4> Optional, but may cause an Enterprise Contract check to fail if it's incorrect or missing. The component source containing the git URL and revision that the container image was built from.
 
 . Save the .yaml file and add the snapshot.yaml by running the following command:
 +
