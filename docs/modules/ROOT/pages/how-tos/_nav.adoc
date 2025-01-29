@@ -25,6 +25,7 @@
 **** xref:how-tos/testing/integration/debugging.adoc[Debugging an integration test]
 **** xref:how-tos/testing/integration/rerunning.adoc[Rerunning an integration test]
 **** xref:how-tos/testing/integration/choosing-contexts.adoc[Choosing when to run certain Integration Tests]
+**** xref:how-tos/testing/integration/accessing-private-repositories.adoc[Accessing Pipelines and Tasks in Private Repositories]
 **** Snapshots
 ***** xref:how-tos/testing/integration/snapshots/working-with-snapshots.adoc[Working with Snapshots]
 ***** xref:how-tos/testing/integration/snapshots/override-snapshots.adoc[Creating an override snapshot]
