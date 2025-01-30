@@ -38,3 +38,4 @@ deploy.json
 # Vale styles
 .vale/styles/*
 !.vale/styles/config
+!.vale/styles/Konflux

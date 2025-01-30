@@ -1,0 +1,9 @@
+extends: existence
+message: Replace URL of upstream doc '%s' with 'xref:ROOT:relative/path/to/upstream/file.adoc'. 
+level: error
+ignorecase: true
+nonword: true
+scope: raw
+tokens:
+  - 'https:\/\/konflux-ci\.dev\/docs\/[-_\w/]+'
+
