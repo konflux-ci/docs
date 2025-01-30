@@ -344,9 +344,11 @@ To prefetch dependencies for a component build, complete the following steps:
 packages: [nethack] <1>
 contentOrigin:
   repofiles: ["./fedora.repo"] <2>
+arches: [x86_64, aarch64] <3>
 ----
 <1> The `*packages*` list is the list of packages you want to install in your Container. You don't have to declare transitive dependencies here. The rpm-lockfile-prototype tool will resolve them for you.
 <2> This should be a reference to a repo file, like those found in `/etc/yum.repos.d/`. This tells the tooling where to find your rpm and its dependencies.
+<3> The `arches` array allows you to specify which architectures the dependencies should be downloaded for. If you're building a multi-arch container this array is mandatory, otherwise the build task will fail.
 
 . Copy any necessary yum/dnf repo files into your git repository. If you are using a fedora rawhide base image, that looks like:
 
@@ -366,10 +368,9 @@ NOTE: For every repository defined in your set of repo files, make sure to add t
 [source,console]
 ----
 $ BASE_IMAGE=quay.io/fedora/fedora:rawhide
-$ rpm-lockfile-prototype --image $BASE_IMAGE --arch x86_64 --arch aarch64 rpms.in.yaml <1> <2>
+$ rpm-lockfile-prototype --image $BASE_IMAGE rpms.in.yaml <1>
 ----
-<1> The `--arch` command-line option allows you to specify which architectures the dependencies should be downloaded for. If you're building a multi-arch container these parameters are mandatory, otherwise the build task will fail.
-<2> The produced `rpms.lock.yaml` file will include only your requested dependency plus its transitive dependencies, minus any rpms that are already installed in the provided base image.
+<1> The produced `rpms.lock.yaml` file will include only your requested dependency plus its transitive dependencies, minus any rpms that are already installed in the provided base image.
 
 . Go to the `.tekton` directory and find the `.yaml` files related to the `*pull request*` and `*push*` processes.
 . Configure the hermetic pipeline by adding the following parameters in both `.yaml` files:
