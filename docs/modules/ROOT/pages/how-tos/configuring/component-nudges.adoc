@@ -119,7 +119,7 @@ Only following options are possible to customize via ConfigMap (for more details
 * automergeType
 * commitMessagePrefix
 * commitMessageSuffix
-* fileMatch,omitempty
+* fileMatch
 * ignoreTests
 * platformAutomerge
 
