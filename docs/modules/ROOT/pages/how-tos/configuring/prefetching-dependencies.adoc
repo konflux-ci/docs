@@ -148,12 +148,7 @@ $ pip-compile pyproject.toml --generate-hashes
 . In the root of your repository create a `requirements-build.in` file.
 
 . Copy the build system requirements from the `pyproject.toml` file to the `requirements-build.in` file.
-////
-+
-*For example:*
-+
-image::build-requirements.png[Build requirements, role="image"]
-////
+
 [start=10]
 . Run the `pip_find_builddeps.py` script and `pip-compile` the outputs by using the following command:
 
