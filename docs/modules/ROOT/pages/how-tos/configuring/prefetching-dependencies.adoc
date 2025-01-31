@@ -479,7 +479,3 @@ spec:
           - name: netrc
             workspace: netrc
 ----
-
-== Additional resources
-
-* For more information about Cachi2, see link:https://github.com/containerbuildsystem/cachi2/blob/main/docs/usage.md[Cachi2].
