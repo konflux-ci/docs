@@ -36,6 +36,40 @@ For every build, Cachi2 generates a software bill of materials (SBOM) where all 
 
 NOTE: *The link:https://github.com/konflux-ci/rpm-lockfile-prototype?tab=readme-ov-file#what-is-this[rpm-lockfile-prototype] and the link:https://github.com/containerbuildsystem/cachi2?tab=readme-ov-file#package-managers[rpm package manager for cachi2] are not fully supported. You can use them to prefetch rpms for your hermetic builds, but the file format and technology may change in the future. If you're interested in the future of this topic, join the discussion at link:https://github.com/rpm-software-management/dnf5/issues/833[rpm-software-management/dnf5#833].
 
+== Procedure
+To prefetch dependencies for a component build, complete the following steps:
+
+. Go to the `.tekton` directory and find the `.yaml` files related to the `*pull request*` and `*push*` processes.
+
+. Configure the hermetic pipeline by adding the following parameters in both `.yaml` files:
+
++
+[source,yaml]
+----
+pipelineSpec:
+  params:
+    ...
+    - name: hermetic
+      type: string
+      description: Execute the build with network isolation
+      default: "true"
+----
+
++
+[source,yaml]
+----
+spec:
+  params:
+    ...
+    - name: prefetch-input
+      value: '{"type": "<package_manager>", "path": ".", "some_other_key": "some_other_value"}' <1>
+----
+<1> The prefetch-input parameter specifies the path to the directory of the project. In this example, the `.` indicates the repository root. If you have multiple directories, you can provide the path to those directories in the JSON array format: `[{"type": "<package_manager>", "path": "."}, {"type": "<package_manager>", "path": "subpath/to/the/other/directory"}]`. Additionally, you can add other keys and values to the JSON object supported by specific package managers.
+
+. Create a pull request by committing your changes to the repository of the component.
+
+. Review and merge the pull request.
+
 == Verification
 * From the {ProductName} *Applications* view, go to *Activity > Pipeline runs*.
 ** Go to the pipeline run with *Build* in the *Type* column and confirm that the `prefetch-dependencies` stage displays a green checkmark. This indicates that the build process successfully fetched all dependencies.
@@ -53,27 +87,6 @@ In {ProductName}, from the *Applications* view, select the application build you
 .Prerequisites
 * You have a `go.mod` file in your repository that lists all the dependencies.
 
-.Procedure
-To prefetch dependencies for a component build, complete the following steps:
-
-. Go to the `.tekton` directory in your component repository and find the `.yaml` files related to both the `*pull request*` and `*push*` processes.
-. To configure the hermetic pipeline in both `.yaml` files, add the following hermetic pipeline `prefetch-input` parameters to the `spec.params` sections:
-
-+
-[source,yaml]
-----
-spec:
-    params:
-        -   ...
-        -   name: prefetch-input
-            value: '{"type": "gomod", "path": "."}' <1>
-----
-<1> The `*prefetch-input*` parameter specifies the path to the directory that has the lockfile and the package metadata files. In this example, the `.` indicates that the package manager lockfile is in the repository root. Additionally, if you have multiple directories, you can provide the path to those directories in the JSON array format. For example, `[{"path": ".", "type": "gomod"}, {"path": "subpath/to/the/other/directory", "type": "gomod"}]`.
-
-. Create a pull request by committing your changes to the repository of the component.
-
-. Review and merge the pull request.
-
 === [[go-private]]Prefetching Go modules from private repos
 
 To enable downloading modules from private repos, Go supports authentication via `.netrc`.
@@ -90,7 +103,6 @@ IMPORTANT: The requirements file can have a different name because you can use m
 
 * You have installed the link:https://github.com/jazzband/pip-tools[pip-tools] package.
 
-.Procedure
 To prefetch dependencies for a component build, complete the following steps:
 
 . Download the link:https://raw.githubusercontent.com/containerbuildsystem/cachito/master/bin/pip_find_builddeps.py[pip_find_builddeps.py] script directly from GitHub.
@@ -174,23 +186,6 @@ $ pip-compile requirements-build.in --allow-unsafe --generate-hashes
 +
 NOTE: `pip` automatically installs the build dependencies when needed for explicit installation. The purpose of the `requirement-build.txt` file is to enable Cachi2 to fetch the build dependencies and provide them to `pip` for offline installation in a network-isolated environment.
 
-. Go to the `.tekton` directory and locate the `.yaml` files related to the `*pull request*` and `*push*` processes.
-
-. Configure the hermetic pipeline.
-
-.. Add the following hermetic pipeline `prefetch-input` parameters in both the `.yaml` files:
-
-+
-[source,yaml]
-----
-spec:
-    params:
-        -   ...
-        -   name: prefetch-input
-            value: '{"type": "pip", "path": "."}' <1>
-----
-<1> The `*prefetch-input*` parameter specifies the path to the directory that has the lockfile and the package metadata files. In the previous example, the `.` indicates that the package manager lockfile is located in the root of the repository. Additionally, if you have multiple directories, you can provide the path to those directories in the JSON array format. For example, `[{"path": ".", "type": "pip"}, {"path": "subpath/to/the/other/directory", "type": "pip"}]`.
-
 +
 [NOTE]
 ====
@@ -211,11 +206,6 @@ spec:
             value: '{"type": "pip", "path": ".", "requirements_files": ["requirements.txt", "requirements-extras.txt", "tests/requirements.txt"]}' <1>
 ----
 <1> The `*prefetch-input*` parameter specifies the path to the directory that has the lockfile and the package metadata files. In the previous example, the `.` indicates that the package manager lockfile is located in the root of the repository. Additionally, if you have multiple directories, you can provide the path to those directories in the JSON array format. For example, `[{"path": ".", "type": "pip", , "requirements_files": ["requirements.txt", "requirements-extras.txt", "tests/requirements.txt"]}, {"path": "subpath/to/the/other/directory", "type": "pip", "requirements_files": ["requirements.txt", "requirements-extras.txt", "tests/requirements.txt"]}]`.
-
-+
-. Create a pull request by committing your changes to the repository of the component.
-
-. Review and merge the pull request.
 
 NOTE: To troubleshoot any issues you might experience when you enable prefetch builds for `pip` with source dependencies, see link:https://github.com/containerbuildsystem/cachi2/blob/main/docs/pip.md#troubleshooting[cachi2 documentation]
 
@@ -244,26 +234,6 @@ Cachi2 supports `npm` by fetching any dependencies you declare in your `package.
 .Prerequisites
 * You have an up-to-date link:https://docs.npmjs.com/cli/v9/configuring-npm/package-lock-json[`package-lock.json`] file, newer than version 1, in your source repository. To make sure that you have the latest `package-lock.json` file, or to create a lockfile, run the link:https://docs.npmjs.com/cli/v9/commands/npm-install?v=true[`npm-install`] command. You can also look at the `lockfileVersion` attribute in your `package-lock.json` file to make sure its value is a number greater than `*1*`.
 
-.Procedure
-To prefetch dependencies for a component build, complete the following steps:
-
-. Go to the `.tekton` directory and find the `.yaml` files related to the `*pull request*` and `*push*` processes.
-. Configure the hermetic pipeline by adding the following parameters in both `.yaml` files:
-
-+
-[source,yaml]
-----
-spec:
-    params:
-        -   ...
-        -   name: prefetch-input
-            value: '{"type": "npm", "path": "."}' <1>
-----
-<1> The `*prefetch-input*` parameter specifies the path to the directory that has the lockfile and the package metadata files. In this example, the `.` indicates that the package manager lockfile is in the repository root. Additionally, if you have multiple directories, you can provide the path to those directories in the JSON array format. For example, `[{"path": ".", "type": "npm"}, {"path": "subpath/to/the/other/directory", "type": "npm"}]`.
-
-. Create a pull request by committing your changes to the repository of the component.
-. Review and merge the pull request.
-
 == [[yarn]]Enabling prefetch builds for `yarn`
 
 Supported versions: 1.x and 3.x. Cachi2 automatically detects the version of `yarn` and fetches any dependencies you declare in your `package.json` and `yarn.lock` project files.
@@ -272,49 +242,11 @@ Supported versions: 1.x and 3.x. Cachi2 automatically detects the version of `ya
 
 * You have an up-to-date `yarn.lock` file in your source repository. To ensure you have the latest `yarn.lock` file or to create it, run the `yarn install` command. If `yarn.lock` is not up-to-date, Cachi2 will not fetch the dependencies.
 
-.Procedure
-
-To prefetch dependencies for a component build, complete the following steps:
-
-. Go to the `.tekton` directory and find the `.yaml` files related to the `*pull request*` and `*push*` processes.
-. Configure the hermetic pipeline by adding the following parameters in both `.yaml` files:
-
-+
-[source,yaml]
-----
-spec:
-  params:
-    - ...
-    - name: prefetch-input
-      value: '{"type": "yarn", "path": "."}'
-----
-
 == [[bundler]]Enabling prefetch builds for `bundler`
 
 .Prerequisites
 
 You have a `Gemfile` and a `Gemfile.lock` file in your repository that lists all the dependencies. The `Gemfile.lock` is generated from the `Gemfile` and contains all transitive dependencies pinned to specific versions.
-
-.Procedure
-
-To prefetch dependencies for a component build, complete the following steps:
-
-. Go to the `.tekton` directory and find the `.yaml` files related to the `*pull request*` and `*push*` processes.
-. Configure the hermetic pipeline by adding the following parameters in both `.yaml` files:
-
-+
-[source,yaml]
-----
-spec:
-  params:
-    - ...
-    - name: prefetch-input
-      value: '{"type": "bundler", "path": ".", "allow_binary": "false"}' <1>
-----
-<1> The `*allow_binary*` parameter specifies whether to allow gems for specific platforms. By default, the value is `false`. If you want to allow gems for specific platforms, set the value to `true`.
-
-. Create a pull request by committing your changes to the repository of the component.
-. Review and merge the pull request.
 
 == [[rpm]]Enabling prefetch builds for `rpm`
 
@@ -322,8 +254,6 @@ Cachi2 has a dev-preview package manager capable of fetching `rpm` dependencies.
 
 .Prerequisites
 * You have an up-to-date installation of link:https://github.com/konflux-ci/rpm-lockfile-prototype?tab=readme-ov-file#installation[rpm-lockfile-prototype].
-
-.Procedure
 
 To prefetch dependencies for a component build, complete the following steps:
 
@@ -361,20 +291,6 @@ $ rpm-lockfile-prototype --image $BASE_IMAGE rpms.in.yaml <1>
 ----
 <1> The produced `rpms.lock.yaml` file will include only your requested dependency plus its transitive dependencies, minus any rpms that are already installed in the provided base image.
 
-. Go to the `.tekton` directory and find the `.yaml` files related to the `*pull request*` and `*push*` processes.
-. Configure the hermetic pipeline by adding the following parameters in both `.yaml` files:
-
-+
-[source,yaml]
-----
-spec:
-    params:
-        -   ...
-        -   name: prefetch-input
-            value: '{"type": "rpm", "path": "."}' <1>
-----
-<1> The `*prefetch-input*` parameter specifies the path to the directory that has the lockfile. In this example, the `.` indicates that the rpm lockfile is in the repository root. Additionally, if you have multiple directories, you can provide the path to those directories in the JSON array format. For example, `[{"path": ".", "type": "rpm"}, {"path": "subpath/to/the/other/directory", "type": "rpm"}]`.
-
 . Additionally, pass an extra parameter to the `prefetch-dependencies` task in the `.spec.pipelineSpec.tasks` section to indicate that "dev package managers" should be enabled.
 
 +
@@ -390,15 +306,11 @@ spec:
 ----
 <1> You won't find `dev-package-managers` as a param on the `prefetch-dependencies` task. You have to add it, and set it to true. This is because Cachi2 hasn't declared stable support for rpm lockfile processing yet. It's new technology and the link:https://github.com/rpm-software-management/dnf5/issues/833[conversation] about which way forward in the dnf community is still ongoing.
 
-. Create a pull request by committing your changes to the repository of the component.
-. Review and merge the pull request.
-
 NOTE: Konflux also supports prefetching RPM content which requires a Red Hat subscription. For more information see xref:./activation-keys-subscription.adoc#hermetic-network-isolated-builds[Using Red Hat activation keys to access subscription content].
 
 == [[generic]]Enabling prefetch builds for `generic fetcher`
 If you need to prefetch arbitrary files for your build, Cachi2 supports `generic fetcher` for that purpose. It uses a custom lockfile named `artifacts.lock.yaml` to achieve this. This file needs to be either commited in the source repository, or explicitly specified as an absolute path. The latter is useful in case you for some reason need the lockfile to be dynamic and committing it to the repository would be problematic. For more information on supported types of artifacts, see link:https://github.com/containerbuildsystem/cachi2/blob/main/docs/generic.md[Cachi2 documentation].
 
-.Procedure
 To prefetch dependencies for a component build, complete the following steps:
 
 . Create a `artifacts.lock.yaml` file in your git repository, with a list of files to prefetch, their checksums, and optionally their filenames. See link:https://github.com/containerbuildsystem/cachi2/blob/main/docs/generic.md[Cachi2 documentation] for complete overview of the lockfile format.
@@ -417,20 +329,6 @@ artifacts:
 <1> `metadata` section is required and needs to specify lockfile version
 <2> `checksum` is expected to be specified as `algorith:hash`
 <3> If no `filename` is specified, it will be derived from the URL.
-
-. Go to the `.tekton` directory and find the `.yaml` files related to the `*pull request*` and `*push*` processes.
-. Configure the hermetic pipeline by adding the following parameters in both `.yaml` files:
-
-+
-[source,yaml]
-----
-spec:
-    params:
-        -   ...
-        -   name: prefetch-input
-            value: '{"type": "generic", "path": "."}' <1>
-----
-<1> The `*prefetch-input*` parameter specifies the path to the directory that has the lockfile. In this example, the `.` indicates that the lockfile is in the repository root. Additionally, if you have multiple directories, you can provide the path to those directories in the JSON array format. For example, `[{"path": ".", "type": "generic"}, {"path": "subpath/to/the/other/directory", "type": "generic"}]`. Alternatively, if your lockfile is generated as part of your pipeline and is not commited to the repository, you can specify an absolute path to it, like this: `{"type": "generic", "path": ".", "lockfile": "/absolute/path/to/artifacts.lock.yaml"}`.
 
 == [[netrc]]Creating the netrc secret
 
