@@ -36,6 +36,13 @@ For every build, Cachi2 generates a software bill of materials (SBOM) where all 
 
 NOTE: *The link:https://github.com/konflux-ci/rpm-lockfile-prototype?tab=readme-ov-file#what-is-this[rpm-lockfile-prototype] and the link:https://github.com/containerbuildsystem/cachi2?tab=readme-ov-file#package-managers[rpm package manager for cachi2] are not fully supported. You can use them to prefetch rpms for your hermetic builds, but the file format and technology may change in the future. If you're interested in the future of this topic, join the discussion at link:https://github.com/rpm-software-management/dnf5/issues/833[rpm-software-management/dnf5#833].
 
+== Troubleshooting
+If your build fails, be sure to look at your logs:
+In {ProductName}, from the *Applications* view, select the application build you want to troubleshoot, then from the resulting *Overview* page, select the *Activity* tab. From there, under *Activity By*, select *Pipeline runs*. From the *Name* column, select the build whose logs you want to check, then from the resulting *Pipeline run details* view, do one of the following:
+
+* Select the *Logs* tab.
+* Alternatively, you can click *build-container*. When the right panel opens, select the *Logs* tab to see a partial view of the log for that build.
+
 == [[gomod]]Enabling prefetch builds for `gomod`
 
 .Prerequisites
@@ -221,6 +228,8 @@ spec:
 ** Go to the pipeline run with *Build* in the *Type* column and confirm that the `prefetch-dependencies` stage displays a green checkmark. This indicates that the build process successfully fetched all dependencies.
 * From the {ProductName} *Applications* view, go to *Activity > Latest commits*.
 //include::../partials/con_hermetic_verification.adoc[]
+
+NOTE: To troubleshoot any issues you might experience when you enable prefetch builds for `pip` with source dependencies, see link:https://github.com/containerbuildsystem/cachi2/blob/main/docs/pip.md#troubleshooting[cachi2 documentation]
 
 === [[custom-index-servers]]Prefetching `pip` dependencies from custom index servers
 
@@ -408,14 +417,6 @@ spec:
 * From the {ProductName} *Applications* view, go to *Activity > Latest commits*.
 //include::../partials/con_hermetic_verification.adoc[]
 
-.Troubleshooting
-If your build fails, be sure to look at your logs:
-
-In {ProductName}, from the *Applications* view, select the application build you want to troubleshoot, then from the resulting *Overview* page, select the *Activity* tab. From there, under *Activity By*, select *Pipeline runs*. From the *Name* column, select the build whose logs you want to check, then from the resulting *Pipeline run details* view, do one of the following:
-
-* Select the *Logs* tab.
-* Alternatively, you can click *build-container*. When the right panel opens, select the *Logs* tab to see a partial view of the log for that build.
-
 NOTE: Konflux also supports prefetching RPM content which requires a Red Hat subscription. For more information see xref:./activation-keys-subscription.adoc#hermetic-network-isolated-builds[Using Red Hat activation keys to access subscription content].
 
 == [[generic]]Enabling prefetch builds for `generic fetcher`
@@ -462,14 +463,6 @@ spec:
 * From the {ProductName} *Applications* view, go to *Activity > Latest commits*.
 //include::../partials/con_hermetic_verification.adoc[]
 
-.Troubleshooting
-If your build fails, be sure to look at your logs:
-
-In {ProductName}, from the *Applications* view, select the application build you want to troubleshoot, then from the resulting *Overview* page, select the *Activity* tab. From there, under *Activity By*, select *Pipeline runs*. From the *Name* column, select the build whose logs you want to check, then from the resulting *Pipeline run details* view, do one of the following:
-
-* Select the *Logs* tab.
-* Alternatively, you can click *build-container*. When the right panel opens, select the *Logs* tab to see a partial view of the log for that build.
-
 == [[netrc]]Creating the netrc secret
 
 The `prefetch-dependencies` task supports link:https://everything.curl.dev/usingcurl/netrc.html[.netrc] files for authentication.
@@ -515,5 +508,4 @@ spec:
 
 == Additional resources
 
-* To troubleshoot any issues you might experience when you enable prefetch builds for `pip` or `pip` with source dependencies, see link:https://github.com/containerbuildsystem/cachi2/blob/main/docs/pip.md#troubleshooting[Troubleshooting].
 * For more information about Cachi2, see link:https://github.com/containerbuildsystem/cachi2/blob/main/docs/usage.md[Cachi2].
