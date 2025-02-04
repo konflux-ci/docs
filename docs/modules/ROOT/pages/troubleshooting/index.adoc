@@ -157,3 +157,82 @@ kubectl get secrets -o json |
         {auths: .}
     '
 ----
+
+== Manually Update Task Bundles
+
+Usually, Konflux users rely on link:https://docs.renovatebot.com/[renovate] to update
+the various Task bundle references in the build Pipelines. However, it is also possible
+to update these references manually if needed. For example, consider a build Pipeline
+that includes the following Task:
+
+[source,yaml]
+----
+- name: init
+  params:
+    - name: image-url
+      value: $(params.output-image)
+    - name: rebuild
+      value: $(params.rebuild)
+    - name: skip-checks
+      value: $(params.skip-checks)
+  taskRef:
+    params:
+      - name: name
+        value: init
+      - name: bundle
+        value: quay.io/konflux-ci/tekton-catalog/task-init:0.2@sha256:284e3029cce3ae5ee0b05866100e300046359f53ae4c77fe6b34c05aa7a72cee
+      - name: kind
+        value: task
+    resolver: bundles
+----
+
+You can find the newest digest for the Task bundle with skopeo and jq. You must first remove the
+digest from the existing reference. For example:
+
+[source,bash]
+----
+skopeo inspect --no-tags docker://quay.io/konflux-ci/tekton-catalog/task-init:0.2 | jq -r '.Digest'
+----
+
+The output will contain a new digest, e.g. `sha256:4c6712db9419461b8c8a39523c012cb0dc061fb58563bb9170b3777d74f54659`.
+Update the Task bundle reference in your build Pipeline to use the new digest.
+
+The script below provides a working example of how to achieve this for all the Task bundle
+references in a given build Pipeline file.
+
+[source,bash]
+----
+cat <<'EOF' > update.sh
+#!/bin/bash
+
+# Use this script to update the Tekton Task Bundle references used in a Pipeline or a PipelineRun.
+# update-tekton-task-bundles .tekton/*.yaml
+
+set -euo pipefail
+
+FILES=$@
+
+# Find existing image references
+OLD_REFS="$(\
+    yq '... | select(has("resolver")) | .params // [] | .[] | select(.name == "bundle") | .value'  $FILES | \
+    grep -v -- '---' | \
+    sort -u \
+)"
+
+# Find updates for image references
+for old_ref in ${OLD_REFS}; do
+    repo_tag="${old_ref%@*}"
+    new_digest="$(skopeo inspect --no-tags docker://${repo_tag} | yq '.Digest')"
+    new_ref="${repo_tag}@${new_digest}"
+    [[ $new_ref == $old_ref ]] && continue
+    echo "New digest found! $new_ref"
+    for file in $FILES; do
+        sed -i "s!${old_ref}!${new_ref}!g" $file
+    done
+done
+EOF
+
+chmod +x update.sh
+
+./update.sh $PIPELINE_FILE
+----
