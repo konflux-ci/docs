@@ -52,7 +52,7 @@ Create a file structure as follows:
 └── README.md
 ----
 
-NOTE: You can omit `component-b` if you only wish to define a single component.
+NOTE: You can omit `component-b` if you only want to define a single component.
 
 In this file structure, you will find:
 
@@ -93,7 +93,7 @@ spec:
         revision: defaultBranch
 ----
 
-NOTE: This creates a component with a custom build pipeline. If you wish to use the default build, omit the `build.appstudio.openshift.io/request: configure-pac` annotation.
+NOTE: This creates a component with a custom build pipeline. If you want to use the default build, omit the `build.appstudio.openshift.io/request: configure-pac` annotation.
 
 === Creating Your Base Kustomization
 
@@ -103,14 +103,14 @@ With the base component defined, tell Kustomize it exists for later consumption 
 ----
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
-  
+
 resources:
   - component.yaml
 ----
 
 == Create a Base for Your Application
 
-Each application will have its own base and one or more overrides. 
+Each application will have its own base and one or more overrides.
 
 You can think of each application variant as the base that defines the structure of your application and all components in that application. The concrete application is an implementation of that variant that defines any differentiating specs, such as application name, version, and component branches.
 
@@ -258,7 +258,7 @@ patches:
 
 NOTE: This Kustomization applies a suffix to all resources. We recommend doing this to ensure uniqueness and make it easier to identify components and applications.
 
-NOTE: You can define more than one exceptional patch and match component names through regex.
+NOTE: You can define more than one exceptional patch and match component names through regular expression.
 
 == Defining Multiple Versions or Variants of an Application
 
@@ -297,7 +297,7 @@ This results in a configuration that looks something like the following, with a 
 
 == Defining Multiple Applications
 
-If you wish to define multiple applications with different sets of components and versions for each application, replicate the above configuration for `application-a` for a second application and include it as an additional application base and overlays in the `overlay` directory.
+If you want to define multiple applications with different sets of components and versions for each application, replicate the above configuration for `application-a` for a second application and include it as an additional application base and overlays in the `overlay` directory.
 
 This approach is preferred for defining multiple applications within an application category (such as operators) or a family/product organization as code. It allows you to make bulk configurations to your base component YAML (such as enabling multi-architecture support or setting labels and ownership) in a single place — the component base — rather than in multiple places.
 

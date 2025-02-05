@@ -12,7 +12,7 @@ To have a `group` snapshot created for multiple pull/merge requests, complete th
 
 After every build pipelinerun succeeds and component snapshot is created, a group snapshot will be created containing the new built component container images and other components. The default configured ItegrationTestScenario(s) will then all be run with all snapshot. The IntegrationTestScenario(s) with `group` context will be run only with `group` snapshot.
 
-NOTE: Component snapshots are always created and tested for each pull/merge reqeuest. A group snapshot is created only when there are at least two components with open pull/merge request and the same source branch name. 
+NOTE: Component snapshots are always created and tested for each pull/merge reqeuest. A group snapshot is created only when there are at least two components with open pull/merge request and the same source branch name.
 
 The created group snapshot is like below:
 
@@ -46,7 +46,7 @@ spec:
           revision: ff13da0159d2a556c1fc9859a0f19f6b4472c4ad
 ----
 <1> The label `test.appstudio.openshift.io/type: group` that indicates this is a `group` snapshot.
-<2> The label `test.appstudio.openshift.io/pr-group-sha: bc3c81ad3d0140f3fe63c61a0b2389cb76663d226fbd28b00fb0d9f050fb21` that indicates the sha256 of pr group derived from branch name and is used to query the k8s resource build pipelinerun and snapshots belonging to the same pr group. Build pipelineruns and snapshots built for the branch with the same branch name have the same pr group.
+<2> The label `test.appstudio.openshift.io/pr-group-sha: bc3c81ad3d0140f3fe63c61a0b2389cb76663d226fbd28b00fb0d9f050fb21` that indicates the sha256 of pr group derived from branch name and is used to query the Kubernetes resource build pipelinerun and snapshots belonging to the same pr group. Build pipelineruns and snapshots built for the branch with the same branch name have the same pr group.
 <3> The annotation `test.appstudio.openshift.io/pr-group: feature-2` that indicates the readable pr group derived from branch name.
 <4> The annotation `test.appstudio.openshift.io/group-test-info` indicates the component snapshots info forming the group snapshot.
 <5> The list of components and their container images. All components updated by pull/merge request with the same pr group will be included. For components which are not updated, the data from Global Candidate List will be used.

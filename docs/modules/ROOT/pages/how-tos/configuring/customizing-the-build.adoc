@@ -178,9 +178,12 @@ Custom Tasks may need access to data from other Tasks. However, in order to not 
 
 == Exchanging the build pipeline build task with higher memory limits
 
-TIP: If possible, prefer xref:./overriding-compute-resources.adoc[overriding compute resources] directly in your PipelineRun file.
-    It is a much more flexible and simpler approach.
-    Use this procedure as a last resort, if the relevant features are not enabled in your cluster.
+[TIP]
+--
+If possible, prefer xref:./overriding-compute-resources.adoc[overriding compute resources] directly in your PipelineRun file.
+It is a much more flexible and simpler approach.
+Use this procedure as a last resort, if the relevant features are not enabled in your cluster.
+--
 
 The `buildah` task, which builds components from a Dockerfile, has a memory limit of 4 GB. To build components with memory requirements greater than 4 GB, use the following tasks:
 
@@ -234,7 +237,7 @@ skopeo inspect --format '@{{.Digest}}' --no-tags docker://"${my_bundle}"
 ====
 {ProductName} task version tags (e.g. `0.2`) are "floating" - they move to the latest release every time the task gets an update.
 By pinning to a digest, you ensure your pipeline will always use the exact same version of the task.
-{ProductName} automatically sends out PRs to update task digests, letting you opt into updating the task rather than having it update on its own behind your back.
+{ProductName} automatically sends out PRs to update task digests, letting you opt in updating the task rather than having it update on its own behind your back.
 The task update PR will trigger the on-pull-request pipeline, testing the changes before they can affect the on-push pipeline or other PRs.
 
 ====

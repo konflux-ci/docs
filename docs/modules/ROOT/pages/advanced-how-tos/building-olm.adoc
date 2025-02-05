@@ -1,6 +1,6 @@
 = Building an Operator Lifecycle Manager (OLM) Operator in {ProductName}
 
-If you are developing an application that aligns with the link:https://operatorframework.io/[Operator Framework], and managing it with link:https://olm.operatorframework.io/docs/[Operator Lifecycle Manager (OLM)], you can build that application in {ProductName}. We refer to such applications as OLM Operators. 
+If you are developing an application that aligns with the link:https://operatorframework.io/[Operator Framework], and managing it with link:https://olm.operatorframework.io/docs/[Operator Lifecycle Manager (OLM)], you can build that application in {ProductName}. We refer to such applications as OLM Operators.
 
 OLM Operators include the following elements:
 
@@ -18,7 +18,7 @@ NOTE: A link:https://github.com/konflux-ci/olm-operator-konflux-sample[sample re
 
 == Building the Operator and the bundle
 
-[NOTE] 
+[NOTE]
 ====
 This procedure assumes that the source code for your Operator and bundle, including the Dockerfiles, are in the same git repository, per OLM convention.
 ====
@@ -29,7 +29,7 @@ This procedure assumes that the source code for your Operator and bundle, includ
 . In your new application, xref:../how-tos/creating.adoc[add a new component] for your Operator. Be sure to specify the correct path to the Operator's Dockerfile within its git repository.
 . Add another component for your bundle. Enter the same URL that you used for the Operator, but enter the path to the bundle's Dockerfile.
 . (Optional) If you are using a file-based Catalog (FBC) for your OLM Operator, you must build the FBC as another component in its own separate application in {ProductName}.
-. (Optional) You may want to configure {ProductName} to xref:../how-tos/configuring/redundant-rebuilds.adoc[prevent redundant rebuilds] for this application. For example, you can configure {ProductName} to rebuild your bundle image only if a commit is made to its Dockerfile or the `/bundle` directory, instead of rebuilding it whenever any commit is made to your OLM Operator's git repository. 
+. (Optional) You may want to configure {ProductName} to xref:../how-tos/configuring/redundant-rebuilds.adoc[prevent redundant rebuilds] for this application. For example, you can configure {ProductName} to rebuild your bundle image only if a commit is made to its Dockerfile or the `/bundle` directory, instead of rebuilding it whenever any commit is made to your OLM Operator's git repository.
 
 == Automating updates for image references in the CSV
 
@@ -56,7 +56,7 @@ NOTE: If you want to update the references in your CSV to match where the operan
 . In your new application, xref:../how-tos/creating.adoc[add a new component] for your FBC. Be sure to select the file-based catalog pipeline and to specify the correct path to the catalog's Containerfile within its git repository.
 
 +
-NOTE: As long as the Containerfile populates the cache, the image produced with a FBC fragment can be used as a link:https://olm.operatorframework.io/docs/concepts/crds/catalogsource/[CatalogSource]. You can use *opm* to generate the cache in the final stage of your Containerfile.
+NOTE: If the Containerfile populates the cache, the image produced with a FBC fragment can be used as a link:https://olm.operatorframework.io/docs/concepts/crds/catalogsource/[CatalogSource]. You can use *opm* to generate the cache in the final stage of your Containerfile.
 
 +
 [source,dockerfile]

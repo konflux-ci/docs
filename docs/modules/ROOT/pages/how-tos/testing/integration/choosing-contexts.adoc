@@ -20,7 +20,7 @@ integration tests manually in xref:how-tos/testing/integration/rerunning.adoc[Re
 ** See more in xref:how-tos/testing/integration/snapshots/group-snapshots.adoc[Creating a group snapshot]
 
 +
-NOTE: When multiple contexts are defined, the IntegrationTestScenario will execute if any of the specified contexts match the snapshot. This approach ensures that the test runs as long as at least one context applies, without requiring all defined contexts to be met.
+NOTE: When multiple contexts are defined, the IntegrationTestScenario will execute if any of the specified contexts match the snapshot. This approach ensures that the test runs if at least one context applies, without requiring all defined contexts to be met.
 
 .Prerequisites
 - You have CLI access to the specific OpenShift cluster. For information on obtaining CLI access, refer xref:ROOT:getting-started/cli.adoc[Getting started with the CLI].
@@ -37,7 +37,7 @@ NOTE: When multiple contexts are defined, the IntegrationTestScenario will execu
 $ kubectl edit integrationtestscenario [integrationtestscenario name]
 ----
 
-. Modify the `contexts` field by setting the list of contexts you wish the IntegrationTestScenario.
+. Modify the `contexts` field by setting the list of contexts you want the IntegrationTestScenario.
 .. The `name` field of every entry needs to be set to the chosen context name from the above list
 .. The `description` can be used to note down why this context is set for the given IntegrationTestScenario
 +

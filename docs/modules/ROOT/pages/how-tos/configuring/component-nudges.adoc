@@ -1,6 +1,6 @@
 = Defining component relationships
 
-When a workspace includes multiple components, their repositories might contain references to image builds of another component. For instance, an application might include multiple child components that, using a Dockerfile `FROM` clause, reference the image build of a common parent. Or, a component might reference image builds from another application altogether. OpenShift operators, for example, often have references to several components across applications.
+When a workspace includes multiple components, their repositories might contain references to image builds of another component. For example, an application might include multiple child components that, using a Dockerfile `FROM` clause, reference the image build of a common parent. Or, a component might reference image builds from another application altogether. OpenShift operators, for example, often have references to several components across applications.
 
 In such instances, whenever you build a new image of the common parent component, you need to update the references to it. Specifically, you need to copy and paste the pullspec and image digest of that new image to your other source repositories. This process is tedious and error-prone.
 
@@ -43,7 +43,7 @@ Currently, applications with only one component do not have the option to define
 . On any tab, use the *Actions* drop-down menu to select *Define component relationships*.
 .. Alternatively, go to the *Components* tab and select the *Define component relationships*.
 . In the *Component relationships* window, select one component from the *Select a component* drop-down menu.
-. Select *Nudges* or *Is nudged by*, depending on the relationship you wish to define.
+. Select *Nudges* or *Is nudged by*, depending on the relationship you want to define.
 
 +
 [NOTE]
