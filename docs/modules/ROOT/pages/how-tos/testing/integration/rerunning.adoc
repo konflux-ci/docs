@@ -43,7 +43,7 @@ Retrigger via UI:
 Retrigger via CLI:
 
 . Add the `test.appstudio.openshift.io/run` label to the snapshot, with any of the supported values as shown above.
-. The tests are re-triggered automatically. Once they are re-triggered, the system removes the label, allowing you to apply a new label for a different scenario if you wish to test multiple scenarios. Verify that the test(s) have started.
+. The tests are re-triggered automatically. Once they are re-triggered, the system removes the label, allowing you to apply a new label for a different scenario if you want to test multiple scenarios. Verify that the test(s) have started.
 
 +
 [source]

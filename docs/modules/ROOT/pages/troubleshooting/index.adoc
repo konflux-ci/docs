@@ -49,7 +49,7 @@ details, see the Tekton link:https://tekton.dev/docs/pipelines/auth/[Authenticat
 . Tekton uses a ServiceAccount (named `appstudio-pipeline` by default in {ProductName}) to run your Pipeline.
 . This ServiceAccount has a list of `imagePullSecrets` and `secrets`.
 .. Tekton uses the `imagePullSecrets` when pulling the images that execute the Tasks in your pipeline.
-   These images are typically hardcoded in the Task definition and publicly accessible. As a {ProductName}
+   These images are typically hard-coded in the Task definition and publicly accessible. As a {ProductName}
    user, you're more interested in the `secrets`.
 .. Tekton injects the `secrets` into the execution environment so that the tools executed inside
    the Tasks (e.g. `buildah`, `skopeo`, `oras`, `cosign`) can authenticate to registries.

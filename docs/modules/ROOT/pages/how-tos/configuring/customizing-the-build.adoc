@@ -237,7 +237,7 @@ skopeo inspect --format '@{{.Digest}}' --no-tags docker://"${my_bundle}"
 ====
 {ProductName} task version tags (e.g. `0.2`) are "floating" - they move to the latest release every time the task gets an update.
 By pinning to a digest, you ensure your pipeline will always use the exact same version of the task.
-{ProductName} automatically sends out PRs to update task digests, letting you opt into updating the task rather than having it update on its own behind your back.
+{ProductName} automatically sends out PRs to update task digests, letting you opt in updating the task rather than having it update on its own behind your back.
 The task update PR will trigger the on-pull-request pipeline, testing the changes before they can affect the on-push pipeline or other PRs.
 
 ====

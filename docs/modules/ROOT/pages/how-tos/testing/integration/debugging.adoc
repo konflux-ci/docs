@@ -1,6 +1,6 @@
 = Debugging Integration Tests
 
-In the event of an integration test scenario failing, there are a number of steps to take in order to debug the issue before rerunning the test in question. These steps are outlined below.
+In case of an integration test scenario failing, there are several steps to take in order to debug the issue before rerunning the test in question. These steps are outlined below.
 
 
 .Prerequisites
@@ -18,7 +18,7 @@ In the event of an integration test scenario failing, there are a number of step
 +
 image::activityview.png[role="border" alt="Activity View"]
 
-. Click on the pipeline run that has a status of "Failed". This will take you to a detailed view of the failed run. 
+. Click on the pipeline run that has a status of "Failed". This will take you to a detailed view of the failed run.
 
 . Examine the "Log Snippet" section on the right side of this page. It contains the most recent error returned by the integration test. For more comprehensive logs, click on "See Logs". See the below image for reference.
 

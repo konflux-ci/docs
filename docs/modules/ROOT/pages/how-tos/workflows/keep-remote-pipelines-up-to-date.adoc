@@ -91,7 +91,7 @@ This approach allows a team or an individual contributor to manage multiple cust
 
 == Potential drawbacks
 
-Although Tekton remote pipelines is a huge improvement, it comes with a drawback; the Pipeline CRDs will not be stored in the {ProductName} Component repository anymore, so MintMaker will not be able to update the TaskRef digests for us.
+Although Tekton remote pipelines is a huge improvement, it brings a drawback; the Pipeline CRDs will not be stored in the {ProductName} Component repository anymore, so MintMaker will not be able to update the TaskRef digests for us.
 
 The suggested approach is to onboard the repository where the shared pipelines are stored as a {ProductName} Component, so that {ProductName} and MintMaker will be able to discover and update digests for us.
 
