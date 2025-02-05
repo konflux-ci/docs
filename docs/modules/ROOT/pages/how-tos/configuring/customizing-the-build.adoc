@@ -178,9 +178,12 @@ Custom Tasks may need access to data from other Tasks. However, in order to not 
 
 == Exchanging the build pipeline build task with higher memory limits
 
-TIP: If possible, prefer xref:./overriding-compute-resources.adoc[overriding compute resources] directly in your PipelineRun file.
-    It is a much more flexible and simpler approach.
-    Use this procedure as a last resort, if the relevant features are not enabled in your cluster.
+[TIP]
+--
+If possible, prefer xref:./overriding-compute-resources.adoc[overriding compute resources] directly in your PipelineRun file.
+It is a much more flexible and simpler approach.
+Use this procedure as a last resort, if the relevant features are not enabled in your cluster.
+--
 
 The `buildah` task, which builds components from a Dockerfile, has a memory limit of 4 GB. To build components with memory requirements greater than 4 GB, use the following tasks:
 
