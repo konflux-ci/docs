@@ -24,7 +24,7 @@ asciidoc:
 
   # Product content attributes
     ProductName: Konflux
-    context: app
+    context: konflux
     ProductShortName: ''
     ProductRelease: ''
     ProductVersion: ''
