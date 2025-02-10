@@ -202,11 +202,11 @@ references in a given build Pipeline file.
 
 [source,bash]
 ----
-cat <<'EOF' > update.sh
+cat <<'EOF' > update-tekton-task-bundles.sh
 #!/bin/bash
 
 # Use this script to update the Tekton Task Bundle references used in a Pipeline or a PipelineRun.
-# update-tekton-task-bundles .tekton/*.yaml
+# update-tekton-task-bundles.sh .tekton/*.yaml
 
 set -euo pipefail
 
@@ -227,12 +227,12 @@ for old_ref in ${OLD_REFS}; do
     [[ $new_ref == $old_ref ]] && continue
     echo "New digest found! $new_ref"
     for file in $FILES; do
-        sed -i "s!${old_ref}!${new_ref}!g" $file
+        sed -i -e "s!${old_ref}!${new_ref}!g" $file
     done
 done
 EOF
 
-chmod +x update.sh
+chmod +x update-tekton-task-bundles.sh
 
-./update.sh $PIPELINE_FILE
+./update-tekton-task-bundles.sh .tekton/*.yaml
 ----
