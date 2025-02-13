@@ -4,7 +4,6 @@ To meet your specific needs, you can customize the way that {ProductName} builds
 
 * Change the parameters of the build pipeline of a component.
 * Configure the timeouts for the pipeline.
-* Extend the pipeline with your own tasks (or delete existing tasks).
 
 For example, you might decide to limit how long {ProductName} saves the images that it builds for pull requests. You can set a limit by changing the value of the `image-expires-after` parameter. Or you can ensure that images are compliant with regulations for your industry, by adding a compliance check as a task to the build pipeline.
 
@@ -97,44 +96,14 @@ NOTE: This example shows a separate Pipeline file, but your pipeline may also be
     the PipelineRun.
 
 
-== Extending the build pipeline with your own tasks
-
-Before you extend your build pipeline, be aware that doing so may cause builds to fail an link:https://enterprisecontract.dev/docs[Enterprise Contract] check, if you are using EC. To resolve this issue, please reference the xref:./customizing-the-build.adoc#preventing-issues-with-the-enterprise-contract[next procedure].
+== Adding Slack notifications
 
 .Procedure
 
-. In each Pipeline definition in the `.tekton` directory, add a new task to the `tasks` section.
+. In each Pipeline definition in the `.tekton` directory, add the `slack-webhook-notification` task to the `tasks` section.
 
 +
-Example task:
-+
-[source,yaml]
---
-  name: example-task
-  params:
-  - name: example-param
-    value: "Example"
-  runAfter:
-  - build-container  # You can be more specific by choosing another task
-  taskRef:
-    params:
-    - name: name
-      value: example-task  # metadata.name field of the Task
-    - name: bundle
-      value: quay.io/tekton-bundle-catalog/example-task-bundle:1.0
-      # For more details on tekton bundles, refer to https://tekton.dev/docs/pipelines/pipelines/#tekton-bundles
-    - name: kind
-      value: task
-    resolver: bundles
-  when:
-  - input: $(params.skip-checks)  # This references the pipeline parameters
-    operator: in
-    values:
-    - "false"
---
-
-+
-An example of a custom task added to the pipeline that sends a slack notification when the `Pipelinerun` fails:
+An example that sends a slack notification when the `Pipelinerun` fails:
 +
 [source,yaml]
 --
@@ -167,14 +136,7 @@ An example of a custom task added to the pipeline that sends a slack notificatio
 ====
 * To use `slack-webhook-notification` task, you need to xref:./creating-secrets.adoc[create a secret] in your namespace with at least one key where the value is the webhook URL. For example, to create a secret for Slack, run `kubectl create secret generic my-secret --from-literal dev-team=https://hooks.slack.com/services/XXX/XXXXXX`
 
-* If you want to define a task directly in this file, rather than using `taskRef`, you can use `taskSpec`. See the Tekton documentation on
-  link:https://tekton.dev/docs/pipelines/taskruns/#specifying-the-target-task[specifying the target task] for more details.
-
 ====
-
-== Preventing issues with the Enterprise Contract
-
-Custom Tasks may need access to data from other Tasks. However, in order to not break the chain of trust in a build Pipeline, there are restrictions in modifying such data. For example, a custom Task should not be allowed to modify the component's source code. If you are using the Enterprise Contract (EC) to verify your builds, introducing a custom Task may violate the link:https://enterprisecontract.dev/docs/ec-policies/release_policy.html#trusted_task__trusted[Trusted Tasks] rule. See xref:advanced-how-tos/using-trusted-artifacts.adoc[Trusted Artifacts] for how to safely allow share data between Tasks.
 
 == Exchanging the build pipeline build task with higher memory limits
 
