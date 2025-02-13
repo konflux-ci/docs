@@ -1,0 +1,47 @@
+= Enabling sidecar containers
+
+You can add sidecar containers to the build pipeline to run additional tasks alongside the main container. For example, you can add a sidecar container to run a database to enable your unit tests to run against a real database.
+
+The following example demonstrates how to add a sidecar database container to a build pipeline.
+
+[source,yaml]
+--
+spec:
+  tasks:
+  # ...
+   - name: test-db
+      taskSpec:
+        # define the sidecar containers
+        sidecars:
+        - image: quay.io/sclorg/postgresql-15-c9s:latest
+          name: test-db-in-sidecar
+          env:
+          # Configure the env variables required for tests to connect to the database. The variables are specific to the image used.
+            - name: POSTGRESQL_DATABASE
+              value: db-name
+            - name: POSTGRESQL_USER
+              value: db-user
+            - name: POSTGRESQL_PASSWORD
+              value: db-password
+        steps:
+          # make sure to setup the steps. You might need workspaces, artifacts, volumes, secrets, etc. to have the environment ready for the tests
+          - image: registry.access.redhat.com/ubi8/minimal
+            name: test-db-step
+            # Set the environment required for the test-db-step step
+            env:
+              - name: PGSQL_USER
+                value: db-user
+              - name: PGSQL_PASSWORD
+                value: db-password
+              - name: PGSQL_HOSTNAME
+                value: localhost
+              - name: PGSQL_PORT
+                value: 5432
+              - name: PGSQL_DATABASE
+                value: db-name
+            script: |
+              #!/bin/bash
+              # ...
+--
+
+To view a full example using sidecar containers, see the link:https://github.com/RedHatInsights/chrome-service-backend/blob/main/.tekton/chrome-service-pull-request.yaml[here]. Look for `run-unit-tests` task.
