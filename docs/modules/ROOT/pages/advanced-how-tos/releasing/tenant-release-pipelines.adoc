@@ -75,6 +75,44 @@ kubectl apply -f ReleasePlan.yaml -n dev
 
 . Provision any secrets needed by the particular release pipeline you chose and xref:/how-tos/configuring/creating-secrets.adoc[upload them to the Development workspace].
 
+. Create a `RoleBinding.yaml` object locally. Note: This is optional, as your tenant pipeline doesn't necessarily need to get any Releases, Snapshots, or ReleasePlans. However, the operator does pass references to these CRs to the tenant release pipeline and it is a common use case to use details from them in your pipeline.
+
++
+*Example `RoleBinding.yaml` object*
+
++
+[source,yaml]
+----
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+ name: publish-rolebinding <.>
+ namespace: dev-workspace <.>
+roleRef:
+ apiGroup: rbac.authorization.k8s.io
+ kind: ClusterRole
+ name: release-pipeline-resource-role <.>
+subjects:
+- kind: ServiceAccount
+  name: appstudio-pipeline <.>
+  namespace: dev-workspace <.>
+----
+
++
+<.> The name of the RoleBinding.
+<.> The development team's workspace.
+<.> The release-service is deployed with the link:https://github.com/redhat-appstudio/infra-deployments/blob/main/components/release/base/release-pipeline-resources-clusterrole.yaml[`release-pipeline-resource-role` ClusterRole]. It provides the ability to get all of the release-service CRDs. Only Releases, Snapshots, and ReleasePlans can be used in tenant release pipelines. So, you can either bind to the ClusterRole, or create your own Role that gives permissions just to what your pipeline needs.
+<.> The name of the service account used to execute the tenant pipeline.
+<.> The development team's workspace.
+
+. In the Development workspace, apply the `RoleBinding.yaml` file and add the resource to your cluster by running the following command:
+
++
+[source,shell]
+----
+kubectl apply -f RoleBinding.yaml -n dev
+----
+
 .Next steps
 
 * *Create a `release` object:* The development team creates a Release object to reference a specific Snapshot and ReleasePlan. It indicates the users' intent to release that Snapshot via the tenant release pipeline defined in the ReleasePlan.
