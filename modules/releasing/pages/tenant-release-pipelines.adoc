@@ -1,22 +1,23 @@
 = Tenant Release Pipelines
 
 The usual release process in {ProductName} involves two different teams: a *Development team* and a *Managed environment team* as described in
-xref:releasing:index.adoc[Releasing an application]. But, sometimes the Development team wants to release their software to some destination that is directly under their control, using their own secrets, without depending on a Managed environment team. In {ProductName} we call this model a *tenant release pipeline*. It's a release pipeline that runs in the tenant namespace of the Development team, rather than in that of the Managed environment team.
+xref:releasing:index.adoc[Releasing an application]. The development team is usually the one who develops and support the application while the managed team will control the process and the secrets. Although this is a powerful workflow, in some cases it might feel very limiting. For example, sometimes the Development team wants to release their software to some destination that is directly under their control, using their own secrets, without depending on a Managed environment team. Another example would be performing actions before running the managed pipeline such as cleaning up old images or notifying about an ongoing release. The way {ProductName} supports these scenarios is by using something we call a *tenant release pipeline*. It's a release pipeline that runs in the tenant namespace of the Development team, rather than in that of the Managed environment team.
 
-The gist here is that you are going to follow the regular instructions to xref:releasing:create-release-plan.adoc[create a ReleasePlan], but you will omit the `target` and specify the `pipeline` directly on your `ReleasePlan`.
+The gist here is that this workflow doesn't require a managed pipeline. You can omit the `target` and just specify the `tenant pipeline` you want to run. But, if both tenant and managed pipelines are provided, the tenant pipeline needs to succeed before continuing with the release of the application.
 
+== Using a tenant pipeline ==
 
-.*Prerequisites*
+Before starting to use a tenant pipeline there are some prerequisites you will have to fulfill:
 
 * You have an existing Development workspace.
 * You have completed the steps listed in the xref:ROOT:getting-started.adoc#getting-started-with-the-cli[Getting started in the CLI] page.
-* Either choose one of the link:https://github.com/konflux-ci/release-service-catalog[konflux release pipelines], or write your own.
+* You have a ServiceAccount with Roles allowing you to consume Releases and Snapshots.
+* You have access to a tenant pipeline.
 
-NOTE: If you write a good reusable release pipeline, please submit it to our link:https://github.com/konflux-ci/release-service-catalog[catalog] so others can use it.
+To use a tenant pipeline:
 
-.Procedure
-
-. Create a `ReleasePlan.yaml` object locally.
+. Follow the regular instruction to xref:releasing:create-release-plan.adoc[create a ReleasePlan] YAML file locally.
+. Specify the details about the tenant pipeline to run using the `tenantPipeline` field.
 
 +
 *Example `ReleasePlan.yaml` object*
@@ -27,44 +28,45 @@ NOTE: If you write a good reusable release pipeline, please submit it to our lin
 apiVersion: appstudio.redhat.com/v1alpha1
 kind: ReleasePlan
 metadata:
- labels:
-   release.appstudio.openshift.io/auto-release: 'true' <.>
-   release.appstudio.openshift.io/standing-attribution: 'true'
- name: publish <.>
- namespace: dev-workspace <.>
+  labels:
+    release.appstudio.openshift.io/auto-release: 'true' <.>
+    release.appstudio.openshift.io/standing-attribution: 'true'
+  name: publish
+  namespace: dev-workspace <.>
 spec:
- application: <application-name> <.>
- data:
-   mapping:
-     components: <.>
-       - name: demo-component-1
-         repository: registry/destination-image-repository-1
-         tags: [latest]
-       - name: demo-component-2
-         repository: registry/destination-image-repository-2
-         tags: [latest]
- tenantPipeline:
-   pipelineRef: <.>
-     resolver: git
-     params:
-       - name: url
-         value: "https://github.com/<your-github-user>/<your-pipeline-repo>.git"
-       - name: revision
-         value: main
-       - name: pathInRepo
-         value: "<path-to-your-pipeline>"
-   serviceAccountName: appstudio-pipeline <.>
+  application: <application-name> <.>
+  data:
+    mapping:
+      components: <.>
+        - name: demo-component-1
+          repository: registry/destination-image-repository-1
+          tags: [latest]
+        - name: demo-component-2
+          repository: registry/destination-image-repository-2
+          tags: [latest]
+  target: managed-workspace
+  tenantPipeline:
+    pipelineRef: <.>
+      resolver: git
+      params:
+        - name: url
+          value: "https://github.com/<your-github-user>/<your-pipeline-repo>.git"
+        - name: revision
+          value: main
+        - name: pathInRepo
+          value: "<path-to-your-pipeline>"
+    serviceAccountName: appstudio-pipeline <.>
 ----
 
 +
 <.> Optional: Control if Releases should be created automatically for this ReleasePlan when tests pass. Defaults to true.
-<.> The name of the release plan.
 <.> The development team's workspace.
 <.> The name of the application that you want to release via a pipeline in the development workspace.
 <.> A list containing the destination repository for each component
-<.> Reference to the Pipeline to be executed in the development workspace.
+<.> Reference to the tenant pipeline to be executed in the development workspace.
 <.> The name of the service account used to execute the tenant pipeline.
 
+. In case you want to avoid the execution of a managed pipeline, remove the `target` field from your `ReleasePlan.yaml` file.
 . In the Development workspace, apply the `ReleasePlan.yaml` file and add the resource to your cluster by running the following command:
 
 +
@@ -74,7 +76,6 @@ kubectl apply -f ReleasePlan.yaml -n dev
 ----
 
 . Provision any secrets needed by the particular release pipeline you chose and xref:building:creating-secrets.adoc[upload them to the Development workspace].
-
 . Create an `rbac.yaml` file locally. Note: This is optional, as your tenant pipeline doesn't necessarily need to get any Releases, Snapshots, or ReleasePlans. However, the operator does pass references to these CRs to the tenant release pipeline and it is a common use case to use details from them in your pipeline.
 
 +
@@ -139,6 +140,78 @@ subjects:
 kubectl apply -f rbac.yaml -n dev-workspace
 ----
 
-.Next steps
+== Creating a new tenant pipeline ==
 
-* *Create a `release` object:* The development team creates a Release object to reference a specific Snapshot and ReleasePlan. It indicates the users' intent to release that Snapshot via the tenant release pipeline defined in the ReleasePlan.
+Tenant pipelines are Tekton pipelines defined by the {ProductName) community and are not supported by the release team. To fully integrate them with your workflow, you can define three optional parameters that, if defined, will be populated by the release service. Those parameters are `release`, `releasePlan` and `snapshot`. Each of this parameters will get the namespacedName reference to the resource so you can load them and process them in your pipeline.
+
+*Example tenant pipeline*
+
+[source,yaml]
+----
+apiVersion: tekton.dev/v1
+kind: Pipeline
+metadata:
+  name: my-tenant-pipeline
+spec:
+  params:
+    - name: release <.>
+      type: string
+    - name: releasePlan <.>
+      type: string
+    - name: snapshot <.>
+      type: string
+  tasks:
+    - name: echo-resources
+      taskSpec:
+       steps:
+         - name: echo resources
+           image: ubuntu:latest
+           script: |
+             #!/usr/bin/env sh
+             echo "Release $(params.release)"
+             echo "ReleasePlan $(params.releasePlan)"
+             echo "Snapshot $(params.snapshot)"
+----
+<.> Namespacedname to the Release populated automatically by the release service (eg. dev-workspace/my-tenant-release).
+<.> Namespacedname to the ReleasePlan populated automatically by the release service (eg. dev-workspace/publish).
+<.> Namespacedname to the Snapshot populated automatically by the release service (eg. dev-workspace/my-snapshot).
+
+If you write a good reusable release pipeline, please submit it to our link:https://github.com/konflux-ci/release-service-catalog[catalog] so others can use it.
+
+== Final pipeline
+
+Another type of tenant pipeline runs at the end of the release workflow. This is known as the final pipeline, and it allows you to execute a pipeline after the tenant or managed pipeline has completed.
+
+You can use this pipeline, for example, to send Slack notifications once your images have been pushed or to generate a changelog summarizing the new changes.
+
+To enable it, modify the ReleasePlan by adding the `finalPipeline` field.
+
+*Example of final pipeline declaration*
+
+[source,yaml]
+----
+apiVersion: appstudio.redhat.com/v1alpha1
+kind: ReleasePlan
+...
+spec:
+  ...
+  finalPipeline:
+    pipelineRef: <.>
+      resolver: git
+      params:
+        - name: url
+          value: "https://github.com/<your-github-user>/<your-pipeline-repo>.git"
+        - name: revision
+          value: main
+        - name: pathInRepo
+          value: "<path-to-your-pipeline>"
+    serviceAccountName: appstudio-pipeline <.>
+----
+<.> Reference to the tenant pipeline to be executed in the development workspace.
+<.> The name of the service account used to execute the tenant pipeline.
+
+Both tenant and final pipelines receive the same parameters (i.e. release, releasePlan, and snapshot), allowing them to be used interchangeably. The key difference is that the final pipeline runs at the end of the release workflow, meaning the release status will contain the final outcome and all generated artifacts.
+
+== Next steps ==
+
+Now that the ReleasePlan is defined, the development team can create a Release object to reference a specific Snapshot and the new ReleasePlan. It indicates the users' intent to release that Snapshot via the tenant release pipeline defined in the ReleasePlan.
