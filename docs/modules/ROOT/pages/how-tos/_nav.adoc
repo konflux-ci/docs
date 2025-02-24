@@ -15,6 +15,7 @@
 *** xref:how-tos/configuring/overriding-compute-resources.adoc[Overriding compute resources]
 *** xref:how-tos/configuring/activation-keys-subscription.adoc[Using Red Hat subscription content]
 *** xref:how-tos/configuring/reconfiguring-build-pipeline.adoc[Reconfiguring the build pipeline]
+*** xref:how-tos/configuring/referencing-secrets-in-Containerfile.adoc[Referencing secrets in Containerfile]
 ** xref:how-tos/testing/index.adoc[Testing your components and applications]
 *** xref:how-tos/testing/build/index.adoc[Build-time tests]
 **** xref:how-tos/testing/build/snyk.adoc[Enabling Snyk]
