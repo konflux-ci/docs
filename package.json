@@ -1,4 +1,5 @@
 {
+  "name": "konflux-ci-docs",
   "devDependencies": {
     "@antora/collector-extension": "^1.0.1",
     "@antora/lunr-extension": "^1.0.0-alpha.8",
