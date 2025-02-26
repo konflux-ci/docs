@@ -1,0 +1,362 @@
+// Generated documentation. Please do not edit.
+:anchor_prefix: k8s-api
+
+[id="reference"]
+== Image API Reference
+
+.Packages
+- xref:{anchor_prefix}-appstudio-redhat-com-v1alpha1[$$appstudio.redhat.com/v1alpha1$$]
+
+
+[id="{anchor_prefix}-appstudio-redhat-com-v1alpha1"]
+=== appstudio.redhat.com/v1alpha1
+
+Package v1alpha1 contains API Schema definitions for the appstudio.redhat.com v1alpha1 API group
+
+.Resource Types
+- xref:{anchor_prefix}-github-com-konflux-ci-image-controller-api-v1alpha1-imagerepository[$$ImageRepository$$]
+- xref:{anchor_prefix}-github-com-konflux-ci-image-controller-api-v1alpha1-imagerepositorylist[$$ImageRepositoryList$$]
+
+
+
+[id="{anchor_prefix}-github-com-konflux-ci-image-controller-api-v1alpha1-credentialsstatus"]
+==== CredentialsStatus
+
+
+
+CredentialsStatus shows information about generated image repository credentials.
+
+
+
+.Appears In:
+****
+- xref:{anchor_prefix}-github-com-konflux-ci-image-controller-api-v1alpha1-imagerepositorystatus[$$ImageRepositoryStatus$$]
+****
+
+[cols="20a,50a,15a,15a", options="header"]
+|===
+| Field | Description | Default | Validation
+| *`generationTimestamp`* __link:https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.3/#time-v1-meta[$$Time$$]__ | GenerationTime shows timestamp when the current credentials were generated. + |  | 
+| *`push-secret`* __string__ | PushSecretName holds name of the dockerconfig secret with credentials to push (and pull) into the generated repository. + |  | 
+| *`pull-secret`* __string__ | PullSecretName is present only if ImageRepository has labels that connect it to Application and Component. +
+Holds name of the dockerconfig secret with credentials to pull only from the generated repository. +
+The secret might not be present in the same namespace as ImageRepository, but created in other environments. + |  | 
+| *`push-robot-account`* __string__ | PushRobotAccountName holds name of the quay robot account with write (push and pull) permissions into the generated repository. + |  | 
+| *`pull-robot-account`* __string__ | PullRobotAccountName is present only if ImageRepository has labels that connect it to Application and Component. +
+Holds name of the quay robot account with real (pull only) permissions from the generated repository. + |  | 
+|===
+
+
+[id="{anchor_prefix}-github-com-konflux-ci-image-controller-api-v1alpha1-imagecredentials"]
+==== ImageCredentials
+
+
+
+
+
+
+
+.Appears In:
+****
+- xref:{anchor_prefix}-github-com-konflux-ci-image-controller-api-v1alpha1-imagerepositoryspec[$$ImageRepositorySpec$$]
+****
+
+[cols="20a,50a,15a,15a", options="header"]
+|===
+| Field | Description | Default | Validation
+| *`regenerate-token`* __boolean__ | RegenerateToken defines a request to refresh image accessing credentials. +
+Refreshes both, push and pull tokens. +
+The field gets cleared after the refresh. + |  | 
+| *`verify-linking`* __boolean__ | VerifyLinking defines a request to verify and fix +
+secret linking in pipeline service account. +
+The field gets cleared after fixing. + |  | 
+|===
+
+
+[id="{anchor_prefix}-github-com-konflux-ci-image-controller-api-v1alpha1-imageparameters"]
+==== ImageParameters
+
+
+
+ImageParameters describes requested image repository configuration.
+
+
+
+.Appears In:
+****
+- xref:{anchor_prefix}-github-com-konflux-ci-image-controller-api-v1alpha1-imagerepositoryspec[$$ImageRepositorySpec$$]
+****
+
+[cols="20a,50a,15a,15a", options="header"]
+|===
+| Field | Description | Default | Validation
+| *`name`* __string__ | Name of the image within configured Quay organization. +
+If ommited, then defaults to "cr-namespace/cr-name". +
+This field cannot be changed after the resource creation. + |  | Pattern: `^[a-z0-9][.a-z0-9_-]\*(/[a-z0-9][.a-z0-9_-]*)*$` +
+
+| *`visibility`* __xref:{anchor_prefix}-github-com-konflux-ci-image-controller-api-v1alpha1-imagevisibility[$$ImageVisibility$$]__ | Visibility defines whether the image is publicly visible. +
+Allowed values are public and private. +
+"public" is the default. + |  | Enum: [public private] +
+
+|===
+
+
+[id="{anchor_prefix}-github-com-konflux-ci-image-controller-api-v1alpha1-imagerepository"]
+==== ImageRepository
+
+
+
+ImageRepository is the Schema for the imagerepositories API
+
+
+
+.Appears In:
+****
+- xref:{anchor_prefix}-github-com-konflux-ci-image-controller-api-v1alpha1-imagerepositorylist[$$ImageRepositoryList$$]
+****
+
+[cols="20a,50a,15a,15a", options="header"]
+|===
+| Field | Description | Default | Validation
+| *`apiVersion`* __string__ | `appstudio.redhat.com/v1alpha1` | |
+| *`kind`* __string__ | `ImageRepository` | |
+| *`metadata`* __link:https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.3/#objectmeta-v1-meta[$$ObjectMeta$$]__ | Refer to Kubernetes API documentation for fields of `metadata`.
+ |  | 
+| *`spec`* __xref:{anchor_prefix}-github-com-konflux-ci-image-controller-api-v1alpha1-imagerepositoryspec[$$ImageRepositorySpec$$]__ |  |  | 
+| *`status`* __xref:{anchor_prefix}-github-com-konflux-ci-image-controller-api-v1alpha1-imagerepositorystatus[$$ImageRepositoryStatus$$]__ |  |  | 
+|===
+
+
+[id="{anchor_prefix}-github-com-konflux-ci-image-controller-api-v1alpha1-imagerepositorylist"]
+==== ImageRepositoryList
+
+
+
+ImageRepositoryList contains a list of ImageRepository
+
+
+
+
+
+[cols="20a,50a,15a,15a", options="header"]
+|===
+| Field | Description | Default | Validation
+| *`apiVersion`* __string__ | `appstudio.redhat.com/v1alpha1` | |
+| *`kind`* __string__ | `ImageRepositoryList` | |
+| *`metadata`* __link:https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.3/#listmeta-v1-meta[$$ListMeta$$]__ | Refer to Kubernetes API documentation for fields of `metadata`.
+ |  | 
+| *`items`* __xref:{anchor_prefix}-github-com-konflux-ci-image-controller-api-v1alpha1-imagerepository[$$ImageRepository$$] array__ |  |  | 
+|===
+
+
+[id="{anchor_prefix}-github-com-konflux-ci-image-controller-api-v1alpha1-imagerepositoryspec"]
+==== ImageRepositorySpec
+
+
+
+ImageRepositorySpec defines the desired state of ImageRepository
+
+
+
+.Appears In:
+****
+- xref:{anchor_prefix}-github-com-konflux-ci-image-controller-api-v1alpha1-imagerepository[$$ImageRepository$$]
+****
+
+[cols="20a,50a,15a,15a", options="header"]
+|===
+| Field | Description | Default | Validation
+| *`image`* __xref:{anchor_prefix}-github-com-konflux-ci-image-controller-api-v1alpha1-imageparameters[$$ImageParameters$$]__ | Requested image repository configuration. + |  | 
+| *`credentials`* __xref:{anchor_prefix}-github-com-konflux-ci-image-controller-api-v1alpha1-imagecredentials[$$ImageCredentials$$]__ | Credentials management. + |  | 
+| *`notifications`* __xref:{anchor_prefix}-github-com-konflux-ci-image-controller-api-v1alpha1-notifications[$$Notifications$$] array__ | Notifications defines configuration for image repository notifications. + |  | 
+|===
+
+
+[id="{anchor_prefix}-github-com-konflux-ci-image-controller-api-v1alpha1-imagerepositorystate"]
+==== ImageRepositoryState
+
+_Underlying type:_ _string_
+
+
+
+
+
+.Appears In:
+****
+- xref:{anchor_prefix}-github-com-konflux-ci-image-controller-api-v1alpha1-imagerepositorystatus[$$ImageRepositoryStatus$$]
+****
+
+
+
+[id="{anchor_prefix}-github-com-konflux-ci-image-controller-api-v1alpha1-imagerepositorystatus"]
+==== ImageRepositoryStatus
+
+
+
+ImageRepositoryStatus defines the observed state of ImageRepository
+
+
+
+.Appears In:
+****
+- xref:{anchor_prefix}-github-com-konflux-ci-image-controller-api-v1alpha1-imagerepository[$$ImageRepository$$]
+****
+
+[cols="20a,50a,15a,15a", options="header"]
+|===
+| Field | Description | Default | Validation
+| *`state`* __xref:{anchor_prefix}-github-com-konflux-ci-image-controller-api-v1alpha1-imagerepositorystate[$$ImageRepositoryState$$]__ | State shows if image repository could be used. +
+"ready" means repository was created and usable, +
+"failed" means that the image repository creation request failed. + |  | 
+| *`message`* __string__ | Message shows error information for the request. +
+It could contain non critical error, like failed to change image visibility, +
+while the state is ready and image resitory could be used. + |  | 
+| *`image`* __xref:{anchor_prefix}-github-com-konflux-ci-image-controller-api-v1alpha1-imagestatus[$$ImageStatus$$]__ | Image describes actual state of the image repository. + |  | 
+| *`credentials`* __xref:{anchor_prefix}-github-com-konflux-ci-image-controller-api-v1alpha1-credentialsstatus[$$CredentialsStatus$$]__ | Credentials contain information related to image repository credentials. + |  | 
+| *`notifications`* __xref:{anchor_prefix}-github-com-konflux-ci-image-controller-api-v1alpha1-notificationstatus[$$NotificationStatus$$] array__ | Notifications shows the status of the notifications configuration. + |  | 
+|===
+
+
+[id="{anchor_prefix}-github-com-konflux-ci-image-controller-api-v1alpha1-imagestatus"]
+==== ImageStatus
+
+
+
+ImageStatus shows actual generated image repository parameters.
+
+
+
+.Appears In:
+****
+- xref:{anchor_prefix}-github-com-konflux-ci-image-controller-api-v1alpha1-imagerepositorystatus[$$ImageRepositoryStatus$$]
+****
+
+[cols="20a,50a,15a,15a", options="header"]
+|===
+| Field | Description | Default | Validation
+| *`url`* __string__ | URL is the full image repository url to push into / pull from. + |  | 
+| *`visibility`* __xref:{anchor_prefix}-github-com-konflux-ci-image-controller-api-v1alpha1-imagevisibility[$$ImageVisibility$$]__ | Visibility shows actual generated image repository visibility. + |  | Enum: [public private] +
+
+|===
+
+
+[id="{anchor_prefix}-github-com-konflux-ci-image-controller-api-v1alpha1-imagevisibility"]
+==== ImageVisibility
+
+_Underlying type:_ _string_
+
+
+
+.Validation:
+- Enum: [public private]
+
+.Appears In:
+****
+- xref:{anchor_prefix}-github-com-konflux-ci-image-controller-api-v1alpha1-imageparameters[$$ImageParameters$$]
+- xref:{anchor_prefix}-github-com-konflux-ci-image-controller-api-v1alpha1-imagestatus[$$ImageStatus$$]
+****
+
+
+
+[id="{anchor_prefix}-github-com-konflux-ci-image-controller-api-v1alpha1-notificationconfig"]
+==== NotificationConfig
+
+
+
+
+
+
+
+.Appears In:
+****
+- xref:{anchor_prefix}-github-com-konflux-ci-image-controller-api-v1alpha1-notifications[$$Notifications$$]
+****
+
+[cols="20a,50a,15a,15a", options="header"]
+|===
+| Field | Description | Default | Validation
+| *`email`* __string__ | Email is the email address to send notifications to. + |  | 
+| *`url`* __string__ | Webhook is the URL to send notifications to. + |  | 
+|===
+
+
+[id="{anchor_prefix}-github-com-konflux-ci-image-controller-api-v1alpha1-notificationevent"]
+==== NotificationEvent
+
+_Underlying type:_ _string_
+
+
+
+
+
+.Appears In:
+****
+- xref:{anchor_prefix}-github-com-konflux-ci-image-controller-api-v1alpha1-notifications[$$Notifications$$]
+****
+
+
+
+[id="{anchor_prefix}-github-com-konflux-ci-image-controller-api-v1alpha1-notificationmethod"]
+==== NotificationMethod
+
+_Underlying type:_ _string_
+
+
+
+
+
+.Appears In:
+****
+- xref:{anchor_prefix}-github-com-konflux-ci-image-controller-api-v1alpha1-notifications[$$Notifications$$]
+****
+
+
+
+[id="{anchor_prefix}-github-com-konflux-ci-image-controller-api-v1alpha1-notificationstatus"]
+==== NotificationStatus
+
+
+
+NotificationStatus shows the status of the notification configuration.
+
+
+
+.Appears In:
+****
+- xref:{anchor_prefix}-github-com-konflux-ci-image-controller-api-v1alpha1-imagerepositorystatus[$$ImageRepositoryStatus$$]
+****
+
+[cols="20a,50a,15a,15a", options="header"]
+|===
+| Field | Description | Default | Validation
+| *`title`* __string__ |  |  | 
+| *`uuid`* __string__ |  |  | 
+|===
+
+
+[id="{anchor_prefix}-github-com-konflux-ci-image-controller-api-v1alpha1-notifications"]
+==== Notifications
+
+
+
+
+
+
+
+.Appears In:
+****
+- xref:{anchor_prefix}-github-com-konflux-ci-image-controller-api-v1alpha1-imagerepositoryspec[$$ImageRepositorySpec$$]
+****
+
+[cols="20a,50a,15a,15a", options="header"]
+|===
+| Field | Description | Default | Validation
+| *`title`* __string__ |  |  | 
+| *`event`* __xref:{anchor_prefix}-github-com-konflux-ci-image-controller-api-v1alpha1-notificationevent[$$NotificationEvent$$]__ |  |  | Enum: [repo_push] +
+
+| *`method`* __xref:{anchor_prefix}-github-com-konflux-ci-image-controller-api-v1alpha1-notificationmethod[$$NotificationMethod$$]__ |  |  | Enum: [email webhook] +
+
+| *`config`* __xref:{anchor_prefix}-github-com-konflux-ci-image-controller-api-v1alpha1-notificationconfig[$$NotificationConfig$$]__ |  |  | 
+|===
+
+

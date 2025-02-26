@@ -1,0 +1,7 @@
+* xref:reference/index.adoc[Reference]
+** xref:reference/kube-apis/index.adoc[Konflux Kubernetes APIs]
+*** xref:reference/kube-apis/application-api.adoc[Application]
+*** xref:reference/kube-apis/enterprise-contract.adoc[Enterprise Contract]
+*** xref:reference/kube-apis/image-controller.adoc[Image]
+*** xref:reference/kube-apis/integration-service.adoc[Integration Test]
+*** xref:reference/kube-apis/release-service.adoc[Release]

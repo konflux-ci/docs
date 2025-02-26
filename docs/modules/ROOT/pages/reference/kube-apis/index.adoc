@@ -1,0 +1,9 @@
+= Konflux Kubernetes APIs
+
+Below are the Kubernetes API extensions added by Konflux.
+
+* xref:reference/kube-apis/application-api.adoc[Application]
+* xref:reference/kube-apis/enterprise-contract.adoc[Enterprise Contract]
+* xref:reference/kube-apis/image-controller.adoc[Image Controller]
+* xref:reference/kube-apis/integration-service.adoc[Integration Service]
+* xref:reference/kube-apis/release-service.adoc[Release Service]
