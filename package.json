@@ -8,6 +8,7 @@
     "glob-parent": "6.0.2"
   },
   "scripts": {
+    "api-gen": "./hack/gen-api-docs.sh",
     "build": "antora generate --clean --fetch antora-playbook.yml",
     "preview:netlify": "netlify deploy --dir public"
   },
