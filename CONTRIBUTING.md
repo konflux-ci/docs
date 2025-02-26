@@ -102,3 +102,16 @@ contains concise information on all the syntax available in AsciiDoc.
 The [Red Hat Conventions for AsciiDoc Mark-up](https://redhat-documentation.github.io/asciidoc-markup-conventions/)
 contains the Red Hat specific conventions for documentation written in
 AsciiDoc.
+
+## Generating API Docs
+
+Portions of the reference documentation are generated from Konflux source code. To generate these docs,
+you need to first install the [crd-ref-docs](https://github.com/elastic/crd-ref-docs) tool.
+
+Once that is installed, use npm to run the `api-gen` script:
+
+```sh
+npm run api-gen
+```
+
+Configuration for the docs generator is located in the `api-gen` directory.
