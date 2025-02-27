@@ -1,0 +1,30 @@
+= Using annotations
+
+Konflux allows applying image annotations using the `ANNOTATIONS` param of the *build-container* tasks.
+
+[[supplying-annotations-to-the-build-container-task]]
+== Supplying annotations to the build-container task with the ANNOTATIONS param
+
+You can specify additional annotations to be applied to your image with the `ANNOTATIONS` param, e.g.:
+
+[source,yaml]
+----
+tasks:
+...
+- name: build-container
+  ...
+  params:
+    - name: IMAGE
+      value: "$(params.output-image)"
+    - name: DOCKERFILE
+      value: "$(params.dockerfile)"
+    - name: HERMETIC
+      value: "$(params.hermetic)"
+    - name: ANNOTATIONS <.>
+      value:
+        - my-annotation=value
+        - hermetic-param=$(params.hermetic)
+...
+----
+
+<.> The ANNOTATIONS param accepts an array of annotations to be applied to the image after it is built.
