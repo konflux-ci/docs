@@ -2,15 +2,15 @@
 
 Konflux allows applying some dynamic labels to images derived from properties and params of the build pipeline. The labelling is supported directly by the `LABELS` param of the *build-container* tasks. A supporting *generate-labels* task can optionally be used to produce some dynamic labels.
 
-. <<supplying-labels-to-the-build-container-task>>
-. <<generating-dynamic-labels>>
-. <<incrementing-release-label>>
+. <<supplying-labels-and-annotations-to-the-build-container-task>>
+. <<generating-dynamic-labels-or-annotations>>
+. <<incrementing-release-label-or-annotation>>
 . <<combining-approaches>>
 
-[[supplying-labels-to-the-build-container-task]]
-== Supplying labels to the build-container task with the LABELS param
+[[supplying-labels-and-annotations-to-the-build-container-task]]
+== Supplying labels and annotations to the build-container task with the LABELS and ANNOTATIONS params
 
-You can specify additional labels to be applied to your image with the LABELS param, e.g.:
+You can specify additional labels and/or annotations to be applied to your image with the LABELS and ANNOTATIONS params, e.g.:
 
 [source,yaml]
 ----
@@ -29,15 +29,19 @@ tasks:
       value:
         - from-pull-request=true
         - hermetic-param=$(params.hermetic)
+    - name: ANNOTATIONS <.>
+      value:
+        - my-annotation=true
+        - foo=bar
 ...
 ----
 
-<.> The LABELS param accepts an array of labels to be applied to the image after it is built.
+<.> The LABELS and ANNOTATIONS params accepts an array of labels and annotations to be applied to the image after it is built.
 
-[[generating-dynamic-labels]]
-== Generating dynamic labels
+[[generating-dynamic-labels-or-annotations]]
+== Generating dynamic labels or annotations
 
-You can use the *generate-labels* task to produce some dynamic labels. To do so, add the generate-labels task to the list of tasks in your pipeline, e.g.:
+You can use the *generate-labels* task to produce some dynamic labels or annotations. To do so, add the generate-labels task to the list of tasks in your pipeline, e.g.:
 
 [source,yaml]
 ----
@@ -65,9 +69,9 @@ tasks:
 ...
 ----
 
-<.> The generate-labels task defines a small number of environment variables that can usefully be applied to labels, like $SOURCE_DATE and $SOURCE_DATE_EPOCH. See its documentation at link:https://github.com/konflux-ci/tekton-catalog/build-definitions/tree/main/task/generate-labels/0.1[task/generate-labels].
+<.> The generate-labels task defines a small number of environment variables that can usefully be applied to labels and/or annotations, like $SOURCE_DATE and $SOURCE_DATE_EPOCH. See its documentation at link:https://github.com/konflux-ci/tekton-catalog/build-definitions/tree/main/task/generate-labels/0.1[task/generate-labels].
 
-The *generate-labels* task exposes a *labels* result that can be passed to the build-container task. To be useful, you need to supply the labels result from the generate-labels task to the labels param of the build-container task, e.g.:
+The *generate-labels* task exposes a *labels* result that can be passed to the build-container task. To be useful, you need to supply the labels result from the generate-labels/generate-annotation tasks to the LABELS/ANNOTATIONS params of the build-container task, e.g.:
 
 [source,yaml]
 ----
@@ -80,14 +84,17 @@ tasks:
     - name: LABELS
       value:
       - $(tasks.generate-labels.results.labels[*])
+    - name: ANNOTATIONS
+      value:
+      - $(tasks.generate-annotations.results.labels[*])
 ...
 ----
 
 
-[[incrementing-release-label]]
-== An incrementing release label
+[[incrementing-release-label-or-annotation]]
+=== An incrementing release label or annotation
 
-A common use case for dynamic labels is to introduce a monotonically incrementing release label.
+A common use case for dynamic labels or anootations is to introduce a monotonically incrementing release label.
 
 To achieve this, use either the $SOURCE_DATE or the $ACTUAL_DATE as the value for your release label, depending on your team's preference.
 
@@ -130,9 +137,9 @@ tasks:
 ----
 
 [[combining-approaches]]
-== Combining approaches
+=== Combining approaches
 
-You can combine the approaches described above and supply a list of labels to the build-container task constructed from multiple sources.
+You can combine the approaches described above and supply a list of labels and/or annotations to the build-container task constructed from multiple sources.
 
 [source,yaml]
 ----
@@ -146,5 +153,29 @@ tasks:
           value:
           - $(tasks.generate-labels.results.labels[*])
           - "short-commit=$(tasks.clone-repository.results.short-commit)"
+        - name: ANNOTATIONS
+          value:
+          - $(tasks.generate-labels.results.labels[*])
+          - "short-commit=$(tasks.clone-repository.results.short-commit)"
+...
+----
+
+You can use array indexing to supply some of the results to labels and some others to annotations:
+
+[source,yaml]
+----
+tasks:
+...
+    - name: build-container
+      ...
+      params:
+        ...
+        - name: LABELS
+          value:
+          - $(tasks.generate-labels.results.labels[1])
+        - name: ANNOTATIONS
+          value:
+          - $(tasks.generate-labels.results.labels[2])
+          - $(tasks.generate-labels.results.labels[3])
 ...
 ----
