@@ -1,3 +1,3 @@
 = Testing Farm
 
-In order to learn how to xref:/how-tos/testing/integration/adding.adoc[add a custom integration test] in {ProductName} that uses link:https://docs.testing-farm.io/[Testing Farm], please see link:https://gitlab.com/testing-farm/integrations/tekton#user-content-usage-in-konflux-ci[gitlab.com/testing-farm/integrations/tekton].
+In order to learn how to xref:/how-tos/testing/integration/adding.adoc[add a custom integration test] in {ProductName} that uses link:https://docs.testing-farm.io/[Testing Farm], please see link:https://gitlab.com/testing-farm/integrations-konflux#user-content-usage-in-konflux-ci[gitlab.com/testing-farm/integrations/tekton].
