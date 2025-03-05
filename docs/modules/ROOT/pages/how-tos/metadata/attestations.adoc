@@ -61,14 +61,14 @@ $ cosign download attestation $IMAGE | jq -r '.payload | @base64d | fromjson | .
 https://your-konflux-instance.com/application-pipeline/ns/your-tenant/pipelinerun/some-image-123-on-push-abcdef
 --
 
-==== Extract a link to the source repo
+=== Extract a link to the source repo
 
 Extract a link to the source repo, at the commit that the build was built from:
 
 [source]
 --
-$ cosign download attestation $IMAGE | jq -r '.payload | @base64d | fromjson | .predicate.buildConfig.tasks[0].invocation.environment.annotations | ."pipelinesascode.tekton.dev/source-repo-url" + "/-/tree/" + ."pipelinesascode.tekton.dev/sha"'
-https://github.com/your-org/your-repo/-/tree/021c682e1cbad87fea187051055b8259d356ed50
+$ cosign download attestation $IMAGE | jq -r '.payload | @base64d | fromjson | .predicate.buildConfig.tasks[0].invocation.environment.annotations | ."pipelinesascode.tekton.dev/repo-url" + "/tree/" + ."pipelinesascode.tekton.dev/sha"'
+https://github.com/your-org/your-repo/tree/021c682e1cbad87fea187051055b8259d356ed50
 --
 
 === Extract a link to the commit itself
@@ -77,6 +77,6 @@ Extract a link to the commit itself, in the source repository:
 
 [source]
 --
-$ cosign download attestation $IMAGE | jq -r '.payload | @base64d | fromjson | .predicate.buildConfig.tasks[0].invocation.environment.annotations | ."pipelinesascode.tekton.dev/source-repo-url" + "/-/commit/" + ."pipelinesascode.tekton.dev/sha"'
-https://github.com/your-org/your-repo/-/commit/021c682e1cbad87fea187051055b8259d356ed50
+$ cosign download attestation $IMAGE | jq -r '.payload | @base64d | fromjson | .predicate.buildConfig.tasks[0].invocation.environment.annotations | ."pipelinesascode.tekton.dev/repo-url" + "/-/commit/" + ."pipelinesascode.tekton.dev/sha"'
+https://github.com/your-org/your-repo/commit/021c682e1cbad87fea187051055b8259d356ed50
 --
