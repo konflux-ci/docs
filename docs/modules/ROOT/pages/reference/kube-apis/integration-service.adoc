@@ -1,0 +1,819 @@
+// Generated documentation. Please do not edit.
+:anchor_prefix: k8s-api
+
+[id="reference"]
+== Integration Test API Reference
+
+.Packages
+- xref:{anchor_prefix}-appstudio-redhat-com-v1alpha1[$$appstudio.redhat.com/v1alpha1$$]
+- xref:{anchor_prefix}-appstudio-redhat-com-v1beta1[$$appstudio.redhat.com/v1beta1$$]
+- xref:{anchor_prefix}-appstudio-redhat-com-v1beta2[$$appstudio.redhat.com/v1beta2$$]
+
+
+[id="{anchor_prefix}-appstudio-redhat-com-v1alpha1"]
+=== appstudio.redhat.com/v1alpha1
+
+Package v1alpha1 contains API Schema definitions for the appstudio v1alpha1 API group
+
+.Resource Types
+- xref:{anchor_prefix}-github-com-konflux-ci-integration-service-api-v1alpha1-integrationtestscenario[$$IntegrationTestScenario$$]
+- xref:{anchor_prefix}-github-com-konflux-ci-integration-service-api-v1alpha1-integrationtestscenariolist[$$IntegrationTestScenarioList$$]
+
+
+
+[id="{anchor_prefix}-github-com-konflux-ci-integration-service-api-v1alpha1-deploymenttargetclaimconfig"]
+==== DeploymentTargetClaimConfig
+
+
+
+DeploymentTargetClaimConfig specifies the DeploymentTargetClaim details for a given Environment.
+
+
+
+.Appears In:
+****
+- xref:{anchor_prefix}-github-com-konflux-ci-integration-service-api-v1alpha1-environmenttarget[$$EnvironmentTarget$$]
+****
+
+[cols="20a,50a,15a,15a", options="header"]
+|===
+| Field | Description | Default | Validation
+| *`claimName`* __string__ |  |  | 
+|===
+
+
+[id="{anchor_prefix}-github-com-konflux-ci-integration-service-api-v1alpha1-deprecatedenvironmentconfiguration"]
+==== DeprecatedEnvironmentConfiguration
+
+
+
+EnvironmentConfiguration contains Environment-specific configurations details, to be used when generating
+Component/Application GitOps repository resources.
+
+
+
+.Appears In:
+****
+- xref:{anchor_prefix}-github-com-konflux-ci-integration-service-api-v1alpha1-testenvironment[$$TestEnvironment$$]
+****
+
+[cols="20a,50a,15a,15a", options="header"]
+|===
+| Field | Description | Default | Validation
+| *`env`* __xref:{anchor_prefix}-github-com-konflux-ci-integration-service-api-v1alpha1-envvarpair[$$EnvVarPair$$] array__ | Env is an array of standard environment variables + |  | 
+| *`target`* __xref:{anchor_prefix}-github-com-konflux-ci-integration-service-api-v1alpha1-environmenttarget[$$EnvironmentTarget$$]__ | Target is used to reference a DeploymentTargetClaim for a target Environment. +
+The Environment controller uses the referenced DeploymentTargetClaim to access its bounded +
+DeploymentTarget with cluster credential secret. + |  | 
+|===
+
+
+[id="{anchor_prefix}-github-com-konflux-ci-integration-service-api-v1alpha1-deprecatedenvironmenttype"]
+==== DeprecatedEnvironmentType
+
+_Underlying type:_ _string_
+
+DEPRECATED: EnvironmentType should no longer be used, and has no replacement.
+- It's original purpose was to indicate whether an environment is POC/Non-POC, but these data were ultimately not required.
+
+
+
+.Appears In:
+****
+- xref:{anchor_prefix}-github-com-konflux-ci-integration-service-api-v1alpha1-testenvironment[$$TestEnvironment$$]
+****
+
+
+
+[id="{anchor_prefix}-github-com-konflux-ci-integration-service-api-v1alpha1-envvarpair"]
+==== EnvVarPair
+
+
+
+EnvVarPair describes environment variables to use for the component
+
+
+
+.Appears In:
+****
+- xref:{anchor_prefix}-github-com-konflux-ci-integration-service-api-v1alpha1-deprecatedenvironmentconfiguration[$$DeprecatedEnvironmentConfiguration$$]
+****
+
+[cols="20a,50a,15a,15a", options="header"]
+|===
+| Field | Description | Default | Validation
+| *`name`* __string__ | Name is the environment variable name + |  | 
+| *`value`* __string__ | Value is the environment variable value + |  | 
+|===
+
+
+[id="{anchor_prefix}-github-com-konflux-ci-integration-service-api-v1alpha1-environmenttarget"]
+==== EnvironmentTarget
+
+
+
+EnvironmentTarget provides the configuration for a deployment target.
+
+
+
+.Appears In:
+****
+- xref:{anchor_prefix}-github-com-konflux-ci-integration-service-api-v1alpha1-deprecatedenvironmentconfiguration[$$DeprecatedEnvironmentConfiguration$$]
+****
+
+[cols="20a,50a,15a,15a", options="header"]
+|===
+| Field | Description | Default | Validation
+| *`deploymentTargetClaim`* __xref:{anchor_prefix}-github-com-konflux-ci-integration-service-api-v1alpha1-deploymenttargetclaimconfig[$$DeploymentTargetClaimConfig$$]__ |  |  | 
+|===
+
+
+[id="{anchor_prefix}-github-com-konflux-ci-integration-service-api-v1alpha1-integrationtestscenario"]
+==== IntegrationTestScenario
+
+
+
+IntegrationTestScenario is the Schema for the integrationtestscenarios API
+
+
+
+.Appears In:
+****
+- xref:{anchor_prefix}-github-com-konflux-ci-integration-service-api-v1alpha1-integrationtestscenariolist[$$IntegrationTestScenarioList$$]
+****
+
+[cols="20a,50a,15a,15a", options="header"]
+|===
+| Field | Description | Default | Validation
+| *`apiVersion`* __string__ | `appstudio.redhat.com/v1alpha1` | |
+| *`kind`* __string__ | `IntegrationTestScenario` | |
+| *`metadata`* __link:https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.3/#objectmeta-v1-meta[$$ObjectMeta$$]__ | Refer to Kubernetes API documentation for fields of `metadata`.
+ |  | 
+| *`spec`* __xref:{anchor_prefix}-github-com-konflux-ci-integration-service-api-v1alpha1-integrationtestscenariospec[$$IntegrationTestScenarioSpec$$]__ |  |  | 
+| *`status`* __xref:{anchor_prefix}-github-com-konflux-ci-integration-service-api-v1alpha1-integrationtestscenariostatus[$$IntegrationTestScenarioStatus$$]__ |  |  | 
+|===
+
+
+[id="{anchor_prefix}-github-com-konflux-ci-integration-service-api-v1alpha1-integrationtestscenariolist"]
+==== IntegrationTestScenarioList
+
+
+
+IntegrationTestScenarioList contains a list of IntegrationTestScenario
+
+
+
+
+
+[cols="20a,50a,15a,15a", options="header"]
+|===
+| Field | Description | Default | Validation
+| *`apiVersion`* __string__ | `appstudio.redhat.com/v1alpha1` | |
+| *`kind`* __string__ | `IntegrationTestScenarioList` | |
+| *`metadata`* __link:https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.3/#listmeta-v1-meta[$$ListMeta$$]__ | Refer to Kubernetes API documentation for fields of `metadata`.
+ |  | 
+| *`items`* __xref:{anchor_prefix}-github-com-konflux-ci-integration-service-api-v1alpha1-integrationtestscenario[$$IntegrationTestScenario$$] array__ |  |  | 
+|===
+
+
+[id="{anchor_prefix}-github-com-konflux-ci-integration-service-api-v1alpha1-integrationtestscenariospec"]
+==== IntegrationTestScenarioSpec
+
+
+
+IntegrationTestScenarioSpec defines the desired state of IntegrationScenario
+
+
+
+.Appears In:
+****
+- xref:{anchor_prefix}-github-com-konflux-ci-integration-service-api-v1alpha1-integrationtestscenario[$$IntegrationTestScenario$$]
+****
+
+[cols="20a,50a,15a,15a", options="header"]
+|===
+| Field | Description | Default | Validation
+| *`application`* __string__ | Application that's associated with the IntegrationTestScenario + |  | Pattern: `^[a-z0-9]([-a-z0-9]*[a-z0-9])?$` +
+
+| *`pipeline`* __string__ | Release Tekton Pipeline to execute + |  | 
+| *`bundle`* __string__ | Tekton Bundle where to find the pipeline + |  | 
+| *`params`* __xref:{anchor_prefix}-github-com-konflux-ci-integration-service-api-v1alpha1-pipelineparameter[$$PipelineParameter$$] array__ | Params to pass to the pipeline + |  | 
+| *`environment`* __xref:{anchor_prefix}-github-com-konflux-ci-integration-service-api-v1alpha1-testenvironment[$$TestEnvironment$$]__ | Environment that will be utilized by the test pipeline + |  | 
+| *`contexts`* __xref:{anchor_prefix}-github-com-konflux-ci-integration-service-api-v1alpha1-testcontext[$$TestContext$$] array__ | Contexts where this IntegrationTestScenario can be applied + |  | 
+|===
+
+
+[id="{anchor_prefix}-github-com-konflux-ci-integration-service-api-v1alpha1-integrationtestscenariostatus"]
+==== IntegrationTestScenarioStatus
+
+
+
+IntegrationTestScenarioStatus defines the observed state of IntegrationTestScenario
+
+
+
+.Appears In:
+****
+- xref:{anchor_prefix}-github-com-konflux-ci-integration-service-api-v1alpha1-integrationtestscenario[$$IntegrationTestScenario$$]
+****
+
+[cols="20a,50a,15a,15a", options="header"]
+|===
+| Field | Description | Default | Validation
+| *`conditions`* __link:https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.3/#condition-v1-meta[$$Condition$$] array__ |  |  | 
+|===
+
+
+[id="{anchor_prefix}-github-com-konflux-ci-integration-service-api-v1alpha1-pipelineparameter"]
+==== PipelineParameter
+
+
+
+PipelineParameter contains the name and values of a Tekton Pipeline parameter
+
+
+
+.Appears In:
+****
+- xref:{anchor_prefix}-github-com-konflux-ci-integration-service-api-v1alpha1-integrationtestscenariospec[$$IntegrationTestScenarioSpec$$]
+****
+
+[cols="20a,50a,15a,15a", options="header"]
+|===
+| Field | Description | Default | Validation
+| *`name`* __string__ |  |  | 
+| *`value`* __string__ |  |  | 
+| *`values`* __string array__ |  |  | 
+|===
+
+
+[id="{anchor_prefix}-github-com-konflux-ci-integration-service-api-v1alpha1-testcontext"]
+==== TestContext
+
+
+
+TestContext contains the name and values of a Test context
+
+
+
+.Appears In:
+****
+- xref:{anchor_prefix}-github-com-konflux-ci-integration-service-api-v1alpha1-integrationtestscenariospec[$$IntegrationTestScenarioSpec$$]
+****
+
+[cols="20a,50a,15a,15a", options="header"]
+|===
+| Field | Description | Default | Validation
+| *`name`* __string__ |  |  | 
+| *`description`* __string__ |  |  | 
+|===
+
+
+[id="{anchor_prefix}-github-com-konflux-ci-integration-service-api-v1alpha1-testenvironment"]
+==== TestEnvironment
+
+
+
+TestEnvironment contains the name and values of a Test environment
+
+
+
+.Appears In:
+****
+- xref:{anchor_prefix}-github-com-konflux-ci-integration-service-api-v1alpha1-integrationtestscenariospec[$$IntegrationTestScenarioSpec$$]
+****
+
+[cols="20a,50a,15a,15a", options="header"]
+|===
+| Field | Description | Default | Validation
+| *`name`* __string__ |  |  | 
+| *`type`* __xref:{anchor_prefix}-github-com-konflux-ci-integration-service-api-v1alpha1-deprecatedenvironmenttype[$$DeprecatedEnvironmentType$$]__ |  |  | 
+| *`configuration`* __xref:{anchor_prefix}-github-com-konflux-ci-integration-service-api-v1alpha1-deprecatedenvironmentconfiguration[$$DeprecatedEnvironmentConfiguration$$]__ |  |  | 
+|===
+
+
+
+[id="{anchor_prefix}-appstudio-redhat-com-v1beta1"]
+=== appstudio.redhat.com/v1beta1
+
+Package v1beta1 contains API Schema definitions for the appstudio v1beta1 API group
+
+.Resource Types
+- xref:{anchor_prefix}-github-com-konflux-ci-integration-service-api-v1beta1-integrationtestscenario[$$IntegrationTestScenario$$]
+- xref:{anchor_prefix}-github-com-konflux-ci-integration-service-api-v1beta1-integrationtestscenariolist[$$IntegrationTestScenarioList$$]
+
+
+
+[id="{anchor_prefix}-github-com-konflux-ci-integration-service-api-v1beta1-deploymenttargetclaimconfig"]
+==== DeploymentTargetClaimConfig
+
+
+
+DeploymentTargetClaimConfig specifies the DeploymentTargetClaim details for a given Environment.
+
+
+
+.Appears In:
+****
+- xref:{anchor_prefix}-github-com-konflux-ci-integration-service-api-v1beta1-environmenttarget[$$EnvironmentTarget$$]
+****
+
+[cols="20a,50a,15a,15a", options="header"]
+|===
+| Field | Description | Default | Validation
+| *`claimName`* __string__ |  |  | 
+|===
+
+
+[id="{anchor_prefix}-github-com-konflux-ci-integration-service-api-v1beta1-deprecatedenvironmentconfiguration"]
+==== DeprecatedEnvironmentConfiguration
+
+
+
+EnvironmentConfiguration contains Environment-specific configurations details, to be used when generating
+Component/Application GitOps repository resources.
+
+
+
+.Appears In:
+****
+- xref:{anchor_prefix}-github-com-konflux-ci-integration-service-api-v1beta1-testenvironment[$$TestEnvironment$$]
+****
+
+[cols="20a,50a,15a,15a", options="header"]
+|===
+| Field | Description | Default | Validation
+| *`env`* __xref:{anchor_prefix}-github-com-konflux-ci-integration-service-api-v1beta1-envvarpair[$$EnvVarPair$$] array__ | Env is an array of standard environment variables + |  | 
+| *`target`* __xref:{anchor_prefix}-github-com-konflux-ci-integration-service-api-v1beta1-environmenttarget[$$EnvironmentTarget$$]__ | Target is used to reference a DeploymentTargetClaim for a target Environment. +
+The Environment controller uses the referenced DeploymentTargetClaim to access its bounded +
+DeploymentTarget with cluster credential secret. + |  | 
+|===
+
+
+[id="{anchor_prefix}-github-com-konflux-ci-integration-service-api-v1beta1-deprecatedenvironmenttype"]
+==== DeprecatedEnvironmentType
+
+_Underlying type:_ _string_
+
+DEPRECATED: EnvironmentType should no longer be used, and has no replacement.
+- It's original purpose was to indicate whether an environment is POC/Non-POC, but these data were ultimately not required.
+
+
+
+.Appears In:
+****
+- xref:{anchor_prefix}-github-com-konflux-ci-integration-service-api-v1beta1-testenvironment[$$TestEnvironment$$]
+****
+
+
+
+[id="{anchor_prefix}-github-com-konflux-ci-integration-service-api-v1beta1-envvarpair"]
+==== EnvVarPair
+
+
+
+EnvVarPair describes environment variables to use for the component
+
+
+
+.Appears In:
+****
+- xref:{anchor_prefix}-github-com-konflux-ci-integration-service-api-v1beta1-deprecatedenvironmentconfiguration[$$DeprecatedEnvironmentConfiguration$$]
+****
+
+[cols="20a,50a,15a,15a", options="header"]
+|===
+| Field | Description | Default | Validation
+| *`name`* __string__ | Name is the environment variable name + |  | 
+| *`value`* __string__ | Value is the environment variable value + |  | 
+|===
+
+
+[id="{anchor_prefix}-github-com-konflux-ci-integration-service-api-v1beta1-environmenttarget"]
+==== EnvironmentTarget
+
+
+
+EnvironmentTarget provides the configuration for a deployment target.
+
+
+
+.Appears In:
+****
+- xref:{anchor_prefix}-github-com-konflux-ci-integration-service-api-v1beta1-deprecatedenvironmentconfiguration[$$DeprecatedEnvironmentConfiguration$$]
+****
+
+[cols="20a,50a,15a,15a", options="header"]
+|===
+| Field | Description | Default | Validation
+| *`deploymentTargetClaim`* __xref:{anchor_prefix}-github-com-konflux-ci-integration-service-api-v1beta1-deploymenttargetclaimconfig[$$DeploymentTargetClaimConfig$$]__ |  |  | 
+|===
+
+
+[id="{anchor_prefix}-github-com-konflux-ci-integration-service-api-v1beta1-integrationtestscenario"]
+==== IntegrationTestScenario
+
+
+
+IntegrationTestScenario is the Schema for the integrationtestscenarios API
+
+
+
+.Appears In:
+****
+- xref:{anchor_prefix}-github-com-konflux-ci-integration-service-api-v1beta1-integrationtestscenariolist[$$IntegrationTestScenarioList$$]
+****
+
+[cols="20a,50a,15a,15a", options="header"]
+|===
+| Field | Description | Default | Validation
+| *`apiVersion`* __string__ | `appstudio.redhat.com/v1beta1` | |
+| *`kind`* __string__ | `IntegrationTestScenario` | |
+| *`metadata`* __link:https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.3/#objectmeta-v1-meta[$$ObjectMeta$$]__ | Refer to Kubernetes API documentation for fields of `metadata`.
+ |  | 
+| *`spec`* __xref:{anchor_prefix}-github-com-konflux-ci-integration-service-api-v1beta1-integrationtestscenariospec[$$IntegrationTestScenarioSpec$$]__ |  |  | 
+| *`status`* __xref:{anchor_prefix}-github-com-konflux-ci-integration-service-api-v1beta1-integrationtestscenariostatus[$$IntegrationTestScenarioStatus$$]__ |  |  | 
+|===
+
+
+[id="{anchor_prefix}-github-com-konflux-ci-integration-service-api-v1beta1-integrationtestscenariolist"]
+==== IntegrationTestScenarioList
+
+
+
+IntegrationTestScenarioList contains a list of IntegrationTestScenario
+
+
+
+
+
+[cols="20a,50a,15a,15a", options="header"]
+|===
+| Field | Description | Default | Validation
+| *`apiVersion`* __string__ | `appstudio.redhat.com/v1beta1` | |
+| *`kind`* __string__ | `IntegrationTestScenarioList` | |
+| *`metadata`* __link:https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.3/#listmeta-v1-meta[$$ListMeta$$]__ | Refer to Kubernetes API documentation for fields of `metadata`.
+ |  | 
+| *`items`* __xref:{anchor_prefix}-github-com-konflux-ci-integration-service-api-v1beta1-integrationtestscenario[$$IntegrationTestScenario$$] array__ |  |  | 
+|===
+
+
+[id="{anchor_prefix}-github-com-konflux-ci-integration-service-api-v1beta1-integrationtestscenariospec"]
+==== IntegrationTestScenarioSpec
+
+
+
+IntegrationTestScenarioSpec defines the desired state of IntegrationScenario
+
+
+
+.Appears In:
+****
+- xref:{anchor_prefix}-github-com-konflux-ci-integration-service-api-v1beta1-integrationtestscenario[$$IntegrationTestScenario$$]
+****
+
+[cols="20a,50a,15a,15a", options="header"]
+|===
+| Field | Description | Default | Validation
+| *`application`* __string__ | Application that's associated with the IntegrationTestScenario + |  | Pattern: `^[a-z0-9]([-a-z0-9]*[a-z0-9])?$` +
+
+| *`resolverRef`* __xref:{anchor_prefix}-github-com-konflux-ci-integration-service-api-v1beta1-resolverref[$$ResolverRef$$]__ | Tekton Resolver where to store the Tekton resolverRef trigger Tekton pipeline used to refer to a Pipeline or Task in a remote location like a git repo. + |  | 
+| *`params`* __xref:{anchor_prefix}-github-com-konflux-ci-integration-service-api-v1beta1-pipelineparameter[$$PipelineParameter$$] array__ | Params to pass to the pipeline + |  | 
+| *`environment`* __xref:{anchor_prefix}-github-com-konflux-ci-integration-service-api-v1beta1-testenvironment[$$TestEnvironment$$]__ | Environment that will be utilized by the test pipeline + |  | 
+| *`contexts`* __xref:{anchor_prefix}-github-com-konflux-ci-integration-service-api-v1beta1-testcontext[$$TestContext$$] array__ | Contexts where this IntegrationTestScenario can be applied + |  | 
+|===
+
+
+[id="{anchor_prefix}-github-com-konflux-ci-integration-service-api-v1beta1-integrationtestscenariostatus"]
+==== IntegrationTestScenarioStatus
+
+
+
+IntegrationTestScenarioStatus defines the observed state of IntegrationTestScenario
+
+
+
+.Appears In:
+****
+- xref:{anchor_prefix}-github-com-konflux-ci-integration-service-api-v1beta1-integrationtestscenario[$$IntegrationTestScenario$$]
+****
+
+[cols="20a,50a,15a,15a", options="header"]
+|===
+| Field | Description | Default | Validation
+| *`conditions`* __link:https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.3/#condition-v1-meta[$$Condition$$] array__ |  |  | 
+|===
+
+
+[id="{anchor_prefix}-github-com-konflux-ci-integration-service-api-v1beta1-pipelineparameter"]
+==== PipelineParameter
+
+
+
+PipelineParameter contains the name and values of a Tekton Pipeline parameter
+
+
+
+.Appears In:
+****
+- xref:{anchor_prefix}-github-com-konflux-ci-integration-service-api-v1beta1-integrationtestscenariospec[$$IntegrationTestScenarioSpec$$]
+****
+
+[cols="20a,50a,15a,15a", options="header"]
+|===
+| Field | Description | Default | Validation
+| *`name`* __string__ |  |  | 
+| *`value`* __string__ |  |  | 
+| *`values`* __string array__ |  |  | 
+|===
+
+
+[id="{anchor_prefix}-github-com-konflux-ci-integration-service-api-v1beta1-resolverparameter"]
+==== ResolverParameter
+
+
+
+ResolverParameter contains the name and values used to identify the referenced Tekton resource
+
+
+
+.Appears In:
+****
+- xref:{anchor_prefix}-github-com-konflux-ci-integration-service-api-v1beta1-resolverref[$$ResolverRef$$]
+****
+
+[cols="20a,50a,15a,15a", options="header"]
+|===
+| Field | Description | Default | Validation
+| *`name`* __string__ |  |  | 
+| *`value`* __string__ |  |  | 
+|===
+
+
+[id="{anchor_prefix}-github-com-konflux-ci-integration-service-api-v1beta1-resolverref"]
+==== ResolverRef
+
+
+
+Tekton Resolver where to store the Tekton resolverRef trigger Tekton pipeline used to refer to a Pipeline or Task in a remote location like a git repo.
+
+
+
+.Appears In:
+****
+- xref:{anchor_prefix}-github-com-konflux-ci-integration-service-api-v1beta1-integrationtestscenariospec[$$IntegrationTestScenarioSpec$$]
+****
+
+[cols="20a,50a,15a,15a", options="header"]
+|===
+| Field | Description | Default | Validation
+| *`resolver`* __string__ | Resolver is the name of the resolver that should perform resolution of the referenced Tekton resource, such as "git" or "bundle".. + |  | 
+| *`params`* __xref:{anchor_prefix}-github-com-konflux-ci-integration-service-api-v1beta1-resolverparameter[$$ResolverParameter$$] array__ | Params contains the parameters used to identify the +
+referenced Tekton resource. Example entries might include +
+"repo" or "path" but the set of params ultimately depends on +
+the chosen resolver. + |  | 
+|===
+
+
+[id="{anchor_prefix}-github-com-konflux-ci-integration-service-api-v1beta1-testcontext"]
+==== TestContext
+
+
+
+TestContext contains the name and values of a Test context
+
+
+
+.Appears In:
+****
+- xref:{anchor_prefix}-github-com-konflux-ci-integration-service-api-v1beta1-integrationtestscenariospec[$$IntegrationTestScenarioSpec$$]
+****
+
+[cols="20a,50a,15a,15a", options="header"]
+|===
+| Field | Description | Default | Validation
+| *`name`* __string__ |  |  | 
+| *`description`* __string__ |  |  | 
+|===
+
+
+[id="{anchor_prefix}-github-com-konflux-ci-integration-service-api-v1beta1-testenvironment"]
+==== TestEnvironment
+
+
+
+TestEnvironment contains the name and values of a Test environment
+
+
+
+.Appears In:
+****
+- xref:{anchor_prefix}-github-com-konflux-ci-integration-service-api-v1beta1-integrationtestscenariospec[$$IntegrationTestScenarioSpec$$]
+****
+
+[cols="20a,50a,15a,15a", options="header"]
+|===
+| Field | Description | Default | Validation
+| *`name`* __string__ |  |  | 
+| *`type`* __xref:{anchor_prefix}-github-com-konflux-ci-integration-service-api-v1beta1-deprecatedenvironmenttype[$$DeprecatedEnvironmentType$$]__ |  |  | 
+| *`configuration`* __xref:{anchor_prefix}-github-com-konflux-ci-integration-service-api-v1beta1-deprecatedenvironmentconfiguration[$$DeprecatedEnvironmentConfiguration$$]__ |  |  | 
+|===
+
+
+
+[id="{anchor_prefix}-appstudio-redhat-com-v1beta2"]
+=== appstudio.redhat.com/v1beta2
+
+Package v1beta2 contains API Schema definitions for the appstudio v1beta2 API group
+
+.Resource Types
+- xref:{anchor_prefix}-github-com-konflux-ci-integration-service-api-v1beta2-integrationtestscenario[$$IntegrationTestScenario$$]
+- xref:{anchor_prefix}-github-com-konflux-ci-integration-service-api-v1beta2-integrationtestscenariolist[$$IntegrationTestScenarioList$$]
+
+
+
+[id="{anchor_prefix}-github-com-konflux-ci-integration-service-api-v1beta2-integrationtestscenario"]
+==== IntegrationTestScenario
+
+
+
+IntegrationTestScenario is the Schema for the integrationtestscenarios API
+
+
+
+.Appears In:
+****
+- xref:{anchor_prefix}-github-com-konflux-ci-integration-service-api-v1beta2-integrationtestscenariolist[$$IntegrationTestScenarioList$$]
+****
+
+[cols="20a,50a,15a,15a", options="header"]
+|===
+| Field | Description | Default | Validation
+| *`apiVersion`* __string__ | `appstudio.redhat.com/v1beta2` | |
+| *`kind`* __string__ | `IntegrationTestScenario` | |
+| *`metadata`* __link:https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.3/#objectmeta-v1-meta[$$ObjectMeta$$]__ | Refer to Kubernetes API documentation for fields of `metadata`.
+ |  | 
+| *`spec`* __xref:{anchor_prefix}-github-com-konflux-ci-integration-service-api-v1beta2-integrationtestscenariospec[$$IntegrationTestScenarioSpec$$]__ |  |  | 
+| *`status`* __xref:{anchor_prefix}-github-com-konflux-ci-integration-service-api-v1beta2-integrationtestscenariostatus[$$IntegrationTestScenarioStatus$$]__ |  |  | 
+|===
+
+
+[id="{anchor_prefix}-github-com-konflux-ci-integration-service-api-v1beta2-integrationtestscenariolist"]
+==== IntegrationTestScenarioList
+
+
+
+IntegrationTestScenarioList contains a list of IntegrationTestScenario
+
+
+
+
+
+[cols="20a,50a,15a,15a", options="header"]
+|===
+| Field | Description | Default | Validation
+| *`apiVersion`* __string__ | `appstudio.redhat.com/v1beta2` | |
+| *`kind`* __string__ | `IntegrationTestScenarioList` | |
+| *`metadata`* __link:https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.3/#listmeta-v1-meta[$$ListMeta$$]__ | Refer to Kubernetes API documentation for fields of `metadata`.
+ |  | 
+| *`items`* __xref:{anchor_prefix}-github-com-konflux-ci-integration-service-api-v1beta2-integrationtestscenario[$$IntegrationTestScenario$$] array__ |  |  | 
+|===
+
+
+[id="{anchor_prefix}-github-com-konflux-ci-integration-service-api-v1beta2-integrationtestscenariospec"]
+==== IntegrationTestScenarioSpec
+
+
+
+IntegrationTestScenarioSpec defines the desired state of IntegrationScenario
+
+
+
+.Appears In:
+****
+- xref:{anchor_prefix}-github-com-konflux-ci-integration-service-api-v1beta2-integrationtestscenario[$$IntegrationTestScenario$$]
+****
+
+[cols="20a,50a,15a,15a", options="header"]
+|===
+| Field | Description | Default | Validation
+| *`application`* __string__ | Application that's associated with the IntegrationTestScenario + |  | Pattern: `^[a-z0-9]([-a-z0-9]*[a-z0-9])?$` +
+
+| *`resolverRef`* __xref:{anchor_prefix}-github-com-konflux-ci-integration-service-api-v1beta2-resolverref[$$ResolverRef$$]__ | Tekton Resolver where to store the Tekton resolverRef trigger Tekton pipeline used to refer to a Pipeline or Task in a remote location like a git repo. + |  | 
+| *`params`* __xref:{anchor_prefix}-github-com-konflux-ci-integration-service-api-v1beta2-pipelineparameter[$$PipelineParameter$$] array__ | Params to pass to the pipeline + |  | 
+| *`contexts`* __xref:{anchor_prefix}-github-com-konflux-ci-integration-service-api-v1beta2-testcontext[$$TestContext$$] array__ | Contexts where this IntegrationTestScenario can be applied + |  | 
+|===
+
+
+[id="{anchor_prefix}-github-com-konflux-ci-integration-service-api-v1beta2-integrationtestscenariostatus"]
+==== IntegrationTestScenarioStatus
+
+
+
+IntegrationTestScenarioStatus defines the observed state of IntegrationTestScenario
+
+
+
+.Appears In:
+****
+- xref:{anchor_prefix}-github-com-konflux-ci-integration-service-api-v1beta2-integrationtestscenario[$$IntegrationTestScenario$$]
+****
+
+[cols="20a,50a,15a,15a", options="header"]
+|===
+| Field | Description | Default | Validation
+| *`conditions`* __link:https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.3/#condition-v1-meta[$$Condition$$] array__ |  |  | 
+|===
+
+
+[id="{anchor_prefix}-github-com-konflux-ci-integration-service-api-v1beta2-pipelineparameter"]
+==== PipelineParameter
+
+
+
+PipelineParameter contains the name and values of a Tekton Pipeline parameter
+
+
+
+.Appears In:
+****
+- xref:{anchor_prefix}-github-com-konflux-ci-integration-service-api-v1beta2-integrationtestscenariospec[$$IntegrationTestScenarioSpec$$]
+****
+
+[cols="20a,50a,15a,15a", options="header"]
+|===
+| Field | Description | Default | Validation
+| *`name`* __string__ |  |  | 
+| *`value`* __string__ |  |  | 
+| *`values`* __string array__ |  |  | 
+|===
+
+
+[id="{anchor_prefix}-github-com-konflux-ci-integration-service-api-v1beta2-resolverparameter"]
+==== ResolverParameter
+
+
+
+ResolverParameter contains the name and values used to identify the referenced Tekton resource
+
+
+
+.Appears In:
+****
+- xref:{anchor_prefix}-github-com-konflux-ci-integration-service-api-v1beta2-resolverref[$$ResolverRef$$]
+****
+
+[cols="20a,50a,15a,15a", options="header"]
+|===
+| Field | Description | Default | Validation
+| *`name`* __string__ |  |  | 
+| *`value`* __string__ |  |  | 
+|===
+
+
+[id="{anchor_prefix}-github-com-konflux-ci-integration-service-api-v1beta2-resolverref"]
+==== ResolverRef
+
+
+
+Tekton Resolver where to store the Tekton resolverRef trigger Tekton pipeline used to refer to a Pipeline or Task in a remote location like a git repo.
+
+
+
+.Appears In:
+****
+- xref:{anchor_prefix}-github-com-konflux-ci-integration-service-api-v1beta2-integrationtestscenariospec[$$IntegrationTestScenarioSpec$$]
+****
+
+[cols="20a,50a,15a,15a", options="header"]
+|===
+| Field | Description | Default | Validation
+| *`resolver`* __string__ | Resolver is the name of the resolver that should perform resolution of the referenced Tekton resource, such as "git" or "bundle".. + |  | 
+| *`params`* __xref:{anchor_prefix}-github-com-konflux-ci-integration-service-api-v1beta2-resolverparameter[$$ResolverParameter$$] array__ | Params contains the parameters used to identify the +
+referenced Tekton resource. Example entries might include +
+"repo" or "path" but the set of params ultimately depends on +
+the chosen resolver. + |  | 
+|===
+
+
+[id="{anchor_prefix}-github-com-konflux-ci-integration-service-api-v1beta2-testcontext"]
+==== TestContext
+
+
+
+TestContext contains the name and values of a Test context
+
+
+
+.Appears In:
+****
+- xref:{anchor_prefix}-github-com-konflux-ci-integration-service-api-v1beta2-integrationtestscenariospec[$$IntegrationTestScenarioSpec$$]
+****
+
+[cols="20a,50a,15a,15a", options="header"]
+|===
+| Field | Description | Default | Validation
+| *`name`* __string__ |  |  | 
+| *`description`* __string__ |  |  | 
+|===
+
+
