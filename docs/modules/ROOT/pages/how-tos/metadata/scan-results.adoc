@@ -87,8 +87,8 @@ You can inspect those files locally, directly, or use them with other tools that
 
 Here's a non-exhaustive list of some tools you might try to explore your sarif files:
 
-* [SARIF Viewer for Visual Studio Code](https://marketplace.visualstudio.com/items?itemName=MS-SarifVSCode.sarif-viewer)
-* [Uploading a SARIF file to GitHub](https://docs.github.com/en/code-security/code-scanning/integrating-with-code-scanning/uploading-a-sarif-file-to-github)
-* [A set of command line tools and Python library for working with SARIF files](https://github.com/microsoft/sarif-tools)
-* [A Neovim plugin for viewing SARIF formatted static analysis results](https://github.com/nifey/sarif.nvim)
-* [Subject: Support for SARIF formatted diagnostics / on emacs-devel](https://lists.gnu.org/archive/html/emacs-devel/2023-05/msg00426.html)
+* link:https://marketplace.visualstudio.com/items?itemName=MS-SarifVSCode.sarif-viewer[SARIF Viewer for Visual Studio Code]
+* link:https://docs.github.com/en/code-security/code-scanning/integrating-with-code-scanning/uploading-a-sarif-file-to-github[Uploading a SARIF file to GitHub]
+* link:https://github.com/microsoft/sarif-tools[A set of command line tools and Python library for working with SARIF files]
+* link:https://github.com/nifey/sarif.nvim[A Neovim plugin for viewing SARIF formatted static analysis results]
+* link:https://lists.gnu.org/archive/html/emacs-devel/2023-05/msg00426.html[Subject: Support for SARIF formatted diagnostics / on emacs-devel]
