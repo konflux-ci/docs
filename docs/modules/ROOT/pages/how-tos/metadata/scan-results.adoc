@@ -24,7 +24,7 @@ quay.io/konflux-fedora/ralph-tenant/nethack@sha256:391c5670843d655d8f5d374aafe63
     └── sha256:0ad591d985039df3d3eaf13fd68026effc054c23d91467247fc35caf28fb12f3
 --
 
-And, you can format that as json so that you can work with it with tools like `jq` to do useful things.
+And, you can format that as json so that you can work with it with tools like `jq`.
 
 [source]
 --
