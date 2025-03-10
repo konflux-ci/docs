@@ -83,9 +83,7 @@ sast_unicode_check_out.sarif  shellcheck-results.sarif
 
 == Inspect the sarif files
 
-You can inspect those files locally, directly, or use them with other tools that support sarif.
-
-Here's a non-exhaustive list of some tools you might try to explore your sarif files:
+You can inspect those files locally, directly, or use them with other tools that support sarif. Some examples of tools that might help to inspect large files include:
 
 * link:https://marketplace.visualstudio.com/items?itemName=MS-SarifVSCode.sarif-viewer[SARIF Viewer for Visual Studio Code]
 * link:https://docs.github.com/en/code-security/code-scanning/integrating-with-code-scanning/uploading-a-sarif-file-to-github[Uploading a SARIF file to GitHub]
