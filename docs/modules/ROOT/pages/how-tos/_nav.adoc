@@ -38,6 +38,7 @@
 ** xref:how-tos/metadata/index.adoc[Inspecting provenance and attestations]
 *** xref:how-tos/metadata/sboms.adoc[Inspecting SBOMs]
 *** xref:how-tos/metadata/attestations.adoc[Inspecting artifact attestations]
+*** xref:how-tos/metadata/scan-results.adoc[Inspecting artifact scan results]
 ** xref:how-tos/deleting.adoc[Deleting applications and components]
 ** xref:how-tos/workflows/index.adoc[Guidelines for {ProductName} integrated repositories]
 *** xref:how-tos/workflows/git-submodules.adoc[Building upstream projects with git submodules]

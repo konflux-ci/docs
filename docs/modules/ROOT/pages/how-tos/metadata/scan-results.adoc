@@ -1,0 +1,92 @@
+= Inspecting scan results
+
+While you can inspect your scan results in the logs of your taskruns, it may be more convenient to work with those scan results as structured data. To support this, most {ProductName} scanning tasks produce results in the link:https://docs.oasis-open.org/sarif/sarif/[sarif format] and attach those results to the artifact using the link:https://github.com/oras-project/artifacts-spec/blob/main/manifest-referrers-api.md[OCI referrers api].
+
+== Pre-requisites
+
+* Get a local copy of the `oras` command line tool. You can extract it from the link:https://quay.io/konflux-ci/oras[quay.io/konflux-ci/oras:latest] image built by the konflux project, or download the binary from an link:https://github.com/oras-project/oras/releases[upstream release].
+* To see the scan results, you need to find the image for a xref:/how-tos/creating.adoc#finding-the-built-image[recently completed build pipeline] and export that value to the IMAGE environment variable, like `IMAGE=quay.io/konflux-fedora/ralph-tenant/nethack:ee7464add193e84aa75e32b253415f1fe01f627e`
+
+Note, other tools are gaining support for working with non-image OCI artifacts, including link:https://docs.podman.io/en/latest/markdown/podman-artifact.1.html[podman].
+
+== Discovering the scan results
+
+You can view all associated artifacts with `oras discover`:
+
+[source]
+--
+❯ oras discover $IMAGE
+quay.io/konflux-fedora/ralph-tenant/nethack@sha256:391c5670843d655d8f5d374aafe6367a6f450a10d2d95ebc123f65fe1479813f
+├── application/sarif+json
+│   ├── sha256:023d791628821f1fe429ce54495f2289b8ab59e990a8fd51e5499586b03d283a
+│   └── sha256:a9898962b1d7be572b026b1866e2422075afa19778ddd7119711c7f5dbbb7851
+└── application/vnd.clamav
+    └── sha256:0ad591d985039df3d3eaf13fd68026effc054c23d91467247fc35caf28fb12f3
+--
+
+And, you can format that as json so that you can work with it with tools like `jq`.
+
+[source]
+--
+❯ oras discover --format json $IMAGE
+{
+  "manifests": [
+    {
+      "reference": "quay.io/konflux-fedora/ralph-tenant/nethack@sha256:023d791628821f1fe429ce54495f2289b8ab59e990a8fd51e5499586b03d283a",
+      "mediaType": "application/vnd.oci.image.manifest.v1+json",
+      "digest": "sha256:023d791628821f1fe429ce54495f2289b8ab59e990a8fd51e5499586b03d283a",
+      "size": 735,
+      "annotations": {
+        "org.opencontainers.image.created": "2025-02-26T15:56:48Z"
+      },
+      "artifactType": "application/sarif+json"
+    },
+    {
+      "reference": "quay.io/konflux-fedora/ralph-tenant/nethack@sha256:a9898962b1d7be572b026b1866e2422075afa19778ddd7119711c7f5dbbb7851",
+      "mediaType": "application/vnd.oci.image.manifest.v1+json",
+      "digest": "sha256:a9898962b1d7be572b026b1866e2422075afa19778ddd7119711c7f5dbbb7851",
+      "size": 739,
+      "annotations": {
+        "org.opencontainers.image.created": "2025-02-26T15:55:43Z"
+      },
+      "artifactType": "application/sarif+json"
+    },
+    {
+      "reference": "quay.io/konflux-fedora/ralph-tenant/nethack@sha256:0ad591d985039df3d3eaf13fd68026effc054c23d91467247fc35caf28fb12f3",
+      "mediaType": "application/vnd.oci.image.manifest.v1+json",
+      "digest": "sha256:0ad591d985039df3d3eaf13fd68026effc054c23d91467247fc35caf28fb12f3",
+      "size": 1392,
+      "annotations": {
+        "org.opencontainers.image.created": "2025-02-26T15:56:19Z"
+      },
+      "artifactType": "application/vnd.clamav"
+    }
+  ]
+}
+--
+
+== Downloading all scan results
+
+You can use the following command to download all sarif files associated with your image:
+
+[source]
+--
+❯ for sarif_file in $(oras discover --format json $IMAGE | jq -r '.manifests[] | select(.artifactType == "application/sarif+json") | .reference'); do
+	oras pull $sarif_file;
+done
+
+...
+
+❯ ls *.sarif
+sast_unicode_check_out.sarif  shellcheck-results.sarif
+--
+
+== Inspect the sarif files
+
+You can inspect those files locally, directly, or use them with other tools that support sarif. Some examples of tools that might help to inspect large files include:
+
+* link:https://marketplace.visualstudio.com/items?itemName=MS-SarifVSCode.sarif-viewer[SARIF Viewer for Visual Studio Code]
+* link:https://docs.github.com/en/code-security/code-scanning/integrating-with-code-scanning/uploading-a-sarif-file-to-github[Uploading a SARIF file to GitHub]
+* link:https://github.com/microsoft/sarif-tools[A set of command line tools and Python library for working with SARIF files]
+* link:https://github.com/nifey/sarif.nvim[A Neovim plugin for viewing SARIF formatted static analysis results]
+* link:https://lists.gnu.org/archive/html/emacs-devel/2023-05/msg00426.html[Subject: Support for SARIF formatted diagnostics / on emacs-devel]
