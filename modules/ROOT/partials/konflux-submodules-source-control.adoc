@@ -1,0 +1,7 @@
+=== Create a downstream repository
+
+Create a downstream repository in the source control system of your choice, GitHub or Gitlab.
+
+Forgejo and Gitea are not yet fully supported.
+
+Your downstream repository is a standalone repository. It should not be a fork of the upstream repository.

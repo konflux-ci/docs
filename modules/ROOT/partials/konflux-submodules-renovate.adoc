@@ -1,0 +1,3 @@
+TODO - fix link
+
+NOTE: By doing this, you have created a git submodule reference that tracks a branch, but it is currently pinned to a particular upstream commit. When new upstream commits land, your repository will not instantaneously update to consume them. Instead, an automated process in {ProductName} called link:todo[mintmaker] will propose pull requests that keep your submodule up to date.
