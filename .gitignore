@@ -26,7 +26,7 @@ tmp/
 # Antora working directories
 node_modules/
 build/
-!docs/modules/ROOT/**/build
+!modules/ROOT/**/build
 public/
 .idea/
 .cache

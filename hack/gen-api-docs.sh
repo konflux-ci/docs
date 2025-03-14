@@ -6,7 +6,7 @@ set -e
 genRoot="$(pwd)/api-gen"
 genSrc="${genRoot}/src"
 config="$(pwd)/api-gen/crd-ref-docs.yaml"
-destRoot="$(pwd)/docs/modules/ROOT/pages/reference/kube-apis"
+destRoot="$(pwd)/modules/ROOT/pages/reference/kube-apis"
 
 function gen_ref_docs {
     # First argument is the repository name in the konflux-ci GitHub org.
