@@ -17,9 +17,20 @@ mode.
 
 === Enabling Single Component Mode for Enterprise Contract Integration Test Scenarios
 
-Single Component Mode can be enabled either by making a change to the Integration Test Scenario custom resource
-or by using the UI.
+Single Component Mode can be enabled by updating the existing Integration Test Scenario (either by editing the custom resource or by using the UI).
 
+[NOTE]
+====
+It is also possible to maintain *separate* Integration Test Scenarios:
+
+* One which validates the entire suite of components in an application (default mode)
+* One which validates a single component.
+
+Additionally, you may xref:how-tos/testing/integration/choosing-contexts.adoc[mark an Integration Test Scenario as *disabled*], therefore permitting xref:how-tos/testing/integration/rerunning.adoc[manual execution] when needed.
+
+====
+
+==== Updating Enterprise Contract Integration Test Scenarios
 * Update the custom resource by adding the parameter *SINGLE_COMPONENT* with a value of *true*
 
 [source,yaml]
@@ -97,5 +108,3 @@ reduce-snapshot
 [reduce] Single Component mode is true and Snapshot type is component
 [reduce] COMPONENT_COUNT: 1
 --
-
-
