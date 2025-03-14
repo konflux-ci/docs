@@ -35,6 +35,7 @@ spec:
  data: <key> <.>
  pipelineRef: <pipeline-ref> <.>
  serviceAccount: <service-account> <.>
+ releaseGracePeriodDays: <days> <.>
  target: managed-workspace <.>
 ----
 
@@ -47,6 +48,7 @@ spec:
 <.> Optional: An unstructured key used for providing data for the managed Pipeline.
 <.> Optional: Reference to the Pipeline to be executed by the release service.
 <.> Optional: The name of the service account to use in the Pipeline to gain elevated privileges. It's used only if you have defined the `pipelineRef` value.
+<.> Optional: The number of days a Release should be kept before being garbage collected. (default is 7 days)
 <.> The workspace to which the system deploys the application. This workspace is created by the Managed environment team (for example, your organization's SRE team)
 
 . In the development workspace, apply the `ReleasePlan.yaml` file and add the resource to your cluster by running the following command:
