@@ -1,6 +1,7 @@
 ** xref:building/index.adoc[Building]
 *** xref:building/creating.adoc[Creating applications and components]
 *** xref:building/deleting.adoc[Deleting applications and components]
+*** xref:building/imagerepository.adoc[Customizing ImageRepository]
 *** xref:building/customizing-the-build.adoc[Customizing the build pipeline]
 *** xref:building/creating-secrets.adoc[Creating secrets for your builds]
 *** xref:building/configuration-as-code.adoc[Configuration as code]
