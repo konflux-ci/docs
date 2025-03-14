@@ -1,4 +1,5 @@
 * xref:reference/index.adoc[Reference]
+** xref:reference/sample-repositories.adoc[Sample repositories]
 ** xref:reference/kube-apis/index.adoc[Konflux Kubernetes APIs]
 *** xref:reference/kube-apis/application-api.adoc#k8s-api-github-com-konflux-ci-application-api-api-v1alpha1-application[Application]
 *** xref:reference/kube-apis/application-api.adoc#k8s-api-github-com-konflux-ci-application-api-api-v1alpha1-component[Component]
