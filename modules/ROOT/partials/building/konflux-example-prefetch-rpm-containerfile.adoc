@@ -1,0 +1,7 @@
+[source,Dockerfile]
+----
+FROM quay.io/fedora/fedora:rawhide
+RUN dnf -y install cargo
+WORKDIR /workdir
+ENTRYPOINT ["cargo", "--version"]
+----

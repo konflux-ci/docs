@@ -1,0 +1,7 @@
+[source,yaml]
+----
+packages: [cargo] <1>
+contentOrigin:
+  repofiles: ["./fedora.repo"] <2>
+arches: [x86_64, aarch64] <3>
+----
