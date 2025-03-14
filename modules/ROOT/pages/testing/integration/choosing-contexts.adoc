@@ -1,0 +1,73 @@
+= Choosing when to run certain Integration Tests
+
+Integration test scenarios can be configured to run in only certain cases (referred to as contexts in further text).
+Examples include running the integration test pipelines only in case of Pull Requests, or running them only for builds of specific components.
+The full list of supported contexts is:
+
+* "application"  - runs the integration test in all cases - this is the default state
+* "component" - runs the integration tests only in case of component builds
+** This context is run for builds of all components, but not for special cases like manually created Snapshots
+* “component_COMPONENT” - runs the integration test only for a build of a specific component
+** For a component  `sample-component`, this context would need to be `component_sample-component`
+* "pull_request" - runs the integration test in case of the Snapshot being created for a `pull request` event
+* "push" - runs the integration test in case of the Snapshot being created for a `push` event
+* "override" - runs the integration test for an `override` Snapshot
+** See more in xref:/testing/integration/snapshots/override-snapshots.adoc[Creating an override snapshot]
+* "disabled" - disables the execution of the given integration test if it's the only context that's defined
+** This can be useful if the scenario in question needs to only be executed manually, see more about running
+integration tests manually in xref:/testing/integration/rerunning.adoc[Rerunning an integration test]
+* "group" - runs the integration test for a `group` Snapshot
+** See more in xref:/testing/integration/snapshots/group-snapshots.adoc[Creating a group snapshot]
+
++
+NOTE: When multiple contexts are defined, the IntegrationTestScenario will execute if any of the specified contexts match the snapshot. This approach ensures that the test runs if at least one context applies, without requiring all defined contexts to be met.
+
+.Prerequisites
+- You have CLI access to the specific OpenShift cluster. For information on obtaining CLI access, refer xref:ROOT:getting-started/cli.adoc[Getting started with the CLI].
+
+.Procedure
+
+. Choose the IntegrationTestScenario that you want to run only in certain cases.
+
+. Edit the chosen IntegrationTestScenario using kubectl.
+
++
+[source]
+----
+$ kubectl edit integrationtestscenario [integrationtestscenario name]
+----
+
+. Modify the `contexts` field by setting the list of contexts you want the IntegrationTestScenario.
+.. The `name` field of every entry needs to be set to the chosen context name from the above list
+.. The `description` can be used to note down why this context is set for the given IntegrationTestScenario
++
+Example integrationTestScenario configuration with the single component context for the Component named `sample-component`:
+
++
+[source,yaml]
+----
+apiVersion: appstudio.redhat.com/v1beta1
+kind: IntegrationTestScenario
+metadata:
+  name: example-pass
+  namespace: default
+spec:
+  application: application-sample
+  contexts:
+    - description: Single component testing
+      name: component_sample-component
+  resolverRef:
+    resolver: git
+    params:
+      - name: url
+        value: https://github.com/konflux-ci/integration-examples
+      - name: revision
+        value: main
+      - name: pathInRepo
+        value: pipelines/integration_pipeline_pass.yaml
+----
+
+.Verification
+
+. To verify the configuration, run a component build in the desired context (e.g. as part of a Pull Request) and
+verify if the integration test pipeline was executed according to your expectations.

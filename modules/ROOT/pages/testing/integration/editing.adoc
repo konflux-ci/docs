@@ -1,0 +1,87 @@
+= Editing integration tests
+
+Once you have xref:./adding.adoc[added] an Integration Test Scenario to {ProductName}, you may want to change the configurations for it. 
+
+.Prerequisites
+
+* You have xref:./adding.adoc[added an integration test] in {ProductName}.
+
+.Procedure
+
+Complete the following steps in the {ProductName} console:
+
+. Open an existing application and go to the *Integration tests* tab.
+
+. Select the three dots on the right side of the table.
+
+. Select the *Edit* action.
+
+. Make any changes to the test that are needed
+
+    * Modify the *GitHub URL* if you need to specify a different repository.
+    * Modify the *Revision* if you need to use a different branch, tag, or commit in the repository.
+    * Modify the *Path in repository* to point to a new location for the `.yaml` file.
+    * Add or remove *Parameters* which are passed to the integration test scenario.
+    * Modify whether this integration test scenario is required or optional for release.
+
++
+NOTE: A failing integration test marks the application snapshot as failed. A failing required test will prevent the automated release. If you have selected *Mark as optional for release*, a failure in this test will still result in an automated release of the application snapshot.
+
+. Select *Save changes*.
+
+. To start building a new component (and afterwards trigger a new integration test), either open a new pull request (PR) that targets the tracked branch of a component in the application, or comment '/retest' on an existing PR.
+
+.Timeouts
+
+It is possible to define custom timeouts on the pipeline level for individual IntegrationTestScenarios.
+There are three timeouts that need to be defined:
+
+* `Tasks` - specifies the timeout for the cumulative time taken by Tasks specified in `pipeline.spec.tasks`
+* `Finally` - specifies the timeout for the cumulative time taken by finally Tasks specified in `pipeline.spec.finally`
+* `Pipeline` - specifies the timeout for the entire PipelineRun.
+** The sum of the other two timeouts must be equal to this timeout, otherwise the integration pipelineRuns will fail on creation.
+
+NOTE: Since the integration service already sets default timeouts to integration pipelineRuns, it is necessary to set all of the above timeouts to prevent errors.
+
+You can define the above timeouts by setting the annotations on the IntegrationTestScenario in the following
+way through the CLI (consult the steps listed in the xref:/getting-started/cli.adoc[Getting started in the CLI] page):
+
+[source,bash]
+----
+kubectl annotate integrationtestscenario/[scenario name] test.appstudio.openshift.io/finally_timeout=3h --overwrite
+kubectl annotate integrationtestscenario/[scenario name] test.appstudio.openshift.io/tasks_timeout=5h --overwrite
+kubectl annotate integrationtestscenario/[scenario name] test.appstudio.openshift.io/pipeline_timeout=8h --overwrite
+----
+
+== Configuring the enterprise contract policy
+
+All applications created in {ProductName} will have one integration test scenario to enable xref:/managing-compliance-with-ec[manage compliance with Enterprise Contract] by default. You can configure your tests to use a customized link:https://enterprisecontract.dev/docs/user-guide/custom-config.html#_using_an_enterprisecontractpolicy_kubernetes_custom_resource_cr[Kubernetes Custom Resource] policy on the cluster.
+
+.Procedure
+
+Complete the following steps in the {ProductName} console:
+
+. Open an existing application and go to the *Integration tests* tab.
+
+. Select the three dots on the right side of the table.
+
+. Select the *Edit* action.
+
+. Click on *Add parameter*.
+
+    * In *Name*, write `POLICY_CONFIGURATION`
+    * In *Value*, write the namespace and CR name for the policy, `<namespace>/<policy-name>`
+
+. Click on *Save changes*.
+
+. To start building a new component (and afterwards trigger a new integration test), either open a new pull request (PR) that targets the tracked branch of a component in the application, or comment '/retest' on an existing PR.
+
+.Verification
+
+When the new build is finished:
+
+. Go to the *Integration tests* tab and select the highlighted name of your test.
+
+. Go to the *Pipeline runs* tab of that test and select the most recent run.
+
+.  On the *Details* page, you can see if the test succeeded for that component. The policy used by the test should be updated. 

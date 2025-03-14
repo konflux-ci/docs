@@ -1,0 +1,6 @@
+= Generic guidelines for {ProductName} integrated repositories
+
+Depending on your use case, there are several guidelines you can use for repositories that are integrated with {ProductName}:
+
+* xref:/patterns/git-submodules.adoc[Git Submodule pattern]
+* xref:patterns/keep-remote-pipelines-up-to-date.adoc[Maintaining remote pipelines up to date]

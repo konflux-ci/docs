@@ -3,25 +3,25 @@
 *   @konflux-ci/docs
 
 # installation
-/modules/ROOT/pages/advanced-how-tos/installing/   @konflux-ci/installer-maintainers
+/modules/ROOT/pages/installing/   @konflux-ci/installer-maintainers
 
 # build
-/modules/ROOT/pages/how-tos/configuring/           @konflux-ci/build-maintainers
-/modules/ROOT/partials/how-tos/configuring/        @konflux-ci/build-maintainers
+/modules/ROOT/pages/building/           @konflux-ci/build-maintainers
+/modules/ROOT/partials/building/        @konflux-ci/build-maintainers
 
 # integration
-/modules/ROOT/pages/how-tos/testing/               @konflux-ci/integration-service-maintainers
+/modules/ROOT/pages/testing/               @konflux-ci/integration-service-maintainers
 
 # release
-/modules/ROOT/pages/advanced-how-tos/releasing                                @konflux-ci/release-service-maintainers
-/modules/ROOT/pages/advanced-how-tos/testing-releasing-single-component.adoc  @konflux-ci/release-service-maintainers
+/modules/ROOT/pages/releasing                                @konflux-ci/release-service-maintainers
+/modules/ROOT/pages/testing-releasing-single-component.adoc  @konflux-ci/release-service-maintainers
 
 # Conforma
-/modules/ROOT/pages/advanced-how-tos/managing-compliance-with-ec       @konflux-ci/ec
-/modules/ROOT/pages/advanced-how-tos/using-trusted-artifacts.adoc      @konflux-ci/ec
+/modules/ROOT/pages/managing-compliance-with-ec       @konflux-ci/ec
+/modules/ROOT/pages/using-trusted-artifacts.adoc      @konflux-ci/ec
 
 
 # find a team to own this
 
-/modules/ROOT/pages/how-tos/metadata/              @ralphbean @arewm
-/modules/ROOT/pages/how-tos/workflows/             @ralphbean @arewm
+/modules/ROOT/pages/metadata/              @ralphbean @arewm
+/modules/ROOT/pages/patterns/             @ralphbean @arewm
