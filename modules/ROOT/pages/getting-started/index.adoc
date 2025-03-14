@@ -24,6 +24,6 @@ To access {ProductName}, your PE needs to give you the URL to your team's instan
 . *Test:* bring components together and test them as a whole application.
 . *Release:* transfer ownership of your application to somewhere outside of {ProductName}, like a container registry.
 
+== Getting started with the CLI
 
-
-
+include::ROOT:partial$getting-started/{context}-getting-started-with-the-cli.adoc[]
