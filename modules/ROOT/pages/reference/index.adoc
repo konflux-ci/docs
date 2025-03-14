@@ -1,8 +1,11 @@
 = Reference
 
-Below you will find links to Konflux reference documentation.
+== Sample repositories
 
-== Konflux Kubernetes APIs
+The xref:reference/sample-repositories.adoc[sample repositories] page contains examples of repositories
+that may be useful for understanding how to work with {ProductName}.
+
+== {ProductName} Kubernetes APIs
 
 The xref:reference/kube-apis/index.adoc[Kubernetes APIs] page contains the specification for all
 Kubernetes API extensions specific to Konflux.
