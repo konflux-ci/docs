@@ -24,7 +24,7 @@ Additionally, {ProductName} can automate key aspects of this process, ensuring t
 1. **Complexity**: Managing submodules and automating their updates adds complexity to your workflow, such as:
   - Debugging issues related to submodule updates
   - Your automation configuration can be more challenging.
-  - Updates in the submodules can be opaque which can result in drift between your build process and that of the original repository.
+  - Updates in the submodules can be opaque which can result in drift between your build process and that of the original repository. There are link:https://github.com/konflux-ci/olm-operator-konflux-sample/blob/main/docs/konflux-onboarding.md#enable-drift-detection-optional[some ways to manage this].
 
 == Procedure
 
