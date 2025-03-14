@@ -39,3 +39,7 @@ deploy.json
 .vale/styles/*
 !.vale/styles/config
 !.vale/styles/Konflux
+
+# Source downloaded to generate API reference docs
+
+api-gen/src

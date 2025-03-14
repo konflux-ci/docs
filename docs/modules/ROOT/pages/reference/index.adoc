@@ -1,0 +1,8 @@
+= Reference
+
+Below you will find links to Konflux reference documentation.
+
+== Konflux Kubernetes APIs
+
+The xref:reference/kube-apis/index.adoc[Kubernetes APIs] page contains the specification for all
+Kubernetes API extensions specific to Konflux.
