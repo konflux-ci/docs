@@ -35,7 +35,7 @@ The SBOM is unsigned so there is no way to verify whether it has been tampered w
 
 * Install the link:https://stedolan.github.io/jq/download/[jq] CLI tool.
 
-* xref:/getting-started/index.adoc#getting-started-with-the-cli[Login] to {ProductName}.
+* xref:ROOT:getting-started.adoc#getting-started-with-the-cli[Login] to {ProductName}.
 
 * You have found the image for a xref:/building/creating.adoc#finding-the-built-image[recently completed build pipeline] and exported the value to the `IMAGE` environment variable.
 

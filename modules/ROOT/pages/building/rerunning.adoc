@@ -68,7 +68,7 @@ The pipeline run should resume in the *Activity* > *Pipeline runs* tab.
 
 - You have already merged a pull request, but the subsequent build failed, prompting a need for retriggering.
 - You didn't rename push pipeline run name, and it is in format `component_name + '-on-push'`
-- You have CLI access to {ProductName}. For information on obtaining CLI access, refer to  xref:/getting-started/index.adoc#getting-started-with-the-cli[Getting started in CLI]
+- You have CLI access to {ProductName}. For information on obtaining CLI access, refer to  xref:ROOT:getting-started.adoc#getting-started-with-the-cli[Getting started in CLI]
 
 .**Procedure**
 

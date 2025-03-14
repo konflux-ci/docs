@@ -26,7 +26,7 @@ $ kubectl label snapshot [snapshot name] test.appstudio.openshift.io/run=[scenar
 
 - You have a snapshot that has completed all its initial tests. All initial tests must be finished before you trigger subsequent tests.
 - The snapshot for which tests will be retriggered has completed its initial tests.
-- You have CLI access to the specific OpenShift cluster. For information on obtaining CLI access, refer xref:/getting-started/index.adoc#getting-started-with-the-cli[Getting started with the CLI].
+- You have CLI access to the specific OpenShift cluster. For information on obtaining CLI access, refer xref:ROOT:getting-started.adoc#getting-started-with-the-cli[Getting started with the CLI].
 
 == Procedure
 

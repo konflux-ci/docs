@@ -23,7 +23,7 @@ integration tests manually in xref:/testing/integration/rerunning.adoc[Rerunning
 NOTE: When multiple contexts are defined, the IntegrationTestScenario will execute if any of the specified contexts match the snapshot. This approach ensures that the test runs if at least one context applies, without requiring all defined contexts to be met.
 
 .Prerequisites
-- You have CLI access to the specific OpenShift cluster. For information on obtaining CLI access, refer xref:ROOT:/getting-started/index.adoc#getting-started-with-the-cli[Getting started with the CLI].
+- You have CLI access to the specific OpenShift cluster. For information on obtaining CLI access, refer xref:ROOT:/getting-started.adoc#getting-started-with-the-cli[Getting started with the CLI].
 
 .Procedure
 

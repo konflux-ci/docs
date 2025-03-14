@@ -50,7 +50,7 @@ NOTE: GitHub and GitLab are supported source control providers. GitLab support r
 
 * xref:/installing/enabling-builds.adoc[Enabled] build pipelines for your instance of {ProductName}.
 * link:https://kubernetes.io/docs/tasks/tools/[kubectl] CLI tool
-* You have completed the steps listed in the xref:/getting-started/index.adoc#getting-started-with-the-cli[Getting started in the CLI] page.
+* You have completed the steps listed in the xref:ROOT:getting-started.adoc#getting-started-with-the-cli[Getting started in the CLI] page.
 
 .*Procedures*
 
@@ -118,7 +118,7 @@ After the build PipelineRuns are completed from git push events, the Components 
 
 .Prerequisites
 
-* xref:/getting-started/index.adoc#getting-started-with-the-cli[Login] to {ProductName}.
+* xref:ROOT:getting-started.adoc#getting-started-with-the-cli[Login] to {ProductName}.
 
 * Install the link:https://stedolan.github.io/jq/download/[jq] CLI tool.
 

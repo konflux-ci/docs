@@ -3,7 +3,7 @@ name: ROOT
 title: Konflux-CI
 version: ~
 nav:
-- modules/ROOT/pages/getting-started/_nav.adoc
+- modules/ROOT/nav.adoc
 - modules/ROOT/pages/end-to-end/_nav.adoc
 - modules/ROOT/pages/building/_nav.adoc
 - modules/ROOT/pages/testing/_nav.adoc

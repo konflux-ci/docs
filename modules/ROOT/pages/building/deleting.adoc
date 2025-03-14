@@ -30,7 +30,7 @@ NOTE: You can also delete an application by selecting *Actions > Delete Applicat
 
 * You have successfully signed into {ProductName}.
 * You have the workspace admin role.
-* You must have xref:/getting-started/index.adoc#getting-started-with-the-cli[enabled CLI access for {ProductName}].
+* You must have xref:ROOT:getting-started.adoc#getting-started-with-the-cli[enabled CLI access for {ProductName}].
 
 .*Procedures*
 

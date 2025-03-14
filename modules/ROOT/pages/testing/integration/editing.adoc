@@ -44,7 +44,7 @@ There are three timeouts that need to be defined:
 NOTE: Since the integration service already sets default timeouts to integration pipelineRuns, it is necessary to set all of the above timeouts to prevent errors.
 
 You can define the above timeouts by setting the annotations on the IntegrationTestScenario in the following
-way through the CLI (consult the steps listed in the xref:/getting-started/index.adoc#getting-started-with-the-cli[Getting started in the CLI] page):
+way through the CLI (consult the steps listed in the xref:ROOT:getting-started.adoc#getting-started-with-the-cli[Getting started in the CLI] page):
 
 [source,bash]
 ----

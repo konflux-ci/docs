@@ -9,7 +9,7 @@ After you have created a component {ProductName}, you may find yourself in a sit
 .*Prerequisites*
 
 * You have an existing Development workspace.
-* You have completed the steps listed in the xref:/getting-started/index.adoc#getting-started-with-the-cli[Getting started in the CLI] page.
+* You have completed the steps listed in the xref:ROOT:getting-started.adoc#getting-started-with-the-cli[Getting started in the CLI] page.
 
 == Reset the build pipeline
 
