@@ -1,0 +1,105 @@
+= Reconfiguring the build pipeline
+
+After you have created a component {ProductName}, you may find yourself in a situation where you want to reset your build pipeline to the latest version. For instance:
+
+* If you have xref:./customizing-the-build.adoc[made changes to your build pipeline] and the pipeline no longer works.
+* You discover that a new pipeline is available that you want to change to.
+* You cannot figure out how to update your build pipeline to resolve breaking changes in the task updates.
+
+.*Prerequisites*
+
+* You have an existing Development workspace.
+* You have completed the steps listed in the xref:ROOT:getting-started.adoc#getting-started-with-the-cli[Getting started in the CLI] page.
+
+== Reset the build pipeline
+
+.Procedure
+In the CLI, complete the following steps to reset the build pipeline:
+
+. List your components.
++
+[source]
+----
+$ kubectl get components
+----
++
+.Example output
++
+[source]
+----
+NAME                               AGE   STATUS   REASON   TYPE
+devfile-sample-go-basic-8wqt       8m54s True     OK       Updated
+devfile-sample-python-basic-ikch   20d   True     OK       Updated
+----
+
+. Choose which component you want to reset.
+
++
+[source]
+----
+$ kubectl edit component <component name>
+----
+
+.. While editing the component, add the request to `metadata.annotations`.
+
++
+[source,yaml]
+----
+metadata:
+  annotations:
+    build.appstudio.openshift.io/request: "configure-pac"
+----
+
+.. Save the changes and exit the edit dialogue.
+
+. Review and merge the created pull request.
+
++
+WARNING: {ProductName} will submit a pull request to reset the Tekton pipeline in your git repository which will not have any previous customizations included. If you made changes that you want to preserve, you will need to re-apply these changes.
+
+== Changing to a different template pipeline [[changing-pipelines]]
+
+.Procedure
+In the CLI, complete the following steps to change the build pipeline:
+
+. List your components.
++
+[source]
+----
+$ kubectl get components
+----
++
+.Example output
++
+[source]
+----
+NAME                               AGE   STATUS   REASON   TYPE
+devfile-sample-go-basic-8wqt       8m54s True     OK       Updated
+devfile-sample-python-basic-ikch   20d   True     OK       Updated
+----
+
+. Choose which component you want to reset.
+
++
+[source]
+----
+$ kubectl edit component <component name>
+----
+
+.. While editing the component, update the pipeline to one of the xref:installing:enabling-builds.adoc#customize-pipelines[configured pipelines] and add the request to configure PAC to `metadata.annotations`.
+
++
+[source,yaml]
+----
+metadata:
+  annotations:
+    build.appstudio.openshift.io/pipeline: '{"name":"<name-of-the-pipeline-to-use>","bundle":"latest"}'
+    build.appstudio.openshift.io/request: "configure-pac"
+----
+
+.. Save the changes and exit the edit dialogue.
+
+. Review and merge the created pull request.
+
++
+WARNING: {ProductName} will submit a pull request to reset the Tekton pipeline in your git repository which will not have any previous customizations included. If you made changes that you want to preserve, you will need to re-apply these changes.

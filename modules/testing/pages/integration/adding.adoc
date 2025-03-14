@@ -1,0 +1,51 @@
+= Adding an integration test
+
+In {ProductName}, you can add integration tests to verify that the individual components of your application integrate correctly, forming a complete and functional application. {ProductName} runs these integration tests on the container images of components before their release.
+
++
+NOTE: Starting an integration test is dependant on the results of a successful build pipeline providing some required information about an image, details on these requirements can be found link:https://github.com/konflux-ci/architecture/blob/main/architecture/integration-service.md#image-extraction-details[here]. In the case of multi-arch builds, an OCI index that maps to the relevant artifacts is used.
+
+.Prerequisites
+
+* You have created an application in {ProductName}.
+
+.Procedure
+
+Complete the following steps in the {ProductName} console:
+
+. Open an existing application and go to the *Integration tests* tab.
+
+. Select *Add integration test*.
+
+. In the *Integration test name* field, enter a name of your choosing.
+
+. In the *git url* field, enter the URL of the git repository that contains the test you want to use.
+
++
+NOTE: If you do not already have a custom test that you want to add, we tell you how to xref:testing:integration/creating.adoc[create a custom integration test] in the next section.
+
+. Optional: If you want to use a branch, commit, or version other than the default, specify the branch name, commit SHA, or tag in the *Revisions* field.
+
+. In the *Path in repository* field, enter the path to the `.yaml` file that defines the test you want to use.
+. Optional: To allow the integration tests to fail without impacting the release process of your application, you can choose to select *Mark as optional for release*.
+
++
+NOTE: By default, all integration test scenarios are mandatory and must pass. A failing integration test marks the application snapshot as failed, preventing its release. However,  if you have selected *Mark as optional for release*, a failure in this test won't hinder the release of the application snapshot.
+
+. Select *Add integration test*.
+
+.Verification
+
+To start building a new component, either open a new pull request (PR) that targets the tracked branch of the component in the git repository, or comment '/retest' on an existing PR.
+
+When the new build is finished:
+
+. Go to the *Integration tests* tab and select the highlighted name of your test.
+
+. Go to the *Pipeline runs* tab of that test and select the most recent run.
+
+.  On the *Details* page, you can see if the test succeeded for that component. Navigate to the other tabs for more details. 
+
+. xref:./editing.adoc[Edit the integration test] if it is not properly configured.
+
+The test results will also be available from the PR in GitHub or the MR in GitLab. In GitHub, the test results can be viewed in the *Checks* tab. In GitLab, the test results will show up in the *Pipelines* tab. In both cases, comments will be created once the integration tests finish running, showing the results of the most recent test run.

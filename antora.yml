@@ -3,18 +3,18 @@ name: ROOT
 title: Konflux-CI
 version: ~
 nav:
-- modules/ROOT/pages/getting-started/_nav.adoc
-- modules/ROOT/pages/end-to-end/_nav.adoc
-- modules/ROOT/pages/building/_nav.adoc
-- modules/ROOT/pages/testing/_nav.adoc
-- modules/ROOT/pages/metadata/_nav.adoc
-- modules/ROOT/pages/managing-compliance-with-ec/_nav.adoc
-- modules/ROOT/pages/releasing/_nav.adoc
-- modules/ROOT/pages/patterns/_nav.adoc
-- modules/ROOT/pages/installing/_nav.adoc
-- modules/ROOT/pages/troubleshooting/_nav.adoc
-- modules/ROOT/pages/glossary/_nav.adoc
-- modules/ROOT/pages/reference/_nav.adoc
+- modules/ROOT/nav.adoc
+- modules/end-to-end/nav.adoc
+- modules/building/nav.adoc
+- modules/testing/nav.adoc
+- modules/metadata/nav.adoc
+- modules/managing-compliance-with-ec/nav.adoc
+- modules/releasing/nav.adoc
+- modules/patterns/nav.adoc
+- modules/installing/nav.adoc
+- modules/troubleshooting/nav.adoc
+- modules/glossary/nav.adoc
+- modules/reference/nav.adoc
 
 asciidoc:
   attributes:

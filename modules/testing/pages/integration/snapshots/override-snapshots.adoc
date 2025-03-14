@@ -1,0 +1,81 @@
+= Creating an override snapshot
+
+In {ProductName}, the integration service provides users with the ability to reset their component's Global Candidate List to a desired state with a manually created `override` snapshot which can then be a candidate for further promotion (release) if it passes all integration tests.
+
+== Prerequisites
+- You have completed the steps listed in the xref:ROOT:getting-started.adoc#getting-started-with-the-cli[Getting started in the CLI] page.
+- You have an existing managed workspace such as `ws-sample`, an application such as `application-sample` and a component such as `component-sample`.
+
+== Procedures
+To create an `override` snapshot, complete the following steps:
+
+. Identify the application and component that needs to be updated.
+. In your preferred IDE, create an `override` snapshot in a `.yaml` file.
++
+Example snapshot.yaml file::
+
++
+[source]
+----
+apiVersion: appstudio.redhat.com/v1alpha1
+kind: Snapshot
+metadata:
+  name: snapshot-sample
+  namespace: ws-sample-tenant
+  labels:
+    test.appstudio.openshift.io/type: override <1>
+spec:
+  application: application-sample
+  components:
+    - name: component-sample <2>
+      containerImage: quay.io/redhat-user-workloads/ws-sample-tenant/application-sample/component-sample@sha256:0db0a473a6abf5c15c424ab07cfbd5c40c06622fe648d4fe6a6b6abc224a0d0c <3>
+      source: <4>
+        git:
+          url: https://github.com/sample-org/sample-repo
+          revision: fa8b89274a61ef0f1c257b7a84c37aa2ec844109
+----
+<1> The label `test.appstudio.openshift.io/type: override` that indicates this is an `override` snapshot.
+<2> The component name you will reset its Global Candidate List.
+<3> The container image with valid digest you will reset the component <2> to.
+<4> Optional, but may cause an Enterprise Contract check to fail if it's incorrect or missing. The component source containing the git URL and revision that the container image was built from.
+
+. Save the .yaml file and add the snapshot.yaml by running the following command:
++
+[source,terminal]
+----
+$ kubectl create -f snapshot.yaml -n ws-sample-tenant
+----
+This command adds the `override` snapshot to your workspace and integration service will processe the `override` snapshot and update the component `component-sample` 's `.Spec.ContainerImage` to `quay.io/redhat-user-workloads/ws-sample-tenant/application-sample/component-sample@sha256:0db0a473a6abf5c15c424ab07cfbd5c40c06622fe648d4fe6a6b6abc224a0d0c`
+
+== Verification
+After integration service processes the created `override` snapshot, you may verify snapshot and component by the following steps:
+
+. Check snapshot `.Status.Conditions` by the following command:
++
+[source,terminal]
+----
+$ kubectl get snapshot snapshot-sample -n ws-sample-tenant -o yaml | yq '.status.conditions.[] | select(.type =="AddedToGlobalCandidateList")'
+lastTransitionTime: "2024-06-05T18:20:37Z"
+message: The Snapshot's component was added to the global candidate list
+reason: Added
+status: "True"
+type: AddedToGlobalCandidateList
+----
+
+. Browse to the component you are updating and select the **Component details** tab. The updated container image is shown under **Image** column. The updated source is shown under **Source code** column.
+
+. Check component's `.Spec.ContainerImage` by the following command:
++
+[source,terminal]
+----
+$ kubectl get component component-sample -n ws-sample-tenant -o yaml | yq .spec.containerImage
+quay.io/redhat-user-workloads/ws-sample-tenant/application-sample/component-sample@sha256:0db0a473a6abf5c15c424ab07cfbd5c40c06622fe648d4fe6a6b6abc224a0d0c
+----
+
+. Check component's `.Status.LastBuiltCommit` by the following command:
++
+[source,terminal]
+----
+$ kubectl get component component-sample -n ws-sample-tenant -o yaml | yq .status.lastBuiltCommit
+fa8b89274a61ef0f1c257b7a84c37aa2ec844109
+----

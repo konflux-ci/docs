@@ -1,0 +1,3 @@
+** Installation
+*** xref:index.adoc[Installing {ProductName}]
+*** xref:enabling-builds.adoc[Enabling build pipelines]

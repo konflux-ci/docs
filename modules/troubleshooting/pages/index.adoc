@@ -1,0 +1,238 @@
+= Troubleshooting
+
+== No space left on device
+
+Tasks may fail with an error message mentioning `No space left on device` as the underlying error.
+This likely means your build pipeline wrote more data than expected into a shared volume.
+
+Typically seen in the `clone-repository` or `prefetch-dependencies` task in a build pipeline.
+
+For the clone task, the error message may look similar to:
+
+[source,text]
+----
+[clone] {"level":"error","ts":1721904304.0047252,"caller":"git/git.go:53","msg":"Error running git [checkout -f FETCH_HEAD]: exit status 128\nerror: unable to write file ...: No space left on device\n"
+----
+
+The device that's running out of space is most likely the workspace declared in your `PipelineRun`
+YAML files. *The solution is to request more disk space.* In the `.spec.workspaces` section in
+all the relevant PipelineRun files, increase the storage request.
+
+[source,yaml]
+----
+spec:
+  # ...
+  workspaces:
+    # ...
+    - name: workspace
+      volumeClaimTemplate:
+        spec:
+          resources:
+            requests:
+              storage: 1Gi  # increase accordingly
+----
+
+
+== Pipeline Run Times Out
+
+Tasks may fail with an error message mentioning ``PipelineRun <pipelineName> failed to finish within "1h0m0s".``
+
+If you see this error message, it means that the pipeline run has exceeded the default one hour time limit set for PipelineRuns.
+You can increase the timeout if necessary, see xref:building:customizing-the-build.adoc#configuring-timeouts[Configuring timeouts].
+
+== Failed to push or pull image
+
+Failing to authenticate with a container registry can be hard to debug. To be able to troubleshoot
+effectively, one needs to understand how registry authentication works in Tekton. For the full
+details, see the Tekton link:https://tekton.dev/docs/pipelines/auth/[Authentication] docs. In short:
+
+. Tekton uses a ServiceAccount (named `appstudio-pipeline` by default in {ProductName}) to run your Pipeline.
+. This ServiceAccount has a list of `imagePullSecrets` and `secrets`.
+.. Tekton uses the `imagePullSecrets` when pulling the images that execute the Tasks in your pipeline.
+   These images are typically hard-coded in the Task definition and publicly accessible. As a {ProductName}
+   user, you're more interested in the `secrets`.
+.. Tekton injects the `secrets` into the execution environment so that the tools executed inside
+   the Tasks (e.g. `buildah`, `skopeo`, `oras`, `cosign`) can authenticate to registries.
+
+Tekton takes all the `dockercfg` and `dockerconfigjson` secrets linked in `secrets` (as well as
+link:https://tekton.dev/docs/pipelines/auth/#configuring-basic-auth-authentication-for-docker[specially annotated]
+`basic-auth` secrets), merges them into a single file and injects the file into the Task Pod at
+`~/.docker/config.json`. The format of the file is described in the
+link:https://github.com/containers/image/blob/main/docs/containers-auth.json.5.md[containers-auth.json manpage].
+
+Note that the merged file can contain multiple credentials for a single registry, distinguished by
+path. For example:
+
+[source,json]
+----
+{
+  "auths": {
+    "quay.io/my-org": {
+      "auth": "..."
+    },
+    "quay.io": {
+      "auth": "..."
+    }
+  }
+}
+----
+
+The most specific path takes precedence. When accessing images in `quay.io/my-org/`, the tool will
+prefer the `quay.io/my-org` credential over the generic `quay.io` credential (assuming the tool
+implements the `containers-auth.json` spec correctly).
+
+More tips and tricks for debugging below.
+
+=== Check if a secret has access to a registry / to a specific image
+
+_Prerequisites: `jq`, `kubectl` or `oc`, access to the Secrets in the namespace._
+
+[source,bash]
+----
+secret_name=secret-for-my-registry
+should_have_access_to=my.registry.io/my-org/my-image
+
+kubectl get secret "$secret_name" -o json |
+    jq '.data[] | @base64d | fromjson | {auths: (.auths // .)}' |
+    tee /tmp/auth.json
+
+# Check if a tool can use the authfile to access a registry / an image. E.g. skopeo:
+skopeo login --authfile /tmp/auth.json "$should_have_access_to"
+----
+
+Note: works for `dockercfg` and `dockerconfigjson` secrets, not `basic-auth`.
+
+[#check-if-the-secret-is-linked-to-the-service-account]
+=== Check if the secret is linked to the `appstudio-pipeline` service account
+
+In order to connect the new secret to pipeline run, you need to link it from service account used by Tekton to run the pipeline run.
+Check if your secret appears in the `secrets` section:
+
+[source,bash]
+----
+kubectl get sa appstudio-pipeline -o json
+----
+
+If not, link it to the `appstudio-pipeline` service account with:
+
+[source,bash]
+----
+secret_name=secret-for-my-registry
+
+# using kubectl
+kubectl patch serviceaccount appstudio-pipeline -p "{\"secrets\": [{\"name\": \"$secret_name\"}]}"
+
+# using oc
+oc secrets link appstudio-pipeline "$secret_name"
+----
+
+=== Get the merged registry auth file
+
+_Prerequisites: `jq`, `kubectl` or `oc`, access to the Secrets in the namespace._
+
+This script roughly approximates Tekton's merging of `dockercfg` and `dockerconfigjson` secrets.
+It does not handle `basic-auth` secrets.
+
+The output is a `containers-auth.json` file (you can e.g. save it as `/tmp/auth.json` and use it the
+same way as in the example above). Each entry in the file has an extra `_from_secret` attribute
+showing which Secret provides the entry. This may be useful to determine which Secret is introducing
+problematic content into the merged file.
+
+[source,bash]
+----
+linked_secrets=$(kubectl get sa appstudio-pipeline -o json | jq '.secrets | map(.name)')
+
+kubectl get secrets -o json |
+    jq --argjson linked_secrets "$linked_secrets" '
+        .items | map(
+            . as $secret |
+            select($linked_secrets | index($secret.metadata.name)) |
+            .data | .[".dockercfg"], .[".dockerconfigjson"] | select(. != null) |
+            @base64d | fromjson |
+            .auths // . |
+            to_entries[] |
+            {registry: .key, config: .value, secret: $secret.metadata.name}
+        ) |
+        reduce .[] as $x ({}; .[$x.registry] = $x.config + {_from_secret: $x.secret}) |
+        {auths: .}
+    '
+----
+
+== Manually Update Task Bundles
+
+Usually, Konflux users rely on link:https://docs.renovatebot.com/[renovate] to update
+the various Task bundle references in the build Pipelines. However, it is also possible
+to update these references manually if needed. For example, consider a build Pipeline
+that includes the following Task:
+
+[source,yaml]
+----
+- name: init
+  params:
+    - name: image-url
+      value: $(params.output-image)
+    - name: rebuild
+      value: $(params.rebuild)
+    - name: skip-checks
+      value: $(params.skip-checks)
+  taskRef:
+    params:
+      - name: name
+        value: init
+      - name: bundle
+        value: quay.io/konflux-ci/tekton-catalog/task-init:0.2@sha256:284e3029cce3ae5ee0b05866100e300046359f53ae4c77fe6b34c05aa7a72cee
+      - name: kind
+        value: task
+    resolver: bundles
+----
+
+You can find the newest digest for the Task bundle with skopeo and jq. You must first remove the
+digest from the existing reference. For example:
+
+[source,bash]
+----
+skopeo inspect --no-tags docker://quay.io/konflux-ci/tekton-catalog/task-init:0.2 | jq -r '.Digest'
+----
+
+The output will contain a new digest, e.g. `sha256:4c6712db9419461b8c8a39523c012cb0dc061fb58563bb9170b3777d74f54659`.
+Update the Task bundle reference in your build Pipeline to use the new digest.
+
+The script below provides a working example of how to achieve this for all the Task bundle
+references in a given build Pipeline file.
+
+[source,bash]
+----
+cat <<'EOF' > update-tekton-task-bundles.sh
+#!/bin/bash
+
+# Use this script to update the Tekton Task Bundle references used in a Pipeline or a PipelineRun.
+# update-tekton-task-bundles.sh .tekton/*.yaml
+
+set -euo pipefail
+
+FILES=$@
+
+# Find existing image references
+OLD_REFS="$(\
+    yq '... | select(has("resolver")) | .params // [] | .[] | select(.name == "bundle") | .value'  $FILES | \
+    grep -v -- '---' | \
+    sort -u \
+)"
+
+# Find updates for image references
+for old_ref in ${OLD_REFS}; do
+    repo_tag="${old_ref%@*}"
+    new_digest="$(skopeo inspect --no-tags docker://${repo_tag} | yq '.Digest')"
+    new_ref="${repo_tag}@${new_digest}"
+    [[ $new_ref == $old_ref ]] && continue
+    echo "New digest found! $new_ref"
+    for file in $FILES; do
+        sed -i -e "s!${old_ref}!${new_ref}!g" $file
+    done
+done
+EOF
+
+chmod +x update-tekton-task-bundles.sh
+
+./update-tekton-task-bundles.sh .tekton/*.yaml
+----

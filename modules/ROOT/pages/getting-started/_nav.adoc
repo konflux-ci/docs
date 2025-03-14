@@ -1,2 +1,0 @@
-* xref:index.adoc[Why {ProductName}?]
-* xref:getting-started/index.adoc[Getting started]

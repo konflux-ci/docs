@@ -1,0 +1,322 @@
+= Configuring Applications and Components as Code with Kustomize
+
+If you need to define a large application with many components, easily duplicate or update components, or ensure consistent component and application states, consider configuring your {ProductName} applications and components as code using Kustomize. This document provides an overview of a basic application and component configuration that can be replicated and duplicated using Kustomize bases and overlays.
+
+For more information about Kustomize, visit the link:https://kustomize.io/[Kustomize official site]. This document is based on the configuration defined in the link:https://github.com/konflux-ci/casc-gpt[Konflux CI repository], where you can see the configuration first-hand.
+
+Key steps include:
+
+. **Create a basic file structure for your bases and overlays:** Prepare a space and structure for your application and component bases and overlays.
+
+. **Create a base for your components:** Prepare a base that contains all the default or common values for every component you create.
+
+. **Create a base for your application:** Prepare a base that contains all the default or common values for every application you create.
+
+. **Create an overlay for each component:** Prepare an overlay that patches in component-specific data for each component in your application.
+
+. **Create an overlay for your application:** Prepare an overlay that patches in specific data for each application you want to create.
+
+. **Create patches for application-specific component configurations:** Prepare application-specific patches for all components in a given application, accommodating variations in specific patches.
+
+. **Bonus - Duplicating or expanding your application:** Discuss the general philosophy of Configuration-as-Code and how to extend, duplicate, or customize your application, components, and workspace as code.
+
+NOTE: Throughout this document, substitute your application and component names for placeholder values like `application-a`, `application-b`, `component-a`, etc.
+
+== Create a File Structure
+
+As with many Kustomize projects, you'll need a space to define a `base` and some `overlay`(s). Within your `overlay`(s), define a folder for a base set of components and a folder for each application-specific override for that base set of components.
+
+Create a file structure as follows:
+
+[source,bash]
+----
+├── base
+│   ├── component.yaml
+│   └── kustomization.yaml
+├── overlay
+│   └── application-a
+│       ├── base
+│       │   ├── application.yaml
+│       │   ├── component-a
+│       │   │   ├── component-a-override.yaml
+│       │   │   └── kustomization.yaml
+│       │   ├── component-b
+│       │   │   ├── component-b-override.yaml
+│       │   │   └── kustomization.yaml
+│       │   └── kustomization.yaml
+│       └── v1-overlay
+│           ├── application-patch.yaml
+│           ├── component-patch.yaml
+│           ├── exception-component-patch-1.yaml
+│           └── kustomization.yaml
+└── README.md
+----
+
+NOTE: You can omit `component-b` if you only want to define a single component.
+
+In this file structure, you will find:
+
+* `base`: A directory housing your base component YAML and a Kustomize file to point to the base.
+
+* `overlay`: Contains one or more application variants, useful when defining multiple different applications.
+
+* `overlay/application-a/base`: A base that defines one or more component overrides, one per component in the application, and a base for your application.
+
+* `overlay/application-a/v1-overlay`: An override for your application and application-specific patches for your component(s).
+
+== Create a Base for Your Components
+
+If you are creating more than one component, it is likely that your components will share some, if not most, of their configuration. These default or global values can be defined in the base component and overridden on a case-by-case basis in your component overlays.
+
+=== Creating Your Base Component
+
+Define this base in `base/component.yaml`. It typically follows a pattern similar to the following:
+
+include:partial$custom-resources/{context}-component.adoc[]
+
+=== Creating Your Base Kustomization
+
+With the base component defined, tell Kustomize it exists for later consumption in overlays. Set up a basic `base/kustomization.yaml` as follows:
+
+[source,yaml]
+----
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+resources:
+  - component.yaml
+----
+
+== Create a Base for Your Application
+
+Each application will have its own base and one or more overrides.
+
+You can think of each application variant as the base that defines the structure of your application and all components in that application. The concrete application is an implementation of that variant that defines any differentiating specs, such as application name, version, and component branches.
+
+Create your base application at `overlay/application-a/application-a-base/application.yaml` like the following:
+
+include:partial$custom-resources/{context}-application.adoc[]
+
+And its Kustomization file at `overlay/application-a/application-a-base/kustomization.yaml`:
+
+[source,yaml]
+----
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+  
+resources:
+  - application.yaml
+----
+
+== Create an Overlay for Each Component
+
+For each application, define every component in the application as an overlay. These overlays should contain all component-specific information that is consistent across all versions of the application, in case you have more than one version of the application.
+
+For example, you'll typically have more than one version defined if you're developing a versioned operator and have consistent component names across every version of an application, but different branches (this is the OpenShift / OpenShift CI Model with release-versioned branches).
+
+Define these components as folders in `overlay/application-a/base`. Each folder should be named after its component name, e.g., `component-a`, and contain an `override.yaml` and `kustomization.yaml` that look like:
+
+`overlay/application-a/base/component-a/component-a-override.yaml` (replacing name, URL, and Dockerfile):
+
+[source,yaml]
+----
+- op: replace
+  path: /metadata/name
+  value: component-a-name
+- op: replace
+  path: /spec/componentName
+  value: component-a-name
+- op: replace
+  path: /spec/source/git/url
+  value: https://myvcs.com/myorg/component-a
+- op: replace
+  path: /spec/source/git/dockerfileUrl
+  value: "Dockerfile"
+----
+
+`overlay/application-a/base/component-a/kustomization.yaml`:
+
+[source,yaml]
+----
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+  
+resources:
+  - ../../../../base # Path to base component
+
+patches:
+  - path: component-a-override.yaml # Path to override file
+    target:
+      kind: Component
+----
+
+NOTE: You can repeat this pattern for every component in your application.
+
+== Create an Overlay for Your Application and Application-Specific Component Configuration
+
+For each version or variant of your application, as configured in the prior steps, define an application overlay and any additional application-specific component patches.
+
+Version this concrete application and set of patches in its own overlay folder in the application folder. In this case, `overlay/application-a/v1-overlay` will hold:
+
+* `application-patch.yaml`: Our application overlay
+
+* `component-patch.yaml`: A version-specific patch for all components, typically a branch name
+
+* `exception-component-patch.yaml`: An example version-specific patch for a specific component or set of components
+
+* `kustomization.yaml`: A Kustomization file that defines how the patches are applied to components
+
+Let's start with our `application-patch.yaml` at `overlay/application-a/v1-overlay/application-patch.yaml` (replacing values with your own):
+
+[source,yaml]
+----
+- op: replace
+  path: /metadata/name
+  value: application-a-v1
+- op: replace
+  path: /spec/description
+  value: "Pipeline for application-a v1"
+- op: replace
+  path: /spec/displayName
+  value: "application-a v1"
+----
+
+Followed by our override for components at `overlay/application-a/v1-overlay/component-patch.yaml`:
+
+[source,yaml]
+----
+- op: replace
+  path: /spec/application
+  value: application-a-v1 # Must match /metadata/name in application-patch.yaml
+- op: replace
+  path: /spec/source/git/revision
+  value: release-v1 # Replace with your target branch for all components
+----
+
+If you have any patches specific to this application revision that only impact a certain component or set of components, define another patch as shown in `overlay/application-a/v1-overlay/exception-component-patch-1.yaml`:
+
+[source,yaml]
+----
+- op: replace
+  path: /spec/source/git/revision
+  value: main # In this example, one of our components will build off of main, so we set it in a separate patch.
+----
+
+Finally, set up your `overlay/application-a/v1-overlay/kustomization.yaml` to apply these patches correctly:
+
+[source,yaml]
+----
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+nameSuffix: v1 # Add a suffix to all resource names in the application for uniqueness
+resources:
+  - ../base
+
+patches:
+  - target:
+      kind: Application
+    path: application-patch.yaml
+  - target:
+      kind: Component
+    path: component-patch.yaml
+  - target:
+      kind: Component
+      name: component-b
+    path: exception-component-patch-1.yaml
+----
+
+NOTE: This Kustomization applies a suffix to all resources. We recommend doing this to ensure uniqueness and make it easier to identify components and applications.
+
+NOTE: You can define more than one exceptional patch and match component names through regular expression.
+
+== Defining Multiple Versions or Variants of an Application
+
+If multiple versions of an application exist (as in versioned operators) or variants of applications that share some or all components, define multiple application overlays following the same pattern as above.
+
+This results in a configuration that looks something like the following, with a folder for each version:
+
+[source,bash]
+----
+├── base
+│   ├── component.yaml
+│   └── kustomization.yaml
+├── overlay
+│   └── application-a
+│       ├── base
+│       │   ├── application.yaml
+│       │   ├── component-a
+│       │   │   ├── component-a-override.yaml
+│       │   │   └── kustomization.yaml
+│       │   ├── component-b
+│       │   │   ├── component-b-override.yaml
+│       │   │   └── kustomization.yaml
+│       │   └── kustomization.yaml
+│       ├── v1-overlay
+│       │   ├── application-patch.yaml
+│       │   ├── component-patch.yaml
+│       │   ├── exception-component-patch-1.yaml
+│       │   └── kustomization.yaml
+│       └── v2-overlay
+│           ├── application-patch.yaml
+│           ├── component-patch.yaml
+│           ├── exception-component-patch-1.yaml
+│           └── kustomization.yaml
+└── README.md
+----
+
+== Defining Multiple Applications
+
+If you want to define multiple applications with different sets of components and versions for each application, replicate the above configuration for `application-a` for a second application and include it as an additional application base and overlays in the `overlay` directory.
+
+This approach is preferred for defining multiple applications within an application category (such as operators) or a family/product organization as code. It allows you to make bulk configurations to your base component YAML (such as enabling multi-architecture support or setting labels and ownership) in a single place — the component base — rather than in multiple places.
+
+If you follow this method to create an `application-b` composed of `component-c` and `component-d`, then your directory structure will look something like:
+
+[source,bash]
+----
+├── base
+│   ├── component.yaml
+│   └── kustomization.yaml
+├── overlay
+│   ├── application-a
+│   │   ├── base
+│   │   │   ├── application.yaml
+│   │   │   ├── component-a
+│   │   │   │   ├── component-a-override.yaml
+│   │   │   │   └── kustomization.yaml
+│   │   │   ├── component-b
+│   │   │   │   ├── component-b-override.yaml
+│   │   │   │   └── kustomization.yaml
+│   │   │   └── kustomization.yaml
+│   │   ├── v1-overlay
+│   │   │   ├── application-patch.yaml
+│   │   │   ├── component-patch.yaml
+│   │   │   ├── exception-component-patch-1.yaml
+│   │   │   └── kustomization.yaml
+│   │   └── v2-overlay
+│   │       ├── application-patch.yaml
+│   │       ├── component-patch.yaml
+│   │       ├── exception-component-patch-1.yaml
+│   │       └── kustomization.yaml
+│   └── application-b
+│       ├── base
+│       │   ├── application.yaml
+│       │   ├── component-c
+│       │   │   ├── component-c-override.yaml
+│       │   │   └── kustomization.yaml
+│       │   ├── component-d
+│       │   │   ├── component-d-override.yaml
+│       │   │   └── kustomization.yaml
+│       │   └── kustomization.yaml
+│       └── v1-overlay
+│           ├── application-patch.yaml
+│           ├── component-patch.yaml
+│           ├── exception-component-patch-1.yaml
+│           └── kustomization.yaml
+└── README.md
+----
+
+NOTE: You can also modify the project structure to fit your own needs by moving application bases and component definitions to different levels, but this configuration offers the most layered encapsulation across applications and application versions.
+
+IMPORTANT: Managing multiple related components and applications can be challenging. Refer https://redhat-appstudio.github.io/docs.appstudio.io/Documentation/main/how-to-guides/proc_multiversion/ [Managing multiple software versions] to manage multiple related components and applications.

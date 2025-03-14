@@ -1,3 +1,0 @@
-** xref:/managing-compliance-with-ec/index.adoc[Managing compliance with EC]
-*** xref:/managing-compliance-with-ec/customizing-policy.adoc[Customizing Policy]
-*** xref:/managing-compliance-with-ec/policy-evaluations.adoc[Policy evaluations in {ProductName}]
