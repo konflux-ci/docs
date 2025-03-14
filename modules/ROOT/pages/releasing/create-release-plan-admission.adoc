@@ -9,7 +9,7 @@ When an application is ready for release, the Development team contacts the owne
 .*Prerequisites*
 
 * An existing Development and Managed workspace.
-* You have completed the steps listed in the xref:/getting-started/cli.adoc[Getting started in the CLI] page.
+* You have completed the steps listed in the xref:/getting-started/index.adoc#getting-started-with-the-cli[Getting started in the CLI] page.
 * An existing `ReleasePlan` object in the Development workspace.
 
 .*Procedures*

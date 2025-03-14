@@ -3,7 +3,7 @@
 In {ProductName}, the integration service provides users with the ability to reset their component's Global Candidate List to a desired state with a manually created `override` snapshot which can then be a candidate for further promotion (release) if it passes all integration tests.
 
 == Prerequisites
-- You have completed the steps listed in the xref:/getting-started/cli.adoc[Getting started in the CLI] page.
+- You have completed the steps listed in the xref:/getting-started/index.adoc#getting-started-with-the-cli[Getting started in the CLI] page.
 - You have an existing managed workspace such as `ws-sample`, an application such as `application-sample` and a component such as `component-sample`.
 
 == Procedures
