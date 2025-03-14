@@ -107,10 +107,6 @@ build pipeline to use the upstream Containerfile with downstream args at build
 time. This has the advantage of not having to maintain a copy of the
 Containerfile in the downstream repo.
 
-TODO - show example Containerfile
-TODO - show example build args file
-TODO - show example of setting the build args file in the .tekton/ dir.
-
 include::ROOT:partial${context}-submodules-example-args-file.adoc[]
 
 === Using private repositories as a git submodule:
