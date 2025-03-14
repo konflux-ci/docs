@@ -1,0 +1,5 @@
+[source,console]
+----
+$ BASE_IMAGE=quay.io/fedora/fedora:rawhide
+$ rpm-lockfile-prototype --image $BASE_IMAGE rpms.in.yaml <1>
+----

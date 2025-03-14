@@ -1,0 +1,5 @@
+[source,console]
+----
+$ BASE_IMAGE=quay.io/fedora/fedora:rawhide
+$ podman run -it $BASE_IMAGE cat /etc/yum.repos.d/fedora.repo > fedora.repo
+----

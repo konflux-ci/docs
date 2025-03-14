@@ -1,0 +1,14 @@
+[source,yaml]
+----
+lockfileVersion: 1
+lockfileVendor: fedora
+arches:
+- arch: aarch64
+  packages:
+    - ...
+  module_metadata: []
+- arch: x86_64
+  packages:
+    - ...
+  module_metadata: []
+----
