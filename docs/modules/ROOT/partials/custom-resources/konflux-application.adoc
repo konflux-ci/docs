@@ -1,0 +1,14 @@
+[source,yaml]
+----
+apiVersion: appstudio.redhat.com/v1alpha1
+kind: Application <.>
+metadata:
+  name: <application-name>
+  namespace: <namespace>
+  annotations:
+    application.thumbnail: "1"
+spec:
+  displayName: <application-name>
+----
++
+<.> At least one application should be created. Multiple applications can be created by adding additional CR specifications.

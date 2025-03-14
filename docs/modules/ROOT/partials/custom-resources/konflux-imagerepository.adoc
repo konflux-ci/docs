@@ -1,0 +1,20 @@
+[source,yaml]
+----
+apiVersion: appstudio.redhat.com/v1alpha1
+kind: ImageRepository <.>
+metadata:
+  annotations:
+    image-controller.appstudio.redhat.com/update-component-image: 'true'
+  name: <component-name>
+  namespace: <namespace>
+  labels:
+    appstudio.redhat.com/application: <application-name>
+    appstudio.redhat.com/component: <component-name>
+spec:
+  image:
+    name: <namespace>/<component-name>
+    visibility: public <.>
+----
++
+<.> Optional: If the `spec.containerImage` has been defined for the component, this should not be created. If the xref:/advanced-how-tos/installing/enabling-builds.adoc#enable-image-controller[image controller] is not deployed, this custom resource will have no effect.
+<.> Supported values are "public" and "private".
