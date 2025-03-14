@@ -72,28 +72,7 @@ If you are creating more than one component, it is likely that your components w
 
 Define this base in `base/component.yaml`. It typically follows a pattern similar to the following:
 
-[source,yaml]
-----
-apiVersion: appstudio.redhat.com/v1alpha1
-kind: Component
-metadata:
-  annotations:
-    image.redhat.com/generate: "true"
-    build.appstudio.openshift.io/request: configure-pac
-  name: example-component
-spec:
-  componentName: example-component
-  application: appName
-  targetPort: 8080
-  source:
-      git:
-        url: gitUrl
-        context: ./
-        dockerfileUrl: ContainerFileLocation
-        revision: defaultBranch
-----
-
-NOTE: This creates a component with a custom build pipeline. If you want to use the default build, omit the `build.appstudio.openshift.io/request: configure-pac` annotation.
+include::ROOT:partial$custom-resources/{context}-component.adoc[]
 
 === Creating Your Base Kustomization
 
@@ -116,16 +95,7 @@ You can think of each application variant as the base that defines the structure
 
 Create your base application at `overlay/application-a/application-a-base/application.yaml` like the following:
 
-[source,yaml]
-----
-apiVersion: appstudio.redhat.com/v1alpha1
-kind: Application
-metadata:
-  name: base
-spec:
-  description: base
-  displayName: base
-----
+include::ROOT:partial$custom-resources/{context}-application.adoc[]
 
 And its Kustomization file at `overlay/application-a/application-a-base/kustomization.yaml`:
 
