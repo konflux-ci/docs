@@ -42,11 +42,9 @@ After creating the downstream repository, add a git submodule to it that tracks 
 
 [source, bash]
 ----
-git submodule add <upstream-url>
+git submodule add -b <upstream-branch> <upstream-git-url>
+git commit -m 'Adding git submodule tracking <upstream-branch> branch of <upstream-git-url>'
 ----
-
-TODO - do you have to `git commit` after this?
-TODO - how do you specify the branch?
 
 Check and configure the git submodule config:
 [source, gitmodules]
@@ -55,11 +53,7 @@ Check and configure the git submodule config:
 [submodule "<project-name>"]
   path = <path-in-downstream-repository>
   url = https://github.com/<namespace>/<project>.git
-  # Please note: by default a branch is not specified
-  # in the git submodule configuration file.
-  # Please consider setting one to prevent using the wrong branch.
-  # Here is an example of a branch being set:
-  branch = <designated-repository-branch>
+  branch = <upstream-repository-branch>
 ----
 
 include::ROOT:partial${context}-submodules-renovate.adoc[]
