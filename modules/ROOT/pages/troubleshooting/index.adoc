@@ -38,7 +38,7 @@ spec:
 Tasks may fail with an error message mentioning ``PipelineRun <pipelineName> failed to finish within "1h0m0s".``
 
 If you see this error message, it means that the pipeline run has exceeded the default one hour time limit set for PipelineRuns.
-You can increase the timeout if necessary, see xref:/how-tos/configuring/customizing-the-build.adoc#configuring-timeouts[Configuring timeouts].
+You can increase the timeout if necessary, see xref:/building/customizing-the-build.adoc#configuring-timeouts[Configuring timeouts].
 
 == Failed to push or pull image
 

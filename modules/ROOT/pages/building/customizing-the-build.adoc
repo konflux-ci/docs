@@ -1,0 +1,279 @@
+= Customizing the build pipeline
+
+To meet your specific needs, you can customize the way that {ProductName} builds components. For instance:
+
+* Change the parameters of the build pipeline of a component.
+* Configure the timeouts for the pipeline.
+* Extend the pipeline with your own tasks (or delete existing tasks).
+
+For example, you might decide to limit how long {ProductName} saves the images that it builds for pull requests. You can set a limit by changing the value of the `image-expires-after` parameter. Or you can ensure that images are compliant with regulations for your industry, by adding a compliance check as a task to the build pipeline.
+
+
+== Changing parameters
+
+.Procedure
+
+. In the PipelineRun YAML files in the `.tekton` directory, customize the parameters in the `.spec.params` section:
+.. You can change the default `value` of existing parameters. For example, for PRs, you could change the value of `image-expires-after` from the default `5d` to `1w`, so images built for PRs expire after a week rather than 5 days.
++
+[source,diff]
+----
+ spec:
+   params:
+   - name: image-expires-after
+-    value: 5d
++    value: 1w
+   - name: dockerfile
+     value: Dockerfile
+----
+
+.. You can also add parameters. New parameters must include a `name` and `value`.
++
+[source,diff]
+----
+ spec:
+   params:
++  - name: hermetic
++    value: "true"
+   - name: image-expires-after
+     value: 1w
+   - name: dockerfile
+     value: Dockerfile
+----
++
+Refer to the `params` section in your Pipeline to see the available parameters.
+When looking at a PipelineRun file, you can typically find the Pipeline definition in:
++
+* The PipelineRun file itself, inlined in `.spec.pipelineSpec`
+* A separate file in the `.tekton` directory, referenced by name in `.spec.pipelineRef`
+* An external location, referenced by a resolver in `.spec.pipelineRef`
+
+. Commit your changes to the repository of the component.
+
+
+== Configuring timeouts
+
+By default, your pipeline has a timeout of 1 hour (as does each task in the pipeline individually).
+Your builds may take longer than that, in which case you will need to increase the timeouts accordingly.
+
+.Procedure
+
+For example, let's configure the timeouts for a pipeline where the build itself may take up to 3 hours
+and antivirus scanning may take up to 2 hours. We'll set corresponding timeouts for both the tasks
+and a 6 hour total timeout for the pipeline.
+
+. In the PipelineRun files in the `.tekton` directory, set the `.spec.timeouts`. This is the overall timeout for the pipeline.
++
+[source,yaml]
+----
+kind: PipelineRun
+spec:
+  timeouts:
+    # See https://tekton.dev/docs/pipelines/pipelineruns/#configuring-a-failure-timeout
+    pipeline: 6h
+----
+. In the Pipeline definitions in the `.tekton` directory, set the `timeout` for the relevant tasks:
++
+[source,yaml]
+----
+kind: Pipeline
+spec:
+  tasks:
+    # ...
+    - name: build-container
+      timeout: 3h
+      runAfter:
+        - clone-repository
+      taskRef: ...
+    - name: clamav-scan
+      timeout: 2h
+      runAfter:
+        - build-container
+      taskRef: ...
+----
++
+NOTE: This example shows a separate Pipeline file, but your pipeline may also be defined directly in
+    your PipelineRun file(s) (in `.spec.pipelineSpec`), in which case you configure all the timeouts in
+    the PipelineRun.
+
+
+== Extending the build pipeline with your own tasks
+
+Before you extend your build pipeline, be aware that doing so may cause builds to fail an link:https://enterprisecontract.dev/docs[Enterprise Contract] check, if you are using EC. To resolve this issue, please reference the xref:./customizing-the-build.adoc#preventing-issues-with-the-enterprise-contract[next procedure].
+
+.Procedure
+
+. In each Pipeline definition in the `.tekton` directory, add a new task to the `tasks` section.
+
++
+Example task:
++
+[source,yaml]
+--
+  name: example-task
+  params:
+  - name: example-param
+    value: "Example"
+  runAfter:
+  - build-container  # You can be more specific by choosing another task
+  taskRef:
+    params:
+    - name: name
+      value: example-task  # metadata.name field of the Task
+    - name: bundle
+      value: quay.io/tekton-bundle-catalog/example-task-bundle:1.0
+      # For more details on tekton bundles, refer to https://tekton.dev/docs/pipelines/pipelines/#tekton-bundles
+    - name: kind
+      value: task
+    resolver: bundles
+  when:
+  - input: $(params.skip-checks)  # This references the pipeline parameters
+    operator: in
+    values:
+    - "false"
+--
+
++
+An example of a custom task added to the pipeline that sends a slack notification when the `Pipelinerun` fails:
++
+[source,yaml]
+--
+  name: slack-webhook-notification
+  params:
+    - name: message
+      value: PipelineRun $(context.pipelineRun.name) failed
+    - name: secret-name
+      value: my-secret  # name of secret in the your namespace which contains slack web-hook URL under key specified in 'key-name' parameter below
+    - name: key-name
+      value: dev-team
+  taskRef:
+    params:
+    - name: bundle
+      value: quay.io/konflux-ci/tekton-catalog/task-slack-webhook-notification:0.1
+    - name: name
+      value: slack-webhook-notification
+    - name: kind
+      value: Task
+    resolver: bundles
+  when:
+    - input: $(tasks.status)
+      operator: in
+      values: ["Failed"]
+--
+
+. Commit your changes to the repository of the component.
+
+[NOTE]
+====
+* To use `slack-webhook-notification` task, you need to xref:./creating-secrets.adoc[create a secret] in your namespace with at least one key where the value is the webhook URL. For example, to create a secret for Slack, run `kubectl create secret generic my-secret --from-literal dev-team=https://hooks.slack.com/services/XXX/XXXXXX`
+
+* If you want to define a task directly in this file, rather than using `taskRef`, you can use `taskSpec`. See the Tekton documentation on
+  link:https://tekton.dev/docs/pipelines/taskruns/#specifying-the-target-task[specifying the target task] for more details.
+
+====
+
+== Preventing issues with the Enterprise Contract
+
+Custom Tasks may need access to data from other Tasks. However, in order to not break the chain of trust in a build Pipeline, there are restrictions in modifying such data. For example, a custom Task should not be allowed to modify the component's source code. If you are using the Enterprise Contract (EC) to verify your builds, introducing a custom Task may violate the link:https://enterprisecontract.dev/docs/ec-policies/release_policy.html#trusted_task__trusted[Trusted Tasks] rule. See xref:./using-trusted-artifacts.adoc[Trusted Artifacts] for how to safely allow share data between Tasks.
+
+== Exchanging the build pipeline build task with higher memory limits
+
+[TIP]
+--
+If possible, prefer xref:./overriding-compute-resources.adoc[overriding compute resources] directly in your PipelineRun file.
+It is a much more flexible and simpler approach.
+Use this procedure as a last resort, if the relevant features are not enabled in your cluster.
+--
+
+The `buildah` task, which builds components from a Dockerfile, has a memory limit of 4 GB. To build components with memory requirements greater than 4 GB, use the following tasks:
+
+* link:https://quay.io/repository/konflux-ci/tekton-catalog/task-buildah-6gb?tab=tags[quay.io/konflux-ci/tekton-catalog/task-buildah-6gb]
+* link:https://quay.io/repository/konflux-ci/tekton-catalog/task-buildah-8gb?tab=tags[quay.io/konflux-ci/tekton-catalog/task-buildah-8gb]
+* link:https://quay.io/repository/konflux-ci/tekton-catalog/task-buildah-10gb?tab=tags[quay.io/konflux-ci/tekton-catalog/task-buildah-10gb]
+* link:https://quay.io/repository/konflux-ci/tekton-catalog/task-buildah-20gb?tab=tags[quay.io/konflux-ci/tekton-catalog/task-buildah-20gb]
+* link:https://quay.io/repository/konflux-ci/tekton-catalog/task-buildah-24gb?tab=tags[quay.io/konflux-ci/tekton-catalog/task-buildah-24gb]
+
+.Procedure
+
+To exchange the build task with a memory limit of 6 GB, complete the following steps. For a memory limit of 8 or 10 GB, replace the references to 6 GB with the appropriate values.
+
+. Go to the GitHub repo of your component.
+. In each Pipeline definition in the `.tekton` directory, under `tasks`, locate the task named build-container:
+.. Under `.taskRef.params`, set `name` to `buildah-6gb`.
+.. Under `.taskRef.params`, change the value of `bundle` - replace the repository name with `task-buildah-6gb`.
+   Keep the version tag (e.g. `0.2`) and remove the `@sha256:...` digest.
++
+[source,diff]
+----
+ spec:
+   pipelineSpec:
+     tasks:
+       # ...
+       - name: build-container
+         taskRef:
+           resolver: bundles
+           params:
+             - name: kind
+               value: task
+             - name: name
+-              value: buildah
++              value: buildah-6gb
+             - name: bundle
+-              value: quay.io/konflux-ci/tekton-catalog/task-buildah:0.2@sha256:3f0913dfb85e9aeb9916e412d10329528ddf4c8fba9958cba5291ca8ee247f7e
++              value: quay.io/konflux-ci/tekton-catalog/task-buildah-6gb:0.2
+----
+
+.. If you'd like, pin the `task-buildah-6gb` bundle to a digest.
+   Take the output of the following script (requires `skopeo`) and append it to the `bundle` value:
++
+[source,bash]
+----
+my_bundle=quay.io/konflux-ci/tekton-catalog/task-buildah-6gb:0.2
+
+skopeo inspect --format '@{{.Digest}}' --no-tags docker://"${my_bundle}"
+----
++
+[TIP]
+====
+{ProductName} task version tags (e.g. `0.2`) are "floating" - they move to the latest release every time the task gets an update.
+By pinning to a digest, you ensure your pipeline will always use the exact same version of the task.
+{ProductName} automatically sends out PRs to update task digests, letting you opt in updating the task rather than having it update on its own behind your back.
+The task update PR will trigger the on-pull-request pipeline, testing the changes before they can affect the on-push pipeline or other PRs.
+
+====
+
+== Bring your own Quay repository to the build pipeline
+
+By default, all pipelines push the images to a local repository that is set up as a part of installation. Ths registry address is registry-service.kind-registry:5001. It is not mandatory to use this local repo, so if you want to use your own Quay repo to control user permissions, you can do this by following link:https://github.com/konflux-ci/konflux-ci/blob/main/docs/quay.md#configuring-a-push-secret-for-the-build-pipeline[the instructions] for configuring a push secret for the build piepline.
+
+== Verification
+
+When you commit changes to these `.yaml` files in your repository, {ProductName} automatically triggers a new build. Wait for {ProductName} to complete the new build, then verify your changes have been made by following these steps:
+
+. Navigate to *Activity > Pipeline runs*.
+. Select the most recent build pipeline run.
+. In the *Details* tab, confirm that there are new tasks that you added in the pipeline visualization.
+. In the *Logs* tab, confirm the following:
+.. Any new tasks are in the navigation bar.
+.. If you changed a parameter's value, and that value gets printed, the new value is in the log.
+
+== Troubleshooting
+
+If you experience any issues with your customized pipeline, try the following solutions:
+
+* If you believe that your desired parameter values are not being passed into the pipeline, make sure that your assignment of that value doesn't get overwritten later in the `.yaml` file.
+
+* If your new task is not appearing in the pipeline run, ensure the following:
+** You added it to the correct place in the `.yaml` files, so that it has the path `.spec.tasks` or `.pipelineSpec.tasks`.
+** You specified a valid `runAfter` field, and that the task in that field completed successfully.
+
+* For problems with both parameters and tasks, make sure you committed your changes to the `.tekton` directory in the repository that {ProductName} references for the component.
+
+== Additional resources [[additional-resources]]
+
+* Documentation on xref:./reconfiguring-build-pipeline.adoc[resetting your build pipeline].
+* Tekton docs for link:https://tekton.dev/docs/pipelines/tasks/[Tasks], link:https://tekton.dev/docs/pipelines/pipelines/[Pipelines]
+  and link:https://tekton.dev/docs/pipelines/pipelineruns/[PipelineRuns]
+** The fundamentals of your build pipeline
+* Pipelines as Code docs for link:https://pipelinesascode.com/docs/guide/authoringprs/[PipelineRuns]
+** PaC-specific concepts, such as dynamic variables and event matching

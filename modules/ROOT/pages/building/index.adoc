@@ -1,0 +1,9 @@
+= Configuring your builds
+
+When creating a component, {ProductName} will push a Tekton PipelineRun to your component's source repository. This pipeline is yours to customize as needed for building your component and Tekton Chains will record the customizations in a detailed signed in-toto provenance attestation. This provenance enables Enterprise Contract to xref:/managing-compliance-with-ec/index.adoc[manage compliance] to ensure the artifact's integrity and compliance with specific policies.
+
+== Additional resources [[additional-resources]]
+
+* The sample pipelines that you can initially configure your components with depend on the {ProductName} deployment. This might include the pipelines provided by xref:/installing/enabling-builds.adoc#available-pipelines[{ProductName}] or other additional pipelines.
+* If you want to change the configured pipeline for your component after it is onboarded, see xref:/building/reconfiguring-build-pipeline.adoc#changing-pipelines[reconfiguring the build pipeline].
+* Since the Tekton PipelineRuns use link:https://pipelinesascode.com[Pipelines as Code] to trigger the jobs on the cluster, you can also use any of the link:https://pipelinesascode.com/docs/guide/authoringprs/#default-parameters[default parameters] in the PipelineRuns in your git repositories.
