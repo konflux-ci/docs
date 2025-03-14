@@ -190,5 +190,5 @@ a|In {ProductName}:
 
 == Additional resources
 
-* Learn xref:../metadata/index.adoc[how to inspect the SLSA] provenance for your components.
+* Learn xref:metadata:index.adoc[how to inspect the SLSA] provenance for your components.
 * Visit the link:https://slsa.dev/spec/v1.0/[SLSA overview page], the link:https://slsa.dev/spec/v1.0/levels[Build Levels] page, or the link:https://slsa.dev/spec/v1.0/verifying-systems[verifying build platforms] page.

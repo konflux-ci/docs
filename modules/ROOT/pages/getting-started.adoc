@@ -26,4 +26,4 @@ To access {ProductName}, your PE needs to give you the URL to your team's instan
 
 == Getting started with the CLI
 
-include::ROOT:partial$getting-started/{context}-getting-started-with-the-cli.adoc[]
+include:partial$getting-started/{context}-getting-started-with-the-cli.adoc[]

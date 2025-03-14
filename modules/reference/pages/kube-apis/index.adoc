@@ -1,0 +1,14 @@
+= Konflux Kubernetes APIs
+
+Below are the Kubernetes API extensions added by Konflux.
+
+* xref:reference:kube-apis/application-api.adoc#k8s-api-github-com-konflux-ci-application-api-api-v1alpha1-application[Application]
+* xref:reference:kube-apis/application-api.adoc#k8s-api-github-com-konflux-ci-application-api-api-v1alpha1-component[Component]
+* xref:reference:kube-apis/application-api.adoc#k8s-api-github-com-konflux-ci-application-api-api-v1alpha1-snapshot[Snapshot]
+* xref:reference:kube-apis/enterprise-contract.adoc#k8s-api-github-com-enterprise-contract-enterprise-contract-controller-api-v1alpha1-enterprisecontractpolicy[EnterpriseContractPolicy]
+* xref:reference:kube-apis/image-controller.adoc#k8s-api-github-com-konflux-ci-image-controller-api-v1alpha1-imagerepository[ImageRepository]
+* xref:reference:kube-apis/integration-service.adoc#k8s-api-github-com-konflux-ci-integration-service-api-v1alpha1-integrationtestscenario[IntegrationTestScenario]
+* xref:reference:kube-apis/release-service.adoc#k8s-api-github-com-konflux-ci-release-service-api-v1alpha1-release[Release]
+* xref:reference:kube-apis/release-service.adoc#k8s-api-github-com-konflux-ci-release-service-api-v1alpha1-releaseplan[ReleasePlan]
+* xref:reference:kube-apis/release-service.adoc#k8s-api-github-com-konflux-ci-release-service-api-v1alpha1-releaseplanadmission[ReleasePlanAdmission]
+* xref:reference:kube-apis/release-service.adoc#k8s-api-github-com-konflux-ci-release-service-api-v1alpha1-releaseserviceconfig[ReleaseServiceConfig]

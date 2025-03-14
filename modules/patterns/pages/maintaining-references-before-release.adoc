@@ -1,0 +1,47 @@
+= Maintaining valid image references before a release
+
+When images are xref:releasing:index.adoc[released] they will usually be copied to another image repository. If any build-time image references are used within component (for example, xref:end-to-end:building-olm.adoc[OLM bundles]) any references will be invalid after releasing. To surmount this, {ProductName} enables your xref:building:component-nudges.adoc[component nudges] to be updated with image references which will be valid after release.
+
+== Configuring nudges for the released image repository targets
+
+.Procedure
+
+. Configure your xref:releasing:create-release-plan-admission.adoc[release plan admission] for a release pipeline which will copy the images to a new repository.
+. In the `spec.data.mapping.components` create a list of component mappings to the target repository
+
++
+*Example partial `ReleasePlanAdmission.yaml` object*
+
++
+[source,yaml]
+----
+apiVersion: appstudio.redhat.com/v1alpha1
+kind: ReleasePlanAdmission
+spec:
+ applications:
+  - demo-app <.>
+ data:
+   mapping:
+     components: <.>
+       - name: demo-component-1
+         repository: target-image-repository-1
+       - name: demo-component-2
+         repository: target-image-repository-2
+ origin: <dev-workspace> <.>
+
+----
+
++
+<.> A list of applications that will contain components to be released.
+<.> A list containing the target repository for each component
+<.> The development team workspace where the applications and components are defined.
+
+. Using your preferred text editor, in the git repo for your nudged component, open the file that contains the pullspecs. In that file, update the image references to all images that will be released to the target repository from the RPA (the sha digests should remain unchanged). Commit this change.
+
++
+NOTE: Once this change is merged, the nudged component will contain invalid references until all referenced images are released. In order to test the image in an environment, you will need to use a registry mirror like an link:https://docs.openshift.com/container-platform/4.16/rest_api/config_apis/imagedigestmirrorset-config-openshift-io-v1.html[ImageDigestMirrorSet].
+
+.*Verification*
+
+. Commit a change to a nudging component, triggering a push event.
+. After the build is completed, a pull request should be opened against your nudged component's git repository.

@@ -1,0 +1,4 @@
+** xref:index.adoc[Inspecting provenance and attestations]
+*** xref:sboms.adoc[Inspecting SBOMs]
+*** xref:attestations.adoc[Inspecting artifact attestations]
+*** xref:scan-results.adoc[Inspecting artifact scan results]

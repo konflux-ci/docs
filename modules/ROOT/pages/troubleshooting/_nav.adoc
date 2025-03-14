@@ -1,1 +1,0 @@
-* xref:troubleshooting/index.adoc[Troubleshooting]

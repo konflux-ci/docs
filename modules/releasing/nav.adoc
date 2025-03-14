@@ -1,0 +1,5 @@
+** xref:index.adoc[Releasing]
+*** xref:create-release-plan.adoc[Creating a release plan]
+*** xref:create-release-plan-admission.adoc[Creating a release plan admission]
+*** xref:create-release.adoc[Creating a release]
+*** xref:tenant-release-pipelines.adoc[Tenant Release Pipelines]
