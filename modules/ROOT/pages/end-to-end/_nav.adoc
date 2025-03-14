@@ -1,2 +1,3 @@
 ** End-to-end guides
 *** xref:/end-to-end/building-olm.adoc[Building an OLM operator]
+include::ROOT:partial$end-to-end/{context}-nav.adoc[]
