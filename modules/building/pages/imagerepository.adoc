@@ -1,0 +1,24 @@
+= Customizing ImageRepository
+
+== Changing repository visibility
+In the ImageRepository change `spec.image.visibility` to `public`(default) or `private` according what you want,
+only those two options are valid.
+
+== Rotating credentials for repository
+In the ImageRepository add new section `spec.credentials.regenerate-token` with value `true`, repository credentials
+will be rotated and pull & push secret updated, section will be removed after rotation and `status.credentials.generationTimestamp` will be updated with new timestamp.
+
+== Verify and fix secrets links in Service Account
+If you modified manually SA or removed manually some generated secrets you can fix your SA by adding in
+the ImageRepository new section `spec.credentials.verify-linking` with value `true`,
+section will be removed after actions are performed.
+
+It will link secret to service account if link is missing.
+It will remove duplicate links of secret in service account.
+It will remove secret from imagePullSecrets in service account.
+It will unlink secret from service account, if secret doesn't exist (you can recreate secret using 'regenerate-token').
+
+== Skip repository deletion
+By default when ImageRepository is removed it will also remove repository in quay.io,
+if you want to keep it and still remove ImageRepository add to the ImageRepository
+new annotation `image-controller.appstudio.redhat.com/skip-repository-deletion` with value `"true"`.
