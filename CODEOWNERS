@@ -1,0 +1,27 @@
+# https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/about-code-owners
+
+*   @konflux-ci/docs
+
+# installation
+/docs/modules/ROOT/pages/advanced-how-tos/installing/   @konflux-ci/installer-maintainers
+
+# build
+/docs/modules/ROOT/pages/how-tos/configuring/           @konflux-ci/build-maintainers
+/docs/modules/ROOT/partials/how-tos/configuring/        @konflux-ci/build-maintainers
+
+# integration
+/docs/modules/ROOT/pages/how-tos/testing/               @konflux-ci/integration-service-maintainers
+
+# release
+/docs/modules/ROOT/pages/advanced-how-tos/releasing                                @konflux-ci/release-service-maintainers
+/docs/modules/ROOT/pages/advanced-how-tos/testing-releasing-single-component.adoc  @konflux-ci/release-service-maintainers
+
+# Conforma
+/docs/modules/ROOT/pages/advanced-how-tos/managing-compliance-with-ec       @konflux-ci/ec
+/docs/modules/ROOT/pages/advanced-how-tos/using-trusted-artifacts.adoc      @konflux-ci/ec
+
+
+# find a team to own this
+
+/docs/modules/ROOT/pages/how-tos/metadata/              @ralphbean @arewm
+/docs/modules/ROOT/pages/how-tos/workflows/             @ralphbean @arewm
