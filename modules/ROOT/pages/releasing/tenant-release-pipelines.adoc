@@ -9,7 +9,7 @@ The gist here is that you are going to follow the regular instructions to xref:/
 .*Prerequisites*
 
 * You have an existing Development workspace.
-* You have completed the steps listed in the xref:/getting-started/cli.adoc[Getting started in the CLI] page.
+* You have completed the steps listed in the xref:/getting-started/index.adoc#getting-started-with-the-cli[Getting started in the CLI] page.
 * Either choose one of the link:https://github.com/konflux-ci/release-service-catalog[konflux release pipelines], or write your own.
 
 NOTE: If you write a good reusable release pipeline, please submit it to our link:https://github.com/konflux-ci/release-service-catalog[catalog] so others can use it.

@@ -15,7 +15,7 @@ Cloning an application involves replicating the application's code and configura
 
 * You have the link:https://github.com/konflux-ci/architecture/blob/main/ADR/0011-roles-and-permissions.md[Maintainer role] or greater in the original workspace where the embargoed issue was identified.
 // Maintainer role was xref:getting-started/roles_permissions/ Currently no such file in konflux-ci/docs. Add a link if the doc is published.
-* You have xref:/getting-started/cli.adoc[enabled CLI access for {ProductName}].
+* You have xref:/getting-started/index.adoc#getting-started-with-the-cli[enabled CLI access for {ProductName}].
 
 .**Procedure**
 
@@ -34,7 +34,7 @@ NOTE: Creating a private fork of the public link:https://docs.github.com/en/repo
 * You can reuse a personal workspace, but limit the link:https://console.redhat.com/preview/application-pipeline/access[User Access] to a minimal number of required collaborators.
 ====
 
-. Log in to the original workspace where the application was previously being developed using the `kubectl` CLI tool. (See xref:/getting-started/cli.adoc[Getting started with CLI].) Append `/workspaces/<original-tenant-workspace>` to the {ProductName} API URL used in the `kubectl login` command to target a particular workspace other than your default user workspace.
+. Log in to the original workspace where the application was previously being developed using the `kubectl` CLI tool. (See xref:/getting-started/index.adoc#getting-started-with-the-cli[Getting started with CLI].) Append `/workspaces/<original-tenant-workspace>` to the {ProductName} API URL used in the `kubectl login` command to target a particular workspace other than your default user workspace.
 // Add a link to the KUBECONFIG workflow when it's documented. Either approach is legit, up to a user to choose.
 . To export records the application from the original workspace with details changed to refer to your new private workspace, run the following command:
 

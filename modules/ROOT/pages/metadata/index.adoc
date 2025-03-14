@@ -18,7 +18,7 @@ Don't take our word on the transparency -- you can download and inspect these ar
 
 * Install the link:https://stedolan.github.io/jq/download/[jq] CLI tool.
 
-* xref:/getting-started/cli.adoc[Login] to {ProductName}.
+* xref:/getting-started/index.adoc#getting-started-with-the-cli[Login] to {ProductName}.
 
 .Procedure
 

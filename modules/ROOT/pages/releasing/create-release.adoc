@@ -9,7 +9,7 @@ The development team creates a `Release` object in the developer workspace. The 
 .*Prerequisites*
 
 * You have an existing Development workspace.
-* You have completed the steps listed in the xref:/getting-started/cli.adoc[Getting started in the CLI] page.
+* You have completed the steps listed in the xref:/getting-started/index.adoc#getting-started-with-the-cli[Getting started in the CLI] page.
 * You have completed the steps for creating a ReleasePlanAdmission and a matching ReleasePlan.
 
 .*Procedures*

@@ -1,0 +1,1 @@
+In order to use the CLI to interact with Konflux, contact your Platform Engineer.
