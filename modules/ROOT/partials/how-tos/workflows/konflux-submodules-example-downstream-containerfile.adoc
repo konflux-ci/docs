@@ -1,0 +1,1 @@
+You can see examples of Containerfiles that follow this pattern in {ProductName}'s own link:https://github.com/konflux-ci/yq-container[yq-container] and link:https://github.com/konflux-ci/yq-container[oras-container] repositories.
