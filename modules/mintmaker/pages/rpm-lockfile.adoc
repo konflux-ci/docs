@@ -1,0 +1,35 @@
+= RPM lockfiles
+
+== Introduction
+
+MintMaker offers a custom extension on top of https://docs.renovatebot.com/[Renovate], that allows the automatic updates
+of RPM lockfiles through the https://github.com/konflux-ci/rpm-lockfile-prototype[rpm-lockfile-prototype] project.
+
+This extension is enabled by default for all repositories without any additional
+Renovate configuration.
+
+== Implementation
+
+The RPM lockfiles are different from the typical approach seen in many programming languages.
+Unlike in `pyproject.toml` or `package.json`, there is no way to pin dependencies (RPMs) to specific versions or ranges. The input file (`rpms.in.yaml`) describes
+how the RPMs are resolved and how the lockfile is generated.
+The lockfile (`rpms.lock.yaml`) contains a snapshot of the RPMs installed in
+your container image, however, these are always the *latest* versions available
+in the repositories. Once the repositories are updated to newer versions, the
+lockfile is not consistent anymore and needs to be updated.
+
+In MintMaker, all RPM updates are grouped into a single PR/MR. This is because
+the lockfile implementation doesn't allow for single dependency updates
+and it needs to be refreshed as a whole every time. While the individual RPM
+updates _will_ be listed in the PR/MR description, it is not possible
+to break them into multiple PRs/MRs.
+
+
+Please find how to generate RPM lockfile in xref:ROOT:building:prefetching-dependencies.adoc#rpm[documentation for enabling RPM prefetching].
+
+
+== Multiple lockfiles in one repository
+
+Some projects require having multiple lockfiles in different subdirectories.
+These lockfiles will be updated, however matching CVE data against them
+is xref:mintmaker:support.adoc#rpm-lock-files[not currently supported].

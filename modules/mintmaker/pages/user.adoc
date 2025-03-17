@@ -1,0 +1,521 @@
+= Dependency Management
+== Introduction
+
+MintMaker is a service built on top of https://docs.renovatebot.com/[Renovate]. It includes the xref:mintmaker:rpm-lockfile.adoc[RPM lockfile extension] and integration with https://konflux-ci.dev/[Konflux CI].
+
+Renovate is a tool that automates dependency updates in your repository. Its goal
+is to make dependency management easier and a continued practice. That way, your
+project will always have the latest fixes for bugs and security issues.
+
+In this documentation, when we mention something about Renovate, it will be a
+general statement. Therefore it will also apply to MintMaker, since it runs an
+underlying Renovate service. However, when we say something about
+MintMaker, it is a specific statement that might not apply to other Renovate 
+instances.
+
+== Configuration
+
+Renovate is a very configurable tool. Since every project has its unique
+needs, it is fundamental to take advantage of that flexibility to make MintMaker
+work in the best possible manner.
+
+The MintMaker team provides a base set of configurations that provide a sensible
+starting point. It enables users to have a good experience out of the box.
+
+=== Create your custom configuration
+
+The base configuration can be found https://github.com/konflux-ci/mintmaker/blob/main/config/renovate/renovate.json[here].
+This config file is applied to all repositories onboarded in Konflux and serves
+as our global Renovate configuration.
+
+NOTE: While this link points to the latest global configuration, our deployment
+may use a configuration from a specific commit. However, in most cases, there
+won't be any conflicts between the deployed version and the latest version. For
+reference purposes, you can refer to the latest version of the configuration.
+
+Individual repositories can override this config to tweak
+Renovate's behavior to their needs by adding a `renovate.json`
+file in the top level directory of the repository's *default branch*.
+All available configuration options can be found in 
+https://docs.renovatebot.com/configuration-options/[Renovate documentation].
+
+When customizing your configs, use the following base template to build on:
+
+[source,json]
+----
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json"
+}
+----
+
+=== Configuration presets
+
+Before diving deeper into all the possible configuarion options, consider using
+one of MintMaker's prepared presets. Presets provide predefined options that can
+be added to the `extends` field in your renovate.json, as suggested below.
+Multiple presets can be combined as needed.
+
+[source,json]
+----
+{
+  "extends": ["github>konflux-ci/mintmaker-presets:<preset name>"]
+}
+----
+
+The following table describes presets available at current time. In addition to
+MintMaker presets, you can also explore options from the https://docs.renovatebot.com/presets-default/[official Renovate documentation].
+
+[options="header"]
+|===
+|*Preset name* |*Description*
+|cve-automerge-all | Automerge all CVE fixes
+|cve-automerge-critical* | Automerge CVE fixes with Critical severity
+|cve-automerge-high* | Automerge CVE fixes with High severity or higher
+|cve-automerge-moderate* | Automerge CVE fixes with Moderate severity or higher
+|update-fedora-to-stable | Suggest only stable Fedora releases (based on https://endoflife.date/fedora[endoflife.date])
+|group-python-requirements | Group `requirement.txt` updates into a single PR
+|group-python-poetry | Group Poetry updates into a single PR
+|===
+
+CAUTION: *RPM manager currently does not support automerge based on severity
+information, this feature is WIP. 
+
+== Available managers
+
+Renovate is based around the concept of package managers. Package managers
+are tools that manage dependencies in a certain category, programming language or configuration file. While some managers work
+"out of the box", for others (e.g. Kubernetes or `regex` manager) you need to
+specify the details in the `renovate.json` configuration file. You can refer
+to a specific manager in the
+https://docs.renovatebot.com/modules/manager/[Renovate manager section].
+
+We are working on enabling every manager available in Renovate. The list of currently
+enabled managers is available below.
+
+=== List of currently supported managers
+
+[cols="20,80%",options="header"]
+|===
+|*Category* |*Enabled Managers*
+|*Ansible* |+++<del>+++`ansible`, `ansible-galaxy`+++</del>+++
+
+|*Batect* |+++<del>+++`batect`, `batect-wrapper`+++</del>+++
+
+|*Bazel* |+++<del>+++`bazel`, `bazel-module`, `bazelisk`+++</del>+++
+
+|*C and C++* |+++<del>+++`conan`+++</del>+++
+
+|*Continuous Delivery* |`tekton`, `argocd`, `fleet`, `flux`, `helmfile`,
+`helmsman`, +++<del>+++`cdnurl`, `html`, `glasskube`+++</del>+++
+
+|*Continuous Integration* |`tekton`, +++<del>+++`azure-pipelines`,
+`bitbucket-pipelines`, `bitrise`, `buildkite`, `circleci`, `cloudbuild`,
+`droneci`, `github-actions`+++</del>+++, `gitlabci`, `gitlabci-include`, +++<del>+++`jenkins`,
+`travis`, `velaci`, `woodpecker`+++</del>+++
+
+|*Custom Managers* |`regex`
+
+|*Dart* |+++<del>+++`pub`+++</del>+++
+
+|*Docker* |`dockerfile`, +++<del>+++`devcontainer`,
+`docker-compose`+++</del>+++
+
+|*.NET* |+++<del>+++`cake`, `nuget`+++</del>+++
+
+|*Elixir* |+++<del>+++`mix`+++</del>+++
+
+|*Go* |`gomod`, `ocb`
+
+|*Helm* |`helm-requirements`, `helm-values`, `helmfile`, `helmsman`,
+`helmv3`
+
+|*Infrastructure as Code* |+++<del>+++`ansible`, `ansible-galaxy`,
+`bicep`, `crossplane`, `puppet`+++</del>+++, `terraform`, `terragrunt`
+
+|*Java* |+++<del>+++`deps-edn`, `gradle`, `gradle-wrapper`,
+`kotlin-script`, `leiningen`, `maven`, `maven-wrapper`, `sbt`,
+`scalafmt`+++</del>+++
+
+|*JavaScript* |+++<del>+++`bun`, `meteor`, `nodenv`, `npm`, `nvm`+++</del>+++
+
+|*Kubernetes* |`argocd`, `crossplane`, `fleet`, `flux`, `glasskube`,
+`helm-requirements`, `helm-values`, `helmfile`, `helmsman`, `helmv3`,
+`jsonnet-bundler`, `kubernetes`, `kustomize`,
++++<del>+++`glasskube`+++</del>+++
+
+|*Node.js* |+++<del>+++`nodenv`, `nvm`+++</del>+++
+
+|*Perl* |+++<del>+++`cpanfile`+++</del>+++
+
+|*PHP* |+++<del>+++`composer`+++</del>+++
+
+|*Python* |`pep621`, `pip-compile`, `pip_requirements`,
+`pip_setup`, `pipenv`, `poetry`, `pyenv`, `runtime-version`,
+`setup-cfg`, `pep723`
+
+|*RPM* |`rpm`
+
+|*Ruby* |+++<del>+++`bundler`, `puppet`, `ruby-version`+++</del>+++
+
+|*Rust* |+++<del>+++`cargo`+++</del>+++
+
+|*Swift* |+++<del>+++`cocoapods`, `mint`, `swift`+++</del>+++
+
+|*Terraform* |`terraform`, `terraform-version`,
+`terragrunt`, `terragrunt-version`, `tflint-plugin`
+
+|*N/A* |`asdf`, `fvm`, `git-submodules`, `hermit`, `homebrew`, +++<del>+++`nix`+++</del>+++,
+`osgi`, `pre-commit`, `vendir`, +++<del>+++`copier`, `gleam`,
+`mise`+++</del>+++
+|===
+
+Managers with a strikethrough are supported by Renovate, but not currently enabled or
+officially supported in MintMaker. You can enable them customizing your `renovate.json`. However, the MintMaker team cannot guarantee any level of functionality and will not provide support for these managers.
+
+NOTE: Detailed compatibility/support matrix for certain managers can be found
+xref:mintmaker:support.adoc[here].
+
+CAUTION: The `pip-compile` manager will currently update dependencies using Python 3.12
+(even if the user applies https://docs.renovatebot.com/language-constraints-and-upgrading/#applying-constraints-through-config[constraints]
+in the configuration). Our Renovate instance relies on tools installed in the container image and cannot
+dynamically upgrade or downgrade the pip-compile version at current time.
+
+NOTE: The `enabledManagers` configuration option in Renovate is not extendable between global
+and repository-level configurations. When enabling additional managers in your repository's
+`renovate.json`, you need to specify a complete list of *all* desired managers.
+
+== Scheduling
+
+Due to performance considerations, since 20 November 2024, MintMaker is configured to run different managers at different times. The current schedule for individual managers is:
+
+[cols="30%,70%",option="header"]
+|===
+|*Schedule* | *Managers*
+|Every day before 5 AM | rpm, lockFileMaintenance
+|Monday after 5 AM | dockerfile
+|Tuesday after 5 AM | git-submodules
+|Wednesday after 5 AM | argocd, crossplane, fleet, flux, helm-requirements, helm-values, helmfile, helmsman, helmv3, jsonnet-bundler, kubernetes, kustomize
+|Thursday after 5 AM | asdf, fvm, hermit, homebrew, osgi, pre-commit, vendir
+|Friday after 5 AM | Terraform managers
+|Saturday after 5 AM | Python managers, tekton
+|Sunday after 5 AM | gomod, ocb
+|===
+
+All times are in UTC.
+
+=== Overriding the default schedule
+
+You can override the default MintMaker schedule by modifying the https://docs.renovatebot.com/key-concepts/scheduling/[`schedule`] config option.
+
+To apply the schedule globally (for all managers), use `schedule` in the top
+level of the config file:
+
+[source,json]
+----
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "schedule": ["at any time"]
+}
+----
+
+To apply the schedule only to a specific manager, use:
+
+[source,json]
+----
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "dockerfile": {
+    "schedule": ["at any time"]
+  }
+}
+----
+
+== Custom container files
+
+The Renovate's https://docs.renovatebot.com/modules/manager/dockerfile/[manager for container files] has a specific rule to match files:
+
+[source]
+----
+(^|/|\.)([Dd]ocker|[Cc]ontainer)file$
+(^|/)([Dd]ocker|[Cc]ontainer)file[^/]*$
+----
+
+If your container/Docker file has a different name, you will need to extend the match rule, which can be done following https://docs.renovatebot.com/modules/manager/#file-matching[these instructions].
+
+The `fileMatch` configuration is mergeable, meaning that when
+setting new values in the repository config, they will not override the default
+config. Instead the new values will be merged together with the existing rules.
+
+For example, you can add a section like this in your `renovate.json` file:
+
+[source,json]
+----
+{
+  "dockerfile": {
+    "fileMatch": [
+        "path/to/containerfile1",
+        "path/to/containerfile2"
+    ]
+  }
+}
+----
+
+== Ignoring certain dependencies
+
+If you don't want updates to certain dependencies, but don't want to disable
+the whole manager, you can use the https://docs.renovatebot.com/configuration-options/#ignoredeps[`ignoreDeps`] option:
+
+[source,json]
+----
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "ignoreDeps": [
+    "registry.redhat.io/openshift4/ose-operator-registry",
+    "registry.redhat.io/openshift4/ose-operator-registry-rhel9",
+    "brew.registry.redhat.io/rh-osbs/openshift-ose-operator-registry-rhel9"
+  ]
+}
+----
+
+== Advanced topics
+
+=== Offboarding a repository
+
+If you intend to disable MintMaker for your repository, please follow
+this guide.
+
+==== Prerequisites
+
+- Ensure you have CLI access to the Konflux cluster where your component is created.
+- Ensure you have necessary permission to annotate a component.
+
+==== Steps
+
+- Determine the Konflux component you want to off-boarding from Mintmaker.
+- Use the `kubectl` or `oc` command to add the annotation `mintmaker.appstudio.redhat.com/disabled: "true"` to the component.
+
+Example:
+
+[source,bash]
+----
+oc -n <namespace> annotate component/<component-name> mintmaker.appstudio.redhat.com/disabled=true
+----
+
+=== How to limit the number of PRs/MRs
+
+If you find that you are receiving too many PRs/MRs from MintMaker, there are configuration
+options available to limit the number of open requests or the rate at which they are created.
+Below are the available options that you can set per repository in your `renovate.json`.
+
+https://docs.renovatebot.com/configuration-options/#prconcurrentlimit[`prConcurrentLimit`]: This option sets a limit on the number of open PRs/MRs that Renovate will
+create concurrently. The default is 10.
+
+https://docs.renovatebot.com/configuration-options/#branchconcurrentlimit[`branchConcurrentLimit`]: This option sets a limit on the maximum number of branches that can be
+created concurrently by Renovate. This option will reduce the time taken to rebase every update from Renovate. The default is unlimited.
+
+https://docs.renovatebot.com/configuration-options/#prhourlylimit[`prHourlyLimit`]: This option controls the number of PRs that Renovate will create per hour.
+`prHourlyLimit` helps to limit the rate of opening new PRs. The default is 2.
+
+https://docs.renovatebot.com/configuration-options/#schedule[`schedule`]: Defines specific times when Renovate is allowed to create branches and PRs. This can
+help prevent PRs from being created during busy periods.
+
+Here is an example combining these options:
+
+[source,json]
+----
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "prConcurrentLimit": 5,
+  "branchConcurrentLimit": 0,
+  "prHourlyLimit": 2,
+  "schedule": ["after 10pm and before 6am on every weekday"]
+}
+----
+
+CAUTION: Since MintMaker disables `pruneStaleBranches`, it is *not recommended*
+to modify `branchConcurrentLimit` in any way. The accumulation of old branches
+could lead to no new PRs/MRs getting created.
+
+=== How to stop PRs/MRs from being updated outside of schedule
+
+If you set up a schedule for your repository via the https://docs.renovatebot.com/configuration-options/#schedule[`schedule`] config, it's possible that MintMaker will still update PRs/MRs outside of the allowed times.
+
+The `schedule` config manages branch creation, but will not stop updates to PRs/MRs from branches that are already created. If you want to prevent this behavior, use
+https://docs.renovatebot.com/configuration-options/#updatenotscheduled[`updateNotScheduled`] option, which when set to `false` will disallow for updates in existing PRs/MRs outside of the schedule:
+
+[source,json]
+----
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "updateNotScheduled": false
+}
+----
+
+The default value of `updateNotScheduled` is `true`, which leads to this behavior that might seem unexpected at first.
+
+=== Automerge
+
+It is possible to configure Renovate to merge updates automatically for specific
+dependencies. You can find the documentation on this topic https://docs.renovatebot.com/key-concepts/automerge/[here].
+
+When enabled for a given PR/MR, the automerge will happen provided two conditions are met:
+
+- the repository CI pipeline ran successfully, and
+- the PR/MR branch is up-to-date with the base branch.
+
+Because of the need for the CI pipeline to succeed, you should expect that the
+merge will only happen in the next time mintmaker is run.
+
+This following timeline exemplifies the events leading to an automerge in a repository:
+
+[cols="20%,80%",options="header"]
+|===
+|Time  | Event
+|__[10:00am]__ | MintMaker run 1 starts 
+|__[10:01am]__ | PR for dependency `xyz` is filed
+|__[10:02am]__ | CI pipeline is started
+|__[10:05am]__ | CI pipeline finishes successfully
+|__[10:10am]__ | MintMaker run 1 is finished
+|... | ...
+|__[12:00am]__ | MintMaker run 2 starts
+|__[12:01am]__ | PR for dependency `xyz` is detected
+|__[12:02am]__ | PR for dependency `xyz` is automerged
+|===
+
+You can also enabled automerge without the need of CI tests passing, by
+setting https://docs.renovatebot.com/configuration-options/#ignoretests[`ignoreTests`] to `true`.
+
+Because of the need for the PR/MR branch being up-to-date with the base branch,
+automerging multiple branches at once does not work. 
+
+NOTE: Automerging can be risky. Since the merges will happen without anyone
+looking at the code, they have a higher risk of introducing regression.
+
+It is _very important_ to have a good test coverage in place, to mitigate that 
+risk.
+
+You can set automerge only for a certain type of updates. For example, updates
+to patch and minor updates of certain packages.
+
+For example, to enable automerge for non-major updates on all dependencies, you
+can add the following to `renovate.json`:
+
+[source,json]
+----
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "packageRules": [
+    {
+      "description": "Automerge non-major updates",
+      "matchUpdateTypes": ["minor", "patch"],
+      "automerge": true
+    }
+  ]
+}
+----
+alternatively, to enable non-major updates only for specific packages, you can use
+
+[source,json]
+----
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "packageRules": [
+    {
+      "description": "Automerge non-major updates on depA and depB",
+      "matchUpdateTypes": ["minor", "patch"],
+      "matchPackageNames": ["depA", "depB"],
+      "automerge": true
+    }
+  ]
+}
+----
+See Renovate's https://docs.renovatebot.com/key-concepts/automerge/#configuration-examples[docs]
+on this topic on further examples. They show how to set automerge for specific
+dependency groups, types, etc.
+
+Finally, to check if automerge is cofigured for a given PR/MR, you can look for 
+the annotation "Automerge: Enabled" in the PR/MR body.
+
+=== Inherited config
+
+MintMaker Renovate supports the use of an https://docs.renovatebot.com/config-overview/#inherited-config[Inherited config].
+The Inherited config file is used to apply the same Renovate settings to all repositories in an organization/group.
+This functionality is useful if your organization contains many repositories that should use the same 
+or similar Renovate configuration.
+
+If you want to use the inherited config, it must be located in the repository `<organization>/renovate-config` and
+the file must be named `org-inherited-config.json`. The file can contain any 
+https://docs.renovatebot.com/configuration-options/[configuration options] that you want to apply to all repositories in an organization.
+
+Please note the applied order of Renovate config files:
+
+* Default config
+* Global config
+* Inherited config
+* Repository config
+* Resolved presets referenced in config
+
+Configurations applied later will overwrite prior values. This means that inherited config can be used to modify
+MintMaker's default behavior. Similarly, repository config overwrites inherited config, so organization-wide settings can
+be changed on a per repository basis. If you want to learn more about how Renovate applies configuration, take a look
+at the https://docs.renovatebot.com/config-overview/[Renovate configuration overview].
+
+Please note that the use of inherited config is optional and its absence will not result in an error.
+
+=== Specify the registry in your FROM line
+
+Let's consider a specification in your `Containerfile` or `Dockerfile` of a FROM line is such way:
+
+[source]
+----
+FROM ubi9/ubi:9.4-1123
+----
+
+In this case, the ubi9 image is pulled from the client's default registry, which might be `docker.io`, for example.
+This might lead into errors, such as MintMaker unable to update your `Containerfile` or `Dockerfile`
+due to missing credentials to access that registry. In order to avoid this issue, specify the registry explicitly, such as:
+
+[source]
+----
+FROM registry.access.redhat.com/ubi9/ubi:9.4-1123
+----
+
+NOTE: docker.io registry is not supported by MintMaker by default.
+
+=== Enable container image tag versioning
+
+It is recommended to specify the base images using a digest, like so:
+
+[source]
+----
+FROM registry.redhat.io/ubi8/ubi-minimal:latest@sha256:cf095e5668919ba1b4ace3888107684ad9d587b1830d3eb56973e6a54f456e67
+----
+
+However, if you prefer to use image tags as versions, Renovate might not be able to update them by default.
+To enable the tag updates, use the following config for all container images:
+
+[source]
+----
+{
+  "dockerfile": {
+    "versioning": "redhat"
+  }
+}
+----
+
+or just for specific images using the https://docs.renovatebot.com/configuration-options/#packagerules[packageRules] option:
+
+[source]
+----
+{
+  "packageRules": [
+    {
+      "matchDatasources": ["docker"],
+      "matchPackageNames": ["registry.redhat.io/ubi8/ubi-minimal"],
+      "versioning": "redhat"
+    }
+  ]
+}
+----
+
+or take a look at the https://docs.renovatebot.com/presets-workarounds/#workaroundssupportredhatimageversion[workarounds:supportRedHatImageVersion] preset for other available options.
