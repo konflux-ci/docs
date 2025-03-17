@@ -13,8 +13,9 @@
 /modules/ROOT/pages/testing/               @konflux-ci/integration-service-maintainers
 
 # release
-/modules/ROOT/pages/releasing                                @konflux-ci/release-service-maintainers
-/modules/ROOT/pages/testing-releasing-single-component.adoc  @konflux-ci/release-service-maintainers
+/modules/releasing                                			@konflux-ci/release-service-maintainers
+/modules/patterns/pages/testing-releasing-single-component.adoc  	@konflux-ci/release-service-maintainers
+/modules/patterns/images/single-component-integration-test-scenario.png @konflux-ci/release-service-maintainers
 
 # Conforma
 /modules/ROOT/pages/managing-compliance-with-ec       @konflux-ci/ec
