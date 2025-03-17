@@ -10,6 +10,7 @@ nav:
 - modules/metadata/nav.adoc
 - modules/managing-compliance-with-ec/nav.adoc
 - modules/releasing/nav.adoc
+- modules/mintmaker/nav.adoc
 - modules/patterns/nav.adoc
 - modules/installing/nav.adoc
 - modules/troubleshooting/nav.adoc

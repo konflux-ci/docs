@@ -1,0 +1,43 @@
+= Dependency Management Support Matrix
+
+This page details the compatibility, support and implementation limitations
+of certain managers. It is intended to supply xref:mintmaker:user.adoc#available-managers[the list of currently supported managers].
+
+== Python dependencies
+
+|===
+| *Manager / Python version* | *3.9* | *3.10* | *3.11* | *3.12* | *3.13*
+| poetry | ✔ | ✔ | ✔ | ✔ | ✔
+| pdm | ✔ | ✔ | ✔ | ✔ | ✔
+| pip-compile footnote:[pip-tools is installed using Python 3.12 and cannot be invoked for any other Python version] | - | - | - | ✔ | -
+| pipenv | ✔ | ✔ | ✔ | ✔ | ✔
+| uv footnote:[uv supports any Python version by installing it at runtime] | ✔ | ✔ | ✔ | ✔ | ✔
+|===
+
+- Python 3.8 and older are not supported.
+- `peynv` is available and used to install Python 3.10 and Python 3.13, which are not available in UBI images.
+
+=== Using `uv` instead of pip-compile
+
+If Python 3.12 for `pip-compile` is not sufficient for your project, consider using `uv pip compile` instead, see the https://docs.astral.sh/uv/pip/compatibility/#pip-compile-defaults[uv docs] and https://docs.renovatebot.com/modules/manager/pip-compile/#additional-information[Renovate docs].
+
+== RPM lock files
+
+|===
+| *Capability* | *Supported*
+| Generate a new `rpms.lock.yaml` | No
+| Update existing `rpms.lock.yaml` | Yes
+| Update multiple lock files in subdirectories | Yes
+| Display individual package upgrades in PR description | Yes
+a| Match CVE data to package upgrades
+
+(root `rpms.lock.yaml`) | Yes
+a| Match CVE data to package upgrades
+
+(subdirectory `rpms.lock.yaml`) | Future
+|===
+
+== Go dependencies
+
+MintMaker sets the `GOTOOLCHAIN=auto` environment variable, so when updating dependencies,
+Go will choose the correct toolchain version automatically.
