@@ -9,7 +9,7 @@ project will always have the latest fixes for bugs and security issues.
 
 In this documentation, when we mention something about Renovate, it will be a
 general statement. Therefore it will also apply to MintMaker, since it runs an
-underlying Renovate service. On the other hand, when we say something about
+underlying Renovate service. However, when we say something about
 MintMaker, it is a specific statement that might not apply to other Renovate 
 instances.
 
@@ -84,7 +84,7 @@ information, this feature is WIP.
 
 Renovate is based around the concept of package managers. Package managers
 are tools that manage dependencies in a certain category, programming language or configuration file. While some managers work
-"out of the box", for others (e.g. Kubernetes or Regex manager) you need to
+"out of the box", for others (e.g. Kubernetes or `regex` manager) you need to
 specify the details in the `renovate.json` configuration file. You can refer
 to a specific manager in the
 https://docs.renovatebot.com/modules/manager/[Renovate manager section].
@@ -443,9 +443,9 @@ The Inherited config file is used to apply the same Renovate settings to all rep
 This functionality is useful if your organization contains many repositories that should use the same 
 or similar Renovate configuration.
 
-If you wish to use the inherited config, it must be located in the repository `<organization>/renovate-config` and 
+If you want to use the inherited config, it must be located in the repository `<organization>/renovate-config` and
 the file must be named `org-inherited-config.json`. The file can contain any 
-https://docs.renovatebot.com/configuration-options/[configuration options] that you wish to apply to all repositories in an organization. 
+https://docs.renovatebot.com/configuration-options/[configuration options] that you want to apply to all repositories in an organization.
 
 Please note the applied order of Renovate config files:
 
