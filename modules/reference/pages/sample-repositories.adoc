@@ -17,4 +17,4 @@ code referenced by a git submodule.
 
 https://github.com/konflux-ci/olm-operator-konflux-sample
 
-include:partial$reference/{context}-additional-sample-repositories.adoc[]
+include::partial${context}-additional-sample-repositories.adoc[]

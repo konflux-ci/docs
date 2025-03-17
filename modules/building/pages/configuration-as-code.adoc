@@ -72,7 +72,7 @@ If you are creating more than one component, it is likely that your components w
 
 Define this base in `base/component.yaml`. It typically follows a pattern similar to the following:
 
-include:partial$custom-resources/{context}-component.adoc[]
+include::partial$custom-resources/{context}-component.adoc[]
 
 === Creating Your Base Kustomization
 
@@ -95,7 +95,7 @@ You can think of each application variant as the base that defines the structure
 
 Create your base application at `overlay/application-a/application-a-base/application.yaml` like the following:
 
-include:partial$custom-resources/{context}-application.adoc[]
+include::partial$custom-resources/{context}-application.adoc[]
 
 And its Kustomization file at `overlay/application-a/application-a-base/kustomization.yaml`:
 
