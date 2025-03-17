@@ -1,1 +1,3 @@
-In order to use the CLI to interact with Konflux, contact your Platform Engineer.
+{ProductName} is built around Kubernetes so the CLI is one of the main interaction models. Once
+you have an instance available to you, contact your Platform Engineer for the best way to
+authenticate with the cluster to start exploring the Custom Resources.

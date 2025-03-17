@@ -1,0 +1,27 @@
+* *Robust Security*
+
++
+Enhance the security of your software supply chain. {ProductName} offers unparalleled transparency into your software’s composition, helping you address vulnerabilities before they become issues.
+
+* *Customizable Compliance*
+
++
+Achieve the highest security standards and customize your development process to meet specific project requirements. {ProductName}'s adaptable platform ensures compliance without sacrificing flexibility.
+
+* *Efficient Deployment*
+
++
+Build once, deploy anywhere. {ProductName} optimizes your release process, allowing for multiple deployments without redundancy and significantly reducing time-to-market.
+
+* *Strict Data Governance*
+
++
+Safeguard sensitive data with {ProductName}'s stringent access controls and governance policies, ensuring rigorous data protection.
+
+*Choose {ProductName} — where efficiency meets security.*
+
+== Supply chain security through SLSA conformity
+
+link:https://slsa.dev[Supply-chain Levels for Software Artifacts (SLSA)] is a security framework produced through industry collaboration. We use this framework as a guide for reinforcing the build process we use for your applications, to better secure your software supply chain.
+
+To see how we meet the requirements set out by SLSA, see xref:metadata:index.adoc#supply-chain-security-through-slsa-conformity
