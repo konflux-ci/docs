@@ -34,7 +34,7 @@ By the end of this guide, you will have created a downstream repository which do
 * uses the contents of the git submodule in a Containerfile for further edits.
 * is onboarded to {ProductName} for builds.
 
-include:partial$patterns/{context}-submodules-source-control.adoc[]
+include::partial${context}-submodules-source-control.adoc[]
 
 === Create the git submodule for the upstream repository to track it
 
@@ -56,7 +56,7 @@ Check and configure the git submodule config:
   branch = <upstream-repository-branch>
 ----
 
-include:partial$patterns/{context}-submodules-renovate.adoc[]
+include::partial${context}-submodules-renovate.adoc[]
 
 NOTE: See the link:https://git-scm.com/docs/gitsubmodules[Git documentation] for more details on configuring git submodules.
 
@@ -91,7 +91,7 @@ ENTRYPOINT ["<entrypoint-executable>"]
 
 You should be able to prove to yourself that the downstream Containerfile builds locally with `podman build .`.
 
-include:partial$patterns/{context}-submodules-example-downstream-containerfile.adoc[]
+include::partial${context}-submodules-example-downstream-containerfile.adoc[]
 
 === Onboard the component onto {ProductName}
 
@@ -107,7 +107,7 @@ build pipeline to use the upstream Containerfile with downstream args at build
 time. This has the advantage of not having to maintain a copy of the
 Containerfile in the downstream repo.
 
-include:partial$patterns/{context}-submodules-example-args-file.adoc[]
+include::partial${context}-submodules-example-args-file.adoc[]
 
 === Using private repositories as a git submodule:
 

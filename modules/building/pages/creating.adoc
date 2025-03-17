@@ -59,17 +59,17 @@ NOTE: GitHub and GitLab are supported source control providers. GitLab support r
 +
 *Example `Application.yaml` object*
 +
-include:partial$custom-resources/{context}-application.adoc[]
+include::partial$custom-resources/{context}-application.adoc[]
 
 +
 *Example `Component.yaml` object*
 +
-include:partial$custom-resources/{context}-component.adoc[]
+include::partial$custom-resources/{context}-component.adoc[]
 
 +
 *Example `ImageRepository.yaml` object*
 +
-include:partial$custom-resources/{context}-imagerepository.adoc[]
+include::partial$custom-resources/{context}-imagerepository.adoc[]
 
 . In your workspace, save the `Application.yaml`, `Component.yaml`, and `ImageRepository.yaml` files and add the resource to your cluster by running the following command:
 
