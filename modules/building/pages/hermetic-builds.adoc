@@ -62,4 +62,4 @@ In {ProductName}, from the *Applications* view, select the application build you
 
 == Additional resources
 
-For more information about the importance of provenance, see xref:/index.adoc#supply-chain-security-through-slsa-conformity[Supply chain security through SLSA conformity].
+For more information about the importance of provenance, see xref:metadata:index.adoc#supply-chain-security-through-slsa-conformity[Supply chain security through SLSA conformity].

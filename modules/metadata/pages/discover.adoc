@@ -1,0 +1,46 @@
+= Discovering the associated metadata
+
+.Prerequisites
+
+* Install the link:https://docs.sigstore.dev/cosign/installation/[Cosign] CLI tool.
+
+* Install the link:https://stedolan.github.io/jq/download/[jq] CLI tool.
+
+* xref:ROOT:getting-started.adoc#getting-started-with-the-cli[Login] to {ProductName}.
+
+.Procedure
+
+In the CLI, complete the following steps to discover the associated metadata for a component:
+
+. Find the image for a xref:building:creating.adoc#finding-the-built-image[recently completed build pipeline] and export the value to the `IMAGE` environment variable
++
+Example:
++
+[source]
+--
+IMAGE=quay.io/redhat-user-workloads/workspace-tenant/application/component@sha256:<output omitted>
+--
+
++
+. Print a high-level overview of the artifact's metadata that {ProductName} has created for a component:
+
++
+[source]
+--
+cosign tree $IMAGE
+--
++
+Example output:
++
+[source]
+--
+📦 Supply Chain Security Related artifacts for an image: quay.io/redhat-user-workload/workspace-tenant/application/component@sha256:<sha-digest>
+└── 📦 SBOMs for an image tag: quay.io/redhat-user-workload/workspace-tenant/application/component:sha256-<sha-digest>.sbom
+   └── 🍒 sha256:<sbom-sha-digest>
+└── 💾 Attestations for an image tag: quay.io/redhat-user-workload/workspace-tenant/application/component:sha256-<sha-digest>.att
+   └── 🍒 sha256:<attestation-sha-digest>
+└── 🔐 Signatures for an image tag: quay.io/redhat-user-workload/workspace-tenant/application/component:sha256-<sha-digest>.sig
+   └── 🍒 sha256:<signature-sha-digest>
+--
+
+The `cosign tree` command will show all metadata associated to the artifact via the referrers API. The SBOM artifact contains the Software Bill of Materials. We have provided further procedures for you to view and inspect the xref:metadata:attestations.adoc[attestations] and xref:metadata:sboms.adoc[SBOMs] by {ProductName}.
