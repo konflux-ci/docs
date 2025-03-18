@@ -20,6 +20,7 @@
 /modules/managing-compliance-with-ec/       		@konflux-ci/ec
 /modules/building/pages/using-trusted-artifacts.adoc    @konflux-ci/ec
 
+/modules/mintmaker/ @konflux-ci/mintmaker-maintainers
 
 # find a team to own these
 
