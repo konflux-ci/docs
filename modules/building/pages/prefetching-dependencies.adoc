@@ -259,12 +259,12 @@ To prefetch dependencies for a component build, complete the following steps:
 
 . Have a Containerfile, for example:
 +
-include:::partial${context}-example-prefetch-rpm-containerfile.adoc[]
+include::partial${context}-example-prefetch-rpm-containerfile.adoc[]
 
 . Create a `rpms.in.yaml` file in your git repository, with the following contents:
 
 +
-include:::partial${context}-example-prefetch-rpm-rpms_in_yaml.adoc[]
+include::partial${context}-example-prefetch-rpm-rpms_in_yaml.adoc[]
 <1> The `*packages*` list is the list of packages you want to install in your Container. You don't have to declare transitive dependencies here. The rpm-lockfile-prototype tool will resolve them for you.
 <2> This should be a reference to a repo file, like those found in `/etc/yum.repos.d/`. This tells the tooling where to find your rpm and its dependencies.
 <3> The `arches` array allows you to specify which architectures the dependencies should be downloaded for. If you're building a multi-arch container this array is mandatory, otherwise the build task will fail.
@@ -275,7 +275,7 @@ https://github.com/konflux-ci/rpm-lockfile-prototype?tab=readme-ov-file#whats-th
 . Copy any necessary yum/dnf repo files into your git repository. For example:
 
 +
-include:::partial${context}-example-prefetch-rpm-copy-repo.adoc[]
+include::partial${context}-example-prefetch-rpm-copy-repo.adoc[]
 
 +
 NOTE: For every repository defined in your set of repo files, make sure to add the corresponding sources repo (or make sure to enable them, if they’re already present). Otherwise, the lockfile generator will not include any SRPMs in your lockfile, cachi2 won’t download any SRPMs and the source container for your build will be incomplete.
@@ -283,12 +283,12 @@ NOTE: For every repository defined in your set of repo files, make sure to add t
 . Run the following command to resolve your `rpms.in.yaml` file and produce a `rpms.lock.yaml` file.
 
 +
-include:::partial${context}-example-prefetch-rpm-execute.adoc[]
+include::partial${context}-example-prefetch-rpm-execute.adoc[]
 <1> The produced `rpms.lock.yaml` file will include only your requested dependency plus its transitive dependencies, minus any rpms that are already installed in the provided base image.
 +
 Example of generated lockfile:
 +
-include:::partial${context}-example-prefetch-rpm-lockfile.adoc[]
+include::partial${context}-example-prefetch-rpm-lockfile.adoc[]
 +
 NOTE: The list of `arches.packages` is omitted for brevity.
 
