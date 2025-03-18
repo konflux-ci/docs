@@ -186,6 +186,9 @@ and repository-level configurations. When enabling additional managers in your r
 
 == Scheduling
 
+MintMaker runs every 4 hours, starting at 00:00 UTC (i.e. 04:00, 08:00, 12:00, ...).
+This schedule *cannot be overriden* by user configuration.
+
 Due to performance considerations, since 20 November 2024, MintMaker is configured to run different managers at different times. The current schedule for individual managers is:
 
 [cols="30%,70%",option="header"]
@@ -206,6 +209,7 @@ All times are in UTC.
 === Overriding the default schedule
 
 You can override the default MintMaker schedule by modifying the https://docs.renovatebot.com/key-concepts/scheduling/[`schedule`] config option.
+This only changes the manager-specific schedule.
 
 To apply the schedule globally (for all managers), use `schedule` in the top
 level of the config file:
