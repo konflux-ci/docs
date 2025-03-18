@@ -1,0 +1,81 @@
+= Managing Monorepo Applications
+
+In most cases, {ProductName} applications consist of multiple components each with its own repository.
+However, there are legitimate use-cases where users need to keep multiple components within the same repository.
+
+As a result, a single Pull request or push event may spawn multiple component build pipelines.
+This pattern, while valid, requires some further considerations in order to prevent hangups and issues in the {ProductName} build/test/release workflow.
+
+== Pull request testing considerations for monorepo applications
+
+When a Pull Request is opened against a monorepo which contains multiple components, separate build pipelines will trigger for each component. This will in turn create individual xref:testing:integration/snapshots/working-with-snapshots.adoc[Snapshots of the Application] for each of those builds containing not only the component that was built as part of that particular pipeline but also all the other non-updated components. Any integration tests that run for that Snapshot will test the entire application + the single updated component.
+
+=== Independent changes to individual components within the monorepo
+
+If the change to components does not span across multiple components, the above workflow will work in most cases. In case of the Conforma(EC) checks, using the xref:patterns:testing-releasing-single-component.adoc[single component mode] can also be useful in order to isolate the testing to only the updated component - this is especially relevant in case the release process also releases only single component builds.
+
+=== Changes that affect multiple components in the monorepo
+
+If the change spans across multiple components or the release process is expected to release multiple components at the same time, then the users can benefit from the xref:testing:integration/snapshots/group-snapshots.adoc[group Snapshot testing] functionality of the Integration service where all the updated component builds are combined into a single Snapshot and tested together.
+
+Having custom integration tests for this kind of testing can be enabled by using the `group` testing context in a custom IntegrationTestScenario. Refer to xref:testing:integration/choosing-contexts.adoc[the guide for choosing when to run integration test scenarios].
+
+== Push event testing considerations for monorepo applications
+
+While the group testing functionality allows us to determine how the final changes will look after they are merged, this functionality is unfortunately currently not directly available after the Pull Request is merged.
+
+As a result, after merging the Pull Request, the individual build pipelines will result in intermediate Snapshots which will not contain all the changes until the final build pipelineRun completes. These Snapshots can be considered as redundant in cases of monorepos, and releasing them would mean that only the partial change is put forward for release.
+
+To help with this problem, a custom IntegrationTestScenario pipeline can be created for `push` events (also see xref:testing:integration/choosing-contexts.adoc[the guide for choosing when to run integration test scenarios]) which checks if a Snapshot contains all the changes from the monorepo. If not, it fails the test and prevents the Snapshot from being auto-released, thus saving time and resources.
+
+=== Example Tekton task for checking if all Snapshot components match
+
+See the example `test-snapshot-component` Tekton task which checks if all Snapshot components belonging to the same repository were built from the same commit:
+
+[source,yaml]
+----
+tasks:
+apiVersion: tekton.dev/v1
+kind: Task
+metadata:
+  name: test-snapshot-component
+spec:
+  params:
+    - name: SNAPSHOT
+      description: The JSON string of the Snapshot under test
+  steps:
+    - name: test-snapshot-component
+      image: quay.io/konflux-ci/konflux-test:stable
+      workingDir: /workspace
+      env:
+        - name: SNAPSHOT
+          value: $(params.SNAPSHOT)
+        - name: SNAPSHOT_URL
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.annotations['pac.test.appstudio.openshift.io/source-repo-url']
+        - name: SNAPSHOT_SHA
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.annotations['pac.test.appstudio.openshift.io/sha']
+      script: |
+        #!/bin/sh
+        set -e
+        components=$(jq -c '.components[]' <<< "${SNAPSHOT}")
+        snapshotUrlUrlWithoutSuffix=$(echo $SNAPSHOT_URL | sed 's/\.git$//')
+        while read components
+        do
+          componentUrl=$(echo "$components" | jq -r '.source.git.url')
+          componentUrlWithoutSuffix=$(echo $componentUrl | sed 's/\.git$//')
+          name=$(echo "$components" | jq -r '.name')
+          componentSha=$(echo "$components" | jq -r '.source.git.revision')
+            # Check if component git url equals to snapshot git url, if yes check if the snapshot SHA equals to component SHA
+            if [[ $componentUrlWithoutSuffix == $snapshotUrlUrlWithoutSuffix ]]; then
+                if [[ $componentSha != $SNAPSHOT_SHA ]]; then
+                echo "FAIL: Component $name has different SHA: $componentSha than the snapshot, SHA: $SNAPSHOT_SHA."
+                exit 1
+                fi
+            fi
+          echo "SUCCESS: Component $name matches snapshot SHA."
+        done < <(echo "$components")
+----
