@@ -29,6 +29,7 @@ Sometimes, you only want certain builds to have the activation key, particularly
 ====
 * If you want to use the feature to automatically update xref:ROOT:mintmaker:rpm-lockfile.adoc[RPM lockfiles] containing RPMs that require subscription, you have to include additional labels and annotations so that the xref:ROOT:mintmaker:user.adoc[Dependency Management] service can properly match the activation keys with their repositories. How to create such secrets is explained in the next section.
 * The default secret `+activation-key+` doesn't have such requirements and will be automatically used as a fallback option for all namespace components.
+* Besides correctly setting the secret labels, additional configuration must be performed, as described in xref:ROOT:mintmaker:rpm-lockfile.adoc#rpm-lockfile-with-rpms-that-require-subscription[RPM lockfile with RPMs that require subscription]
 ====
 
 == Create the activation key secrets
@@ -57,7 +58,8 @@ Create custom activation key secrets with extra labels and annotations so that t
 [NOTE]
 ====
 * This procedure is only necessary if you want to have your RPM lockfiles automatically updated by MintMaker. Otherwise, you can create your custom secrets without the extra labels and annotations.
- The default `+activation-key+` secret doesn't need to follow this procedure, it will be applied to all namespaces repositories as a fallback option.
+* The default `+activation-key+` secret doesn't need to follow this procedure, it will be applied to all namespaces repositories as a fallback option.
+* Additional configuration must be performed, as described in xref:ROOT:mintmaker:rpm-lockfile.adoc#rpm-lockfile-with-rpms-that-require-subscription[RPM lockfile with RPMs that require subscription]
 ====
 These secrets can only be created through the CLI:
 
