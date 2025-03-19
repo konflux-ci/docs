@@ -18,6 +18,10 @@ See also xref:testing:integration/rerunning.adoc[Retriggering integration tests]
 The pipeline run should start executing in the *Activity* > *Pipeline runs* tab and in the pull request
 
 +
+NOTE: There are rules that govern who can execute the `/retest` comment. They follow the same requirements as determining whether a submitter is allowed to run the PipelineRun. Please see link:https://pipelinesascode.com/docs/guide/running/[Running the PipelineRun].
+
+
++
 NOTE: For additional options, refer to the link:https://pipelinesascode.com/docs/guide/gitops_commands/[pipelinesascode documentation].
 
 == Retriggering a post-merge build from from GitHub
@@ -42,6 +46,9 @@ NOTE: For instructions on how to retrigger only individual build pipelines, not 
 
 +
 NOTE: If you only want to retrigger the integration tests, see xref:testing:integration/rerunning.adoc[retriggering integration tests].
+
++
+NOTE: There are rules that govern who can execute the `/retest` comment. They follow the same requirements as determining whether a submitter is allowed to run the PipelineRun. Please see link:https://pipelinesascode.com/docs/guide/running/[Running the PipelineRun].
 
 == Retriggering a post-merge build from your main branch from the UI
 
