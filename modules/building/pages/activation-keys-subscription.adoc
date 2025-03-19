@@ -25,6 +25,12 @@ Sometimes, you only want certain builds to have the activation key, particularly
   value: my-secret-name
 ----
 
+[IMPORTANT]
+====
+* If you want to use the feature to automatically update xref:ROOT:mintmaker:rpm-lockfile.adoc[RPM lockfiles] containing RPMs that require subscription, you have to include additional labels and annotations so that the xref:ROOT:mintmaker:user.adoc[Dependency Management] service can properly match the activation keys with their repositories. How to create such secrets is explained in the next section.
+* The default secret `+activation-key+` doesn't have such requirements and will be automatically used as a fallback option for all namespace components.
+====
+
 == Create the activation key secrets
 
 [[Create-activation-key-through-the-UI]]
@@ -45,6 +51,81 @@ Alternatively, you can create the secret through the CLI. After logging into you
 kubectl create secret generic activation-key -n <your-tenant> --from-literal=org=<your org id> --from-literal=activationkey=<your activation key name>
 ----
 
+[[Create-custom-activation-key-secret]]
+=== Create custom activation key secret
+Create custom activation key secrets with extra labels and annotations so that they can be matched to their repositories.
+[NOTE]
+====
+* This procedure is only necessary if you want to have your RPM lockfiles automatically updated by MintMaker. Otherwise, you can create your custom secrets without the extra labels and annotations.
+ The default `+activation-key+` secret doesn't need to follow this procedure, it will be applied to all namespaces repositories as a fallback option.
+====
+These secrets can only be created through the CLI:
+
+[source,bash]
+----
+kubectl create -f activation-key-secret.yaml
+----
+
+[source,yaml]
+----
+apiVersion: v1
+kind: Secret
+metadata:
+  name: custom-activation-key
+  namespace: <YOUR NAMESPACE>
+  labels:
+    appstudio.redhat.com/credentials: rpm
+    appstudio.redhat.com/scm.host: <source-control-management-host> # for example, gitlab.com
+type: Opaque
+stringData:
+  org: <YOUR ORG ID>
+  activationkey: <YOUR ACTIVATION KEY>
+----
+This secret will be matched to all repositories with the same Git host. If you want to narrow the matching to specific repositories, you have to add the `appstudio.redhat.com/scm.repository` annotation to the secret metadata:
+
+[source,yaml]
+----
+apiVersion: v1
+kind: Secret
+metadata:
+  name: custom-activation-key
+  namespace: <YOUR NAMESPACE>
+  labels:
+    appstudio.redhat.com/credentials: rpm
+    appstudio.redhat.com/scm.host: <source-control-management-host> # for example, gitlab.com
+  annotations:
+    appstudio.redhat.com/scm.repository: my-user/*
+type: Opaque
+stringData:
+  org: <YOUR ORG ID>
+  activationkey: <YOUR ACTIVATION KEY>
+----
+
+This annotation will match the secret to all repositories in `my-user` organization. If you want to match the secret to a specific repository, the annotation should be defined as such:
+
+[source,yaml]
+----
+apiVersion: v1
+kind: Secret
+metadata:
+  name: custom-activation-key
+  namespace: <YOUR NAMESPACE>
+  labels:
+    appstudio.redhat.com/credentials: rpm
+    appstudio.redhat.com/scm.host: <source-control-management-host> # for example, gitlab.com
+  annotations:
+    appstudio.redhat.com/scm.repository: my-user/my-repository
+type: Opaque
+stringData:
+  org: <YOUR ORG ID>
+  activationkey: <YOUR ACTIVATION KEY>
+----
+Multiple repositories can be listed under the `appstudio.redhat.com/scm.repository` annotation. Separate repository names with commas when listing them. The secret will be used for all repositories that match the specified paths.
+
+[IMPORTANT]
+====
+* Secrets lookup mechanism is searching for the most specific secret first. The secret with a repository annotation will be used first if it matches the component repository path. In none found, then a lookup will try to find a secret with a wildcard, or just the host matching one. As a fallback, the lookup will use the default `+activation-key+` secret.
+====
 
 == Using subscription content in a build
 
