@@ -209,7 +209,7 @@ All times are in UTC.
 === Overriding the default schedule
 
 You can override the default MintMaker schedule by modifying the https://docs.renovatebot.com/key-concepts/scheduling/[`schedule`] config option.
-This only changes the manager-specific schedule.
+This only changes the package-rule-specific schedule.
 
 To apply the schedule globally (for all managers), use `schedule` in the top
 level of the config file:
