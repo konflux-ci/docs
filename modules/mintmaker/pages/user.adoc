@@ -13,6 +13,44 @@ underlying Renovate service. However, when we say something about
 MintMaker, it is a specific statement that might not apply to other Renovate 
 instances.
 
+== Security
+
+CAUTION: Always verify that the PRs/MRs for dependency updates are created by verified Konflux accounts.
+
+=== GitHub
+
+All MintMaker PRs are created using the https://github.com/apps/red-hat-konflux[red-hat-konflux] GitHub app. All commits should contain this signature:
+
+[source,plain]
+----
+Signed-off-by: red-hat-konflux <126015336+red-hat-konflux[bot]@users.noreply.github.com>
+----
+
+and should be signed with GPG key `B5690EEEBB952194`:
+
+image::gpg-signature-github.png[height="auto" alt="Image showing a valid GPG signature"]
+
+On Konflux staging, the account uses the https://github.com/apps/konflux-staging[konflux-staging] app and a different email:
+
+[source,plain]
+----
+Signed-off-by: konflux-staging <124796549+konflux-staging[bot]@users.noreply.github.com>
+----
+
+while the GPG key is the same.
+
+=== GitLab
+
+On GitLab the account used is different for each project or group. The account
+name is `konflux`, but the email used is in the following format:
+
+For projects: `project_<project ID>_bot_<32 hex characters>@noreply.gitlab.com`
+
+For groups: `group_<group ID>_bot_<32 hex characters>@noreply.gitlab.com`
+
+The project ID or group ID must come from your project or group when
+xref:building:creating-secrets.adoc#gitlab-source-secret[setting up the secrets].
+
 == Configuration
 
 Renovate is a very configurable tool. Since every project has its unique
