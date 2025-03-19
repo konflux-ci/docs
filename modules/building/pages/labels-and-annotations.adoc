@@ -1,4 +1,4 @@
-= Using dynamic labels
+= Labels and annotations
 
 Konflux allows applying some dynamic labels to images derived from properties and params of the build pipeline. The labelling is supported directly by the `LABELS` param of the *build-container* tasks. A supporting *generate-labels* task can optionally be used to produce some dynamic labels.
 
@@ -25,18 +25,18 @@ tasks:
       value: "$(params.dockerfile)"
     - name: HERMETIC
       value: "$(params.hermetic)"
-    - name: LABELS <.>
+    - name: LABELS <1>
       value:
         - from-pull-request=true
         - hermetic-param=$(params.hermetic)
-    - name: ANNOTATIONS <.>
+    - name: ANNOTATIONS <1>
       value:
         - my-annotation=true
         - foo=bar
 ...
 ----
 
-<.> The LABELS and ANNOTATIONS params accepts an array of labels and annotations to be applied to the image after it is built.
+<1> The LABELS and ANNOTATIONS params accepts an array of labels and annotations to be applied to the image after it is built.
 
 [[generating-dynamic-labels-or-annotations]]
 == Generating dynamic labels or annotations
