@@ -1,0 +1,79 @@
+= Adjusting timeouts and resources
+
+When a Release Pipeline is executed through a PipelineRun, the Pipeline will run until a timeout is reached. This timeout is usually an hour and will make the Release Pipeline fail if it doesn't finish on time.
+
+To overcome this, there are two strategies {ProductName} users can follow.
+
+== Adjust timeouts
+
+Whenever a pipeline is defined through the tenantPipeline/finalPipeline fields in the ReleasePlan or the pipeline field in the ReleasePlanAdmission, users can specify a `timeouts` field in the following way:
+
+[source,yaml]
+----
+pipeline:
+  pipelineRef:
+    resolver: git
+    params:
+      - name: url
+        value: "<url-to-repo>.git"
+      - name: revision
+        value: main
+      - name: pathInRepo
+        value: "<path-to-your-pipeline>"
+  timeouts:
+    pipeline: "2h0m0s" <.>
+    tasks: "1h0m0s" <.>
+    finally: "1h0m0s" <.>
+----
+
+<.> specifies the timeout for the entire PipelineRun. Defaults to the global configurable default timeout of 60 minutes.
+<.> specifies the timeout for the cumulative time taken by non-finally Tasks specified in the Pipeline.
+<.> timeout for the cumulative time taken by finally Tasks.
+
+IMPORTANT: Tekton enforces a restriction on the pipeline timeout—it must be greater than or equal to the sum of the timeouts for tasks and finally.
+
+== Adjust resources
+
+As can be seen in the section above, there's no way to specify timeouts for individual tasks. However, another field can be used to increase the resources an specific task can use during its execution.
+
+*Giving additional recourses to the verify-enterprise-contract task*
+
+[source,yaml]
+----
+apiVersion: appstudio.redhat.com/v1alpha1
+kind: ReleasePlanAdmission
+metadata:
+  labels:
+    release.appstudio.openshift.io/auto-release: 'true'
+  name: sre-production
+  namespace: managed-workspace
+spec:
+  applications:
+    - demo-app
+  data: <key>
+  origin: <dev-workspace>
+  pipeline:
+    pipelineRef:
+      resolver: git
+      params:
+        - name: url
+          value: "<url-to-repo>.git"
+        - name: revision
+          value: main
+        - name: pathInRepo
+          value: "<path-to-your-pipeline>"
+    serviceAccountName: appstudio-pipeline
+    taskRunSpecs:
+      - pipelineTaskName: verify-enterprise-contract <.>
+        computeResources: <.>
+          limits:
+            cpu: "600m"
+            memory: "540Mi"
+          requests:
+            cpu: "250m"
+            memory: "256Mi"
+  policy: <policy>
+----
+
+<.> Name of the Task we want to modify.
+<.> Compute resources we want to assign to the task.
