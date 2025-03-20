@@ -1,0 +1,92 @@
+= Default configuration
+
+MintMaker applies a set of default options for all repositories on backend.
+The configuration file can be found https://github.com/konflux-ci/mintmaker/blob/main/config/renovate/renovate.json[here].
+
+In this page you will find a summary of the config options and decisions behind them.
+
+For details on individual manager implementation, version support or limitations,
+proceed to xref:mintmaker:support.adoc[].
+
+== Renovate presets
+
+- https://docs.renovatebot.com/presets-config/#configrecommended[`config:recommended`] as the base template recommended by Renovate for most users
+- https://docs.renovatebot.com/presets-default/#gitsignoff[`:gitSignOff`] - adds the `Signed-off-by: <author>` part to commit messages
+- https://docs.renovatebot.com/presets-default/#disabledependencydashboard[`:disableDependencyDashboard`] - can be enabled individually in user config
+
+== Configuration
+
+MintMaker is set up to not require any additional onboarding (only in Konflux)
+or configuration files - it works even without the `renovate.json` file present.
+
+== Scheduling
+
+Please refer to the main guide on scheduling xref:mintmaker:user.adoc#scheduling[here].
+
+By default, MintMaker will not update PRs outside of the default schedule,
+due to `updateNotScheduled` being `false`. More on this behavior file:///home/riley/projects/personal/docs/public/mintmaker/user/index.html#how-to-stop-prsmrs-from-being-updated-outside-of-schedule[here].
+
+== Branch limits
+
+We set `branchConcurrentLimit` to 0 and `pruneStaleBranches` to `false` due
+to the way how MintMaker runs Renovate jobs against Konflux components.
+A single repository/branch can be accessed by multiple jobs and without
+this configuration, Renovate would close and reopen PRs every time it runs.
+
+== Vulnerability alerts
+
+We enable vulnerability alerts, but include two custom options:
+
+- `containerVulnerabilityAlerts`
+- `rpmVulnerabilityAlerts`
+
+This serves to differentiate container and RPM xref:mintmaker:security-updates.adoc[security updates] from the other ecosystems.
+
+== Branch naming convention
+
+MintMaker sets a prefix `konflux/mintmaker/{{ baseBranch }}` for all its branches.
+
+== Enabled managers
+
+MintMaker enables a list of managers by default. The full list is accessible
+xref:mintmaker:user.adoc#available-managers[here].
+
+== Tekton updates
+
+The `tekton` manager is pointed to the `.tekton/` folder and enabled
+for `quay.io/redhat-appstudio-tekton-catalog` and `quay.io/konflux-ci/tekton-catalog` images. It also includes links for migration guides
+in case of major changes.
+
+Since March 2025, MintMaker can also perform task migrations automatically
+using the https://github.com/konflux-ci/pipeline-migration-tool[pipeline-migration-tool] project.
+
+== RPM updates
+
+Updates to xref:mintmaker:rpm-lockfile.adoc[RPM lockfiles] are a bit special,
+because they require grouping by default and must disable `lockFileMaintenance`.
+We recommend not changing the configuration related to RPM updates besides
+`schedule` or `enabled` options.
+
+== Go updates
+
+By default, MintMaker enables:
+
+- Indirect dependency updates
+- Updates of import paths
+- The `go mod tidy` is run after updates
+
+== Lock file maintenance
+
+MintMaker enables `lockFileMaintenance` to support the updates of lock files
+even when there are no updates to package files, for example (but not limited to) in Poetry or PDM based projects.
+
+== pre-commit
+
+The https://pre-commit.com/[pre-commit] manager is enabled by default in MintMaker.
+
+NOTE: pre-commit developers are not associated with this manager and users should not report issues there.
+
+== Integration with component nudging
+
+PRs from component nudging should have the `konflux-nudge` label. These PRs
+will not be updated by MintMaker.

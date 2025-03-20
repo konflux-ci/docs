@@ -5,4 +5,5 @@
 *** xref:user.adoc#scheduling[Scheduling]
 *** xref:user.adoc#advanced-topics[Advanced topics]
 *** xref:rpm-lockfile.adoc[RPM lockfiles]
+*** xref:default-config.adoc[Default configuration]
 *** xref:support.adoc[Support matrix]
