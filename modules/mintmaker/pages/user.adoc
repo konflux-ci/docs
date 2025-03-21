@@ -57,7 +57,7 @@ Renovate is a very configurable tool. Since every project has its unique
 needs, it is fundamental to take advantage of that flexibility to make MintMaker
 work in the best possible manner.
 
-The MintMaker team provides a base set of configurations that provide a sensible
+The MintMaker team provides xref:mintmaker:default-config.adoc[a base set of configurations] that provide a sensible
 starting point. It enables users to have a good experience out of the box.
 
 === Create your custom configuration

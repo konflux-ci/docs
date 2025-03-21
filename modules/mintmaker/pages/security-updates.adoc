@@ -1,0 +1,21 @@
+= Security updates
+
+Beginning March 2025 MintMaker provides security updates for container images
+and xref:mintmaker:rpm-lockfile.adoc[RPM lockfiles]. In their nature, the security updates are like regular dependency updates, but with included information
+about CVEs.
+
+Security updates are created with a `[SECURITY]` suffix in the PR/MR title
+and always ignore any configured xref:mintmaker:user.adoc#scheduling[schedule].
+This way, they stand out and can be prioritized over regular dependency updates.
+Users can use one of the prepared xref:mintmaker:user.adoc#configuration-presets[configuration presets] to configure automerging of security updates based
+on their severity.
+
+The CVE data is provided by Red Hat. The https://github.com/konflux-ci/mintmaker-osv-database[database] that MintMaker uses is rebuilt every hour
+and includes CVE data up to 120 days old.
+
+== Limitations for RPM lockfiles
+
+Security updates are provided only for the lockfile in the *root* folder
+of a repository. While you may receive updates for more than one lockfile,
+the CVE data is only extracted for the root one. See xref:mintmaker:rpm-lockfile.adoc[RPM lockfiles] and xref:mintmaker:support.adoc#rpm-lock-files[Support matrix]
+for further information.

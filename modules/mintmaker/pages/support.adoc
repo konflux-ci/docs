@@ -27,14 +27,14 @@ If Python 3.12 for `pip-compile` is not sufficient for your project, consider us
 | *Capability* | *Supported*
 | Generate a new `rpms.lock.yaml` | No
 | Update existing `rpms.lock.yaml` | Yes
-| Update multiple lock files in subdirectories | Yes
+| Update multiple lock files in subdirectories | No footnote:[Not officially supported, even though you might receive updates]
 | Display individual package upgrades in PR description | Yes
 a| Match CVE data to package upgrades
 
 (root `rpms.lock.yaml`) | Yes
 a| Match CVE data to package upgrades
 
-(subdirectory `rpms.lock.yaml`) | Future
+(subdirectory `rpms.lock.yaml`) | No
 |===
 
 == Go dependencies
