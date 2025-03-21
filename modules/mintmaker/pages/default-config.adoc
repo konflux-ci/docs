@@ -53,9 +53,9 @@ xref:mintmaker:user.adoc#available-managers[here].
 
 == Tekton updates
 
-The `tekton` manager is pointed to the `.tekton/` folder and enabled
-for `quay.io/redhat-appstudio-tekton-catalog` and `quay.io/konflux-ci/tekton-catalog` images. It also includes links for migration guides
-in case of major changes.
+The `tekton` manager is pointed to the `.tekton/` folder and updates
+for `quay.io/redhat-appstudio-tekton-catalog` and `quay.io/konflux-ci/tekton-catalog` images are grouped into a single PR/MR by default.
+It also includes links for migration guides in case of major changes.
 
 Since March 2025, MintMaker can also perform task migrations automatically
 using the https://github.com/konflux-ci/pipeline-migration-tool[pipeline-migration-tool] project.
