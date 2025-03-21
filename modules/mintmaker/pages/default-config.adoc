@@ -24,7 +24,7 @@ or configuration files - it works even without the `renovate.json` file present.
 Please refer to the main guide on scheduling xref:mintmaker:user.adoc#scheduling[here].
 
 By default, MintMaker will not update PRs outside of the default schedule,
-due to `updateNotScheduled` being `false`. More on this behavior file:///home/riley/projects/personal/docs/public/mintmaker/user/index.html#how-to-stop-prsmrs-from-being-updated-outside-of-schedule[here].
+due to `updateNotScheduled` being `false`. More on this behavior xref:mintmaker:user.adoc#how-to-stop-prsmrs-from-being-updated-outside-of-schedule[here].
 
 == Branch limits
 
