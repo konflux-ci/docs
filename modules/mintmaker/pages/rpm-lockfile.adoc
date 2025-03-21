@@ -33,3 +33,19 @@ Please find how to generate RPM lockfile in xref:ROOT:building:prefetching-depen
 Some projects require having multiple lockfiles in different subdirectories.
 These lockfiles will be updated, however matching CVE data against them
 is xref:mintmaker:support.adoc#rpm-lock-files[not currently supported].
+
+== RPM lockfile with RPMs that require subscription
+
+MintMaker is able to update RPM lockfiles containing RPMs that require subscription, but some setup needs to be completed first. Firstly, activation key secret needs to be added to the user namespace. This process is described in detail in the xref:ROOT:building:activation-keys-subscription.adoc[Using Red Hat activation keys to access subscription content] article. Secondly, the RPM repofile needs to be modified to make use of the custom authentication certificate and key. For each repository requiring authentication, please set `sslclientkey = $SSL_CLIENT_KEY` and `sslclientcert = $SSL_CLIENT_CERT`. This will ensure that MintMaker sets the correct paths for the authentication. For example:
+
+[source]
+----
+[rhel-9-for-x86_64-baseos-rpms]
+name = Red Hat Enterprise Linux 9 for x86_64 - BaseOS (RPMs)
+baseurl = https://cdn.redhat.com/content/dist/rhel9/$releasever/x86_64/baseos/os
+enabled = 1
+gpgcheck = 1
+gpgkey = file:///etc/pki/rpm-gpg/RPM-GPG-KEY-redhat-release
+sslclientkey = $SSL_CLIENT_KEY
+sslclientcert = $SSL_CLIENT_CERT
+----
