@@ -144,3 +144,12 @@ aside.toc.sidebar {
 .navbar-brand .navbar-item:first-child a {
     margin-top: 5px;
 }
+
+.doc a > code {
+    color: #1565c0;
+}
+
+.doc a > code:hover {
+    color: #104d92;
+    text-decoration: underline;
+}
