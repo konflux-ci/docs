@@ -187,7 +187,7 @@ enabled managers is available below.
 
 |*PHP* |+++<del>+++`composer`+++</del>+++
 
-|*Python* |`pep621`, `pip-compile`, `pip_requirements`,
+|*Python* |`pep621` footnote:[Includes PDM and uv], `pip-compile`, `pip_requirements`,
 `pip_setup`, `pipenv`, `poetry`, `pyenv`, `runtime-version`,
 `setup-cfg`, `pep723`
 
