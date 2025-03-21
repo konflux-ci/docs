@@ -4,6 +4,7 @@ To meet your specific needs, you can customize the way that {ProductName} builds
 
 * Change the parameters of the build pipeline of a component.
 * Configure the timeouts for the pipeline.
+* Add additional resources to a specific task.
 * Extend the pipeline with your own tasks (or delete existing tasks).
 
 For example, you might decide to limit how long {ProductName} saves the images that it builds for pull requests. You can set a limit by changing the value of the `image-expires-after` parameter. Or you can ensure that images are compliant with regulations for your industry, by adding a compliance check as a task to the build pipeline.
@@ -96,6 +97,74 @@ NOTE: This example shows a separate Pipeline file, but your pipeline may also be
     your PipelineRun file(s) (in `.spec.pipelineSpec`), in which case you configure all the timeouts in
     the PipelineRun.
 
+== Adding Additional Resources
+
+Some task steps require resources that scale linearly with their inputs, such as memory, CPU, or
+temporary ("ephemeral") filesystem storage. These might exceed the pipeline or system defaults for
+your component, causing tasks to fail with truncated logs or error codes greater than 1. To fix
+these failures, you will need to increase the resources allocated to the task step.
+
+.Procedure
+
+. Identify which task step is potentially failing due to lack of resources. Consult the `TaskRun`
+  logs and error messages to determine this information.
+
+. At the top of the PipelineRun definitions in the `.tekton` directory, set resource requests and limits for
+  the step as a `taskRunSpec` override:
+
++
+[source,yaml]
+----
+apiVersion: tekton.dev/v1 <1>
+kind: PipelineRun
+...
+spec:
+  taskRunSpecs:
+    - pipelineTaskName: ecosystem-cert-preflight-checks <2>
+      stepSpecs:
+        - name: app-check <3>
+          computeResources: <1>
+            requests:
+              memory: 4Gi <4>
+            limits:
+              memory: 4Gi <4>
+----
+<1> If your `PipelineRun` uses the `v1beta1` API version, the field for specifying compute 
+    resources is named is `resources`.
+<2> This is the name of the task within the pipeline that is reporting a failure.
+<3> This is the name of the step within the task that needs more resources.
+<4> Use the same value for `requests` and `limits` to guarantee these resources are allocated to
+the task step.
+
+. Repeat for all `PipelineRuns` in the `.tekton` folder which reference this step and
+are failing due to lack of memory.
+
+. If your `.tekton` folder has a `Task` object, or a `Pipeline` object with inline `Task`
+  definitions, set the resources on the corresponding task step directly:
+
++
+[source, yaml]
+----
+apiVersion: tekton.dev/v1
+kind: Pipeline
+...
+spec:
+  tasks:
+    - name: build-container
+      taskSpec:
+        steps:
+          - name: build
+            computeResources:
+              requests:
+                memory: 4Gi
+                cpu: 100m
+              limits:
+                memory: 4Gi
+                cpu: 2000m
+----
++
+NOTE: For `Pipeline` objects, setting resources is only supported for inline `taskSpecs`. This is
+currently not supported for task references (`taskRef`).
 
 == Extending the build pipeline with your own tasks
 
