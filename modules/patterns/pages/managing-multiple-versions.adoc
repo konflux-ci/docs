@@ -1,5 +1,7 @@
 = Managing multiple software versions
 
+NOTE: The Project Controller here is considered *experimental*. API and support may change in the future.
+
 Software projects are often required to maintain multiple versions of the software in parallel in order to support different users of the software with different needs. As far as source code goes, the typical way to maintain multiple versions is by using different Git branches. Using branches in conjunction with {ProductName} can be somewhat tedious as a separate Component needs to be defined for each branch and a separate Application needs to be defined for each collection of components that need to be tested and released together. In addition multiple other resources such as *ImageRepository*, *IntegrationTestScenario*, and *ReleasePlan* need to be defined for each Component or Application to enable a full CI/CD process.
 
 The {ProductName} Project Controller seeks to streamline the process of managing multiple versions by introducing the following objects and concepts:
