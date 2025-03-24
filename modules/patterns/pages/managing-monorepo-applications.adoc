@@ -59,7 +59,7 @@ spec:
             fieldRef:
               fieldPath: metadata.annotations['pac.test.appstudio.openshift.io/sha']
       script: |
-        #!/bin/sh
+        #!/bin/bash
         set -e
         components=$(jq -c '.components[]' <<< "${SNAPSHOT}")
         snapshotUrlUrlWithoutSuffix=$(echo $SNAPSHOT_URL | sed 's/\.git$//')
