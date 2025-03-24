@@ -2,6 +2,7 @@
 *** xref:git-submodules.adoc[The Git Submodule Pattern]
 *** xref:keep-remote-pipelines-up-to-date.adoc[The Remote Pipeline Pattern]
 *** xref:managing-multiple-versions.adoc[Managing multiple software versions]
+*** xref:managing-monorepo-applications.adoc[Managing Monorepo Applications]
 *** xref:managing-security-fix.adoc[Managing a security fix]
 *** xref:testing-releasing-single-component.adoc[Testing and Releasing a Single Component]
 *** xref:maintaining-references-before-release.adoc[Maintaining valid image references before a release]
