@@ -6,6 +6,11 @@ However, there are legitimate use-cases where users need to keep multiple compon
 As a result, a single Pull request or push event may spawn multiple component build pipelines.
 This pattern, while valid, requires some further considerations in order to prevent hangups and issues in the {ProductName} build/test/release workflow.
 
+== Building monorepo applications
+
+Depending on the structure of your repository, you may not want to build all components that are located in that repository for every Pull Request or commit that is pushed to it.
+Since the default {ProductName} configuration might rebuild monorepo components too often, you can change this behavior by editing the `on-cel-expression` annotation. See more information about this in the xref:building:redundant-rebuilds.adoc[preventing redundant rebuilds] section.
+
 == Pull request testing considerations for monorepo applications
 
 When a Pull Request is opened against a monorepo which contains multiple components, separate build pipelines will trigger for each component. This will in turn create individual xref:testing:integration/snapshots/working-with-snapshots.adoc[Snapshots of the Application] for each of those builds containing not only the component that was built as part of that particular pipeline but also all the other non-updated components. Any integration tests that run for that Snapshot will test the entire application + the single updated component.
