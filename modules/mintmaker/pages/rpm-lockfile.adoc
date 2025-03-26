@@ -30,9 +30,9 @@ Please find how to generate RPM lockfile in xref:ROOT:building:prefetching-depen
 
 == Multiple lockfiles in one repository
 
-Some projects require having multiple lockfiles in different subdirectories.
-These lockfiles will be updated, however matching CVE data against them
-is xref:mintmaker:support.adoc#rpm-lock-files[not currently supported].
+Updating multiple RPM lockfiles inside a single repository is currently xref:mintmaker:support.adoc#rpm-lock-files[not supported].
+
+The RPM lockfile is also required to be located in the root folder of the repository.
 
 == RPM lockfile with RPMs that require subscription
 
