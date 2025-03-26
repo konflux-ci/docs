@@ -138,7 +138,8 @@ An example of a custom task added to the pipeline that sends a slack notificatio
 +
 [source,yaml]
 --
-  name: slack-webhook-notification
+finally:
+- name: slack-webhook-notification
   params:
     - name: message
       value: PipelineRun $(context.pipelineRun.name) failed
@@ -166,6 +167,8 @@ An example of a custom task added to the pipeline that sends a slack notificatio
 [NOTE]
 ====
 * To use `slack-webhook-notification` task, you need to xref:./creating-secrets.adoc[create a secret] in your namespace with at least one key where the value is the webhook URL. For example, to create a secret for Slack, run `kubectl create secret generic my-secret --from-literal dev-team=https://hooks.slack.com/services/XXX/XXXXXX`
+
+* If your build pipeline fans out to anything broader than a straight line (i.e. if you have multiple concurrent tasks), you'll need to add this task under a `finally` clause so that it can aggregate the status of all prior tasks.
 
 * If you want to define a task directly in this file, rather than using `taskRef`, you can use `taskSpec`. See the Tekton documentation on
   link:https://tekton.dev/docs/pipelines/taskruns/#specifying-the-target-task[specifying the target task] for more details.
