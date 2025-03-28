@@ -2,7 +2,7 @@
 
 We are committed to providing exceptional security with {ProductName}. We harden the build platform, we provide transparency into the build process, and we expose the composition of artifacts.
 
-To harden the build platform, we enable multiple builds to run on a shared platform while preventing those builds from tampering with each other. This defends against link:https://slsa.dev/spec/v1.1/threats-overview[threats to the build process]. To provide transparency, we enable you to xref:managing-compliance-with-ec:index.adoc[evaluate policies] and conduct audits on the build process. This defends against link:https://slsa.dev/spec/v1.1/threats-overview[threats to the package selection].
+To harden the build platform, we enable multiple builds to run on a shared platform while preventing those builds from tampering with each other. This defends against link:https://slsa.dev/spec/v1.1/threats-overview[threats to the build process]. To provide transparency, we enable you to xref:compliance:index.adoc[evaluate policies] and conduct audits on the build process. This defends against link:https://slsa.dev/spec/v1.1/threats-overview[threats to the package selection].
 
 Our commitment to security means that {ProductName} conforms to the link:https://slsa.dev/spec/v1.0/levels#build-l3[SLSA v1.0 Build Level 3] requirements.
 

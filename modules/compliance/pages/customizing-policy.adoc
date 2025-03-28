@@ -9,7 +9,7 @@ that often provides context-specific information to help remedy violations.
 However, there are times where remedying the violation is not an option. In this case, customizing
 the Policy is the only option to waive the failing check.
 
-* xref:managing-compliance-with-ec:policy-evaluations.adoc[Identify] which Policy
+* xref:compliance:policy-evaluations.adoc[Identify] which Policy
 is being used to verify the Components in your Application.
 * Determine if this is a Policy you can modify. Policies are often shared between different users.
 Adding an exception to a shared Policy may not be in the best interest of all users. Creating a new

@@ -8,7 +8,7 @@ nav:
 - modules/building/nav.adoc
 - modules/testing/nav.adoc
 - modules/metadata/nav.adoc
-- modules/managing-compliance-with-ec/nav.adoc
+- modules/compliance/nav.adoc
 - modules/releasing/nav.adoc
 - modules/mintmaker/nav.adoc
 - modules/patterns/nav.adoc

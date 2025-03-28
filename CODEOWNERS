@@ -17,7 +17,7 @@
 /modules/patterns/images/single-component-integration-test-scenario.png @konflux-ci/release-service-maintainers
 
 # Conforma
-/modules/managing-compliance-with-ec/       		@konflux-ci/ec
+/modules/compliance/       		                @konflux-ci/ec
 /modules/building/pages/using-trusted-artifacts.adoc    @konflux-ci/ec
 
 /modules/mintmaker/ @konflux-ci/mintmaker-maintainers
