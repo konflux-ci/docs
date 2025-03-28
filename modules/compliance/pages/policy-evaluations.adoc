@@ -1,4 +1,4 @@
-= Policy evaluations in {ProductName}
+= Policy Evaluations
 
 In {ProductName}, there are two places where Enterprise Contract Policies are used by default,
 integration tests and release pipelines.

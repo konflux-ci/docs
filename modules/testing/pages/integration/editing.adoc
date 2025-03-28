@@ -55,7 +55,7 @@ kubectl annotate integrationtestscenario/[scenario name] test.appstudio.openshif
 
 == Configuring the enterprise contract policy
 
-All applications created in {ProductName} will have one integration test scenario to enable xref:/managing-compliance-with-ec[manage compliance with Enterprise Contract] by default. You can configure your tests to use a customized link:https://enterprisecontract.dev/docs/user-guide/custom-config.html#_using_an_enterprisecontractpolicy_kubernetes_custom_resource_cr[Kubernetes Custom Resource] policy on the cluster.
+All applications created in {ProductName} will have one integration test scenario to enable xref:/compliance[manage compliance with Enterprise Contract] by default. You can configure your tests to use a customized link:https://enterprisecontract.dev/docs/user-guide/custom-config.html#_using_an_enterprisecontractpolicy_kubernetes_custom_resource_cr[Kubernetes Custom Resource] policy on the cluster.
 
 .Procedure
 

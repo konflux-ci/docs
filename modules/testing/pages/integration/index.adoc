@@ -8,7 +8,7 @@ After a successful build pipeline, a snapshot is created with the just-produced 
 
 The integration service provides users with the ability to reset their component’s Global Candidate List to a desired state with a manually created `override`. You can xref:testing:integration/creating.adoc[create an override snapshot] and provide a valid container image for a component to reset the component’s Global Candidate List.
 
-{ProductName} configures one integration test for all applications to enable xref:/managing-compliance-with-ec[manage compliance with Enterprise Contract] by default. As with any other integration test, you can xref:testing:integration/editing.adoc[edit the tests] including setting parameter values (for example the enterprise contract policy evaluated) and whether the tests are required to pass before the snapshot is promoted.
+{ProductName} configures one integration test for all applications to enable xref:/compliance[manage compliance with Enterprise Contract] by default. As with any other integration test, you can xref:testing:integration/editing.adoc[edit the tests] including setting parameter values (for example the enterprise contract policy evaluated) and whether the tests are required to pass before the snapshot is promoted.
 
 
 [role="_additional-resources"]
