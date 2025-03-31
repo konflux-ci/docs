@@ -1,6 +1,6 @@
 = Prefetching package manager dependencies for hermetic builds
 
-In {ProductName}, you can run a hermetic build by restricting network access to the build, but without network a build can’t fetch component dependencies from a repository and might fail. To avoid that, {ProductName} can prefetch dependencies for your hermetic builds using link:https://github.com/containerbuildsystem/cachi2/blob/main/README.md[Cachi2].
+In {ProductName}, you can run a hermetic build by restricting network access to the build, but without network a build can’t fetch component dependencies from a repository and might fail. To avoid that, {ProductName} can prefetch dependencies for your hermetic builds using link:https://github.com/hermetoproject/hermeto/blob/main/README.md[Cachi2].
 
 For every build, Cachi2 generates a software bill of materials (SBOM) where all dependencies are properly declared and pinned to specific versions. Also, Cachi2 ensures that arbitrary code is never executed during the prefetch, meaning, for example, that the build doesn’t pull any undeclared dependencies. Such measures result in very accurate SBOMs and improve the build reproducibility. For more information about SBOMs, see xref:metadata:sboms.adoc[Inspecting SBOMs].
 
@@ -37,7 +37,7 @@ For every build, Cachi2 generates a software bill of materials (SBOM) where all 
 |`JavaScript`
 |===
 
-NOTE: *The link:https://github.com/konflux-ci/rpm-lockfile-prototype?tab=readme-ov-file#what-is-this[rpm-lockfile-prototype] and the link:https://github.com/containerbuildsystem/cachi2?tab=readme-ov-file#package-managers[rpm package manager for cachi2] are not fully supported. You can use them to prefetch rpms for your hermetic builds, but the file format and technology may change in the future. If you're interested in the future of this topic, join the discussion at link:https://github.com/rpm-software-management/dnf5/issues/833[rpm-software-management/dnf5#833].
+NOTE: *The link:https://github.com/konflux-ci/rpm-lockfile-prototype?tab=readme-ov-file#what-is-this[rpm-lockfile-prototype] and the link:https://github.com/hermetoproject/hermeto?tab=readme-ov-file#package-managers[rpm package manager for cachi2] are not fully supported. You can use them to prefetch rpms for your hermetic builds, but the file format and technology may change in the future. If you're interested in the future of this topic, join the discussion at link:https://github.com/rpm-software-management/dnf5/issues/833[rpm-software-management/dnf5#833].
 
 == Procedure
 To prefetch dependencies for a component build, complete the following steps:
@@ -141,7 +141,7 @@ version = "0.1.0"
 ----
 
 +
-NOTE: Instead of a `pyproject.toml` file, you can also create a `setup.py` or `setup.cfg` file. For information about the metadata of these files, see link:https://github.com/containerbuildsystem/cachi2/blob/main/docs/pip.md#project-metadata[Project metadata].
+NOTE: Instead of a `pyproject.toml` file, you can also create a `setup.py` or `setup.cfg` file. For information about the metadata of these files, see link:https://github.com/hermetoproject/hermeto/blob/main/docs/pip.md#project-metadata[Project metadata].
 
 . Generate a fully resolved `requirements.txt` file that contains all the transitive dependencies and pins them to a specific version and hash by using the following command:
 
@@ -210,7 +210,7 @@ spec:
 ----
 <1> The `*prefetch-input*` parameter specifies the path to the directory that has the lockfile and the package metadata files. In the previous example, the `.` indicates that the package manager lockfile is located in the root of the repository. Additionally, if you have multiple directories, you can provide the path to those directories in the JSON array format. For example, `[{"path": ".", "type": "pip", , "requirements_files": ["requirements.txt", "requirements-extras.txt", "tests/requirements.txt"]}, {"path": "subpath/to/the/other/directory", "type": "pip", "requirements_files": ["requirements.txt", "requirements-extras.txt", "tests/requirements.txt"]}]`.
 
-NOTE: To troubleshoot any issues you might experience when you enable prefetch builds for `pip` with source dependencies, see link:https://github.com/containerbuildsystem/cachi2/blob/main/docs/pip.md#troubleshooting[cachi2 documentation]
+NOTE: To troubleshoot any issues you might experience when you enable prefetch builds for `pip` with source dependencies, see link:https://github.com/hermetoproject/hermeto/blob/main/docs/pip.md#troubleshooting[cachi2 documentation]
 
 === [[custom-index-servers]]Prefetching `pip` dependencies from custom index servers
 
@@ -319,11 +319,11 @@ NOTE: The list of `arches.packages` is omitted for brevity.
 NOTE: Konflux also supports prefetching RPM content which requires a Red Hat subscription. For more information see xref:./activation-keys-subscription.adoc#hermetic-network-isolated-builds[Using Red Hat activation keys to access subscription content].
 
 == [[generic]]Enabling prefetch builds for `generic fetcher`
-If you need to prefetch arbitrary files for your build, Cachi2 supports `generic fetcher` for that purpose. It uses a custom lockfile named `artifacts.lock.yaml` to achieve this. This file needs to be either commited in the source repository, or explicitly specified as an absolute path. The latter is useful in case you for some reason need the lockfile to be dynamic and committing it to the repository would be problematic. For more information on supported types of artifacts, see link:https://github.com/containerbuildsystem/cachi2/blob/main/docs/generic.md[Cachi2 documentation].
+If you need to prefetch arbitrary files for your build, Cachi2 supports `generic fetcher` for that purpose. It uses a custom lockfile named `artifacts.lock.yaml` to achieve this. This file needs to be either commited in the source repository, or explicitly specified as an absolute path. The latter is useful in case you for some reason need the lockfile to be dynamic and committing it to the repository would be problematic. For more information on supported types of artifacts, see link:https://github.com/hermetoproject/hermeto/blob/main/docs/generic.md[Cachi2 documentation].
 
 To prefetch dependencies for a component build, complete the following steps:
 
-. Create a `artifacts.lock.yaml` file in your git repository, with a list of files to prefetch, their checksums, and optionally their filenames. See link:https://github.com/containerbuildsystem/cachi2/blob/main/docs/generic.md[Cachi2 documentation] for complete overview of the lockfile format.
+. Create a `artifacts.lock.yaml` file in your git repository, with a list of files to prefetch, their checksums, and optionally their filenames. See link:https://github.com/hermetoproject/hermeto/blob/main/docs/generic.md[Cachi2 documentation] for complete overview of the lockfile format.
 
 +
 [source,yaml]
