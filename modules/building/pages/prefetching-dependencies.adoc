@@ -12,29 +12,29 @@ For every build, Cachi2 generates a software bill of materials (SBOM) where all 
 |**Package manager**
 |**Programming language**
 
-|xref:gomod[gomod]
-|`Go`
-
-|xref:pip[pip]
-|`Python`
-
-|xref:npm[npm]
-|`JavaScript`
-
-|xref:yarn[yarn]
-|`JavaScript`
-
 |xref:bundler[bundler]
 |`Ruby`
 
 |xref:cargo[cargo]
 |`Rust`
 
+|xref:generic[generic]
+|`N/A`
+
+|xref:gomod[gomod]
+|`Go`
+
+|xref:npm[npm]
+|`JavaScript`
+
+|xref:pip[pip]
+|`Python`
+
 |xref:rpm[rpm]*
 |`N/A`
 
-|xref:generic[generic]
-|`N/A`
+|xref:yarn[yarn]
+|`JavaScript`
 |===
 
 NOTE: *The link:https://github.com/konflux-ci/rpm-lockfile-prototype?tab=readme-ov-file#what-is-this[rpm-lockfile-prototype] and the link:https://github.com/containerbuildsystem/cachi2?tab=readme-ov-file#package-managers[rpm package manager for cachi2] are not fully supported. You can use them to prefetch rpms for your hermetic builds, but the file format and technology may change in the future. If you're interested in the future of this topic, join the discussion at link:https://github.com/rpm-software-management/dnf5/issues/833[rpm-software-management/dnf5#833].
