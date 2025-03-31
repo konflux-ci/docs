@@ -1,6 +1,6 @@
 = Retriggering build pipelines
 
-Occasionally, your build pipeline may fail unexpectedly, necessitating a retrigger. For pull requests, this can be achieved by adding comments. For post-merge builds, retriggering can be done either through UI, or by using the API to add an annotation to your Component resource.
+Occasionally, your build pipeline may fail unexpectedly, necessitating a retrigger. For pre-merge builds, this can be achieved by adding comments to the pull/merge requests. For post-merge builds, retriggering can be done either through UI, or by using the API to add an annotation to your Component resource.
 
 See also xref:testing:integration/rerunning.adoc[Retriggering integration tests].
 
