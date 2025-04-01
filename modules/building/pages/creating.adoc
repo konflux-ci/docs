@@ -91,6 +91,123 @@ For further details on PipelineRun permissions, please refer to the https://pipe
 
 . Once the PR is made, a build pipeline should start. You can track its progress in the {ProductName} UI or you can see the final status in GitHub after the pipeline completes. If the pipeline is successful, you can merge the PR.
 
+== Using different from default image repository
+
+When using ImageRepository object, you will end up with image repository in
+a default organization, if you want to use your own repository
+don't create ImageRepository and follow this section.
+
+Create your own repository in quay.io (or other registry, our example will be for quay.io)
+
+In quay.io web UI, go to your organization and click on *Create New Repository*, enter repository name
+and visibility and click on *Create Public/Private Repository* button.
+eg. `quay.io/test_organization/own-repository`
+
+Create robot account in your organization and grant write permission to your repository,
+you can also create another robot account only with read permissions.
+
+In quay.io web UI, go to your organization, click on *Robot Accounts* in the left menu,
+then click on *Create Robot Account*, enter name of robot account and click on *Create robot account* button,
+in the list of repos find your repository and set *write* permission for it and then click on *Add permissions* button.
+
+When you click on the newly created robot account on *Robot Accounts* page, you can get details of the account.
+In the openened popup for the account first you will see credentials *Username* and *Token* (we will use them later),
+when you click on *Kubernetes Secret* you can download secret yml file (we will use it later).
+
+Now we will have to create secret with repository credentials.
+
+=== Creating Secret via {ProductName} UI
+You can now xref:building:creating-secrets.adoc#example-of-creating-a-quay-io-secret[create a secret]
+with the credentials above.
+Make sure to use the most narrowly valid scope for the `registry server address` field
+when adding the secret.
+
+When adding the secret with the UI, it will automatically be linked to the `appstudio-pipeline`
+service account so that it can be leveraged by builds.
+
+=== Creating Secret manually
+
+If you aren't using quay.io registry and have only login & password, you will have to podman login
+with credentials, and then get docker config json from  `$XDG_RUNTIME_DIR/containers/auth.json` base64 encode it
+and add to the secret.
+
+Download secret yml for your robot account (from *Robot Accounts* page described above)
+and save it as `Secret.yaml`.
+
+It will look like this:
+
+[source,yaml]
+----
+apiVersion: v1
+kind: Secret
+metadata:
+  name: secret-name
+data:
+  .dockerconfigjson: <base64-encoded-credentials>
+type: kubernetes.io/dockerconfigjson
+----
+
+Edit the file and add `metadata.namespace` with value of your namespace: `<your-workspace-tenant>`
+
+Encoded credentials from quay.io will be by default for `quay.io` repository, unless you are using only custom repository
+for whole namespace, with robot account for all repos and will have only one secret in the namespace for registry,
+you will have to change the repository in the encoded credentials
+from `quay.io` to `quay.io/test_organization/own-repository`.
+
+To get new <base64-encoded-credentials> follow these steps:
+
+Decode encoded credentials save them to file : `echo <base64-encoded-credentials> | base64 -d > auth.json`
+
+file will look like
+
+[source,json]
+----
+{
+  "auths": {
+    "quay.io": {
+      "auth": "<base64-encoded-auth>",
+      "email": ""
+    }
+  }
+}
+----
+
+Edit file and change `quay.io` to full repository name `quay.io/test_organization/own-repository`.
+
+Encode credentials again: `cat auth.json | base64 -w0`
+and change `<base64-encoded-credentials>` to newly generated credentials in `Secret.yaml`.
+
+
+And create the secret:
+
+[source,shell]
+----
+$ kubectl apply -f Secret.yaml
+----
+
+Now we will have to also link the secret to the service account `appstudio-pipeline`,
+edit service account either with OCP UI or Cli and to the `secrets` section of the service account
+add your newly created secret, service account should look like:
+
+[source,yaml]
+----
+kind: ServiceAccount
+apiVersion: v1
+metadata:
+  name: appstudio-pipeline
+  namespace: <your-workspace-tenant>
+secrets:
+  - name: secret-name
+----
+
+=== Creating component which will be using your own repository
+
+Now that we have create secret with credential to our own repository,
+we can finally create component using it.
+Follow examples above about how to create Component via Cli,
+but now you will have to set `spec.containerImage` to your own repository `quay.io/test_organization/own-repository`.
+
+
 == Finding the built images
 
 After a pipeline completes with a built artifact, you may want to test the resulting image to ensure that it works properly. The `IMAGE_URL` Tekton result (discoverable from the UI or CLI) should be set to the pullspec for the image.
