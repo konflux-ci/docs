@@ -35,6 +35,7 @@ Snapshot which will trigger a specific pipeline in the managed namespace.
 A Component CR describes the properties for an OCI artifact including the git repository where the artifact is from,
 its latest built commit, initial build configuration parameters (i.e. Containerfile path), and any relationships to
 other Components. The CR also contains a reference to its single owning Application.
+Component names must be unique in a namespace, even when components are used in different application.
 
 === Pipelines as Code (PAC)
 https://pipelinesascode.com/[Pipelines as Code] is a project that provides opinionated tooling to define a
