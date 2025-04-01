@@ -1,6 +1,6 @@
 = Enabling build pipelines
 
-Before users can create an application in {ProductName}, you must enable build pipelines in your instance of {ProductName}. At the time of publication, this process includes configuring a smee channel, to listen for users' pull requests, and creating a GitHub App, so {ProductName} can access those PRs.
+Before users can create an application in {ProductName}, you must enable build pipelines in your instance of {ProductName}. At the time of publication, this process includes configuring a smee channel, to listen for users' pull requests, and creating a xref:installing:github-app.adoc[GitHub App], so {ProductName} can access those PRs.
 
 .Prerequisites:
 

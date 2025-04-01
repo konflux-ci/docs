@@ -1,0 +1,20 @@
+= GitHub App
+
+A *GitHub App* is a tool that extends GitHub's functionality. It can do things on GitHub like open issues, comment on pull requests, manage projects, etc.
+
+Learn more about link:https://docs.github.com/en/apps/overview[GitHub Apps].
+
+== Why do we use a GitHub App? [[why-do-we-use-github-app]]
+The Red Hat {ProductName} GitHub App integrates GitHub events (e.g., Push to a branch, Pull Request, etc.) with the link:https://pipelinesascode.com/[Pipelines As Code] (PAC) component. The App allows {ProductName} to perform actions based on your configuration in the `.tekton` folder and integrate {ProductName} updates into your project.
+
+== What does the App do? [[what-does-the-github-app-do]]
+The App provides several key functionalities to enhance your development workflow.
+
+.Some of the features:
+* Initializes Tekton on-pull/on-push PipelineRuns definition during installation
+* Runs Tekton PipelineRuns on your pull requests
+* Tekton PipelineRuns can be run through comments (e.g., `/ok-to-test`, `/retest`)
+* Creates pull requests containing {ProductName} updates
+
+== Where is the App installed? [[where-is-the-app-installed]]
+A GitHub App is installed on a specific repository or an entire organization. Users can manage and configure the app's settings through the repository or organization's settings page under `Installed GitHub Apps`.
