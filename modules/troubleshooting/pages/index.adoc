@@ -1,6 +1,8 @@
 = Troubleshooting
 
-== No space left on device
+== Builds
+
+=== No space left on device
 
 Tasks may fail with an error message mentioning `No space left on device` as the underlying error.
 This likely means your build pipeline wrote more data than expected into a shared volume.
@@ -33,132 +35,14 @@ spec:
 ----
 
 
-== Pipeline Run Times Out
+=== Pipeline Run Times Out
 
 Tasks may fail with an error message mentioning ``PipelineRun <pipelineName> failed to finish within "1h0m0s".``
 
 If you see this error message, it means that the pipeline run has exceeded the default one hour time limit set for PipelineRuns.
 You can increase the timeout if necessary, see xref:building:customizing-the-build.adoc#configuring-timeouts[Configuring timeouts].
 
-== Failed to push or pull image
-
-Failing to authenticate with a container registry can be hard to debug. To be able to troubleshoot
-effectively, one needs to understand how registry authentication works in Tekton. For the full
-details, see the Tekton link:https://tekton.dev/docs/pipelines/auth/[Authentication] docs. In short:
-
-. Tekton uses a ServiceAccount (named `appstudio-pipeline` by default in {ProductName}) to run your Pipeline.
-. This ServiceAccount has a list of `imagePullSecrets` and `secrets`.
-.. Tekton uses the `imagePullSecrets` when pulling the images that execute the Tasks in your pipeline.
-   These images are typically hard-coded in the Task definition and publicly accessible. As a {ProductName}
-   user, you're more interested in the `secrets`.
-.. Tekton injects the `secrets` into the execution environment so that the tools executed inside
-   the Tasks (e.g. `buildah`, `skopeo`, `oras`, `cosign`) can authenticate to registries.
-
-Tekton takes all the `dockercfg` and `dockerconfigjson` secrets linked in `secrets` (as well as
-link:https://tekton.dev/docs/pipelines/auth/#configuring-basic-auth-authentication-for-docker[specially annotated]
-`basic-auth` secrets), merges them into a single file and injects the file into the Task Pod at
-`~/.docker/config.json`. The format of the file is described in the
-link:https://github.com/containers/image/blob/main/docs/containers-auth.json.5.md[containers-auth.json manpage].
-
-Note that the merged file can contain multiple credentials for a single registry, distinguished by
-path. For example:
-
-[source,json]
-----
-{
-  "auths": {
-    "quay.io/my-org": {
-      "auth": "..."
-    },
-    "quay.io": {
-      "auth": "..."
-    }
-  }
-}
-----
-
-The most specific path takes precedence. When accessing images in `quay.io/my-org/`, the tool will
-prefer the `quay.io/my-org` credential over the generic `quay.io` credential (assuming the tool
-implements the `containers-auth.json` spec correctly).
-
-More tips and tricks for debugging below.
-
-=== Check if a secret has access to a registry / to a specific image
-
-_Prerequisites: `jq`, `kubectl` or `oc`, access to the Secrets in the namespace._
-
-[source,bash]
-----
-secret_name=secret-for-my-registry
-should_have_access_to=my.registry.io/my-org/my-image
-
-kubectl get secret "$secret_name" -o json |
-    jq '.data[] | @base64d | fromjson | {auths: (.auths // .)}' |
-    tee /tmp/auth.json
-
-# Check if a tool can use the authfile to access a registry / an image. E.g. skopeo:
-skopeo login --authfile /tmp/auth.json "$should_have_access_to"
-----
-
-Note: works for `dockercfg` and `dockerconfigjson` secrets, not `basic-auth`.
-
-[#check-if-the-secret-is-linked-to-the-service-account]
-=== Check if the secret is linked to the `appstudio-pipeline` service account
-
-In order to connect the new secret to pipeline run, you need to link it from service account used by Tekton to run the pipeline run.
-Check if your secret appears in the `secrets` section:
-
-[source,bash]
-----
-kubectl get sa appstudio-pipeline -o json
-----
-
-If not, link it to the `appstudio-pipeline` service account with:
-
-[source,bash]
-----
-secret_name=secret-for-my-registry
-
-# using kubectl
-kubectl patch serviceaccount appstudio-pipeline -p "{\"secrets\": [{\"name\": \"$secret_name\"}]}"
-
-# using oc
-oc secrets link appstudio-pipeline "$secret_name"
-----
-
-=== Get the merged registry auth file
-
-_Prerequisites: `jq`, `kubectl` or `oc`, access to the Secrets in the namespace._
-
-This script roughly approximates Tekton's merging of `dockercfg` and `dockerconfigjson` secrets.
-It does not handle `basic-auth` secrets.
-
-The output is a `containers-auth.json` file (you can e.g. save it as `/tmp/auth.json` and use it the
-same way as in the example above). Each entry in the file has an extra `_from_secret` attribute
-showing which Secret provides the entry. This may be useful to determine which Secret is introducing
-problematic content into the merged file.
-
-[source,bash]
-----
-linked_secrets=$(kubectl get sa appstudio-pipeline -o json | jq '.secrets | map(.name)')
-
-kubectl get secrets -o json |
-    jq --argjson linked_secrets "$linked_secrets" '
-        .items | map(
-            . as $secret |
-            select($linked_secrets | index($secret.metadata.name)) |
-            .data | .[".dockercfg"], .[".dockerconfigjson"] | select(. != null) |
-            @base64d | fromjson |
-            .auths // . |
-            to_entries[] |
-            {registry: .key, config: .value, secret: $secret.metadata.name}
-        ) |
-        reduce .[] as $x ({}; .[$x.registry] = $x.config + {_from_secret: $x.secret}) |
-        {auths: .}
-    '
-----
-
-== Manually Update Task Bundles
+=== Manually Update Task Bundles
 
 Usually, Konflux users rely on link:https://docs.renovatebot.com/[renovate] to update
 the various Task bundle references in the build Pipelines. However, it is also possible
@@ -236,3 +120,131 @@ chmod +x update-tekton-task-bundles.sh
 
 ./update-tekton-task-bundles.sh .tekton/*.yaml
 ----
+
+include::partial${context}-builds.adoc[]
+
+== Releases
+
+include::partial${context}-releases.adoc[]
+
+== Working with Image Registries
+
+=== Failed to push or pull image
+
+Failing to authenticate with a container registry can be hard to debug. To be able to troubleshoot
+effectively, one needs to understand how registry authentication works in Tekton. For the full
+details, see the Tekton link:https://tekton.dev/docs/pipelines/auth/[Authentication] docs. In short:
+
+. Tekton uses a ServiceAccount (named `appstudio-pipeline` by default in {ProductName}) to run your Pipeline.
+. This ServiceAccount has a list of `imagePullSecrets` and `secrets`.
+.. Tekton uses the `imagePullSecrets` when pulling the images that execute the Tasks in your pipeline.
+   These images are typically hard-coded in the Task definition and publicly accessible. As a {ProductName}
+   user, you're more interested in the `secrets`.
+.. Tekton injects the `secrets` into the execution environment so that the tools executed inside
+   the Tasks (e.g. `buildah`, `skopeo`, `oras`, `cosign`) can authenticate to registries.
+
+Tekton takes all the `dockercfg` and `dockerconfigjson` secrets linked in `secrets` (as well as
+link:https://tekton.dev/docs/pipelines/auth/#configuring-basic-auth-authentication-for-docker[specially annotated]
+`basic-auth` secrets), merges them into a single file and injects the file into the Task Pod at
+`~/.docker/config.json`. The format of the file is described in the
+link:https://github.com/containers/image/blob/main/docs/containers-auth.json.5.md[containers-auth.json manpage].
+
+Note that the merged file can contain multiple credentials for a single registry, distinguished by
+path. For example:
+
+[source,json]
+----
+{
+  "auths": {
+    "quay.io/my-org": {
+      "auth": "..."
+    },
+    "quay.io": {
+      "auth": "..."
+    }
+  }
+}
+----
+
+The most specific path takes precedence. When accessing images in `quay.io/my-org/`, the tool will
+prefer the `quay.io/my-org` credential over the generic `quay.io` credential (assuming the tool
+implements the `containers-auth.json` spec correctly).
+
+More tips and tricks for debugging below.
+
+==== Check if a secret has access to a registry / to a specific image
+
+_Prerequisites: `jq`, `kubectl` or `oc`, access to the Secrets in the namespace._
+
+[source,bash]
+----
+secret_name=secret-for-my-registry
+should_have_access_to=my.registry.io/my-org/my-image
+
+kubectl get secret "$secret_name" -o json |
+    jq '.data[] | @base64d | fromjson | {auths: (.auths // .)}' |
+    tee /tmp/auth.json
+
+# Check if a tool can use the authfile to access a registry / an image. E.g. skopeo:
+skopeo login --authfile /tmp/auth.json "$should_have_access_to"
+----
+
+Note: works for `dockercfg` and `dockerconfigjson` secrets, not `basic-auth`.
+
+[#check-if-the-secret-is-linked-to-the-service-account]
+==== Check if the secret is linked to the `appstudio-pipeline` service account
+
+In order to connect the new secret to pipeline run, you need to link it from service account used by Tekton to run the pipeline run.
+Check if your secret appears in the `secrets` section:
+
+[source,bash]
+----
+kubectl get sa appstudio-pipeline -o json
+----
+
+If not, link it to the `appstudio-pipeline` service account with:
+
+[source,bash]
+----
+secret_name=secret-for-my-registry
+
+# using kubectl
+kubectl patch serviceaccount appstudio-pipeline -p "{\"secrets\": [{\"name\": \"$secret_name\"}]}"
+
+# using oc
+oc secrets link appstudio-pipeline "$secret_name"
+----
+
+==== Get the merged registry auth file
+
+_Prerequisites: `jq`, `kubectl` or `oc`, access to the Secrets in the namespace._
+
+This script roughly approximates Tekton's merging of `dockercfg` and `dockerconfigjson` secrets.
+It does not handle `basic-auth` secrets.
+
+The output is a `containers-auth.json` file (you can e.g. save it as `/tmp/auth.json` and use it the
+same way as in the example above). Each entry in the file has an extra `_from_secret` attribute
+showing which Secret provides the entry. This may be useful to determine which Secret is introducing
+problematic content into the merged file.
+
+[source,bash]
+----
+linked_secrets=$(kubectl get sa appstudio-pipeline -o json | jq '.secrets | map(.name)')
+
+kubectl get secrets -o json |
+    jq --argjson linked_secrets "$linked_secrets" '
+        .items | map(
+            . as $secret |
+            select($linked_secrets | index($secret.metadata.name)) |
+            .data | .[".dockercfg"], .[".dockerconfigjson"] | select(. != null) |
+            @base64d | fromjson |
+            .auths // . |
+            to_entries[] |
+            {registry: .key, config: .value, secret: $secret.metadata.name}
+        ) |
+        reduce .[] as $x ({}; .[$x.registry] = $x.config + {_from_secret: $x.secret}) |
+        {auths: .}
+    '
+----
+
+include::partial${context}-registries.adoc[]
