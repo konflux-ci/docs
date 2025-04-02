@@ -6,6 +6,8 @@
 
 Before being able to onboard a component to {ProductName}, you will need to ensure that the instance has appropriate access to the git repository. This means either installing your organization’s {ProductName} GitHub App on the source code repository or xref:building:creating-secrets.adoc#creating-source-control-secrets[create a secret] to enable access to a GitLab repository.
 
+NOTE: Component names must be unique in a namespace, even when components are used in different application.
+
 === With the UI
 .Prerequisites:
 
