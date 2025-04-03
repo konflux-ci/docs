@@ -46,6 +46,9 @@ spec:
           tags: [latest]
   target: managed-workspace
   tenantPipeline:
+    params: <.>
+    - name: paramForPipeline
+      value: foo
     pipelineRef: <.>
       resolver: git
       params:
@@ -63,6 +66,7 @@ spec:
 <.> The development team's workspace.
 <.> The name of the application that you want to release via a pipeline in the development workspace.
 <.> A list containing the destination repository for each component
+<.> The parameters to pass to your pipeline. Note: the release-operator will automatically pass parameters `taskGitRevision` and `taskGitUrl` with the same values as the `pipelineRef` `revision` and `pipelineRef` `url` parameters respectively. So, you should not pass your own values for these two parameters in this section. If you do, tekton validation webhooks will block the pipelineRun creation.
 <.> Reference to the tenant pipeline to be executed in the development workspace.
 <.> The name of the service account used to execute the tenant pipeline.
 
