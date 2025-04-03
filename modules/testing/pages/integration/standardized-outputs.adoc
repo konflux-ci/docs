@@ -1,0 +1,22 @@
+= Standardized outputs
+
+Konflux is using standardized outputs in various places, this part of docs will provide more detail information about it.
+Each one of the results described below is rendered in the UI, you simply click on task name and panel with details is showed
+containing all results from the task. 
+
+== TEST_OUTPUT
+
+Each tekton task in build pipelinerun provides TEST_OUTPUT result [json] that sumarizes its outcome. It's then being evaluated by Conforma team whether the product can be released or not.
+
+This result type can be also used in integration test pipelines and tasks where it can be parsed by the integration service when deciding the outcome of the integration test. This means you can use it to fail individual test tasks by emitting this result instead of failing the task and stopping the entire pipeline. With this approach it is possible to run multiple tests within the same pipeline and pass or fail them individually.
+
+== SCAN_OUTPUT
+
+This one is located within build definition task clair scan. SCAN_OUTPUT result[json] is displayed in different manner than TEST_OUTPUT, but it serves the same purpose.
+It additionaly displays found vulnerabilities, patched(RHSA fix) and unpatched ones. Should be used in addition to TEST_OUTPUT.
+
+image::vulnerabilities.png[role="border" alt="Vulnerabilities"]
+
+== IMAGES_PROCESSED
+
+Result[json] for recording which image digests are processed (i.e. multi-arch images). This enables the ability to validate that all of the image manifest architectures have been scanned even if a task does not support scanning all image manifests.

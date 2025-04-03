@@ -10,6 +10,7 @@
 **** xref:integration/choosing-contexts.adoc[Choosing when to run certain Integration Tests]
 **** xref:integration/accessing-private-repositories.adoc[Accessing Pipelines and Tasks in Private Repositories]
 **** xref:integration/periodic-integration-tests.adoc[Triggering Periodic Integration Tests]
+**** xref:integration/standardized-outputs.adoc[Standardized outputs]
 **** Snapshots
 ***** xref:integration/snapshots/working-with-snapshots.adoc[Working with Snapshots]
 ***** xref:integration/snapshots/override-snapshots.adoc[Creating an override snapshot]
