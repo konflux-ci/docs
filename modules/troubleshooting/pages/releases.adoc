@@ -1,0 +1,3 @@
+= Troubleshooting Releases
+
+include::partial${context}-releases.adoc[]

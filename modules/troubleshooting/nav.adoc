@@ -1,1 +1,4 @@
-* xref:index.adoc[Troubleshooting]
+* Troubleshooting
+** xref:builds.adoc[Builds]
+** xref:releases.adoc[Releases]
+** xref:registries.adoc[Registry Issues]
