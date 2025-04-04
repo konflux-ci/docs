@@ -1,0 +1,64 @@
+= GitHub Merge Queues
+
+This document contains instructions for how to configure configure GitHub link:https://docs.github.com/en/repositories/configuring-branches-and-merges-in-your-repository/configuring-pull-request-merges/managing-a-merge-queue[merge queues] with {ProductName}.
+
+A merge queue is a GitHub feature that provides the same benefits as the **Require branches to be up to date before merging** branch protection, but does not require a pull request author to update their pull request branch and wait for status checks to finish before trying to merge.
+
+By leveraging merge queues, you can be more sure that competing changes landing on your main branch do not have conflicting changes that fail CI, but without the hassle of requiring you to manually rebase every pull request when another one merges.
+
+NOTE: GitHub merge queues are similar to both link:https://docs.prow.k8s.io/docs/components/core/tide/[tide] pools from the link:https://docs.prow.k8s.io/docs/[prow] system and link:https://docs.gitlab.com/ci/pipelines/merge_trains/[merge trains] from Gitlab.
+
+== Prerequisites
+
+You already have a Component onboarded to {ProductName} with working pipelines.
+
+== Insight
+
+When merge queues are enabled, GitHub will push your commits to a link:https://docs.github.com/en/repositories/configuring-branches-and-merges-in-your-repository/configuring-pull-request-merges/managing-a-merge-queue#triggering-merge-group-checks-with-third-party-ci-providers[special branch] (`gh-readonly-queue/<base_branch>`) before a change is merged to `<base_branch>`. We will configure Konflux to trigger pipelines in response to pushes to that branch.
+
+== Procedure
+
+=== Configure merge queues in the GitHub UI
+
+You first need to enable merge queues in the GitHub UI settings for your project.
+
+* link:https://docs.github.com/en/repositories/configuring-branches-and-merges-in-your-repository/configuring-pull-request-merges/managing-a-merge-queue[Enable merge queues] by enabling the branch protection setting "Require merge queue" in the branch protection rules for your base branch.
+* Also enable the "Require status checks to pass before merging" and select your {ProductName} *pull request* pipelines as required checks.
+
+=== Modify the on-cel-expression of your pull request pipeline
+
+Identify the **pull-request** pipeline for your component in the `.tekton/` directory of your component repository.
+
+Open the `.tekton/<component>-pull-request.yaml` file and find the `pipelinesascode.tekton.dev/on-cel-expression` annotation. It should look like this:
+
+[source, yaml]
+----
+apiVersion: tekton.dev/v1
+kind: PipelineRun
+metadata:
+  annotations:
+    pipelinesascode.tekton.dev/on-cel-expression: event == "pull_request" && target_branch == "main"
+...
+----
+
+Now, edit that line to append some additional logic:
+
+[source, yaml]
+----
+apiVersion: tekton.dev/v1
+kind: PipelineRun
+metadata:
+  annotations:
+    pipelinesascode.tekton.dev/on-cel-expression: (event == "pull_request" && target_branch == "main") || (event == "push" && target_branch.startsWith("gh-readonly-queue/main/"))
+...
+----
+
+With this new expression in place, {ProductName} will start "pull request" pipelines whenever it sees a pull request (like normal) **or** whenever it sees a push to a branch that matches the special pattern used by GitHub merge queues.
+
+=== Verify the changes
+
+Try opening two pull requests at once. For the merge options, you should see "Merge when ready" and "This repository uses the merge queue for all merges into the <target branch> branch." Try merging both of them at once and observe the behavior as both are added to a merge queue.
+
+One will be rebased on top of the other. If both pass CI, they will both be merged. If only one passes CI, then only one will be merged.
+
+See GitHub link:https://docs.github.com/en/repositories/configuring-branches-and-merges-in-your-repository/configuring-pull-request-merges/managing-a-merge-queue[merge queue] documentation for more.
