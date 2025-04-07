@@ -18,7 +18,7 @@ You need to perform three major steps. Write your trigger pipeline using a share
 
 .Procedure - Writing the test pipeline
 
-We'll make use of a shared link:https://github.com/konflux-ci/tekton-integration-catalog/blob/main/docs/qe-available-tasks/trigger-jenkins-job.md[trigger jenkins job] task.
+We'll make use of a shared link:https://github.com/konflux-ci/tekton-integration-catalog/blob/main/tasks/triggers/jenkins/0.1/README.md[trigger jenkins job] task.
 
 Similar to the instructions in the xref:testing:integration/creating.adoc[creating an integration test] guide, commit the following Pipeline definition to a file named `pipelines/jenkins.yaml` in a repository under your control, like `https://github.com/your-org/your-tests-repo`.
 
