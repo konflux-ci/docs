@@ -301,6 +301,18 @@ include::partial${context}-example-prefetch-rpm-lockfile.adoc[]
 +
 NOTE: The list of `arches.packages` is omitted for brevity.
 
+. Add/Update the prefetch-input param in the PipelineRun yaml so that the prefetch-task for RPMs is enabled. Update the path if the RPM files are not in the default directory.
+
++
+[source,yaml]
+----
+spec:
+  params:
+    ...
+    - name: prefetch-input
+      value: '{"type": "rpm", "path": "."}' <1>
+----
+
 . Additionally, pass an extra parameter to the `prefetch-dependencies` task in the `.spec.pipelineSpec.tasks` section to indicate that "dev package managers" should be enabled.
 
 +
