@@ -1,8 +1,8 @@
 = Running user scripts on the build pipeline
 
-This document contains instructions for how to extend the build pipeline of a component to run an script before building the component container.
+This document contains instructions for how to extend the build pipeline of a component to run a script before building the component container.
 
-Although multi-stages builds cover most of the cases where we want to modify the source content before building the final image there are use cases where we need to run an script before building the container, such as the cases where the `Containerfile` itself is created by an external tool.
+Although multi-stages builds cover most of the cases where we want to modify the source content before building the final image there are use cases where we need to run a script before building the container, such as the cases where the `Containerfile` itself is created by an external tool.
 
 We can extend the build pipeline with the `run-script-oci-ta` task to integrate the execution of those tools for these use cases.
 
@@ -12,7 +12,7 @@ We can extend the build pipeline with the `run-script-oci-ta` task to integrate 
 
 [IMPORTANT]
 ====
-There is no non `oci-ta` variant of this task nor plans to introduce it. The prerequesitie listed above is a hard requisite
+There is no non `oci-ta` variant of this task nor plans to introduce it. The prerequisite listed above is a hard requisite
 ====
 
 * The script to run and all its dependencies are part of the source git repository or the container image the task will use to run the script.
@@ -61,7 +61,7 @@ There is no non `oci-ta` variant of this task nor plans to introduce it. The pre
 
 <1> Use `SCRIPT_RUNNER_IMAGE` parameter to specify the container image you want to use to run the script. The image must already ship all the dependencies and additional tools required to run the script.
 
-<2> Use `SCRIPT` parameter to specify the script to run. This can be a command using an absolute path on the container image (`make build`) , a command using the relative path of an script on the source repository (`./my-script.sh build`) or an inline `sh` script. Refer to link:https://github.com/konflux-ci/build-definitions/blob/main/task/run-script-oci-ta/0.1/README.md[the task documentation] for more examples.
+<2> Use `SCRIPT` parameter to specify the script to run. This can be a command using an absolute path on the container image (`make build`), a command using the relative path of a script on the source repository (`./my-script.sh build`) or an inline `sh` script. Refer to link:https://github.com/konflux-ci/build-definitions/blob/main/task/run-script-oci-ta/0.1/README.md[the task documentation] for more examples.
 
 === Modify build-images task
 
