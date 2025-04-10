@@ -69,13 +69,12 @@ You need to modify `build-images` task to consume the output trusted artifact of
 
 [source, diff]
 ----
+  - name: build-images <1>
+    params:
+    ... <2>
        - name: SOURCE_ARTIFACT
 -        value: $(tasks.prefetch-dependencies.results.SOURCE_ARTIFACT)
 +        value: $(tasks.run-script.results.SCRIPT_ARTIFACT)
-       - name: CACHI2_ARTIFACT
-         value: $(tasks.prefetch-dependencies.results.CACHI2_ARTIFACT)
-       - name: IMAGE_APPEND_PLATFORM
-         value: "true"
 +      - name: ADDITIONAL_BASE_IMAGES
 +        value:
 +          - $(tasks.run-script.results.SCRIPT_RUNNER_IMAGE_REFERENCE)
@@ -84,12 +83,19 @@ You need to modify `build-images` task to consume the output trusted artifact of
 +      - run-script
 ----
 
+<1> The name of the task differs between multi-arch (build-images) and single-arch  (build-container) pipeline.
+
+<2> The non related parameters had been redacted from this snippet for readability. Do not remove them.
+
 === Modify push-dockerfile task if necessary
 
 When the script is the tool generating the `Containerfile`, you need to modify `push-dockerfile` task to consume the output trusted artifact from `run-script`:
 
 [source, diff]
 ----
+  - name: push-dockerfile
+    params:
+    ... <1>
        - name: CONTEXT
          value: $(params.path-context)
        - name: SOURCE_ARTIFACT
@@ -100,8 +106,10 @@ When the script is the tool generating the `Containerfile`, you need to modify `
        taskRef:
 ----
 
+<1> The non related parameters had been redacted from this snippet for readability. Do not remove them.
+
 === Specific use case examples
 
 ==== ansible-builder to build Ansible Execution Environments
 
-A link:https://github.com/Zokormazo/konflux-execution-environment-example[sample repository] has been prepared to show how to use this task to build Ansible Execution Environments.
+A link:https://github.com/Zokormazo/konflux-execution-environment-example/pull/2/files[sample repository] has been prepared to show how to use this task to build Ansible Execution Environments.
