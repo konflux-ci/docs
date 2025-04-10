@@ -59,7 +59,7 @@ There is no non `oci-ta` variant of this task nor plans to introduce it. The pre
 +        resolver: bundles
 ----
 
-<1> Use `SCRIPT_RUNNER_IMAGE` parameter to specify the container image you want to use to run the script. The image must already ship all the dependencies and additional tools required to run the script.
+<1> Use `SCRIPT_RUNNER_IMAGE` parameter to specify the container image you want to use to run the script. The image must already ship all the dependencies and additional tools required to run the script. This image is governed by the same link:https://conforma.dev/[Conforma] policies as parent images.
 
 <2> Use `SCRIPT` parameter to specify the script to run. This can be a command using an absolute path on the container image (`make build`), a command using the relative path of a script on the source repository (`./my-script.sh build`) or an inline `sh` script. Refer to link:https://github.com/konflux-ci/build-definitions/blob/main/task/run-script-oci-ta/0.1/README.md[the task documentation] for more examples.
 
