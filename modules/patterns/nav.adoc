@@ -7,3 +7,4 @@
 *** xref:testing-releasing-single-component.adoc[Testing and Releasing a Single Component]
 *** xref:maintaining-references-before-release.adoc[Maintaining valid image references before a release]
 *** xref:github-merge-queues.adoc[GitHub Merge Queues]
+*** xref:running-user-scripts-on-the-build-pipeline.adoc[Running user scripts on the build pipeline]
