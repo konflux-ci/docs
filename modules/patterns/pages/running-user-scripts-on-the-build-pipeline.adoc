@@ -12,7 +12,7 @@ We can extend the build pipeline with the `run-script-oci-ta` task to integrate 
 
 [IMPORTANT]
 ====
-There is no non `oci-ta` variant of this task nor plans to introduce it. The prerequisite listed above is a hard requisite
+There is no non `oci-ta` variant of this task nor plans to introduce it. The prerequisite listed above is a hard requirement.
 ====
 
 * The script to run and all its dependencies are part of the source git repository or the container image the task will use to run the script.
