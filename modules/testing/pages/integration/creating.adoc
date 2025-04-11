@@ -219,3 +219,16 @@ When the new build is finished, complete the following steps in the {ProductName
 . On the *Details* page, see if the test succeeded for that component. Select the other tabs to view more details.
 
 .. If you used our example script, switch to the *Logs* tab and verify that the test printed “Hello world!”.  
+
+== Standardized test result
+
+In examples above, you can see TEST_OUTPUT result being used as standardized output. This is a tekton result test outcome in json format.
+TEST_OUTPUT example:
+----
+{"result":"SUCCESS","timestamp":"2025-04-02T01:45:00+00:00","note":"Task clair-scan completed: Refer to Tekton task result SCAN_OUTPUT for vulnerabilities scanned by Clair.","namespace":"default","successes":1,"failures":0,"warnings":0}
+----
+
+For more information about standardized tekton results in konflux, please visit
+link: https://konflux-ci.dev/architecture/ADR/0030-tekton-results-naming-convention.html[Tekton Results Naming Convention]
+or
+xref:testing:integration/standardized-outputs.adoc[Standardized outputs]
