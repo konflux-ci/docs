@@ -1,0 +1,11 @@
+= Canceling Integration pipelineruns for Pull Requests
+
+Pushing a new change to your Pull Request creates a new build pipelineRun, followed by a new snapshot if build succeeded which then triggers integration test pipelineRuns for that snapshot.
+In case you happen to push another change in your Pull Request while integration tests pipelineRuns are still running, the previous test pipelineRuns will be canceled.
+
+== How do I cancel the previous pipelinerun and which will be canceled?
+
+If your integration tests are still running and you push new changes to your Pull Request, once new build pipelinerun succeeds and new snapshot is created,
+integration service will gracefully cancel previous integration test pipelinerun.
+Each time newer snapshot is created it will be registered by integration service as a latest one and every older snapshot for that Pull Request will be considered obsolete. That means old snapshots will be marked as canceled, same applies for integration test pipelineRuns.
+
