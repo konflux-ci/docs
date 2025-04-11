@@ -4,3 +4,4 @@
 *** xref:create-release.adoc[Creating a release]
 *** xref:tenant-release-pipelines.adoc[Tenant Release Pipelines]
 *** xref:adjusting-timeouts-resources.adoc[Adjusting timeouts and resources]
+*** xref:using-collectors.adoc[Using collectors]
