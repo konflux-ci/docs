@@ -1,0 +1,115 @@
+= Running user scripts on the build pipeline
+
+This document contains instructions for how to extend the build pipeline of a component to run a script before building the component container.
+
+Although multi-stages builds cover most of the cases where we want to modify the source content before building the final image there are use cases where we need to run a script before building the container, such as the cases where the `Containerfile` itself is created by an external tool.
+
+We can extend the build pipeline with the `run-script-oci-ta` task to integrate the execution of those tools for these use cases.
+
+== Prerequisites
+
+* You already have a component onboarded to {ProductName} using xref:building:using-trusted-artifacts.adoc[trusted artifacts] variants of the build pipeline.
+
+[IMPORTANT]
+====
+There is no non `oci-ta` variant of this task nor plans to introduce it. The prerequisite listed above is a hard requirement.
+====
+
+* The script to run and all its dependencies are part of the source git repository or the container image the task will use to run the script.
+
+* You are already familiar with the procedure to xref:building:customizing-the-build.adoc[customize the build pipeline].
+
+== Procedure
+
+=== Extend the build pipeline with an additional task between `prefetch-dependencies` and `build-images` tasks
+
+[source, diff]
+----
+   pipelineSpec:
+     description: |
+       This pipeline is ideal for building multi-arch container images from a Containerfile while maintaining trust after pipeline customization.
+@@ -203,6 +203,33 @@ spec:
+         workspace: git-auth
+       - name: netrc
+         workspace: netrc
++    - name: run-script
++      params:
++        - name: ociStorage
++          value: $(params.output-image).script
++        - name: ociArtifactExpiresAfter
++          value: $(params.image-expires-after)
++        - name: SCRIPT_RUNNER_IMAGE <1>
++          value: quay.io/my-script-runner-image:latest@sha256:digest
++        - name: SCRIPT
++          value: my-script <2>
++        - name: HERMETIC
++          value: $(params.hermetic)
++        - name: SOURCE_ARTIFACT
++          value: $(tasks.prefetch-dependencies.results.SOURCE_ARTIFACT)
++      runAfter:
++      - prefetch-dependencies
++      taskRef:
++        params:
++        - name: name
++          value: run-script-oci-ta
++        - name: bundle
++          value: quay.io/konflux-ci/tekton-catalog/task-run-script-oci-ta:0.1@sha256:c0f627069353ebd6d1ed03c8657e281eaf11be63706ea38cc53caf16cf4ffd65
++        - name: kind
++          value: task
++        resolver: bundles
+----
+
+<1> Use `SCRIPT_RUNNER_IMAGE` parameter to specify the container image you want to use to run the script. The image must already ship all the dependencies and additional tools required to run the script. This image is governed by the same link:https://conforma.dev/[Conforma] policies as parent images.
+
+<2> Use `SCRIPT` parameter to specify the script to run. This can be a command using an absolute path on the container image (`make build`), a command using the relative path of a script on the source repository (`./my-script.sh build`) or an inline `sh` script. Refer to link:https://github.com/konflux-ci/build-definitions/blob/main/task/run-script-oci-ta/0.1/README.md[the task documentation] for more examples.
+
+=== Modify build-images task
+
+You need to modify `build-images` task to consume the output trusted artifact of the `run-script` task and inject the `SCRIPT_RUNNER_IMAGE` into the sbom file, and run the build images task after the `run-script` one:
+
+[source, diff]
+----
+  - name: build-images <1>
+    params:
+    ... <2>
+       - name: SOURCE_ARTIFACT
+-        value: $(tasks.prefetch-dependencies.results.SOURCE_ARTIFACT)
++        value: $(tasks.run-script.results.SCRIPT_ARTIFACT)
++      - name: ADDITIONAL_BASE_IMAGES
++        value:
++          - $(tasks.run-script.results.SCRIPT_RUNNER_IMAGE_REFERENCE)
+       runAfter:
+-      - prefetch-dependencies
++      - run-script
+----
+
+<1> The name of the task differs between multi-arch (build-images) and single-arch  (build-container) pipeline.
+
+<2> The non related parameters had been redacted from this snippet for readability. Do not remove them.
+
+=== Modify push-dockerfile task if necessary
+
+When the script is the tool generating the `Containerfile`, you need to modify `push-dockerfile` task to consume the output trusted artifact from `run-script`:
+
+[source, diff]
+----
+  - name: push-dockerfile
+    params:
+    ... <1>
+       - name: CONTEXT
+         value: $(params.path-context)
+       - name: SOURCE_ARTIFACT
+-        value: $(tasks.prefetch-dependencies.results.SOURCE_ARTIFACT)
++        value: $(tasks.run-script.results.SCRIPT_ARTIFACT)
+       runAfter:
+       - build-image-index
+       taskRef:
+----
+
+<1> The non related parameters had been redacted from this snippet for readability. Do not remove them.
+
+=== Specific use case examples
+
+==== ansible-builder to build Ansible Execution Environments
+
+A link:https://github.com/Zokormazo/konflux-execution-environment-example/pull/2/files[sample repository] has been prepared to show how to use this task to build Ansible Execution Environments.
