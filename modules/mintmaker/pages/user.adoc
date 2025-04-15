@@ -319,6 +319,26 @@ the whole manager, you can use the https://docs.renovatebot.com/configuration-op
 }
 ----
 
+== Enable {ProductName} bot to autorun prow tests on {ProductName} pull requests
+
+If you don't want to always comment `/ok-to-test` on {ProductName} pull requests made by {ProductName} bot to run link:https://docs.prow.k8s.io/docs/[prow] tests, you can create 
+a pull request in the link:https://github.com/openshift/release/[OpenShift release] repository.
+
+You will need to find your organization link:https://github.com/openshift/release/tree/master/core-services/prow/02_config/openshift[here] and update the
+`_pluginconfig.yaml` file.
+
+You can also check out this link:https://github.com/openshift/release/pull/63166[example pull request].
+
+.Example change for `kueue-operator` organization:
+[source,yaml]
+----
+triggers:
+- repos:
+  - openshift/kueue-operator
+  trusted_apps:
+  - red-hat-konflux
+----
+
 == Advanced topics
 
 === Offboarding a repository
