@@ -333,7 +333,7 @@ this guide.
 
 ==== Steps
 
-- Determine the Konflux component you want to off-boarding from Mintmaker.
+- Determine the Konflux component you want to off-board from MintMaker.
 - Use the `kubectl` or `oc` command to add the annotation `mintmaker.appstudio.redhat.com/disabled: "true"` to the component.
 
 Example:
@@ -406,7 +406,7 @@ When enabled for a given PR/MR, the automerge will happen provided two condition
 - the PR/MR branch is up-to-date with the base branch.
 
 Because of the need for the CI pipeline to succeed, you should expect that the
-merge will only happen in the next time mintmaker is run.
+merge will only happen on the next MintMaker run.
 
 This following timeline exemplifies the events leading to an automerge in a repository:
 
@@ -424,7 +424,7 @@ This following timeline exemplifies the events leading to an automerge in a repo
 |__[12:02am]__ | PR for dependency `xyz` is automerged
 |===
 
-You can also enabled automerge without the need of CI tests passing, by
+You can also enable automerge without the need of CI tests passing, by
 setting https://docs.renovatebot.com/configuration-options/#ignoretests[`ignoreTests`] to `true`.
 
 Because of the need for the PR/MR branch being up-to-date with the base branch,
@@ -455,7 +455,7 @@ can add the following to `renovate.json`:
   ]
 }
 ----
-alternatively, to enable non-major updates only for specific packages, you can use
+alternatively, to enable non-major updates only for specific packages, you can use:
 
 [source,json]
 ----
@@ -472,7 +472,7 @@ alternatively, to enable non-major updates only for specific packages, you can u
 }
 ----
 See Renovate's https://docs.renovatebot.com/key-concepts/automerge/#configuration-examples[docs]
-on this topic on further examples. They show how to set automerge for specific
+on this topic for further examples. They show how to set automerge for specific
 dependency groups, types, etc.
 
 Finally, to check if automerge is cofigured for a given PR/MR, you can look for 
@@ -480,7 +480,7 @@ the annotation "Automerge: Enabled" in the PR/MR body.
 
 === Inherited config
 
-MintMaker Renovate supports the use of an https://docs.renovatebot.com/config-overview/#inherited-config[Inherited config].
+Renovate supports the use of an https://docs.renovatebot.com/config-overview/#inherited-config[Inherited config].
 The Inherited config file is used to apply the same Renovate settings to all repositories in an organization/group.
 This functionality is useful if your organization contains many repositories that should use the same 
 or similar Renovate configuration.
@@ -506,7 +506,7 @@ Please note that the use of inherited config is optional and its absence will no
 
 === Specify the registry in your FROM line
 
-Let's consider a specification in your `Containerfile` or `Dockerfile` of a FROM line is such way:
+Let's imagine that your `Containerfile` or `Dockerfile` has the following FROM line:
 
 [source]
 ----
@@ -514,8 +514,8 @@ FROM ubi9/ubi:9.4-1123
 ----
 
 In this case, the ubi9 image is pulled from the client's default registry, which might be `docker.io`, for example.
-This might lead into errors, such as MintMaker unable to update your `Containerfile` or `Dockerfile`
-due to missing credentials to access that registry. In order to avoid this issue, specify the registry explicitly, such as:
+This might lead to errors, such as MintMaker being unable to update your `Containerfile` or `Dockerfile`
+due to missing credentials for accessing that registry. In order to avoid this issue, specify the registry explicitly, such as:
 
 [source]
 ----
