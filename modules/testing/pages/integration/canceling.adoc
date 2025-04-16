@@ -1,9 +1,15 @@
-= Canceling Integration pipelineruns for Pull Requests
+= Canceling Integration pipelineRuns
 
-== How do I cancel the previous pipelinerun and which will be canceled?
+== How do I cancel the previous pipelineRun and which will be canceled?
 
-You have a Pull Request created and build pipelinerun has just succeeded.
-If your integration tests are still running and you push new changes to your Pull Request, once new build pipelinerun succeeds and new snapshot is created,
-integration service will gracefully cancel previous integration test pipelinerun.
+=== Canceling integration pipelineRuns manually
+Users are allowed to cancel running pipelineRun themselves, you can do that by pressing Cancel in a dropdown menu next to the pipelineRun in the {ProductName} UI.
+
+image::cancel.png[role="border" alt="Cancel"]
+
+=== Automatic canceling of integration pipelineRuns
+You have a Pull Request created and build pipelineRun has just succeeded.
+If your integration tests are still running and you push new changes to your Pull Request, once new build pipelineRun succeeds and new snapshot is created,
+integration service will gracefully cancel previous integration test pipelineRun.
 Each time newer snapshot is created it will be registered by integration service as a latest one and every older snapshot for that Pull Request will be considered obsolete. That means old snapshots will be marked as canceled, same applies for integration test pipelineRuns.
 
