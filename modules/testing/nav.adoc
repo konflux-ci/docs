@@ -7,6 +7,7 @@
 **** xref:integration/editing.adoc[Editing integration tests]
 **** xref:integration/debugging.adoc[Debugging an integration test]
 **** xref:integration/rerunning.adoc[Rerunning an integration test]
+**** xref:integration/canceling.adoc[Canceling an integration test]
 **** xref:integration/choosing-contexts.adoc[Choosing when to run certain Integration Tests]
 **** xref:integration/accessing-private-repositories.adoc[Accessing Pipelines and Tasks in Private Repositories]
 **** xref:integration/periodic-integration-tests.adoc[Triggering Periodic Integration Tests]
