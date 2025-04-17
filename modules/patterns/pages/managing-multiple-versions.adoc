@@ -43,6 +43,11 @@ spec:
 
 To enable quickly creating multiple development streams, we must create a template for them.
 
+[NOTE]
+====
+Make sure that your component definition template doesn't have annotation `build.appstudio.openshift.io/request: configure-pac` configured. This will lead into repeated onboarding and suggesting new changes to your pipeline runs. Project Controller will do onboarding for you.
+====
+
 [source,yaml]
 .template.yaml
 ----
