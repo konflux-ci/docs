@@ -44,7 +44,7 @@ mkdir -p "${genSrc}"
 pushd "${genSrc}"
 
 gen_ref_docs "application-api" "Application"
-gen_ref_docs "enterprise-contract" "Enterprise Contract" "https://github.com/enterprise-contract/enterprise-contract-controller.git"
+gen_ref_docs "conforma" "Conforma" "https://github.com/enterprise-contract/enterprise-contract-controller.git"
 gen_ref_docs "image-controller" "Image"
 gen_ref_docs "integration-service" "Integration Test"
 gen_ref_docs "release-service" "Release"

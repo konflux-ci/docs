@@ -14,7 +14,9 @@
 
 [[component]]component:: An internal representation of a software artifact that {ProductName} builds and tests, using source code from a git repository. Components are stored in an link:https://github.com/opencontainers/distribution-spec[OCI container registry] such as quay.io after they are built.
 
-[[ec]]Enterprise Contract (EC):: A link:https://enterprisecontract.dev[set of tools] which are used for verifying the security and provenance of software artifacts.
+[[ec]]Enterprise Contract (EC):: Enterprise Contract is the original name of Conforma, a link:https://conforma.dev[set of tools] which are used for verifying the security and provenance of software artifacts.
+
+[[conforma]]Conforma:: A link:https://conforma.dev[set of tools] which are used for verifying the security and provenance of software artifacts.
 
 [[ecp]]Enterprise Contract Policy (ECP):: A set of release policies that you apply to your application snapshot. You can use the EC to prevent releases that are not compliant with Supply-chain Levels for Software Artifacts (SLSA) guidelines. 
 
@@ -36,7 +38,7 @@
 
 [[provenance]]provenance:: Metadata describing where, when, and how the associated software artifact was produced.
 
-[[release-pipeline]]release pipeline:: A generic Tekton pipeline that moves artifacts built within {ProductName} to somewhere outside of its control. An application snapshot must pass the Enterprise Contract Policy check before {ProductName} can run the release pipeline. 
+[[release-pipeline]]release pipeline:: A generic Tekton pipeline that moves artifacts built within {ProductName} to somewhere outside of its control. An application snapshot must pass the Conforma Policy check before {ProductName} can run the release pipeline. 
 
 [[release]]Release:: A Kubernetes resource indicating an intention to operate on a specific application snapshot according to the process defined in the indicated ReleasePlan.
 

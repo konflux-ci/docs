@@ -1,8 +1,8 @@
 = Customizing Policy
 
-An Enterprise Contract Policy defines which checks are performed by EC during integration tests and
-release. If EC reports violations, the best course of action, in most cases, is to adjust the build
-process to remedy the violation. For example, if EC reports that a certain required scanner was not
+A Conforma Policy defines which checks are performed by Conforma during integration tests and
+release. If Conforma reports violations, the best course of action, in most cases, is to adjust the build
+process to remedy the violation. For example, if Conforma reports that a certain required scanner was not
 executed, add the scanner to your build pipeline. Read the text associated with the violation as
 that often provides context-specific information to help remedy violations.
 
@@ -16,7 +16,7 @@ Adding an exception to a shared Policy may not be in the best interest of all us
 Policy for your particular use case may be a better approach. You can copy an existing Policy as a
 starting point.
 * Update your Policy to exclude a certain violation. See the
-link:https://enterprisecontract.dev/docs/ec-cli/configuration.html[Policy Configuration] docs
+link:https://conforma.dev/docs/ec-cli/configuration.html[Policy Configuration] docs
 for details and examples.
 * Update your xref:testing:integration/editing.adoc[integration tests] and the
 xref:releasing:create-release-plan-admission.adoc[ReleasePlanAdmission] to use the
