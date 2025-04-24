@@ -1,6 +1,6 @@
 = Policy Evaluations
 
-In {ProductName}, there are two places where Enterprise Contract Policies are used by default,
+In {ProductName}, there are two places where Conforma Policies are used by default,
 integration tests and release pipelines.
 
 == Integration Tests

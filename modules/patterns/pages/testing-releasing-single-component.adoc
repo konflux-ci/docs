@@ -7,7 +7,7 @@ to ensure there are compatible.
 Applications may also consist of independent components. If a user wants to group components together in an application
 a failure in one component will normally prevent any components from releasing.
 In **Single Component Mode**, however, each component in an application is separated so that one component's failing
-Enterprise Contract Policy will not prevent the other components from releasing.
+Conforma Policy will not prevent the other components from releasing.
 
 == Enabling Single Component Mode
 
@@ -15,7 +15,7 @@ Single component mode works by analyzing the Snapshot that is being used for Int
 A Snapshot created due to a single component being built is the only Snapshot type that may be used for this
 mode.
 
-=== Enabling Single Component Mode for Enterprise Contract Integration Test Scenarios
+=== Enabling Single Component Mode for Conforma Integration Test Scenarios
 
 Single Component Mode can be enabled by updating the existing Integration Test Scenario (either by editing the custom resource or by using the UI).
 
@@ -30,7 +30,7 @@ Additionally, you may xref:testing:integration/choosing-contexts.adoc[mark an In
 
 ====
 
-==== Updating Enterprise Contract Integration Test Scenarios
+==== Updating Conforma Integration Test Scenarios
 * Update the custom resource by adding the parameter *SINGLE_COMPONENT* with a value of *true*
 
 [source,yaml]
@@ -74,9 +74,9 @@ You need to apply the change using *kubectl*
 
 * Once your changes have been applied, you can verify that the mode is in fact activated.
 
-==== Verifying Enterprise Contract Integration Test Scenario results
+==== Verifying Conforma Integration Test Scenario results
 
-* Navigate to the logs of your Enterprise Contract Integration Test Scenario pipeline.
+* Navigate to the logs of your Conforma Integration Test Scenario pipeline.
 * Locate the *reduce* step in the log.
 * It should resemble the following output:
 

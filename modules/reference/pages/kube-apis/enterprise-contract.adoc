@@ -2,7 +2,7 @@
 :anchor_prefix: k8s-api
 
 [id="reference"]
-== Enterprise Contract API Reference
+== Conforma (formerly Enterprise Contract) API Reference
 
 .Packages
 - xref:{anchor_prefix}-appstudio-redhat-com-v1alpha1[$$appstudio.redhat.com/v1alpha1$$]
