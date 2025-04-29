@@ -36,7 +36,7 @@ The RPM lockfile is also required to be located in the root folder of the reposi
 
 == RPM lockfile with RPMs that require subscription
 
-MintMaker is able to update RPM lockfiles containing RPMs that require subscription, but some setup needs to be completed first. Firstly, activation key secret needs to be added to the user namespace. This process is described in detail in the xref:ROOT:building:activation-keys-subscription.adoc[Using Red Hat activation keys to access subscription content] article. Secondly, the RPM repofile needs to be modified to make use of the custom authentication certificate and key. For each repository requiring authentication, please set `sslclientkey = $SSL_CLIENT_KEY` and `sslclientcert = $SSL_CLIENT_CERT`. This will ensure that MintMaker sets the correct paths for the authentication. For example:
+MintMaker is able to update RPM lockfiles containing RPMs that require subscription, but some setup needs to be completed first. Firstly, activation key secret needs to be added to the user namespace. This process is described in detail in the xref:ROOT:building:activation-keys-subscription.adoc#configuring-an-rpm-lockfile-for-hermetic-builds[Using Red Hat activation keys to access subscription content] article. Secondly, the RPM repofile needs to be modified to make use of the custom authentication certificate and key. For each repository requiring authentication, please set `sslclientkey = $SSL_CLIENT_KEY` and `sslclientcert = $SSL_CLIENT_CERT`. This will ensure that MintMaker sets the correct paths for the authentication. For example:
 
 [source]
 ----
