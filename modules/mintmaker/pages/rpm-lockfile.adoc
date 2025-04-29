@@ -49,3 +49,9 @@ gpgkey = file:///etc/pki/rpm-gpg/RPM-GPG-KEY-redhat-release
 sslclientkey = $SSL_CLIENT_KEY
 sslclientcert = $SSL_CLIENT_CERT
 ----
+
+NOTE: After using variables like these in your repo config, you need to set
+corresponding environment variables if you run the `rpm-lockfile-prototype`
+script manually. These environment variables must be prefixed with `DNF_VAR_`.
+For example, for the `SSL_CLIENT_KEY` variable, you should set an environment
+variable named `DNF_VAR_SSL_CLIENT_KEY`.
