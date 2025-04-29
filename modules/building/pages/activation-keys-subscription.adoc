@@ -340,7 +340,7 @@ resolve to the correct path on the file system. These options point to
 certificates and keys that use a unique identifier (e.g., `+sslclientcert =
 /etc/pki/entitlement-host/$ID.pem+`). You may see SSL issues if you copied a
 repository configuration file from a different system registered with a
-different entitlement or activation key.
+different entitlement or activation key. Alternatively, these options can be set by using the `DNF_VAR_SSL_CLIENT_KEY` and `DNF_VAR_SSL_CLIENT_CERT` environment variables.
 
 If successful, you should see a `+rpms.lock.yaml+` file in the source directory:
 
