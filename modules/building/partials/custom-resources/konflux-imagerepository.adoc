@@ -15,6 +15,5 @@ spec:
     name: <namespace>/<component-name>
     visibility: public <.>
 ----
-+
 <.> Optional: If the `spec.containerImage` has been defined for the component, this should not be created. If the xref:installing:enabling-builds.adoc#enable-image-controller[image controller] is not deployed, this custom resource will have no effect.
 <.> Supported values are "public" and "private".
