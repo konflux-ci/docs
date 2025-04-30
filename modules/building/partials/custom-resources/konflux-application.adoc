@@ -10,5 +10,4 @@ metadata:
 spec:
   displayName: <application-name>
 ----
-+
 <.> At least one application should be created. Multiple applications can be created by adding additional CR specifications.

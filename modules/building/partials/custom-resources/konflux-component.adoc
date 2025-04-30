@@ -21,7 +21,6 @@ spec:
       dockerfileUrl: Containerfile <.>
   containerImage: <oci-repository-to-push-image-to> <.> 
 ----
-+
 <.> A component is required to map to a git repository to build.
 <.> Optional: If used, it should point to a xref:installing:enabling-builds.adoc#customize-pipelines[configured pipeline]. If not specified, the default configured pipeline will be used.
 <.> Optional: Use if you are building a component from GitLab.
