@@ -1,0 +1,31 @@
+= Building Binaries in {ProductName}
+
+This guide provides guidelines on how to build binaries within {ProductName}.
+
+== Theory
+
+The fundamental process involves creating a Dockerfile to encapsulate your binary build process. This is similar to your existing build process, but it's executed inside a Docker container. You'll then define your application and component in {ProductName} as you normally would. For details on this, refer to xref:creating.adoc[Creating applications and components].
+
+If you're unfamiliar with Dockerfiles, consult the official link:https://docs.docker.com/reference/dockerfile/[documentation].
+
+== Example
+
+Let's assume you have a shell script named `build-binary.sh` in your repository that compiles your binary. A basic Dockerfile would resemble this:
+
+[source,Dockerfile]
+----
+FROM quay.io/fedora/fedora:rawhide // <1>
+
+COPY build-binary.sh build-binary.sh // <2>
+COPY /app // <3>
+RUN ./build-binary.sh // <4>
+----
+
+<1> Choose an appropriate base image that provides the necessary build tools. `quay.io/fedora/fedora:rawhide` is just an example.
+<2> Copy the build script into the Docker image.
+<3> Copy your source code into the Docker image.
+<4> Execute the build script.
+
+== Other Considerations
+
+If you want to use xref:hermetic-builds.adoc[hermetic builds], ensure you've pre-fetched all dependencies as described in xref:prefetching-dependencies.adoc[prefetching dependencies]. This ensures that your builds are reproducible and isolated.
