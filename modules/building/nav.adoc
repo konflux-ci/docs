@@ -9,7 +9,7 @@
 *** xref:hermetic-builds.adoc[Enabling hermetic builds]
 *** xref:prefetching-dependencies.adoc[Prefetching package manager dependencies]
 *** xref:component-nudges.adoc[Defining component relationships]
-*** xref:rerunning.adoc[Retriggering build pipelines]
+*** xref:running.adoc[Running build pipelines]
 *** xref:redundant-rebuilds.adoc[Preventing redundant rebuilds]
 *** xref:build-with-args.adoc[Passing buildah arguments]
 *** xref:custom-tags.adoc[Using custom tags]
