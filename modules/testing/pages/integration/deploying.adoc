@@ -1,0 +1,162 @@
+= Deploying a FBC operator
+
+This document provides an example of how to perform a simple OLMv0 deployment test for a File-Based Catalog (FBC) operator using {ProductName}.
+
+== Prerequisites
+
+- You have created an application in {ProductName}.
+
+== Procedure
+
+=== Create an IntegrationTestScenario
+
+Create an `IntegrationTestScenario` YAML file for your FBC component using the following link:https://gitlab.cee.redhat.com/releng/konflux-release-data/-/blob/main/tenants-config/cluster/stone-prd-rh01/tenants/konflux-samples-tenant/integration-test-scenarios.yaml?ref_type=heads#L24[template].
+
+Open a merge request (MR) to your link:https://gitlab.cee.redhat.com/releng/konflux-release-data/-/tree/main/tenants-config/cluster?ref_type=heads[tenants-config] repository, and update the following fields with the appropriate details for your {ProductName} tenant:
+
+- `metadata.namespace`
+- `spec.application`
+- `spec.contexts[0].name`
+- `spec.params[0–5].value`
+
+[source,yaml]
+----
+apiVersion: appstudio.redhat.com/v1beta2
+kind: IntegrationTestScenario
+metadata:
+  labels:
+    test.appstudio.openshift.io/optional: "false"
+  name: deploy-fbc-operator
+  namespace: konflux-samples-tenant
+spec:
+  application: cnv-fbc-v4-17
+  contexts:
+    - description: Component testing for v417-cnv-fbc
+      name: component_v417-cnv-fbc
+  params:
+    - name: PACKAGE_NAME
+      value: "kubevirt-hyperconverged"
+    - name: CHANNEL_NAME
+      value: "candidate"
+    - name: CREDENTIALS_SECRET_NAME
+      value: "quay-dockerconfig"
+    - name: OCI_REF
+      value: "quay.io/org/repo:tag"
+    - name: REPO_TOKEN
+      value: "git-auth"
+    - name: REPO_KEY
+      value: "git-auth-key"
+  resolverRef:
+    params:
+      - name: url
+        value: https://github.com/konflux-ci/tekton-integration-catalog.git
+      - name: revision
+        value: main
+      - name: pathInRepo
+        value: pipelines/deploy-fbc-operator/0.1/deploy-fbc-operator.yaml
+    resolver: git
+----
+
+=== Parameters
+
+==== PACKAGE_NAME (Optional)
+
+An OLM package name present in the FBC fragment.
+
+If omitted:
+  - If there's only one `olm.package`, its name is used automatically.
+  - If multiple `olm.package` entries exist, you *must* provide the `PACKAGE_NAME` parameter.
+
+==== CHANNEL_NAME (Optional)
+
+An OLM channel name. If omitted, the step will default to the package’s `defaultChannel`.
+
+==== CREDENTIALS_SECRET_NAME
+
+Name of the secret containing the `oci-storage-dockerconfigjson` key with registry credentials (in `.dockerconfigjson` format). It is used to push cluster artifacts to an OCI registry.
+
+Example:
+
+[source,yaml]
+----
+apiVersion: v1
+kind: Secret
+metadata:
+  name: example
+  namespace: sample-tenant
+type: Opaque
+data:
+  oci-storage-dockerconfigjson: <BASE64_ENCODED_DOCKERCONFIGJSON>
+----
+
+NOTE: The secret must contain the key `oci-storage-dockerconfigjson`. If the key name is different, the step will fail with the following error:
+
+[quote]
+____
+Error: failed to decode config file at /home/tool-box/.docker/config.json: invalid config format: read /home/tool-box/.docker/config.json: is a directory
+____
+
+==== OCI_REF
+
+Full OCI artifact reference in the format: `quay.io/org/repo:tag`
+
+==== REPO_TOKEN (Optional)
+
+Name of the Kubernetes Secret that contains the access token for a private GitHub or GitLab repository.
+
+==== REPO_KEY (Optional)
+
+Key within the Secret's `data` field that holds the GitHub/GitLab access token.
+
+Example:
+
+[source,yaml]
+----
+data:
+  gitlab-auth-token: <BASE64_ENCODED_TOKEN>
+----
+
+In the example above, the `REPO_KEY` value should be `gitlab-auth-token`.
+
+=== What Happens Next
+
+Once your FBC component is built, the link:https://github.com/konflux-ci/tekton-integration-catalog/tree/main/pipelines/deploy-fbc-operator/0.1[deploy-fbc-operator pipeline] will be triggered.
+
+NOTE: To reduce resource consumption, this pipeline runs only for `push` events (i.e., when a PR is merged).
+
+The pipeline will:
+
+- Retrieve the unreleased bundle (not yet in `registry.redhat.io/redhat/redhat-operator-index`) using the specified `PACKAGE_NAME` and `CHANNEL_NAME`.
+
+- Provision an ephemeral Hypershift AWS cluster with:
+  * An OpenShift version matching the FBC’s target version
+
+[IMPORTANT]
+====
+Only Hypershift-supported versions can be provisioned.
+
+Currently, MultiCluster Engine (MCE) 2.7 supports provisioning OCP 4.14–4.17.  
+MCE 2.8 will add support for 4.18 (Tracker: https://issues.redhat.com/browse/KONFLUX-7445)
+
+Example: If the FBC targets 4.18, the cluster will not be provisioned under MCE 2.7.
+
+A new MCE version is generally released shortly after the corresponding OCP GA release.
+====
+
+- Perform architecture detection (`arm64` or `amd64`) based on `operatorframework.io/arch.*` labels in the CSV:
+  * If `arm64` is supported, it will be used.
+  * Otherwise, `amd64` is used.
+
+- Deploy the operator by creating the appropriate CRDs.
+
+NOTE: Average runtime: 10–15 minutes.
+
+=== Impact of Pipeline Failure
+
+A failure in the `deploy-fbc-operator` pipeline will block the automated release of the Snapshot.
+
+=== Future Plans
+
+Currently, test failures only block the auto-release of the Snapshot. They do *not* prevent users from manually releasing.
+
+Until https://issues.redhat.com/browse/KONFLUX-7345[KONFLUX-7345] is implemented, it is the product team’s responsibility to review test results and address any failures before release.
