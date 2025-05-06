@@ -1,0 +1,167 @@
+= Collectors
+
+The release process with {ProductName} is well-structured, and the documentation provides clear examples of how to supply data to the `Release`, `ReleasePlan`, or `ReleasePlanAdmission` resources for use within the release workflow.
+
+Despite this, a limitation remains that prevents full workflow automation. In scenarios where a data field in one of the release resources needs to be populated with dynamic information retrieved from an external service _before_ initiating the release, relying on manual steps or custom scripts introduces inefficiency and potential for error.
+
+To address this limitation, {ProductName} includes a feature called *collectors*.
+
+A _collector_ is essentially a Python script executed as part of the _tenant_ and _managed collectors pipelines_. It generates information that is embedded into the `Release` status. These pipelines are integrated into the release workflow and run at the very beginning, immediately after the validation step. As a result, the collected data becomes available to both the _tenant_ and _managed_ pipelines.
+
+== Using a collector in a {ProductName} release
+
+To use a collector, the first step is to select one from the available options in https://github.com/konflux-ci/release-service-collectors[the official repository]. The structure of this repository may evolve over time, but the https://github.com/konflux-ci/release-service-collectors/blob/main/README.md[README.md] file provides useful details about the available collectors and the data they produce. The key piece of information needed is the collector's name, which will be referenced in one of the release resources.
+
+Collectors can be defined in the following resources:
+
+* *ReleasePlan:* Collectors defined here are executed by the _tenant collectors pipeline_, which runs in the tenant namespace.
+* *ReleasePlanAdmission:* Collectors defined here are executed by the _managed collectors pipeline_, which runs in the managed namespace.
+
+For example, to run the `jira` collector—which retrieves a list of Jira issues when provided with a server and a query—the following configuration should be added to the _ReleasePlan_:
+
+[source,yaml]
+----
+apiVersion: appstudio.redhat.com/v1alpha1
+kind: ReleasePlan
+metadata:
+  labels:
+    release.appstudio.openshift.io/auto-release: 'true' <.>
+    release.appstudio.openshift.io/standing-attribution: 'true'
+  name: collectors-rp
+  namespace: dev-workspace <.>
+spec:
+  application: <application-name> <.>
+  collectors:
+    serviceAccountName: <service-account> <.>
+    items: <.>
+      - name: project-issues
+        params:
+          - name: url
+            value: https://issues.redhat.com
+          - name: query
+            value: 'project = "My Project" AND summary ~ "test issue"'
+          - name: secretName
+            value: "jira-collectors-secret"
+        timeout: 60
+        type: jira <.>
+    secrets: <.>
+      - jira-collectors-secret
+    serviceAccountName: collector-service
+  data: <key> <.>
+  target: managed-workspace
+----
+<.> Optional: Control if Releases should be created automatically for this ReleasePlan when tests pass. Defaults to true.
+<.> The development team's workspace. The collector pipeline will be executed in this namespace.
+<.> The name of the application that you want to release via a pipeline in the development workspace.
+<.> The ServiceAccount that the pipeline will use.
+<.> List of parameters to be passed to the collector.
+<.> The collector type as seen in the official collectors repository.
+<.> Secrets to be provided to the collectors.
+<.> Optional: An unstructured key used for providing data for the managed Pipeline.
+
+== Retrieving collectors data
+
+After the collectors pipelines complete execution, the output from each collector is added to the `Release` resource under the `status.collectors` field. Below is an example showing the result of a collector defined in the previously mentioned _ReleasePlan_:
+
+[source,yaml]
+----
+apiVersion: appstudio.redhat.com/v1alpha1
+kind: Release
+...
+status:
+  collectors:
+    tenant:
+      - project-issues:
+          releaseNotes:
+            fixed:
+             - id: "CVE-3444"
+               source: "issues.redhat.com"
+----
+
+In this case, the `project-issues` collector generated a list of issues, which is included under `status.collectors.tenant`. Since this collector was defined in the `ReleasePlan`, its output is categorized under the `tenant` section. Collectors defined in a `ReleasePlanAdmission` will have their results stored under the `managed` key instead.
+
+The following example shows a `Release` status containing results from multiple collectors, both _tenant_ and _managed_:
+
+[source,yaml]
+----
+apiVersion: appstudio.redhat.com/v1alpha1
+kind: Release
+...
+status:
+  collectors:
+    managed:
+      - foo:
+          releaseNotes:
+            cves:
+             - key: "CVE-3444"
+               component: "my-component"
+    tenant:
+      - bar:
+          baz: qux
+      - project-issues:
+          releaseNotes:
+            issues:
+              fixed:
+                - id: "CPAAS-1234"
+                  source: "issues.redhat.com"
+----
+
+## Collectors in the managed pipeline
+
+Releases can reference _managed pipelines_, which—as described in other sections—rely on the `data` field to retrieve user-provided information. To ensure that data generated by _collectors_ is also considered, the contents of `status.collectors` are merged with the data fields from the `Release`, `ReleasePlan`, and `ReleasePlanAdmission` resources.
+
+The order of precedence follows the same hierarchy previously described, with `status.collectors` having the *lowest priority*. This means that if both the collector output and any data field define the same key, the value from the `data` field will take precedence.
+
+For example, if a collector like `jira` produces the following output:
+
+[source,yaml]
+----
+status:
+  collectors:
+    tenant:
+      - project-issues:
+          releaseNotes:
+            issues:
+              fixed:
+                - id: "CPAAS-1234"
+                  source: "issues.redhat.com"
+          releaseNotes:
+            cves:
+             - key: "CVE-3444"
+               component: "my-component"
+----
+
+And the `ReleasePlanAdmission` defines this:
+
+[source,yaml]
+----
+data:
+  releaseNotes:
+    issues:
+      fixed: []
+----
+
+Then the empty `issues.fixed` array from the `data` field will override the collector’s output.
+
+In contrast, if the `data` field contains unrelated content:
+
+[source,yaml]
+----
+data:
+  foo: bar
+----
+
+Then both sources will be merged, and the final data used by the managed pipeline will be:
+
+[source,yaml]
+----
+data:
+  foo: bar
+  releaseNotes:
+    issues:
+      fixed:
+        - id: "CPAAS-1234"
+          source: "issues.redhat.com"
+----
+
+This _merging strategy_ ensures flexibility while allowing user-defined data to take precedence when needed.
