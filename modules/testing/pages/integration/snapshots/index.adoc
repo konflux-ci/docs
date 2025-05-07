@@ -3,12 +3,39 @@
 // Optional: Define context for cross-references if needed within the module structure
 // :context: snapshots
 
-A {ProductName} **Snapshot** represents a specific, immutable collection of container images for the Components within an Application at a particular point in time. They capture the exact versions of all relevant component artifacts that were built and intended to be used together including their Git commits.
+A {ProductName} **Snapshot** represents a specific, immutable collection of container images for the Components within an Application at a particular point in time. They capture the exact versions of all relevant component artifacts that were built and intended to be used together including their Git commits. Once created, the list of Components with their images is immutable. 
 
 Snapshots are fundamental for ensuring consistency during testing and release processes. They provide a stable target for:
 
-* Running integration tests defined by IntegrationTestScenarios (ITS).
+* Running integration tests defined by IntegrationTestScenarios (ITS). The Integration service updates the status of the resources to reflect the testing outcomes.
 * Creating Releases using ReleasePlans to promote a specific set of component versions to different environments (like staging or production).
+
+== Example Snapshot
+
+Example Snapshot resource contents::
+[source]
+----
+apiVersion: appstudio.redhat.com/v1alpha1
+kind: Snapshot
+metadata:
+  name: snapshot-sample <.>
+  namespace: ws-sample-tenant <.>
+spec:
+  application: application-sample <.>
+  components:
+    - name: component-sample <.>
+      containerImage: quay.io/redhat-user-workloads/ws-sample-tenant/application-sample/component-sample@sha256:0db0a473a6abf5c15c424ab07cfbd5c40c06622fe648d4fe6a6b6abc224a0d0c <.>
+      source: <.>
+        git:
+          url: https://github.com/sample-org/sample-repo
+          revision: fa8b89274a61ef0f1c257b7a84c37aa2ec844109
+----
+<.> The name of the Snapshot resource.
+<.> The namespace where the Snapshot exists. It should correspond to the user's tenant namespace.
+<.> The Application that the Snapshot belongs to.
+<.> The name of the individual Component of the Application.
+<.> The full image pull specification for the container image. The images need to be referenced by digest.
+<.> The component source containing the git URL and revision that the component's container image was built from.
 
 == Snapshot Creation
 
@@ -27,7 +54,7 @@ Snapshots can be generated in several ways:
 ** Pull request Snapshots are subject to more aggressive garbage collection policies (see below).
 ** They are primarily intended for pre-merge testing and usually not used for formal releases.
 
-* **Manual:** You can xref:testing:integration/snapshots/working-with-snapshots.adoc#working-with-manual-snapshots[manually create] a Snapshot custom resource (CR) if needed. This allows you to define a specific combination of existing component container images (e.g., previously built images stored in `quay.io`) for testing or release purposes. This is useful for scenarios like promoting a specific known-good set of images to production when automatic releases are disabled.
+* **Manual:** You can xref:testing:integration/snapshots/working-with-snapshots.adoc#manual-snapshots[manually create] a Snapshot custom resource (CR) if needed. This allows you to define a specific combination of existing component container images (e.g., previously built images stored in `quay.io`) for testing or release purposes. This is useful for scenarios like promoting a specific known-good set of images to production when automatic releases are disabled.
 
 == Quotas and Garbage Collection
 
