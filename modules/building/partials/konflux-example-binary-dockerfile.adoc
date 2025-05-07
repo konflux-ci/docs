@@ -1,0 +1,13 @@
+[source,Dockerfile]
+----
+FROM quay.io/fedora/fedora:rawhide // <1>
+
+COPY build-binary.sh build-binary.sh // <2>
+COPY /app // <3>
+RUN ./build-binary.sh // <4>
+----
+
+<1> Choose an appropriate base image that provides the necessary build tools. `quay.io/fedora/fedora:rawhide` is just an example.
+<2> Copy the build script into the Docker image.
+<3> Copy your source code into the Docker image.
+<4> Execute the build script.
