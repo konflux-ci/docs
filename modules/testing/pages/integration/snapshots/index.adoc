@@ -1,0 +1,94 @@
+= Snapshots
+
+// Optional: Define context for cross-references if needed within the module structure
+// :context: snapshots
+
+A {ProductName} **Snapshot** represents a specific, immutable collection of container images for the Components within an Application at a particular point in time. They capture the exact versions of all relevant component artifacts that were built and intended to be used together including their Git commits.
+
+Snapshots are fundamental for ensuring consistency during testing and release processes. They provide a stable target for:
+
+* Running integration tests defined by IntegrationTestScenarios (ITS).
+* Creating Releases using ReleasePlans to promote a specific set of component versions to different environments (like staging or production).
+
+== Snapshot Creation
+
+Snapshots can be generated in several ways:
+
+* **Automatic (Push Events):** This is the primary mechanism for generating snapshots intended for release pipelines.
+** When code is pushed to a branch tracked by your Components (e.g., `main`, `release-4.19`), {ProductName} triggers the associated build pipelines defined in the `.tekton/` directory of your component repositories.
+** Once the build is complete, a Snapshot CR is automatically created. It contains references to the container image digest produced by that successful build along with the latest images for all other Components in the Application.
+** These push-event snapshots are typically labeled with `pac.test.appstudio.openshift.io/event-type=push`.
+** They may be used for xref:releasing:create-release.adoc[creating a release].
+
+* **Automatic (Pull Request Events):** Snapshots are also generated for Pull Requests (PRs) to enable automated testing of proposed changes.
+** Once a pull or merge request build is complete, a Snapshot CR is automatically created. It contains references to the container image digest produced by that successful build along with the latest push images for all other Components in the Application.
+** These pull request-event snapshots are typically labeled with `pac.test.appstudio.openshift.io/event-type=pull_request`.
+** These snapshots might be created incrementally constructed as individual component builds finish within the PR context (i.e. xref:testing:integration/snapshots/group-snapshots.adoc[group snapshots]). These group snapshots are often annotated with `test.appstudio.openshift.io/pr-group`.
+** Pull request Snapshots are subject to more aggressive garbage collection policies (see below).
+** They are primarily intended for pre-merge testing and usually not used for formal releases.
+
+* **Manual:** You can xref:testing:integration/snapshots/working-with-snapshots.adoc#working-with-manual-snapshots[manually create] a Snapshot custom resource (CR) if needed. This allows you to define a specific combination of existing component container images (e.g., previously built images stored in `quay.io`) for testing or release purposes. This is useful for scenarios like promoting a specific known-good set of images to production when automatic releases are disabled.
+
+== Quotas and Garbage Collection
+
+Understanding how Snapshots are managed and limited within {ProductName} is essential to avoid unexpected behavior:
+
+=== Snapshot Quota
+
+* There is a resource quota limiting the total number of Snapshot CRs that can exist within a single tenant namespace.
+* The default quota is **1024 Snapshots** (`count/snapshots.appstudio.redhat.com`).
+
+[IMPORTANT]
+====
+This quota is **not user-configurable**. If you anticipate exceeding this limit due to a large number of applications or frequent builds across many supported versions, you may need to contact the {ProductName} administrators to request a quota increase for your namespace.
+
+Monitor usage via `kubectl get quota appstudio-crds-integration -o yaml`.
+====
+
+=== Snapshot Garbage Collection (GC)
+
+Snapshot CRs themselves consume resources. To manage this and stay within quota, {ProductName} implements automated garbage collection:
+
+* **Eligibility:** GC applies to Snapshots that are **not** referenced by an active `Release` CR.
+* **Mechanism:** GC is based on **retention counts**, not age. {ProductName} keeps a specific number of the most recent unreferenced snapshots and deletes the oldest ones beyond that limit.
+** Default retention counts:
+*** **~=600** non-PR (push event) snapshots.
+*** **70** PR event snapshots.
+* **Exception:** Snapshots annotated with `test.appstudio.openshift.io/keep-snapshot=true` will not be garbage collected
+
+IMPORTANT: These retention counts are **not user-configurable**.
+
+=== Relationship with Releases
+
+* When you create a `Release` CR from a Snapshot, that Snapshot is protected from the count-based garbage collection described above *if the Release exists*.
+* `Release` CRs have their own time-based expiration, defined by the `releaseGracePeriodDays` field in the associated xref:releasing:create-release-plan.adoc[`ReleasePlan`] (default: **7 days**). This *is* configurable per `ReleasePlan`.
+* When a `Release` CR expires, it is automatically deleted.
+* Once the `Release` is deleted, its associated `Snapshot` CR is no longer protected and becomes eligible for count-based garbage collection if the retention limits are exceeded.
+
+[NOTE]
+====
+The garbage collection of `Snapshot` and `Release` CRs does **not** automatically delete the underlying container images that were pushed to registries.
+
+* Images pushed to `quay.io` during **PR builds** typically expire automatically (default: 5 days, configurable in the pipeline with the `image-expires-after` parameter).
+* Images pushed to `quay.io` during **push builds** do **not** expire automatically but *will* be deleted if the corresponding `Component` CR is deleted (unless repository deletion is xref:building:imagerepository.adoc#skip-repository-deletion[explicitly skipped]).
+* Images promoted to external registries via a release pipeline are **not** deleted by {ProductName} GC.
+====
+
+== Understanding Incomplete Snapshots
+
+A common point of confusion occurs when a Snapshot contains fewer components than expected (e.g., only 1 out of 5 components in an Application).
+
+* **Cause:** A Snapshot accurately reflects the state of *successfully completed* component builds *at the time it was created*. If components are missing, it usually means their corresponding build pipelines either:
+..  Were not triggered correctly by the `push` event.
+..  Failed to complete successfully before the Snapshot was generated.
+* **Troubleshooting:** If you encounter incomplete push-event snapshots:
+** Verify the build `PipelineRun` status for *all* expected components associated with that push event.
+** Examine the pipeline trigger configuration, specifically the `pipelinesascode.tekton.dev/on-cel-expression` annotation in the `.tekton/` pipeline definitions within each component's repository. Ensure the expression correctly targets the intended branch (e.g., `event.ref == refs/heads/release-4.19`) and includes the necessary conditions (e.g., relevant file paths changed) to trigger builds when expected. Misconfigurations here are a common cause of components not building and thus being absent from the Snapshot.
+
+== Further Reading
+
+* To learn how to interact with snapshots using the CLI or UI, see xref:testing:integration/snapshots/working-with-snapshots.adoc[Working with Snapshots].
+* To learn how to reset the latest component references for future Snapshots, see xref:testing:integration/snapshots/override-snapshots.adoc[Creating an override snapshot].
+* To learn more about group Snapshots, see xref:testing:integration/snapshots/group-snapshots.adoc[Creating a group snapshot].
+* To learn how to release a Snapshot, see xref:releasing:create-release.adoc[Creating a release].
+* For details on the Snapshot API resource, refer to the xref:reference:kube-apis/application-api.adoc#k8s-api-github-com-konflux-ci-application-api-api-v1alpha1-snapshot[Snapshot API Reference].
