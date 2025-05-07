@@ -1,36 +1,6 @@
 = Working with Snapshots
 
-In {ProductName}, the central resource which is created, tested and released as a single unit is called the Snapshot.
-
-== What is a Snapshot?
-The Snapshot is a custom resource that contains the list of all Components of an {ProductName} Application with their Component Image digests and their sources. Once created, the list of Components with their images is immutable. The Integration service updates the status of the resource to reflect the testing outcome. The Release service releases the contents of the Snapshot via Release pipelines.
-
-Example Snapshot resource contents::
-[source]
-----
-apiVersion: appstudio.redhat.com/v1alpha1
-kind: Snapshot
-metadata:
-  name: snapshot-sample <.>
-  namespace: ws-sample-tenant <.>
-spec:
-  application: application-sample <.>
-  components:
-    - name: component-sample <.>
-      containerImage: quay.io/redhat-user-workloads/ws-sample-tenant/application-sample/component-sample@sha256:0db0a473a6abf5c15c424ab07cfbd5c40c06622fe648d4fe6a6b6abc224a0d0c <.>
-      source: <.>
-        git:
-          url: https://github.com/sample-org/sample-repo
-          revision: fa8b89274a61ef0f1c257b7a84c37aa2ec844109
-----
-<.> The name of the Snapshot resource.
-<.> The namespace where the Snapshot exists. It should correspond to the user's tenant namespace.
-<.> The Application that the Snapshot belongs to.
-<.> The name of the individual Component of the Application.
-<.> The full image pull specification for the container image. The images need to be referenced by digest.
-<.> The component source containing the git URL and revision that the component's container image was built from.
-
-== Working with manual Snapshots
+== Manual Snapshots
 
 Aside from the Snapshots which are created and processed automatically by the {ProductName} services, it is also possible to create manual Snapshots which can then be tested and released if they conform to the users requirements.
 
