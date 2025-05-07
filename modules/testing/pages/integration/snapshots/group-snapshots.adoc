@@ -55,8 +55,9 @@ spec:
 Integration test results from `group` snapshot are posted back to the git pull/merge request in addition to any integration tests results for the component snapshots.
 
 Then there will be multiple Integration test run:
+
 . One for the component build itself (i.e. application or component context)
-. One of each of the group Integration Test Scenario (i.e. after each component in the group has a finished build). In a monorepo, this might still happen out of synchronization as some artifacts may take longer to build than others.
+. One for each of the group Integration Test Scenario (i.e. after each component in the group has a finished build). In a monorepo, this might still happen out of synchronization as some artifacts may take longer to build than others.
 
 These group snapshot results will have the group name in the title.
 
@@ -65,7 +66,7 @@ image::groupsnapshot.png[role="border" alt="Test Report"]
 NOTE: For monorepo, since the code changes of multiple components are from the same pull/merge request, the integration test result for group snapshot will be posted back to git pull/merge request only once.
 
 == Troubleshoot
-Sometimes, there are multiple components updated in open pull/merge request with the same source branch name, but integration test result is posted back to pull/merge request, it might be because the group snapshot is not created for some reason. You may check by the following steps to debug the reason/failure:
+Sometimes, there are multiple components updated in open pull/merge request with the same source branch name, but integration test result is not posted back to pull/merge request, it might be because the group snapshot is not created for some reason. You may check by the following steps to debug the reason/failure:
 
 . Find the annotation `appstudio.openshift.io/snapshot` on the details page of successful build pipelinerun to get its created component snapshot.
 
