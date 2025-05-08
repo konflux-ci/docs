@@ -20,7 +20,7 @@ runtime:
   log:
     failure_level: warn
 site:
-  title: Documentation
+  title: Konflux Documentation
   url: https://konflux-ci.dev/docs
   robots: allow
 content:
