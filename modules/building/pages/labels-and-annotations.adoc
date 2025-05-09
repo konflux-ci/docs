@@ -1,181 +1,112 @@
-= Labels and annotations
-
-Konflux allows applying some dynamic labels to images derived from properties and params of the build pipeline. The labelling is supported directly by the `LABELS` param of the *build-container* tasks. A supporting *generate-labels* task can optionally be used to produce some dynamic labels.
-
-. <<supplying-labels-and-annotations-to-the-build-container-task>>
-. <<generating-dynamic-labels-or-annotations>>
-. <<incrementing-release-label-or-annotation>>
-. <<combining-approaches>>
-
-[[supplying-labels-and-annotations-to-the-build-container-task]]
-== Supplying labels and annotations to the build-container task with the LABELS and ANNOTATIONS params
-
-You can specify additional labels and/or annotations to be applied to your image with the LABELS and ANNOTATIONS params, e.g.:
-
-[source,yaml]
-----
-tasks:
-...
-- name: build-container
-  ...
-  params:
-    - name: IMAGE
-      value: "$(params.output-image)"
-    - name: DOCKERFILE
-      value: "$(params.dockerfile)"
-    - name: HERMETIC
-      value: "$(params.hermetic)"
-    - name: LABELS <1>
-      value:
-        - from-pull-request=true
-        - hermetic-param=$(params.hermetic)
-    - name: ANNOTATIONS <1>
-      value:
-        - my-annotation=true
-        - foo=bar
-...
-----
-
-<1> The LABELS and ANNOTATIONS params accepts an array of labels and annotations to be applied to the image after it is built.
-
 [[generating-dynamic-labels-or-annotations]]
-== Generating dynamic labels or annotations
+= Generating dynamic labels or annotations
 
-You can use the *generate-labels* task to produce some dynamic labels or annotations. To do so, add the generate-labels task to the list of tasks in your pipeline, e.g.:
+You can generate dynamic labels and annotations for your container images by integrating a specialized Tekton task into your build pipeline. This task typically uses Git metadata, such as commit timestamps and branch names (or a dedicated version parameter), to create standardized OCI image labels.
 
+The `generate-labels` task (for example, `quay.io/konflux-ci/tekton-catalog/task-generate-labels:0.1`) is designed for this purpose. It can take various inputs and produce a set of labels that are then applied to your image during the build process.
+
+.Prerequisites
+* Your build pipeline (`build-pipeline.yaml` or similar) is defined and version-controlled in your repository.
+* Your pipeline includes a task for cloning the Git repository (e.g., `clone-repository` which uses `git-clone-oci-ta`) that provides results like commit timestamp and branch/revision information.
+
+.Procedure
+
+. **Add a Pipeline Parameter for Versioning (Recommended):**
+  To have consistent versioning information for both labels and tags, add a dedicated version parameter to your `build-pipeline.yaml`. This parameter will be supplied by your `PipelineRun`.
++
 [source,yaml]
 ----
-tasks:
-...
-    - name: generate-labels
-      params:
-        - name: label-templates
-          value: 
-             - "build-date=$SOURCE_DATE" <.>
-             - "short-commit=$(tasks.clone-repository.results.short-commit)"
-        - name: source-date-epoch
-          value: '$(tasks.clone-repository.results.commit-timestamp)'
-      runAfter:
-        - clone-repository
-      taskRef:
-        params:
-          - name: name
-            value: generate-labels
-          - name: bundle
-            value: quay.io/konflux-ci/tekton-catalog/task-generate-labels:0.1@sha256:0068fe8b3c5d010daee5a922781a74cfb82251e775c260d14d9e50dd1a7aca65
-          - name: kind
-            value: task
-        resolver: bundles
-...
-----
-
-<.> The generate-labels task defines a small number of environment variables that can usefully be applied to labels and/or annotations, like $SOURCE_DATE and $SOURCE_DATE_EPOCH. See its documentation at link:https://github.com/konflux-ci/tekton-catalog/build-definitions/tree/main/task/generate-labels/0.1[task/generate-labels].
-
-The *generate-labels* task exposes a *labels* result that can be passed to the build-container task. To be useful, you need to supply the labels result from the generate-labels/generate-annotation tasks to the LABELS/ANNOTATIONS params of the build-container task, e.g.:
-
-[source,yaml]
-----
-tasks:
-...
-- name: build-container
-  ...
+# In .tekton/build-pipeline.yaml
+spec:
   params:
-    ...
-    - name: LABELS
-      value:
-      - $(tasks.generate-labels.results.labels[*])
-    - name: ANNOTATIONS
-      value:
-      - $(tasks.generate-annotations.results.labels[*])
-...
+    # ... other params ...
+    - name: artifact-version
+      description: Version to use for the container image labels and tags.
+      type: string
+      default: "main" # Or any suitable default
 ----
 
-
-[[incrementing-release-label-or-annotation]]
-=== An incrementing release label or annotation
-
-A common use case for dynamic labels or anootations is to introduce a monotonically incrementing release label.
-
-To achieve this, use either the $SOURCE_DATE or the $ACTUAL_DATE as the value for your release label, depending on your team's preference.
-
-NOTE: Use of $SOURCE_DATE will tie your release label to the timestamp of the commit that produces the build, and is more reproducible. Use of $ACTUAL_DATE will tie your release label to the timestamp at the time the build actually takes place, which yields builds that are less reproducible, but which may make more sense for your team's expectations and working model.
-
+. **Integrate the `generate-labels` Task into Your Pipeline:**
+  Add a new task to your `build-pipeline.yaml` that uses the `generate-labels` task. This task should run after the `clone-repository` task to use its results.
++
 [source,yaml]
 ----
-tasks:
-...
-    - name: generate-labels
-      params:
-        - name: label-templates
-          value: 
-             - "release=$SOURCE_DATE_EPOCH"
-        - name: source-date-epoch
-          value: '$(tasks.clone-repository.results.commit-timestamp)'
+# In .tekton/build-pipeline.yaml
+spec:
+  tasks:
+    # ... other tasks like init, clone-repository, prefetch-dependencies ...
+
+    - name: generate-image-labels
       runAfter:
         - clone-repository
+        # - prefetch-dependencies # If applicable
       taskRef:
+        resolver: bundles
         params:
           - name: name
-            value: generate-labels
+            value: generate-labels # The name of the task within the bundle
           - name: bundle
-            value: quay.io/konflux-ci/tekton-catalog/task-generate-labels:0.1@sha256:0068fe8b3c5d010daee5a922781a74cfb82251e775c260d14d9e50dd1a7aca65
+            # Replace with the specific bundle and digest for the generate-labels task you are using
+            value: quay.io/konflux-ci/tekton-catalog/task-generate-labels:0.1@sha256:2eea900077190535c4dbb30e9bcc2da357bd53c408613485fb3af53484afdcbd
           - name: kind
             value: task
-        resolver: bundles
-...
-    - name: build-container
-      ...
+      params:
+        - name: label-templates # Define the labels you want to generate
+          value:
+            # Uses the $SOURCE_DATE variable provided by the task, derived from source-date-epoch
+            - "build-date=$SOURCE_DATE"
+            # Uses the $SOURCE_DATE_EPOCH variable provided by the task
+            - "release=$SOURCE_DATE_EPOCH"
+            # Uses the pipeline parameter 'artifact-version'
+            - "version=$(params.artifact-version)"
+            # Example of another common OCI label using git-clone results
+            - "org.opencontainers.image.revision=$(tasks.clone-repository.results.commit)"
+            - "org.opencontainers.image.source=$(tasks.clone-repository.results.url)"
+        - name: source-date-epoch # Provide the commit timestamp to the task
+          value: "$(tasks.clone-repository.results.commit-timestamp)"
+      # The generate-labels task typically produces a result like 'labels' (an array of strings)
+      # or 'LABELS_OCI_ARTIFACT' (an OCI artifact path) depending on the version.
+      # The example here assumes it produces a 'labels' array result.
+
+    - name: build-images # Your existing buildah task (e.g., buildah-remote-oci-ta)
       runAfter:
-        ...
-        - generate-labels
+        - generate-image-labels # Ensure labels are generated first
       params:
-        ...
-        - name: LABELS
+        # ... other buildah params ...
+        - name: LABELS # Parameter name for buildah to accept labels
           value:
-          - $(tasks.generate-labels.results.labels[*])
-...
+            - $(tasks.generate-image-labels.results.labels[*]) # Pass the generated labels
+      # ... rest of the build-images task ...
 ----
++
+*Key parameters for the `generate-labels` task:*
+** `label-templates`: An array of strings where each string is a label template.
+*** You can use variables like `$SOURCE_DATE` and `$SOURCE_DATE_EPOCH` which the task derives from the `source-date-epoch` input.
+*** You can also use Tekton parameter substitution `$(params.parameter-name)` and task result substitution `$(tasks.task-name.results.result-name)`.
+** `source-date-epoch`: This should be populated with the commit timestamp, typically from the `clone-repository` task's result (`$(tasks.clone-repository.results.commit-timestamp)`). This is used by the task to set `SOURCE_DATE_EPOCH` internally and derive `$SOURCE_DATE`.
 
-[[combining-approaches]]
-=== Combining approaches
-
-You can combine the approaches described above and supply a list of labels and/or annotations to the build-container task constructed from multiple sources.
-
+. **Pass `artifact-version` from `PipelineRun`:**
+  In your `PipelineRun` files (e.g., `devcontainer-playground-push.yaml`), pass the `artifact-version` parameter.
++
 [source,yaml]
 ----
-tasks:
-...
-    - name: build-container
-      ...
-      params:
-        ...
-        - name: LABELS
-          value:
-          - $(tasks.generate-labels.results.labels[*])
-          - "short-commit=$(tasks.clone-repository.results.short-commit)"
-        - name: ANNOTATIONS
-          value:
-          - $(tasks.generate-labels.results.labels[*])
-          - "short-commit=$(tasks.clone-repository.results.short-commit)"
-...
+# In .tekton/devcontainer-playground-push.yaml (for push to main)
+spec:
+  params:
+    # ... other params ...
+    - name: artifact-version
+      value: '{{target_branch}}' # Using PaC variable for branch name
+
+# In .tekton/devcontainer-playground-on-pull-request.yaml (for PRs)
+spec:
+  params:
+    # ... other params ...
+    - name: artifact-version
+      value: '{{target_branch}}-pr-{{pull_request_number}}' # Example for PRs
 ----
 
-You can use array indexing to supply some of the results to labels and some others to annotations:
+.Verification
+* After a successful pipeline run, inspect your image on Quay.io or using a tool like `skopeo`.
+* You should see labels like `build-date`, `release`, and `version` applied to your image, with values derived from the commit timestamp and the `artifact-version` parameter.
 
-[source,yaml]
-----
-tasks:
-...
-    - name: build-container
-      ...
-      params:
-        ...
-        - name: LABELS
-          value:
-          - $(tasks.generate-labels.results.labels[1])
-        - name: ANNOTATIONS
-          value:
-          - $(tasks.generate-labels.results.labels[2])
-          - $(tasks.generate-labels.results.labels[3])
-...
-----
+This approach ensures that your images are consistently labeled with important build and versioning information, enhancing traceability and adherence to OCI standards.

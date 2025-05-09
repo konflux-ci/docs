@@ -1,87 +1,87 @@
+[[custom-tags]]
 = Using custom tags
 
-Konflux allows tagging built images with custom tags. This tagging is handled by separate *apply-tags* task. The custom tags can be configured in two ways:
+Konflux-CI build pipelines allow you to apply multiple tags to your container images. Beyond the default tag (often the commit SHA or `latest`), you can define custom tags based on Git metadata or other build parameters. This is typically achieved using the `apply-tags` task.
 
-. <<using-konflux-label>>
-. <<using-additional-tags-parameter>>
+.Prerequisites
+* Your build pipeline (`build-pipeline.yaml` or similar) is defined and version-controlled in your repository.
+* Your pipeline includes a task for cloning the Git repository (e.g., `clone-repository`) that provides results like commit timestamp and branch/revision information.
+* Your pipeline includes a parameter for versioning, for example, `artifact-version`.
 
-[NOTE]
-====
-These can be combined and used together.
-====
+.Procedure
 
-[[using-konflux-label]]
-== Using konflux.additional-tags image label in your Dockerfile
-
-You can specify the additional custom tags directly in your Dockerfile by using the *konflux.additional-tags* label, e.g.:
-
-[source,dockerfile]
-----
-LABEL konflux.additional-tags="tag1"
-----
-
-If you want to specify multiple tags, they have to be separated by space or a comma, e.g.:
-
-[source,dockerfile]
-----
-LABEL konflux.additional-tags="tag1 tag2"
-----
-
-[source,dockerfile]
-----
-LABEL konflux.additional-tags="tag1, tag2"
-----
-
-[[using-additional-tags-parameter]]
-== Using ADDITIONAL_TAGS parameter for apply-tags task
-You can also specify additional custom tags by using *ADDITIONAL_TAGS* array parameter for apply-tags task in your PipelineRun definition, e.g:
-
+. **Ensure `apply-tags` Task is in Your Pipeline:**
+  Your `build-pipeline.yaml` should include an `apply-tags` task, which typically runs after the `build-image-index` task.
++
 [source,yaml]
 ----
-...
-- name: apply-tags
+# In .tekton/build-pipeline.yaml
+spec:
   params:
-  - name: IMAGE
-    value: $(tasks.build-container.results.IMAGE_URL)
-  - name: ADDITIONAL_TAGS
-    value: ["tag1", "tag2"]
-  runAfter:
-  - build-container
-  taskRef:
-    params:
-    - name: name
-      value: apply-tags
-    - name: bundle
-      value: quay.io/konflux-ci/tekton-catalog/task-apply-tags:0.1
-    - name: kind
-      value: task
-    resolver: bundles
-...
+    # ... other params ...
+    - name: artifact-version # Assumed to be defined as a pipeline parameter
+      type: string
+      default: "main"
+  tasks:
+    # ... other tasks like init, clone-repository, build-image-index ...
+
+    - name: apply-tags
+      runAfter:
+        - build-image-index
+      taskRef:
+        resolver: bundles
+        params:
+          - name: name
+            value: apply-tags
+          - name: bundle
+            # Replace with the specific bundle and digest for the apply-tags task
+            value: quay.io/konflux-ci/tekton-catalog/task-apply-tags:0.1@sha256:3f89ba89cacf8547261b5ce064acce81bfe470c8ace127794d0e90aebc8c347d
+          - name: kind
+            value: task
+      params:
+        - name: IMAGE
+          value: $(tasks.build-image-index.results.IMAGE_URL) # The base image URL
+        - name: ADDITIONAL_TAGS # Parameter to pass a list of tags
+          value:
+            # Tag with the artifact-version (e.g., branch name)
+            - "$(params.artifact-version)"
+            # Tag with artifact-version and commit timestamp
+            - "$(params.artifact-version)-$(tasks.clone-repository.results.commit-timestamp)"
+            # Optionally, add other static or dynamic tags
+            # - "latest" # If this is a push to the main branch
 ----
 
-The array parameter *ADDITIONAL_TAGS* can also be specified differently:
-
+. **Pass `artifact-version` from `PipelineRun`:**
+  In your `PipelineRun` files, provide the `artifact-version` parameter. This value will then be used by the `apply-tags` task within the pipeline.
++
 [source,yaml]
 ----
-...
-  - name: ADDITIONAL_TAGS
-    value:
-      - tag1
-      - tag2
-...
-----
+# In .tekton/devcontainer-playground-push.yaml (for push to main)
+spec:
+  params:
+    # ... other params ...
+    - name: artifact-version
+      value: '{{target_branch}}' # Using PaC variable for branch name
 
-[NOTE]
-====
-The provided tags can also be based on dynamic variables that are provided by Pipelines as Code, e.g.:
-
-[source,yaml]
+# In .tekton/devcontainer-playground-on-pull-request.yaml (for PRs)
+spec:
+  params:
+    # ... other params ...
+    - name: artifact-version
+      # For PRs, you might use a different versioning scheme for tags
+      value: 'pr-{{pull_request_number}}-{{source_branch}}'
 ----
-...
-  - name: ADDITIONAL_TAGS
-    value: ["pull-request-{{pull_request_number}}", "from-branch-{{source_branch}}", "{{target_branch}}"]
-...
-----
++
+*The `output-image` parameter in your `PipelineRun` (e.g., `quay.io/user/app:{{revision}}`) typically sets the primary tag, often based on the commit SHA.*
+*The `apply-tags` task then adds the `ADDITIONAL_TAGS` to this already pushed image manifest list.*
 
-To see all available dynamic variables, please see the dynamic variables section in the https://pipelinesascode.com/docs/guide/authoringprs/#dynamic-variables[Pipeline as Code documentation]
-====
+.Verification
+* After a successful pipeline run, check your image repository (e.g., Quay.io).
+* You should see the primary tag (e.g., commit SHA) and the additional custom tags (e.g., `main`, `main-20240101T120000Z`) applied to your image.
+
+.Additional Considerations
+* **Tag Uniqueness**: Ensure your tagging strategy generates unique and meaningful tags. Using timestamps or commit SHAs helps with uniqueness.
+* **`latest` Tag**: Be cautious when applying the `latest` tag. It's typically reserved for the most recent stable build from the main development branch. You might want to add a condition in your `apply-tags` task or `PipelineRun` to only apply `latest` for main branch pushes.
+* **Pipelines-as-Code Variables**: Leverage Pipelines-as-Code (PaC) variables like `{{target_branch}}`, `{{revision}}`, `{{pull_request_number}}`, `{{source_branch}}` in your `PipelineRun` files to make tag components dynamic based on the Git event.
+
+By using the `apply-tags` task with dynamically constructed tag names, you can achieve a flexible and informative tagging strategy for your container images.
