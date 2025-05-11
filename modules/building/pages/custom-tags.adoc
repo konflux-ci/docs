@@ -56,14 +56,14 @@ spec:
 +
 [source,yaml]
 ----
-# In .tekton/devcontainer-playground-push.yaml (for push to main)
+# In .tekton/component-push.yaml (for push to main)
 spec:
   params:
     # ... other params ...
     - name: artifact-version
       value: '{{target_branch}}' # Using PaC variable for branch name
 
-# In .tekton/devcontainer-playground-on-pull-request.yaml (for PRs)
+# In .tekton/component-on-pull-request.yaml (for PRs)
 spec:
   params:
     # ... other params ...
@@ -72,7 +72,7 @@ spec:
       value: 'pr-{{pull_request_number}}-{{source_branch}}'
 ----
 +
-*The `output-image` parameter in your `PipelineRun` (e.g., `quay.io/user/app:{{revision}}`) typically sets the primary tag, often based on the commit SHA.*
+*The `output-image` parameter in your `PipelineRun` (e.g., `quay.io/user/app:{\{revision}}`) typically sets the primary tag, often based on the commit SHA.*
 *The `apply-tags` task then adds the `ADDITIONAL_TAGS` to this already pushed image manifest list.*
 
 .Verification
@@ -82,6 +82,6 @@ spec:
 .Additional Considerations
 * **Tag Uniqueness**: Ensure your tagging strategy generates unique and meaningful tags. Using timestamps or commit SHAs helps with uniqueness.
 * **`latest` Tag**: Be cautious when applying the `latest` tag. It's typically reserved for the most recent stable build from the main development branch. You might want to add a condition in your `apply-tags` task or `PipelineRun` to only apply `latest` for main branch pushes.
-* **Pipelines-as-Code Variables**: Leverage Pipelines-as-Code (PaC) variables like `{{target_branch}}`, `{{revision}}`, `{{pull_request_number}}`, `{{source_branch}}` in your `PipelineRun` files to make tag components dynamic based on the Git event.
+* **Pipelines-as-Code Variables**: Leverage Pipelines-as-Code (PaC) variables like `{\{target_branch}}`, `{\{revision}}`, `{\{pull_request_number}}`, `{\{source_branch}}` in your `PipelineRun` files to make tag components dynamic based on the Git event.
 
 By using the `apply-tags` task with dynamically constructed tag names, you can achieve a flexible and informative tagging strategy for your container images.

@@ -1,6 +1,6 @@
 = Pattern: Achieving Label and Tag Parity for Versioning
 
-This pattern describes how to configure your Konflux-CI build pipeline to ensure parity between a key version label (e.g., `org.opencontainers.image.version`) on your container image and a human-readable image tag. This enhances image traceability and makes it easier for users and tools to identify image versions consistently.
+This pattern describes how to configure your {ProductName} build pipeline to ensure parity between a key version label (e.g., `org.opencontainers.image.version`) on your container image and a human-readable image tag. This enhances image traceability and makes it easier for users and tools to identify image versions consistently.
 
 The core idea is to use a common dynamic value, typically derived from Git metadata like the branch name or a release tag, to populate both the label and the tag.
 
@@ -8,9 +8,11 @@ The core idea is to use a common dynamic value, typically derived from Git metad
 * Consistently versioning images based on the Git branch they were built from.
 * Ensuring that the version displayed in image metadata (labels) matches a discoverable image tag.
 * Simplifying image identification for users and automated deployment systems.
+* Enabling the determination of an image's original tag (e.g., version) by inspecting its labels, even when only an image digest is available.
 
 .Prerequisites
-* A Konflux-CI build pipeline defined in your repository (e.g., `.tekton/build-pipeline.yaml`).
+* A {ProductName} build pipeline defined in your repository (e.g., `.tekton/build-pipeline.yaml`).
+    * **Note:** It is highly recommended to first centralize your pipeline definition using one of the methods described in xref:managing-pipeline-changes.adoc[Evolving build pipeline management]. This will simplify the modifications needed for label and tag parity, as you'll only need to edit one Tekton Pipeline file.
 * Your pipeline includes:
     * A `clone-repository` task (e.g., using `git-clone-oci-ta`).
     * A `generate-labels` task (e.g., using `task-generate-labels`).
@@ -80,14 +82,14 @@ spec:
 +
 [source,yaml]
 ----
-# In .tekton/devcontainer-playground-push.yaml (for push to main branch)
+# In .tekton/component-push.yaml (for push to main branch)
 spec:
   params:
     # ... other params ...
     - name: artifact-version
       value: '{{target_branch}}' # e.g., results in label "version: main" and tag "main"
 
-# In .tekton/devcontainer-playground-on-pull-request.yaml (for PRs)
+# In .tekton/component-on-pull-request.yaml (for PRs)
 spec:
   params:
     # ... other params ...
@@ -107,4 +109,4 @@ spec:
 * **Automation Friendly**: Provides a predictable versioning scheme for downstream automation and deployment tools.
 * **Clarity**: Offers a clear version identifier for users browsing the container registry.
 
-By implementing this pattern, you establish a robust and clear versioning strategy for your container images built with Konflux-CI.
+By implementing this pattern, you establish a robust and clear versioning strategy for your container images built with {ProductName}.

@@ -86,18 +86,18 @@ spec:
 ** `source-date-epoch`: This should be populated with the commit timestamp, typically from the `clone-repository` task's result (`$(tasks.clone-repository.results.commit-timestamp)`). This is used by the task to set `SOURCE_DATE_EPOCH` internally and derive `$SOURCE_DATE`.
 
 . **Pass `artifact-version` from `PipelineRun`:**
-  In your `PipelineRun` files (e.g., `devcontainer-playground-push.yaml`), pass the `artifact-version` parameter.
+  In your `PipelineRun` files (e.g., `component-push.yaml`), pass the `artifact-version` parameter.
 +
 [source,yaml]
 ----
-# In .tekton/devcontainer-playground-push.yaml (for push to main)
+# In .tekton/component-push.yaml (for push to main)
 spec:
   params:
     # ... other params ...
     - name: artifact-version
       value: '{{target_branch}}' # Using PaC variable for branch name
 
-# In .tekton/devcontainer-playground-on-pull-request.yaml (for PRs)
+# In .tekton/component-on-pull-request.yaml (for PRs)
 spec:
   params:
     # ... other params ...
