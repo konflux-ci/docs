@@ -96,7 +96,7 @@ tasks:
 [[incrementing-release-label-or-annotation]]
 === An incrementing release label or annotation
 
-A common use case for dynamic labels or anootations is to introduce a monotonically incrementing release label.
+A common use case for dynamic labels or annotations is to introduce a monotonically incrementing release label.
 
 To achieve this, use either the $SOURCE_DATE or the $ACTUAL_DATE as the value for your release label, depending on your team's preference. This is further explored in the xref:patterns:mapping-tags-to-labels.adoc[achieving label and tag parity] pattern.
 
@@ -107,7 +107,7 @@ Use of $SOURCE_DATE will tie your release label to the timestamp of the commit t
 
 [CAUTION]
 ====
-While using a git commit timestamp is beneficial for producing a repeatable component for a "static" tag, any rebuild of the same commit will result in this tag moving. This can be mitigated by using the actual date instead.
+While using a git commit timestamp is beneficial for producing a repeatable component for a "static" tag, any rebuild of the same commit will result in this tag moving. This can be mitigated by using the actual date instead. The actual date and its epoch are both available as results from the *generate-labels* task.
 ====
 
 [source,yaml]
