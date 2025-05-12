@@ -98,9 +98,17 @@ tasks:
 
 A common use case for dynamic labels or anootations is to introduce a monotonically incrementing release label.
 
-To achieve this, use either the $SOURCE_DATE or the $ACTUAL_DATE as the value for your release label, depending on your team's preference.
+To achieve this, use either the $SOURCE_DATE or the $ACTUAL_DATE as the value for your release label, depending on your team's preference. This is further explored in the xref:patterns:mapping-tags-to-labels.adoc[achieving label and tag parity] pattern.
 
-NOTE: Use of $SOURCE_DATE will tie your release label to the timestamp of the commit that produces the build, and is more reproducible. Use of $ACTUAL_DATE will tie your release label to the timestamp at the time the build actually takes place, which yields builds that are less reproducible, but which may make more sense for your team's expectations and working model.
+[NOTE]
+====
+Use of $SOURCE_DATE will tie your release label to the timestamp of the commit that produces the build, and is more reproducible. Use of $ACTUAL_DATE will tie your release label to the timestamp at the time the build actually takes place, which yields builds that are less reproducible, but which may make more sense for your team's expectations and working model.
+====
+
+[CAUTION]
+====
+While using a git commit timestamp is beneficial for producing a repeatable component for a "static" tag, any rebuild of the same commit will result in this tag moving. This can be mitigated by using the actual date instead.
+====
 
 [source,yaml]
 ----

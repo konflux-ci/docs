@@ -2,7 +2,7 @@
 
 This pattern describes how to configure your {ProductName} build pipeline to ensure parity between a version label (e.g., `org.opencontainers.image.version`) on your container image and a human-readable image tag. This enhances image traceability and makes it easier for users and tools to identify image versions consistently.
 
-The core idea is to use a common dynamic value, typically derived from Git metadata like the branch name or a release tag, to populate both the label and the tag. This pattern combines the build customizations of xref:building:labels-and-annotations.adoc#generating-dynamic-labels-or-annotations[generating dynamic labels or annotations] and xref:building:custom-tags.adoc#using-dynamic-metadata-in-tags[using dynamic metadata in tags].
+The core idea is to use a common dynamic value, typically derived from Git metadata like the branch name or a release tag, to populate both the label and the tag. This pattern combines the build customizations of xref:building:labels-and-annotations.adoc#incrementing-release-label-or-annotation[incrementing a release label] and xref:building:custom-tags.adoc#using-dynamic-metadata-in-tags[using dynamic metadata in tags].
 
 .Use Cases
 * Consistently versioning images based on the Git branch they were built from.
@@ -110,3 +110,8 @@ spec:
 * **Clarity**: Offers a clear version identifier for users browsing the container registry.
 
 By implementing this pattern, you establish a robust and clear versioning strategy for your container images built with {ProductName}.
+
+[CAUTION]
+====
+While using a git commit timestamp is beneficial for producing a repeatable "static" tag, any rebuild of the same commit will result in this tag moving to a new digest. This can be mitigated by using the actual date instead.
+====
