@@ -6,4 +6,3 @@ nonword: true
 scope: raw
 tokens:
   - 'https:\/\/konflux-ci\.dev\/docs\/[-_\w/]+'
-
