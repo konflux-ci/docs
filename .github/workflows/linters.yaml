@@ -13,14 +13,15 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+      
       - name: Install Asciidoctor
         run: sudo apt-get install -y asciidoctor
+      
       - name: Vale Linter
         uses: errata-ai/vale-action@reviewdog
         with:
-          vale_flags: "--minAlertLevel=error"
+          vale_flags: "--no-exit --output=line"
           fail_on_error: true
+          reporter: github-pr-review
         env:
-          # Required, set by GitHub actions automatically:
-          # https://docs.github.com/en/actions/security-guides/automatic-token-authentication#about-the-github_token-secret
           GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
