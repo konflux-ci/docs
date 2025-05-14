@@ -21,19 +21,25 @@ jobs:
       
       - name: Get changed files
         id: changed-files
-        uses: tj-actions/changed-files@v41
-        with:
-          files: |
-            **/*.adoc
+        run: |
+          # Get changed .adoc files and format as comma-separated list
+          FILES=$(git diff --name-only --diff-filter=d origin/${{ github.base_ref }} | grep '\.adoc$' | paste -sd "," - || true)
+          if [ -n "$FILES" ]; then
+            echo "files=$FILES" >> "$GITHUB_OUTPUT"
+            echo "any_changed=true" >> "$GITHUB_OUTPUT"
+            echo "The following files will be checked against vale: $FILES"
+          else
+            echo "any_changed=false" >> "$GITHUB_OUTPUT"
+          fi
       
       - name: Vale Linter
         if: steps.changed-files.outputs.any_changed == 'true'
         uses: errata-ai/vale-action@reviewdog
         with:
-          vale_flags: "--no-exit --output=line"
+          files: ${{ steps.changed-files.outputs.files }}
+          #vale_flags: "--no-exit --output=line"
           fail_on_error: true
-          reporter: github-pr-review
-          filter_mode: added
-          files_from_pr: true
+          reporter: github-pr-check
+          separator: ","
         env:
           GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
