@@ -161,8 +161,8 @@ npm run lint:docs -- "modules/installing/*.adoc" "modules/reference/*.adoc"
 # With options
 npm run lint:docs -- --minAlertLevel=error "modules/installing/*.adoc"
 
-# Check only modified files
-git diff --name-only | grep '.adoc$' | xargs npm run lint:docs
+# Check only modified .adoc files
+npm run lint:docs:changed
 ```
 
 The script will:
@@ -171,6 +171,8 @@ The script will:
 3. Run Vale checks with the same settings as the CI environment
 
 > **Note:** Pull requests will fail if any voice consistency errors are found. Use `npm run lint:docs:strict` to run the same checks locally that will be run in CI.
+
+> **Note:** The `lint:docs:changed` command checks files that have been modified but not yet committed, as well as committed changes that haven't been pushed.
 
 ### Style Rules
 

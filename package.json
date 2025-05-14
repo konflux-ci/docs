@@ -14,7 +14,8 @@
     "preview:netlify": "netlify deploy --dir public",
     "lint:docs": "./hack/vale-check.sh",
     "lint:docs:fix": "./hack/vale-check.sh",
-    "lint:docs:strict": "./hack/vale-check.sh --minAlertLevel=error"
+    "lint:docs:strict": "./hack/vale-check.sh --minAlertLevel=error",
+    "lint:docs:changed": "git diff --name-only --diff-filter=d HEAD | grep '\\.adoc$' | xargs -r ./hack/vale-check.sh"
   },
   "engines": {
     "node": "18"
