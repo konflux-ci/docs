@@ -148,10 +148,7 @@ The CI pipeline will fail on error-level violations but only warn about warning-
 
 To check your documentation against these rules:
 ```bash
-# Show all issues (warnings and errors)
-npm run lint:docs
-
-# Check all documentation
+# Check all documentation (warnings and errors)
 npm run lint:docs
 
 # Check specific directories or files
@@ -163,6 +160,10 @@ npm run lint:docs -- --minAlertLevel=error "modules/installing/*.adoc"
 
 # Check only modified .adoc files
 npm run lint:docs:changed
+
+# Checking the above files but only reporting the errors
+npm run lint:docs:errors
+npm run lint:docs:changed:errors
 ```
 
 The script will:

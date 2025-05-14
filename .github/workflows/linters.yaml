@@ -37,7 +37,6 @@ jobs:
         uses: errata-ai/vale-action@reviewdog
         with:
           files: ${{ steps.changed-files.outputs.files }}
-          #vale_flags: "--no-exit --output=line"
           fail_on_error: true
           reporter: github-pr-check
           separator: ","
