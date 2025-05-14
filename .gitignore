@@ -43,3 +43,6 @@ deploy.json
 # Source downloaded to generate API reference docs
 
 api-gen/src
+
+# Netlify local cache
+.netlify
