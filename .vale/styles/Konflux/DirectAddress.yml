@@ -1,9 +1,9 @@
 extends: substitution
-message: "Use 'you' instead of '%s' for direct address"
+message: "Use '%s' instead of '%s' for direct address"
 level: warning
 ignorecase: true
 swap:
   the user: you
   users: you
   one: you
-  "developers?": you
+  developers: you
