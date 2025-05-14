@@ -33,6 +33,7 @@ check_dependencies() {
         echo "Please install asciidoctor:"
         echo "  macOS: brew install asciidoctor"
         echo "  Linux: sudo dnf install -y asciidoctor (Fedora/RHEL)"
+        echo "         sudo apt-get install -y asciidoctor (Ubuntu/Debian)"
     fi
 
     # If any dependencies are missing, exit
@@ -51,7 +52,7 @@ sync_vale() {
 
 # Function to run vale with arguments
 run_vale() {
-    local vale_args=(--no-exit --output=line)
+    local vale_args=(--no-exit --config="$(pwd)/.vale.ini")
     local patterns=()
     local files=()
 
@@ -60,6 +61,7 @@ run_vale() {
         case $1 in
             --*=*|-*) # Handle options like --minAlertLevel=error
                 vale_args+=("$1")
+                shift
                 ;;
             *) # Check if argument is a file that exists
                 if [ -f "$1" ]; then
@@ -68,9 +70,9 @@ run_vale() {
                     # Treat as glob pattern if not an existing file
                     patterns+=("--glob=$1")
                 fi
+                shift
                 ;;
         esac
-        shift
     done
 
     # If no patterns or files specified, use default
@@ -89,6 +91,9 @@ run_vale() {
     # Add files if any exist
     if [ ${#files[@]} -gt 0 ]; then
         cmd+=("${files[@]}")
+    else
+        # Only add "." if we're using glob patterns and no specific files
+        cmd+=(".")
     fi
 
     # Run vale with all arguments
