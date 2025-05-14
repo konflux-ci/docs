@@ -13,15 +13,27 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # Required to get file changes
       
       - name: Install Asciidoctor
         run: sudo apt-get install -y asciidoctor
       
+      - name: Get changed files
+        id: changed-files
+        uses: tj-actions/changed-files@v41
+        with:
+          files: |
+            **/*.adoc
+      
       - name: Vale Linter
+        if: steps.changed-files.outputs.any_changed == 'true'
         uses: errata-ai/vale-action@reviewdog
         with:
-          vale_flags: "--minAlertLevel=error"
+          vale_flags: "--no-exit --output=line"
           fail_on_error: true
           reporter: github-pr-review
+          filter_mode: added
+          files_from_pr: true
         env:
           GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
