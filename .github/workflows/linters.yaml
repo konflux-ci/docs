@@ -36,6 +36,7 @@ jobs:
         if: steps.changed-files.outputs.any_changed == 'true'
         uses: errata-ai/vale-action@reviewdog
         with:
+          vale_flags: "--minAlertLevel=error"
           files: ${{ steps.changed-files.outputs.files }}
           fail_on_error: true
           reporter: github-pr-check

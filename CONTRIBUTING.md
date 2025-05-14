@@ -171,7 +171,7 @@ The script will:
 2. Run `vale sync` to ensure all style rules are up to date
 3. Run Vale checks with the same settings as the CI environment
 
-> **Note:** Pull requests will fail if any voice consistency errors are found. Use `npm run lint:docs:strict` to run the same checks locally that will be run in CI.
+> **Note:** Pull requests will fail if any voice consistency errors are found. Use `npm run lint:docs:changed:errors` to run the same checks locally that will be run in CI.
 
 > **Note:** The `lint:docs:changed` command checks files that have been modified but not yet committed, as well as committed changes that haven't been pushed.
 
