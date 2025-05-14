@@ -2,7 +2,7 @@
 :icons: font
 :source-highlighter: highlightjs
 
-[[productname]]{ProductName}:: A platform to automate the process of building, testing, and releasing applications. {ProductName} offers enterprise-grade security and customizable feature sets.
+[[productname]]{ProductName}:: A platform that automates the process of building, testing, and releasing applications. {ProductName} offers enterprise-grade security and customizable feature sets.
 
 [[build-pipeline]]build pipeline:: A Tekton PipelineRun, which takes source code and turns it into a tested software artifact stored in a container registry.
 
