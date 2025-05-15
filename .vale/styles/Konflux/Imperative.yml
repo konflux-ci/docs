@@ -1,0 +1,12 @@
+extends: existence
+message: "Use imperative mood for instructions. Consider rephrasing '%s'"
+level: warning
+ignorecase: true
+tokens:
+  - should be
+  - must be
+  - needs to be
+  - has to be
+  - you should
+  - you must
+  - you need to

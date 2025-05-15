@@ -1,0 +1,14 @@
+extends: existence
+message: "Use active voice instead of passive voice in '%s'"
+level: warning
+ignorecase: true
+tokens:
+  - is being
+  - are being
+  - was being
+  - were being
+  - has been
+  - have been
+  - had been
+  - will be
+  - being

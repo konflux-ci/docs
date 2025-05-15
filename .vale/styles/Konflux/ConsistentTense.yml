@@ -1,0 +1,11 @@
+extends: existence
+message: "Use present tense. Consider rephrasing '%s'"
+level: warning
+ignorecase: true
+tokens:
+  - will be
+  - would be
+  - could be
+  - should be
+  - was
+  - were
