@@ -132,8 +132,9 @@ with the credentials above.
 Make sure to use the most narrowly valid scope for the `registry server address` field
 when adding the secret.
 
-When adding the secret with the UI, it will automatically be linked to the `appstudio-pipeline`
-service account so that it can be leveraged by builds.
+When adding the secret (image registry) with the UI, you will have to choose components to which component specific
+service accounts `build-pipeline-$COMPONENT_NAME` secret will be linked to,
+so that it can be leveraged by builds.
 
 === Creating Secret manually
 
@@ -195,7 +196,7 @@ And create the secret:
 $ kubectl apply -f Secret.yaml
 ----
 
-Now we will have to also link the secret to the service account `appstudio-pipeline`,
+Now we will have to also link the secret to the component specific service account `build-pipeline-$COMPONENT_NAME`,
 edit service account either with OCP UI or Cli and to the `secrets` section of the service account
 add your newly created secret, service account should look like:
 
@@ -204,7 +205,7 @@ add your newly created secret, service account should look like:
 kind: ServiceAccount
 apiVersion: v1
 metadata:
-  name: appstudio-pipeline
+  name: build-pipeline-$COMPONENT_NAME
   namespace: <your-workspace-tenant>
 secrets:
   - name: secret-name

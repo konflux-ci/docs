@@ -62,7 +62,7 @@ spec:
           value: main
         - name: pathInRepo
           value: "<path-to-your-pipeline>"
-    serviceAccountName: appstudio-pipeline
+    serviceAccountName: release-service-account
     taskRunSpecs:
       - pipelineTaskName: verify-enterprise-contract <.>
         computeResources: <.>

@@ -58,7 +58,7 @@ spec:
           value: main
         - name: pathInRepo
           value: "<path-to-your-pipeline>"
-    serviceAccountName: appstudio-pipeline <.>
+    serviceAccountName: build-pipeline-$COMPONENT_NAME <.>
 ----
 
 +
@@ -123,7 +123,7 @@ roleRef:
  name: publish-role <.>
 subjects:
 - kind: ServiceAccount
-  name: appstudio-pipeline <.>
+  name: build-pipeline-$COMPONENT_NAME <.>
   namespace: dev-workspace <.>
 ----
 
@@ -209,7 +209,7 @@ spec:
           value: main
         - name: pathInRepo
           value: "<path-to-your-pipeline>"
-    serviceAccountName: appstudio-pipeline <.>
+    serviceAccountName: build-pipeline-$COMPONENT_NAME <.>
 ----
 <.> Reference to the tenant pipeline to be executed in the development workspace.
 <.> The name of the service account used to execute the tenant pipeline.
