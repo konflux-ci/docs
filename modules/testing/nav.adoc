@@ -20,3 +20,4 @@
 ***** xref:integration/third-parties/jenkins.adoc[Testing with Jenkins]
 ***** xref:integration/third-parties/testing-farm.adoc[Testing with Testing Farm]
 ***** xref:integration/third-parties/rapidast.adoc[Testing with RapiDAST]
+***** xref:integration/third-parties/openshift-ci.adoc[Testing with Openshift CI (Prow)]
