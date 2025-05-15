@@ -129,6 +129,8 @@ when adding the secret.
 
 When adding the secret with the UI, it will automatically be linked to the `appstudio-pipeline`
 service account so that it can be leveraged by builds.
+This will soon change and UI will be allowing linking secret to specific component SA `build-pipeline-$COMPONENT_NAME`,
+or to all components within the application.
 
 === Creating Secret manually
 
@@ -190,7 +192,8 @@ And create the secret:
 $ kubectl apply -f Secret.yaml
 ----
 
-Now we will have to also link the secret to the service account `appstudio-pipeline`,
+Now we will have to also link the secret to the service account `appstudio-pipeline` (will be removed soon)
+or new component specific SA `build-pipeline-$COMPONENT_NAME`,
 edit service account either with OCP UI or Cli and to the `secrets` section of the service account
 add your newly created secret, service account should look like:
 
@@ -199,7 +202,7 @@ add your newly created secret, service account should look like:
 kind: ServiceAccount
 apiVersion: v1
 metadata:
-  name: appstudio-pipeline
+  name: appstudio-pipeline / build-pipeline-$COMPONENT_NAME
   namespace: <your-workspace-tenant>
 secrets:
   - name: secret-name
