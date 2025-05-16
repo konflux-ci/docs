@@ -39,6 +39,11 @@ NOTE: For *Gitlab* provider, make sure to xref:building:creating-secrets.adoc#cr
 +
 NOTE: GitHub and GitLab are supported source control providers. GitLab support requires the configuration of xref:building:creating-secrets.adoc#creating-source-control-secrets[source control secrets].
 
+NOTE: When Component is immediately removed after creation it might result with orphaned ImageRepository which ownership
+wasn't yet assigned to the Component and when trying to create Component again with the same name UI will
+complain with error that ImageRepository already exists, solution is to remove manually ImageRepository
+from OCP.
+
 ==== Create additional Components in an Application
 
 .*Procedures*
