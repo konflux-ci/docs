@@ -140,46 +140,8 @@ Example task:
 --
 
 +
-An example of a custom task added to the pipeline that sends a slack notification when the `Pipelinerun` fails:
+See xref:patterns:slack-notifications.adoc[] for an example of a custom task added to the pipeline that sends a slack notification when the `Pipelinerun` fails.
 +
-[source,yaml]
---
-finally:
-- name: slack-webhook-notification
-  params:
-    - name: message
-      value: PipelineRun $(context.pipelineRun.name) failed
-    - name: secret-name
-      value: my-secret  # name of secret in the your namespace which contains slack web-hook URL under key specified in 'key-name' parameter below
-    - name: key-name
-      value: dev-team
-  taskRef:
-    params:
-    - name: bundle
-      value: quay.io/konflux-ci/tekton-catalog/task-slack-webhook-notification:0.1
-    - name: name
-      value: slack-webhook-notification
-    - name: kind
-      value: Task
-    resolver: bundles
-  when:
-    - input: $(tasks.status)
-      operator: in
-      values: ["Failed"]
---
-
-. Commit your changes to the repository of the component.
-
-[NOTE]
-====
-* To use `slack-webhook-notification` task, you need to xref:./creating-secrets.adoc[create a secret] in your namespace with at least one key where the value is the webhook URL. For example, to create a secret for Slack, run `kubectl create secret generic my-secret --from-literal dev-team=https://hooks.slack.com/services/XXX/XXXXXX`
-
-* If your build pipeline fans out to anything broader than a straight line (i.e. if you have multiple concurrent tasks), you'll need to add this task under a `finally` clause so that it can aggregate the status of all prior tasks.
-
-* If you want to define a task directly in this file, rather than using `taskRef`, you can use `taskSpec`. See the Tekton documentation on
-  link:https://tekton.dev/docs/pipelines/taskruns/#specifying-the-target-task[specifying the target task] for more details.
-
-====
 
 == Preventing issues with Conforma
 

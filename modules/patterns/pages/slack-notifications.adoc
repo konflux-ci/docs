@@ -1,0 +1,47 @@
+= Slack Notifications
+
+We live in slack. You may find it helpful to route notifications there from your pipelines.
+
+This guide shows you how to add slack notifications when your build pipelines fail:
+
+== Procedure
+
+. Follow slack documentation for link:https://api.slack.com/messaging/webhooks[sending messages using incoming webhooks] to create a slack app, enable incoming webhooks, and create the webhook url.
+. Upload the webhook url as a `Secret` to your namespace.
+. xref:building:customizing-the-build.adoc[Modify your build pipeline] and add the following task to the `finally` block.
+[source,yaml]
+finally:
+- name: slack-webhook-notification
+  params:
+    - name: message
+      value: PipelineRun $(context.pipelineRun.name) failed
+    - name: secret-name
+      value: my-secret  # name of secret in the your namespace which contains slack web-hook URL under key specified in 'key-name' parameter below
+    - name: key-name
+      value: dev-team
+  taskRef:
+    params:
+    - name: bundle
+      value: quay.io/konflux-ci/tekton-catalog/task-slack-webhook-notification:0.1
+    - name: name
+      value: slack-webhook-notification
+    - name: kind
+      value: Task
+    resolver: bundles
+  when:
+    - input: $(tasks.status)
+      operator: in
+      values: ["Failed"]
+
+. Commit your changes to the repository.
+
+[NOTE]
+====
+* To use `slack-webhook-notification` task, you need to xref:building:creating-secrets.adoc[create a secret] in your namespace with at least one key where the value is the webhook URL. For example, to create a secret for Slack, run `kubectl create secret generic my-secret --from-literal dev-team=https://hooks.slack.com/services/XXX/XXXXXX`
+
+* If your build pipeline fans out to anything broader than a straight line (i.e. if you have multiple concurrent tasks), you'll need to add this task under a `finally` clause so that it can aggregate the status of all prior tasks.
+
+* If you want to define a task directly in this file, rather than using `taskRef`, you can use `taskSpec`. See the Tekton documentation on
+  link:https://tekton.dev/docs/pipelines/taskruns/#specifying-the-target-task[specifying the target task] for more details.
+====
+
