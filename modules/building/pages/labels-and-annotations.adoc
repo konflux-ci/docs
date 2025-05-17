@@ -1,11 +1,13 @@
 = Labels and annotations
 
-Konflux allows applying some dynamic labels to images derived from properties and params of the build pipeline. The labelling is supported directly by the `LABELS` param of the *build-container* tasks. A supporting *generate-labels* task can optionally be used to produce some dynamic labels.
+{ProductName} allows applying dynamic metadata to images derived from properties and params of the build pipeline. The labelling is supported directly by the `LABELS` and `ANNOTATIONS` parameters of the *build-container* tasks. A supporting *generate-labels* task can optionally be used to produce some dynamic labels.
 
 . <<supplying-labels-and-annotations-to-the-build-container-task>>
 . <<generating-dynamic-labels-or-annotations>>
 . <<incrementing-release-label-or-annotation>>
 . <<combining-approaches>>
+
+Some common use cases for this task are to inject  Git metadata, such as commit timestamps and branch names (or a dedicated version parameter), to create standardized OCI image labels.
 
 [[supplying-labels-and-annotations-to-the-build-container-task]]
 == Supplying labels and annotations to the build-container task with the LABELS and ANNOTATIONS params
@@ -94,11 +96,19 @@ tasks:
 [[incrementing-release-label-or-annotation]]
 === An incrementing release label or annotation
 
-A common use case for dynamic labels or anootations is to introduce a monotonically incrementing release label.
+A common use case for dynamic labels or annotations is to introduce a monotonically incrementing release label.
 
-To achieve this, use either the $SOURCE_DATE or the $ACTUAL_DATE as the value for your release label, depending on your team's preference.
+To achieve this, use either the $SOURCE_DATE or the $ACTUAL_DATE as the value for your release label, depending on your team's preference. This is further explored in the xref:patterns:mapping-tags-to-labels.adoc[achieving label and tag parity] pattern.
 
-NOTE: Use of $SOURCE_DATE will tie your release label to the timestamp of the commit that produces the build, and is more reproducible. Use of $ACTUAL_DATE will tie your release label to the timestamp at the time the build actually takes place, which yields builds that are less reproducible, but which may make more sense for your team's expectations and working model.
+[NOTE]
+====
+Use of $SOURCE_DATE will tie your release label to the timestamp of the commit that produces the build, and is more reproducible. Use of $ACTUAL_DATE will tie your release label to the timestamp at the time the build actually takes place, which yields builds that are less reproducible, but which may make more sense for your team's expectations and working model.
+====
+
+[CAUTION]
+====
+While using a git commit timestamp is beneficial for producing a repeatable component for a "static" tag, any rebuild of the same commit will result in this tag moving. This can be mitigated by using the actual date instead. The actual date and its epoch are both available as results from the *generate-labels* task.
+====
 
 [source,yaml]
 ----

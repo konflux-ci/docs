@@ -1,0 +1,125 @@
+= Pattern: Evolving Build Pipeline Management in {ProductName}
+
+This pattern outlines a common evolution in managing Tekton build pipelines within {ProductName}. It begins with the initial setup provided by {ProductName}, progresses to local in-repository pipeline definition for customization and reuse within a single repository, and can further evolve to sharing customized pipelines across multiple repositories using Git-based references.
+
+Understanding this evolution helps teams choose the right approach for their needs at different stages, balancing simplicity, control, and reusability.
+
+.Use Cases
+* Initial onboarding to {ProductName} and understanding the default pipeline setup.
+* Gaining control and customizing build logic for components within a single repository.
+* Reducing duplication when multiple components in the same repository can share a common build pipeline.
+* Standardizing a customized build pipeline across multiple repositories by referencing a common Git source.
+* Gradually adopting more complex CI/CD practices by starting with a simple setup and evolving as needed.
+
+.Phases of Pipeline Management Evolution
+
+[[phase-1-initial-onboarding-and-default-setup]]
+== Phase 1: Initial Onboarding and Default Setup
+
+When you initially onboard a component to {ProductName}, the system typically configures `PipelineRun` files (in the `.tekton/` directory of your repository). These `PipelineRun` files define how builds are triggered and executed. Initially, they will contain an **embedded `pipelineSpec`**. The entire pipeline logic (parameters, tasks, etc.) is defined directly within each `PipelineRun` file. {ProductName} generates separate `PipelineRun` definitions for different events (e.g., one for push events to the target branch, another for pull request events). This means the same pipeline logic will be duplicated in both the push and pull request `PipelineRun` files for each component.
+
+.Characteristics:
+* **Setup**: Largely automated by {ProductName}.
+* **Maintenance**:
+    * The `pipelineSpec` is embedded in the `PipelineRun`, you directly see the logic, but it's duplicated across files.
+    * Mintmaker will propose duplicate updates to both `PipelineRun` files for every Component.
+* **Simplicity**: Quickest way to get a build running with {ProductName}'s default behavior.
+
+.Benefits:
+* Rapid component onboarding.
+
+.Considerations:
+* **Embedded Specs & Duplication**: If `pipelineSpec` is embedded, the same pipeline logic is duplicated across multiple `PipelineRun` files (e.g., for push and pull request events for each component). This makes maintenance difficult, as any change to the pipeline logic needs to be replicated in all relevant files. This duplication is a strong motivator for moving to Phase 2.
+
+[[phase-2-centralizing-pipeline-definition-locally-within-a-repository]]
+== Phase 2: Centralizing the Pipeline Definition Locally (Within a Repository)
+
+As build requirements become more specific, or to manage common pipeline logic for multiple components within the *same repository* and eliminate duplication, the next step is often to centralize the pipeline definition into a local file. This aligns with the pattern xref:centralize-pipeline-definitions.adoc[Centralizing Tekton Pipeline Definitions in Your Repository].
+
+.Procedure:
+. **Identify Common/Base Pipeline Logic**:
+    * Copy one of the embedded `pipelineSpec`s in your `PipelineRun`s as your base. This spec will form the foundation of your local, shared pipeline.
+. **Create Local Pipeline File**:
+    * Create a file like `.tekton/build-pipeline.yaml` in your component's repository.
+    * Paste the identified `Pipeline` specification into this file.
+. **Define `metadata.name`**:
+    * In `.tekton/build-pipeline.yaml`, give your pipeline a suitable `metadata.name` (e.g., `build-pipeline`, `my-repo-build-pipeline`). If you plan to have multiple Pipeline definitions in your repository, these need to have unique names.
+. **Customize (If Needed)**:
+    * Modify the pipeline spec in `.tekton/build-pipeline.yaml` to meet your specific needs: add tasks, change parameters, etc. This is where you'd implement patterns like <<Pattern: Achieving Label and Tag Parity for Versioning>>.
+. **Update `PipelineRun` Files**:
+    * Modify your `PipelineRun` files (e.g., for push, PR, different components within the repo).
+    * Remove any `spec.pipelineSpec`, replacing it with a `spec.pipelineRef`.
+    * Set the `spec.pipelineRef.name` to match the `metadata.name` of the `Pipeline` in your local `.tekton/build-pipeline.yaml`.
+    * Adjust `params` in the `PipelineRun` to match your local `build-pipeline.yaml`.
+. **Commit and Apply**:
+    * Commit the new `.tekton/build-pipeline.yaml` and the updated `PipelineRun` files.
+    * Ensure the `Pipeline` resource from `.tekton/build-pipeline.yaml` is applied to your {ProductName} namespace. Pipelines-as-Code might handle this.
+
+.Benefits:
+* **Full Control & Customization**: Tailor the pipeline logic precisely.
+* **Version Control**: Pipeline definition is versioned with your application code.
+* **Consistency within Repository**: All components/triggers in the repository can use this exact pipeline.
+* **Reduced Duplication**: Define common logic once, eliminating redundant embedded specs.
+
+.Considerations:
+* **Maintenance Responsibility**: You now maintain this pipeline definition.
+* **Scope**: This centralized pipeline is local to this specific Git repository.
+
+[[phase-3-sharing-a-custom-pipeline-across-repositories-via-git-resolver]]
+== Phase 3: Sharing a Custom Pipeline Across Repositories via Git Resolver
+
+If your team develops multiple components across *different repositories* and you want to standardize on a *customized* build pipeline, you can host your locally managed `build-pipeline.yaml` (from Phase 2) in a dedicated Git repository (or a well-known path in a shared monorepo) and have other repositories reference it using Tekton's `git` resolver.
+
+.Procedure:
+. **Establish a Shared Pipeline Repository**:
+    * Create a new Git repository specifically for shared Tekton pipelines, or designate a specific directory within an existing shared repository.
+    * Place your finalized `build-pipeline.yaml` (and any associated custom `Task` definitions if not using bundles) into this shared repository.
+    * Example path: `https://github.com/your-org/shared-tekton-pipelines/blob/main/pipelines/my-custom-build-pipeline.yaml`
+. **Update `PipelineRun` Files in Consuming Repositories**:
+    * In other repositories that need to use this standardized custom pipeline, modify their `.tekton/PipelineRun` files.
+    * Use the `git` resolver in `spec.pipelineRef`:
++
+[source,yaml]
+----
+# Example: In a consuming repository's PipelineRun file
+spec:
+  pipelineRef:
+    resolver: git
+    params:
+      - name: url
+        value: https://github.com/your-org/shared-tekton-pipelines.git # URL to the repo hosting the pipeline
+      - name: revision
+        value: main # Or a specific commit SHA or tag for versioning
+      - name: pathInRepo
+        value: pipelines/my-custom-build-pipeline.yaml # Path to the Pipeline YAML file within that repo
+  # Params for the pipeline itself are still defined here
+  params:
+    - name: git-url # This is the source_url for the component being built
+      value: '{{source_url}}'
+    - name: revision # This is the revision for the component being built
+      value: '{{revision}}'
+    # ... other parameters required by the shared pipeline ...
+----
++
+* The `pipelineRef.params.url` points to the Git repository hosting the shared pipeline.
+* The `pipelineRef.params.revision` specifies the branch, tag, or commit SHA of the pipeline definition to use.
+* The `pipelineRef.params.pathInRepo` indicates the path to the pipeline YAML file within that repository.
+
+. **Manage Updates to the Shared Pipeline**:
+    * When you need to update your shared custom pipeline, modify the `build-pipeline.yaml` in its dedicated Git repository and commit/push the changes.
+    * Consuming repositories can control when they adopt these updates by changing the `revision` parameter in their `pipelineRef`. This aligns with the principles described in the xref:keep-remote-pipelines-up-to-date.adoc[Remote Pipeline] pattern, but applied to a Git-resolved resource.
+
+.Benefits:
+* **Standardization Across Repositories**: Enforce consistent build practices for multiple components using a Git-native approach.
+* **Reusability**: Share complex, tailored pipeline logic efficiently.
+* **Version Control of Shared Logic**: The shared pipeline is version-controlled in its own Git repository.
+* **Simpler than Bundles (for some teams)**: Avoids the overhead of creating, publishing, and managing Tekton bundles if a Git-based workflow is preferred.
+
+.Considerations:
+* **Discovery and Versioning**: Teams need to know where the shared pipeline repository is and how its versions (branches/tags/commits) are managed.
+* **Access Control**: Ensure that the service account running the `PipelineRun`s in consuming repositories has read access to the shared pipeline Git repository.
+* **No Immutability of Bundles**: Unlike Tekton bundles which can be pinned by digest for immutability, the `git` resolver fetches from a potentially mutable Git reference (like a branch). Pinning to a commit SHA in the `revision` parameter is crucial for reproducibility.
+
+.Conclusion
+
+The management of build pipelines in {ProductName} can evolve from simple, automated setups to highly customized and broadly shared definitions. Starting with the initial onboarding, progressing to local centralization for repository-specific needs, and then potentially sharing these customized pipelines across repositories via the Git resolver allows teams to adapt their CI/CD processes effectively as their complexity and scale grow. Each phase offers different trade-offs between ease of use, control, and reusability.
