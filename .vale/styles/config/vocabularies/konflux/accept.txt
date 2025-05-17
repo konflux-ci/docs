@@ -1,5 +1,7 @@
 lockfile
 prefetch
+prefetching
 Snyk
 Konflux
 kubectl
+ITSs

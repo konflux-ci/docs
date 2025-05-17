@@ -1,0 +1,13 @@
+---
+extends: existence
+message: Do not include a link to %s unless it is to an org that makes sense for our docs.
+ignorecase: true
+nonword: true
+level: warning
+scope: raw
+action:
+  name: remove
+tokens:
+  - 'https:\/\/gitlab\.com\/\w+'
+  # Extend this expression with (?!\/konflux-ci\/|\/some-other-org\/) to allow other locations
+  - 'https:\/\/github\.com(?!\/konflux-ci\/)'
