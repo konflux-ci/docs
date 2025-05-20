@@ -27,7 +27,7 @@ NOTE: You can run a Snyk task only if you have a Snyk token configured in a name
 
 .. Click *Save* changes.
 
-. Add your new secret to your workspace.
+. Add your new secret to your tenant namespace.
 
 .. Log in to {ProductName} Overview page.
 

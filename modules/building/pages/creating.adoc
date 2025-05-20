@@ -81,7 +81,7 @@ include::partial$custom-resources/{context}-component.adoc[]
 +
 include::partial$custom-resources/{context}-imagerepository.adoc[]
 
-. In your workspace, save the `Application.yaml`, `Component.yaml`, and `ImageRepository.yaml` files and add the resource to your cluster by running the following command:
+. In your tenant namespace, save the `Application.yaml`, `Component.yaml`, and `ImageRepository.yaml` files and add the resource to your cluster by running the following command:
 
 +
 [source,shell]
@@ -158,7 +158,7 @@ data:
 type: kubernetes.io/dockerconfigjson
 ----
 
-Edit the file and add `metadata.namespace` with value of your namespace: `<your-workspace-tenant>`
+Edit the file and add `metadata.namespace` with value of your namespace: `<your-tenant>`
 
 Encoded credentials from quay.io will be by default for `quay.io` repository, unless you are using only custom repository
 for whole namespace, with robot account for all repos and will have only one secret in the namespace for registry,
@@ -206,7 +206,7 @@ kind: ServiceAccount
 apiVersion: v1
 metadata:
   name: build-pipeline-$COMPONENT_NAME
-  namespace: <your-workspace-tenant>
+  namespace: <your-tenant>
 secrets:
   - name: secret-name
 ----
@@ -237,7 +237,7 @@ In the console, complete the following steps to find the image pullspec for a co
 
 . For the component whose SBOM you want to view, select its most recent pipeline run.
 
-. Find the *Results* section at the bottom of the page and look for the `IMAGE_URL` row. It should resemble `quay.io/redhat-user-workloads/workspace-tenant/application/component:tag`. You can use the `IMAGE_DIGEST` provided as an alternate mechanism for referencing the image.
+. Find the *Results* section at the bottom of the page and look for the `IMAGE_URL` row. It should resemble `quay.io/redhat-user-workloads/your-tenant/application/component:tag`. You can use the `IMAGE_DIGEST` provided as an alternate mechanism for referencing the image.
 
 === With the CLI
 
@@ -284,5 +284,5 @@ Example:
 +
 [source]
 --
-IMAGE=quay.io/redhat-user-workloads/workspace-tenant/application/component@sha256:<output omitted>
+IMAGE=quay.io/redhat-user-workloads/your-tenant/application/component@sha256:<output omitted>
 --

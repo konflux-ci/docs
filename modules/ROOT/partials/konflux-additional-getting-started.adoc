@@ -11,7 +11,7 @@ Depending on your role, read whichever following section applies best to you, to
 
 Before anyone can use it, you need to link:https://github.com/konflux-ci/konflux-ci?tab=readme-ov-file#konflux-ci[install {ProductName}].
 //Add xref for add users and assigning them
-After installing {ProductName}, you can add users and assign them to a {ProductName} workspace. We use {ProductName} workspaces for role-based access control (RBAC).
+After installing {ProductName}, you can add users and assign them to a {ProductName} tenant namespace. We use {ProductName} tenant namespaces for role-based access control (RBAC).
 
 === Developers
 

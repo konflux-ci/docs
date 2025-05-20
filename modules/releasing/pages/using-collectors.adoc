@@ -28,7 +28,7 @@ metadata:
     release.appstudio.openshift.io/auto-release: 'true' <.>
     release.appstudio.openshift.io/standing-attribution: 'true'
   name: collectors-rp
-  namespace: dev-workspace <.>
+  namespace: dev-tenant-namespace <.>
 spec:
   application: <application-name> <.>
   collectors:
@@ -48,11 +48,11 @@ spec:
       - jira-collectors-secret
     serviceAccountName: collector-service
   data: <key> <.>
-  target: managed-workspace
+  target: managed-tenant-namespace
 ----
 <.> Optional: Control if Releases should be created automatically for this ReleasePlan when tests pass. Defaults to true.
-<.> The development team's workspace. The collector pipeline will be executed in this namespace.
-<.> The name of the application that you want to release via a pipeline in the development workspace.
+<.> The development team's tenant namespace. The collector pipeline will be executed in this namespace.
+<.> The name of the application that you want to release via a pipeline in the development tenant namespace.
 <.> The ServiceAccount that the pipeline will use.
 <.> List of parameters to be passed to the collector.
 <.> The collector type as seen in the official collectors repository.

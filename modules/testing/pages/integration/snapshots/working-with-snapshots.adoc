@@ -6,7 +6,7 @@ Aside from the Snapshots which are created and processed automatically by the {P
 
 == Prerequisites
 - You have completed the steps listed in the xref:ROOT:getting-started.adoc#getting-started-with-the-cli[Getting started in the CLI] page.
-- You have an existing managed workspace such as `ws-sample`, an application such as `application-sample` and a component such as `component-sample`.
+- You have an existing managed tenant namespace such as `ws-sample`, an application such as `application-sample` and a component such as `component-sample`.
 
 == Procedures
 To create a manual snapshot, complete the following steps:
@@ -20,7 +20,7 @@ To create a manual snapshot, complete the following steps:
 ----
 $ kubectl create -f snapshot.yaml -n ws-sample-tenant
 ----
-This command adds the Snapshot to your workspace and integration service will test and potentially trigger a release of the Snapshot if you have xref:releasing:create-release-plan.adoc[automatic Releases defined].
+This command adds the Snapshot to your tenant namespace and integration service will test and potentially trigger a release of the Snapshot if you have xref:releasing:create-release-plan.adoc[automatic Releases defined].
 
 == Verification
 You may verify the status of your Snapshot with the following steps:

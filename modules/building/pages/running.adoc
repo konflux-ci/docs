@@ -33,7 +33,7 @@ See also xref:testing:integration/rerunning.adoc[Retriggering integration tests]
    target branch. Personal forks are currently not supported - see link:https://issues.redhat.com/browse/SRVKP-7590[Red Hat issue SRVKP-7590] for more information.
 
 . The build pipeline should execute if your user account has been granted permissions to run PaC
-  piplines. If your account does not have these permissions, a project maintainer or other user
+  pipelines. If your account does not have these permissions, a project maintainer or other user
   must add the comment `/ok-to-test` to start the build pipeline.
 
 +

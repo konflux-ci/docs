@@ -21,7 +21,7 @@ Two teams work together to release an application:
 
 .Next steps
 
-* *Create a `releasePlan` object:* The development team creates a ReleasePlan object in the developer workspace. The ReleasePlan object includes a reference to the application that the development team wants to release, along with workspace where the application is supposed to be released.
+* *Create a `releasePlan` object:* The development team creates a ReleasePlan object in the developer tenant namespace. The ReleasePlan object includes a reference to the application that the development team wants to release, along with tenant namespace where the application is supposed to be released.
 
 * *Create a `releasePlanAdmission` object:* The Managed Environment team creates or updates the ReleasePlanAdmission object in response to the ReleasePlan object created by the development team. It indicates that the Managed Environment team has approved the application specified in the ReleasePlan object.
 
