@@ -1,0 +1,117 @@
+= Pattern: Achieving Label and Tag Parity for Versioning
+
+This pattern describes how to configure your {ProductName} build pipeline to ensure parity between a version label (e.g., `org.opencontainers.image.version`) on your container image and a human-readable image tag. This enhances image traceability and makes it easier for users and tools to identify image versions consistently.
+
+The core idea is to use a common dynamic value, typically derived from Git metadata like the branch name or a release tag, to populate both the label and the tag. This pattern combines the build customizations of xref:building:labels-and-annotations.adoc#incrementing-release-label-or-annotation[incrementing a release label] and xref:building:custom-tags.adoc#using-dynamic-metadata-in-tags[using dynamic metadata in tags].
+
+.Use Cases
+* Consistently versioning images based on the Git branch they were built from.
+* Ensuring that the version displayed in image metadata (labels) matches a discoverable image tag.
+* Simplifying image identification for users and automated deployment systems.
+* Enabling the determination of an image's original tag (e.g., version) by inspecting its labels, even when only an image digest is available.
+
+.Prerequisites
+* A {ProductName} build pipeline defined in your repository (e.g., `.tekton/build-pipeline.yaml`).
+    * **Note:** It is highly recommended to first centralize your pipeline definition using one of the methods described in xref:managing-pipeline-changes.adoc[Evolving build pipeline management]. This will simplify the modifications needed for label and tag parity, as you'll only need to edit one Tekton Pipeline file.
+* Your pipeline includes:
+    * A `clone-repository` task (e.g., using `git-clone-oci-ta`).
+    * A `generate-labels` task (e.g., using `task-generate-labels`).
+    * An `apply-tags` task (e.g., using `task-apply-tags`).
+
+.Procedure
+
+. **Define a Common Versioning Parameter in Your Pipeline:**
+   Add an `artifact-version` parameter to your `build-pipeline.yaml`. This parameter will be the source of truth for the version string. If you have a centralized build pipeline, this parameter will enable you to uniquely identify tags for images generated from push and pull request events.
++
+[source,yaml]
+----
+# In .tekton/build-pipeline.yaml
+spec:
+  params:
+    # ... other params ...
+    - name: artifact-version
+      description: The version string to be used for labels and tags.
+      type: string
+      default: "latest" # A sensible default
+----
+
+. **Use `artifact-version` in the `generate-labels` Task:**
+   Configure the `generate-image-labels` task in your `build-pipeline.yaml` to use the `artifact-version` parameter for the `org.opencontainers.image.version` label (or a similar version label).
++
+[source,yaml]
+----
+# In .tekton/build-pipeline.yaml (within the 'tasks' section)
+    - name: generate-image-labels
+      # ... other task configurations ...
+      params:
+        - name: label-templates
+          value:
+             # ... other labels like build-date, release ...
+             - "version=$(params.artifact-version)" # version label
+             # Or, more specifically for OCI:
+             # - "org.opencontainers.image.version=$(params.artifact-version)"
+        - name: source-date-epoch
+          value: "$(tasks.clone-repository.results.commit-timestamp)"
+      # ...
+----
+
+. **Use `artifact-version` in the `apply-tags` Task:**
+   Configure the `apply-tags` task in your `build-pipeline.yaml` to create a tag based on the `artifact-version` parameter. You can also create other related tags by adding them to the array.
++
+[source,yaml]
+----
+# In .tekton/build-pipeline.yaml (within the 'tasks' section)
+    - name: apply-tags
+      # ... other task configurations ...
+      params:
+        - name: IMAGE
+          value: $(tasks.build-image-index.results.IMAGE_URL)
+        - name: ADDITIONAL_TAGS
+          value:
+            # Tag directly with the artifact-version
+            - "$(params.artifact-version)"
+            # Optionally, a more unique tag incorporating the artifact-version and timestamp
+            - "$(params.artifact-version)-$(tasks.clone-repository.results.commit-timestamp)"
+            # Optionally, add 'latest' for main branch builds
+            # - "latest"
+      # ...
+----
+
+. **Populate `artifact-version` Dynamically in `PipelineRun` Files:**
+   In your `PipelineRun` files (e.g., for push and PR events), use Pipelines-as-Code (PaC) variables to set the `artifact-version` parameter dynamically. One suitable value might be the target branch as it is a populated value for both push and pull request events.
++
+[source,yaml]
+----
+# In .tekton/component-push.yaml (for push to main branch)
+spec:
+  params:
+    # ... other params ...
+    - name: artifact-version
+      value: '{{target_branch}}' # e.g., results in label "version: main" and tag "main"
+
+# In .tekton/component-on-pull-request.yaml (for PRs)
+spec:
+  params:
+    # ... other params ...
+    - name: artifact-version
+      # Example: "main-pr-123" or "feature-branch-pr-123"
+      value: '{{target_branch}}-pr-{{pull_request_number}}'
+----
+
+.Verification
+. After a pipeline run, inspect the built image:
+  * **Labels**: Check the image labels (e.g., using `docker inspect` or `skopeo inspect`). The `org.opencontainers.image.version` (or your chosen version label) should match the value derived from `artifact-version` (e.g., `main`).
+  * **Tags**: Check the image tags in your container registry. You should find a tag that directly matches the `artifact-version` (e.g., `main`).
+
+.Benefits of this Pattern
+* **Consistency**: Ensures the version information embedded in the image (label) matches a discoverable tag.
+* **Traceability**: Makes it easy to correlate a tagged image with its source branch or PR.
+* **Automation Friendly**: Provides a predictable versioning scheme for downstream automation and deployment tools.
+* **Clarity**: Offers a clear version identifier for users browsing the container registry.
+
+By implementing this pattern, you establish a robust and clear versioning strategy for your container images built with {ProductName}.
+
+[CAUTION]
+====
+While using a git commit timestamp is beneficial for producing a repeatable "static" tag, any rebuild of the same commit will result in this tag moving to a new digest. This can be mitigated by using the actual date instead. The actual date and its epoch are both available as results from the *generate-labels* task.
+====
