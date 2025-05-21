@@ -5,9 +5,8 @@ This pattern describes how to extract a common Tekton `Pipeline` definition into
 This approach is particularly beneficial when you need to customize a standard pipeline or ensure that all build triggers (e.g., push, pull request) use the exact same underlying pipeline tasks and structure.
 
 .Use Cases
-* Customizing a standard {ProductName} build pipeline (e.g., `docker-build-multi-platform-oci-ta`) with additional tasks or modified parameters.
 * Ensuring all `PipelineRun` files (for pushes, pull requests, manual triggers) use an identical, version-controlled pipeline definition.
-* Simplifying the maintenance of pipeline logic by having a single source of truth within the repository.
+* Simplifying the maintenance of pipeline logic by having a single source of truth within the repository.* Facilitating easier implementation of other patterns, such as <<Pattern: Achieving Label and Tag Parity for Versioning>>, by providing a single pipeline file to modify.
 
 .Prerequisites
 * Your application has been onboarded to {ProductName}.
