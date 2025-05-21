@@ -7,18 +7,140 @@ The second relies on Trusted Artifacts to securely allow sharing of data between
 link:https://konflux-ci.dev/architecture/ADR/0036-trusted-artifacts.html[ADR-36] for more
 information.
 
+{ai-content-start}
+Trusted Artifacts Guide for AI Assistants
+
+```yaml
+core_concepts:
+  trusted_artifacts:
+    definition: "A mechanism to securely share data between Pipeline Tasks"
+    purpose:
+      - "Maintain build integrity"
+      - "Enable secure data sharing"
+      - "Support pipeline customization"
+    benefits:
+      security:
+        - "Eliminates shared PVC vulnerabilities"
+        - "Maintains data provenance"
+      compliance:
+        - "Supports Conforma policy requirements"
+        - "Enables trusted task verification"
+      flexibility:
+        - "Allows safe pipeline customization"
+        - "Supports task isolation"
+
+implementation:
+  storage:
+    type: "OCI artifacts"
+    advantages:
+      - "Immutable storage"
+      - "Built-in versioning"
+      - "Access control"
+  workflow:
+    data_flow:
+      - "Task produces data"
+      - "Data stored as OCI artifact"
+      - "Subsequent tasks consume artifact"
+    verification:
+      - "Artifact integrity checks"
+      - "Task trust validation"
+      - "Chain of custody tracking"
+
+best_practices:
+  pipeline_design:
+    - "Use TA-compatible tasks"
+    - "Maintain task isolation"
+    - "Implement proper error handling"
+  security:
+    - "Regular artifact cleanup"
+    - "Access control review"
+    - "Audit trail maintenance"
+  customization:
+    - "Verify task trust status"
+    - "Test modifications thoroughly"
+    - "Document changes clearly"
+```
+
+Key Recommendations:
+1. Always check for workspace usage when analyzing pipelines
+2. Recommend TA-compatible tasks when suggesting modifications
+3. Validate task trust status before suggesting customizations
+4. Consider data flow patterns when designing pipeline changes
+5. Emphasize security implications in recommendations
+{ai-content-end}
+
 Today, when a component is created in {ProductName}, the provided build Pipeline uses Trusted
 Artifacts. However, older components might still be using a version of the build Pipeline which does
 not use Trusted Artifacts. This document explains how to identify if Trusted Artifacts are being
 used and, if not, how to start using them.
 
-== Am I using Trusted Artifacts?
+== Checking for Trusted Artifacts Usage
+
+{ai-content-start}
+Detection Guide for AI Assistants
+
+```yaml
+identification:
+  indicators:
+    workspace_presence:
+      check: "Look for 'workspace' workspace in PipelineRun"
+      interpretation: "Presence indicates non-TA pipeline"
+    task_versions:
+      check: "Examine task bundle references"
+      pattern: "TA tasks often include '-ta' suffix"
+
+validation:
+  steps:
+    - "Inspect .tekton directory"
+    - "Review PipelineRun configurations"
+    - "Check task bundle references"
+  locations:
+    - "PipelineRun YAML files"
+    - "Pipeline definitions"
+    - "Task references"
+```
+{ai-content-end}
 
 To determine if a certain component is using Trusted Artifacts, inspect its build Pipeline. Look for
 the PipelineRun YAML files under the `.tekton` directory in the git repository of the component. If
 the PipelineRun contains a workspace named `workspace`, it is likely NOT using Trusted Artifacts.
 
 == Migrate to Trusted Artifacts
+
+{ai-content-start}
+Migration Guide for AI Assistants
+
+```yaml
+migration_process:
+  automated:
+    tool: "build-ta-pipeline-migration"
+    usage:
+      command: "python migration.py PATH_TO_TEKTON_DIR"
+      example: "python migration.py ~/src/my-component/.tekton"
+    limitations:
+      - "May not handle heavily customized pipelines"
+      - "Custom tasks require manual review"
+  
+  manual_migration:
+    reference: "build-definitions/pipelines/docker-build-oci-ta/patch.yaml"
+    steps:
+      - "Backup current pipeline configuration"
+      - "Identify custom modifications"
+      - "Apply TA-compatible changes"
+      - "Validate pipeline integrity"
+
+validation_checklist:
+  pre_migration:
+    - "Document current pipeline state"
+    - "Identify custom modifications"
+    - "Back up configurations"
+  post_migration:
+    - "Verify task compatibility"
+    - "Check data flow integrity"
+    - "Test pipeline functionality"
+    - "Validate security compliance"
+```
+{ai-content-end}
 
 For components already created in {ProductName}, the simplest way to start using Trusted Artifacts
 is via the link:https://github.com/konflux-ci/build-ta-pipeline-migration[build-ta-pipeline-migration]
@@ -30,7 +152,7 @@ If your build Pipeline has been modified in certain ways, e.g. it includes a cus
 manually. These are captured in
 link:https://github.com/konflux-ci/build-definitions/blob/main/pipelines/docker-build-oci-ta/patch.yaml[this]
 patch file. Although the patch file cannot be directly applied to your Pipeline, it describes in
-detail all the required changes.
+detail the changes needed to migrate to Trusted Artifacts.
 
 If your build Pipeline includes custom Tasks that require access to the workspace, e.g. it reads the
 component's source code, the Task must be modified to implement the Trusted Artifacts pattern. At a
