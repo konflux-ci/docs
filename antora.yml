@@ -19,17 +19,6 @@ nav:
 
 asciidoc:
   attributes:
-
-  # Standard document attributes to be used in our documentation
-    icons: font
-    source-language: asciidoc@
-    source-highlighter: highlightjs
-    url-guide: ''
-    idseparator: '-'
-    page-pagination: '-'
-    idprefix: ''
-    experimental: ""
-
   # Product content attributes
     ProductName: Konflux
     context: konflux
@@ -38,6 +27,8 @@ asciidoc:
     ProductVersion: ''
     ProductPreviousVersion: ''
     ProductNextVersion: ''
+    ai-content-start: <!-- AI Content Start
+    ai-content-end: AI Content End -->
 
   # Repository URLs
     repoURL1: ''
@@ -54,4 +45,3 @@ asciidoc:
     Placeholder: ''
     Placeholder2: ''
     Placeholder3: ''
-    
