@@ -8,7 +8,6 @@ This approach is particularly beneficial when you need to customize a standard p
 * Customizing a standard {ProductName} build pipeline (e.g., `docker-build-multi-platform-oci-ta`) with additional tasks or modified parameters.
 * Ensuring all `PipelineRun` files (for pushes, pull requests, manual triggers) use an identical, version-controlled pipeline definition.
 * Simplifying the maintenance of pipeline logic by having a single source of truth within the repository.
-* Facilitating easier implementation of other patterns, such as <<Pattern: Achieving Label and Tag Parity for Versioning>>, by providing a single pipeline file to modify.
 
 .Prerequisites
 * Your application has been onboarded to {ProductName}.
@@ -135,6 +134,40 @@ spec:
 * Trigger a new build (e.g., by pushing to your main branch or creating a PR).
 * {ProductName} (via Pipelines-as-Code) should create a `PipelineRun` instance that uses your locally defined `build-pipeline`.
 * Monitor the `PipelineRun` to ensure it executes as expected, using the tasks and logic defined in your `.tekton/build-pipeline.yaml`.
+
+[%collapsible]
+.Helper Command (Optional)
+====
+To quickly extract a pipeline definition from your PipelineRun files, you can use these commands:
+
+[source,bash]
+----
+# Auto-detect a PipelineRun file and extract its pipeline definition
+PIPELINE_NAME="build-pipeline" # Change this to your desired pipeline name
+FIRST_FILE=$(find .tekton -name '*-push.yaml' -o -name '*-pull-request.yaml' | head -1)
+[ -z "$FIRST_FILE" ] && echo "No PipelineRun files found in .tekton/" && exit 1
+
+echo "Extracting pipeline from $FIRST_FILE..."
+yq eval-all 'select(fileIndex == 0) * select(fileIndex == 1) | .apiVersion = "tekton.dev/v1" | .kind = "Pipeline" | .metadata.name = "'$PIPELINE_NAME'"' <(yq eval '.spec.pipelineSpec' "$FIRST_FILE") <(echo "{}") > ".tekton/${PIPELINE_NAME}.yaml"
+
+# Update all PipelineRun files to reference the extracted pipeline
+for f in .tekton/*-{push,pull-request}.yaml; do
+    [ -f "$f" ] && echo "Updating $f..." && yq eval 'del(.spec.pipelineSpec) | .spec.pipelineRef.name = "'$PIPELINE_NAME'"' -i "$f"
+done
+----
+
+The commands will:
+1. Find the first available PipelineRun file in your `.tekton` directory
+2. Create a new Pipeline file with proper metadata in the `.tekton` directory
+3. Update all matching PipelineRun files to reference the extracted pipeline
+
+[TIP]
+=====
+* Only modify the `PIPELINE_NAME` if you want something other than "build-pipeline"
+* The command automatically finds PipelineRun files matching `*-push.yaml` or `*-pull-request.yaml`
+* If you need to use a specific file, you can override it: `FIRST_FILE=.tekton/my-custom-file.yaml` before running the commands
+=====
+====
 
 .Benefits
 * **Maintainability**: Pipeline logic is defined in one place, making updates and troubleshooting easier.
