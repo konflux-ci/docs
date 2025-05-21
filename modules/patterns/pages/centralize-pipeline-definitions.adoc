@@ -13,7 +13,7 @@ This approach is particularly beneficial when you need to customize a standard p
 * Your application has been onboarded to {ProductName}.
 * {ProductName} (via Pipelines-as-Code) has generated initial `PipelineRun` files in your repository's `.tekton/` directory, or you have `PipelineRun` files that reference a remote Tekton Hub or bundle.
 * You have identified the base Tekton `Pipeline` specification you intend to use and customize. This might be from:
-    * The `spec.pipelineSpec` embedded in one of your existing `PipelineRun` files.
+    * The `spec.pipelineSpec` embedded in one of your existing `PipelineRun` files. There is a helper command to extract the pipeline definition from the first PipelineRun file xref:centralize-pipeline-definitions.adoc#helper-command[here].
     * A standard pipeline definition from the {ProductName} Tekton catalog (e.g., `docker-build-multi-platform-oci-ta`).
 
 .Procedure
@@ -24,6 +24,9 @@ This approach is particularly beneficial when you need to customize a standard p
 . **Define the `Pipeline` Resource:**
    Populate `.tekton/build-pipeline.yaml` with the `Pipeline` definition.
 +
+[%collapsible]
+.Sample Pipeline File
+====
 [source,yaml]
 ----
 # In .tekton/build-pipeline.yaml
@@ -87,10 +90,7 @@ spec:
   #     taskRef: # ...
   #     params: # ...
 ----
-+
-* Set `metadata.name` to a unique name for this pipeline within your namespace (e.g., `build-pipeline`, `my-app-build-pipeline`).
-* The `spec` section will contain the full definition of your pipeline (parameters, workspaces, tasks, results, finally tasks). You can copy the `spec` from an existing `PipelineRun`'s `pipelineSpec` or from a standard pipeline definition like the one for `docker-build-multi-platform-oci-ta` you provided earlier.
-* This is where you would make any customizations, such as adding the `generate-image-labels` task or modifying other tasks.
+====
 
 . **Update `PipelineRun` Files to Reference the Local Pipeline:**
    Modify your existing `PipelineRun` files (e.g., `component-push.yaml`, `component-on-pull-request.yaml`) in the `.tekton/` directory.
@@ -98,6 +98,9 @@ spec:
     * Remove or update the `spec.pipelineRef.bundle` if it points to a remote bundle you are now localizing.
     * Ensure `spec.pipelineRef.name` points to the `metadata.name` you defined in your `.tekton/build-pipeline.yaml`.
 +
+[%collapsible]
+.Sample PipelineRun File
+====
 [source,yaml]
 ----
 # Example: In .tekton/component-push.yaml
@@ -122,6 +125,7 @@ spec:
   workspaces:
     # ... your workspaces for this PipelineRun ...
 ----
+====
 
 . **Commit and Push Changes:**
    Commit the new `.tekton/build-pipeline.yaml` file and the modified `PipelineRun` files to your Git repository.
@@ -136,7 +140,7 @@ spec:
 * Monitor the `PipelineRun` to ensure it executes as expected, using the tasks and logic defined in your `.tekton/build-pipeline.yaml`.
 
 [%collapsible]
-.Helper Command (Optional)
+.Helper Command
 ====
 To quickly extract a pipeline definition from your PipelineRun files, you can use these commands:
 
