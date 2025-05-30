@@ -1,19 +1,25 @@
+[[custom-tags]]
 = Using custom tags
 
-Konflux allows tagging built images with custom tags. This tagging is handled by separate *apply-tags* task. The custom tags can be configured in two ways:
+{ProductName} build pipelines allow you to apply multiple custom tags to your container images. This tagging is handled by separate `apply-tags` task. The custom tags can be configured in three ways:
 
 . <<using-konflux-label>>
 . <<using-additional-tags-parameter>>
+. <<using-dynamic-metadata-in-tags>>
 
 [NOTE]
 ====
 These can be combined and used together.
 ====
 
-[[using-konflux-label]]
-== Using konflux.additional-tags image label in your Dockerfile
+.Additional Considerations
+* **Tag Uniqueness**: Ensure your tagging strategy generates unique and meaningful tags. Using timestamps or commit SHAs as part of the tag helps with uniqueness.
+* **`latest` Tag**: Be cautious when applying the `latest` tag. It's typically reserved for the most recent stable build from the main development branch. You might want to add a condition in your `apply-tags` task or `PipelineRun` to only apply `latest` for main branch pushes. This will help to reduce the occurrence of race conditions which would apply the tag to a non-latest build.
 
-You can specify the additional custom tags directly in your Dockerfile by using the *konflux.additional-tags* label, e.g.:
+[[using-konflux-label]]
+== Using konflux.additional-tags image label in your Containerfile
+
+You can specify the additional custom tags directly in your Containerfile by using the *konflux.additional-tags* label, e.g.:
 
 [source,dockerfile]
 ----
@@ -71,17 +77,20 @@ The array parameter *ADDITIONAL_TAGS* can also be specified differently:
 ...
 ----
 
-[NOTE]
-====
-The provided tags can also be based on dynamic variables that are provided by Pipelines as Code, e.g.:
+[[using-dynamic-metadata-in-tags]]
+== Using dynamic metadata in new tags
+
+By using the `apply-tags` task with dynamically constructed tag names, you can achieve a flexible and informative tagging strategy for your container images built with {ProductName}. Dynamic tags can be created from metadata generated both from other tasks and Pipelines as Code. For example,
 
 [source,yaml]
 ----
 ...
   - name: ADDITIONAL_TAGS
-    value: ["pull-request-{{pull_request_number}}", "from-branch-{{source_branch}}", "{{target_branch}}"]
+    value: ["pull-request-{{pull_request_number}}", "from-branch-{{source_branch}}", "{{target_branch}}-$(tasks.clone-repository.results.commit-timestamp)"]
 ...
 ----
 
+[NOTE]
+====
 To see all available dynamic variables, please see the dynamic variables section in the https://pipelinesascode.com/docs/guide/authoringprs/#dynamic-variables[Pipeline as Code documentation]
 ====
