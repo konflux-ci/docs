@@ -151,7 +151,7 @@ FIRST_FILE=$(find .tekton -name '*-push.yaml' -o -name '*-pull-request.yaml' | h
 [ -z "$FIRST_FILE" ] && echo "No PipelineRun files found in .tekton/" && exit 1
 
 echo "Extracting pipeline from $FIRST_FILE..."
-yq eval-all 'select(fileIndex == 0) * select(fileIndex == 1) | .apiVersion = "tekton.dev/v1" | .kind = "Pipeline" | .metadata.name = "'$PIPELINE_NAME'"' <(yq eval '.spec.pipelineSpec' "$FIRST_FILE") <(echo "{}") > ".tekton/${PIPELINE_NAME}.yaml"
+yq eval '{"apiVersion": "tekton.dev/v1", "kind": "Pipeline", "metadata": {"name": "'$PIPELINE_NAME'"}, "spec": .spec.pipelineSpec}' "$FIRST_FILE" > ".tekton/${PIPELINE_NAME}.yaml"
 
 # Update all PipelineRun files to reference the extracted pipeline
 for f in .tekton/*-{push,pull-request}.yaml; do
