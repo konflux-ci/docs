@@ -115,3 +115,72 @@ npm run api-gen
 ```
 
 Configuration for the docs generator is located in the `api-gen` directory.
+
+## Documentation Style Checking
+
+The Konflux documentation uses Vale for style checking to ensure consistent voice and terminology across all documentation. Vale helps maintain our documentation standards and writing style guidelines.
+
+### Prerequisites
+
+In addition to the AsciiDoc tools mentioned above, you'll need:
+
+1. **Vale** - Style checker for documentation
+   - macOS: `brew install vale`
+   - Linux: See [Vale installation guide](https://vale.sh/docs/vale-cli/installation/)
+
+The repository includes Vale configuration and style rules in the `.vale` directory.
+
+### Running Style Checks
+
+We provide a wrapper script that ensures all dependencies are installed and Vale is properly initialized. You can run style checks using npm:
+
+We enforce consistent voice and style across all documentation using Vale. Our Vale configuration enforces different levels of style rules:
+
+#### Error-level Rules (Must Fix)
+- **Direct Address**: Always address the reader as "you" rather than "the user"
+- **Imperative Mood**: Use direct commands in procedures ("Create a file" instead of "You should create a file")
+
+#### Warning-level Rules (Should Fix)
+- **Active Voice**: Prefer active voice over passive voice where possible
+- **Consistent Tense**: Use present tense by default, especially in procedures
+
+The CI pipeline will fail on error-level violations but only warn about warning-level violations. This balance ensures critical voice consistency while maintaining flexibility where needed.
+
+To check your documentation against these rules:
+```bash
+# Check all documentation (warnings and errors)
+npm run lint:docs
+
+# Check specific directories or files
+npm run lint:docs -- "modules/installing/**/*.adoc"
+npm run lint:docs -- "modules/installing/*.adoc" "modules/reference/*.adoc"
+
+# With options
+npm run lint:docs -- --minAlertLevel=error "modules/installing/*.adoc"
+
+# Check only modified .adoc files
+npm run lint:docs:changed
+
+# Checking the above files but only reporting the errors
+npm run lint:docs:errors
+npm run lint:docs:changed:errors
+```
+
+The script will:
+1. Check if all required dependencies are installed
+2. Run `vale sync` to ensure all style rules are up to date
+3. Run Vale checks with the same settings as the CI environment
+
+> **Note:** Pull requests will fail if any voice consistency errors are found. Use `npm run lint:docs:changed:errors` to run the same checks locally that will be run in CI.
+
+> **Note:** The `lint:docs:changed` command checks files that have been modified but not yet committed, as well as committed changes that haven't been pushed.
+
+### Style Rules
+
+Our Vale configuration includes several style rules to maintain consistent documentation:
+- Active voice usage
+- Direct reader address
+- Consistent tense
+- Imperative mood for instructions
+
+For more details about our style rules, see `.vale/styles/Konflux/VOICE_GUIDELINES.md`.

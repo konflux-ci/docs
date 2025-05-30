@@ -5,8 +5,8 @@
 - Check if push pipeline has `chains.tekton.dev/signed=failed` annotation.
 - That means that it failed on chains.
 - If chains is failing with `POST https://quay.io/v2/image-path/blobs/uploads/: UNAUTHORIZED: access to the requested resource is not authorized; map[]`.
-- Since build was successful, problem is with service account `appstudio-pipeline` which has
-  in `imagePullSecrets` section some wrongly added pull secrets for registry.
+- Since build was successful, problem is with component specific service account `build-pipeline-$COMPONENT_NAME`
+  which has in `imagePullSecrets` section some wrongly added pull secrets for registry.
 - In imagePullSecrets should be only `appstudio-pipeline-dockercfg-*` secret which provides access to
   pipeline/task bundles.
 

@@ -6,7 +6,8 @@ Failing to authenticate with a container registry can be hard to debug. To be ab
 effectively, one needs to understand how registry authentication works in Tekton. For the full
 details, see the Tekton link:https://tekton.dev/docs/pipelines/auth/[Authentication] docs. In short:
 
-. Tekton uses a ServiceAccount (named `appstudio-pipeline` by default in {ProductName}) to run your Pipeline.
+. Tekton uses a ServiceAccount (`build-pipeline-$COMPONENT_NAME` for build and
+  `release-service-account` for release by default in {ProductName}) to run your Pipeline.
 . This ServiceAccount has a list of `imagePullSecrets` and `secrets`.
 .. Tekton uses the `imagePullSecrets` when pulling the images that execute the Tasks in your pipeline.
    These images are typically hard-coded in the Task definition and publicly accessible. As a {ProductName}
@@ -63,27 +64,27 @@ skopeo login --authfile /tmp/auth.json "$should_have_access_to"
 Note: works for `dockercfg` and `dockerconfigjson` secrets, not `basic-auth`.
 
 [#check-if-the-secret-is-linked-to-the-service-account]
-=== Check if the secret is linked to the `appstudio-pipeline` service account
+=== Check if the secret is linked to a service account
 
 In order to connect the new secret to pipeline run, you need to link it from service account used by Tekton to run the pipeline run.
 Check if your secret appears in the `secrets` section:
 
 [source,bash]
 ----
-kubectl get sa appstudio-pipeline -o json
+kubectl get sa $SERVICE_ACCOUNT_NAME -o json
 ----
 
-If not, link it to the `appstudio-pipeline` service account with:
+If not, link it to the `$SERVICE_ACCOUNT_NAME` service account with:
 
 [source,bash]
 ----
 secret_name=secret-for-my-registry
 
 # using kubectl
-kubectl patch serviceaccount appstudio-pipeline -p "{\"secrets\": [{\"name\": \"$secret_name\"}]}"
+kubectl patch serviceaccount $SERVICE_ACCOUNT_NAME -p "{\"secrets\": [{\"name\": \"$secret_name\"}]}"
 
 # using oc
-oc secrets link appstudio-pipeline "$secret_name"
+oc secrets link $SERVICE_ACCOUNT_NAME "$secret_name"
 ----
 
 === Get the merged registry auth file
@@ -100,7 +101,7 @@ problematic content into the merged file.
 
 [source,bash]
 ----
-linked_secrets=$(kubectl get sa appstudio-pipeline -o json | jq '.secrets | map(.name)')
+linked_secrets=$(kubectl get sa $SERVICE_ACCOUNT_NAME -o json | jq '.secrets | map(.name)')
 
 kubectl get secrets -o json |
     jq --argjson linked_secrets "$linked_secrets" '

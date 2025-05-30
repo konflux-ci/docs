@@ -7,6 +7,7 @@
 *** xref:running-user-scripts-on-the-build-pipeline.adoc[Running user scripts on the build pipeline]
 *** xref:mapping-tags-to-labels.adoc[Maintaining parity between tags and labels]
 *** xref:github-merge-queues.adoc[GitHub merge queues]
+*** xref:slack-notifications.adoc[Slack Webhook Notifications]
 *** xref:managing-security-fix.adoc[Managing a security fix]
 *** xref:managing-pipeline-changes.adoc[Evolving build pipeline management]
 **** xref:centralize-pipeline-definitions.adoc[Centralizing Tekton pipeline definitions in your repository]

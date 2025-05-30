@@ -195,9 +195,20 @@ IMPORTANT: Note the *name* of the activation key and the *org ID* which can be f
 
 ==== Configure rpm-lockfile-prototype
 
+The goal of this procedure is to generate an RPM lockfile using the `rpm-lockfile-prototype` tool. This involves two major conceptual steps:
+
+1.  **Obtaining Repository Config Files:** You need access to `.repo` files that define the yum/dnf repositories for your target RHEL version and reflect the entitlements granted by your Red Hat subscription (via an activation key).
+2.  **Running the Lockfile Generation Tool:** You need an environment capable of running the `rpm-lockfile-prototype` tool and providing it with the repository configuration obtained in the first step.
+
+The steps detailed below demonstrate a combined workflow where a single container is used both to generate the necessary `.repo` file (by registering with `subscription-manager` using your activation key) and to subsequently run the `rpm-lockfile-prototype` tool using that generated file. It is important to note that this is not a requirement and the two conceptual steps can be decoupled. For example, you could generate `.repo` files for RHEL 8 within a UBI 8 container (using an RHEL 8 activation key) and then use those files to run `rpm-lockfile-prototype` within a UBI 9 container to generate a RHEL 8 lockfile.
+
+The container where you run `rpm-lockfile-prototype` does not need to match the RHEL version of your build--the execution environment only needs to meet the tool's runtime prerequisites (e.g., Python &ge; 3.9). The key is to provide the tool with `.repo` files as input that accurately reflect the repositories of your target RHEL version.
+
 NOTE: For this step we will assume that you have source code in your current working directory `+$(pwd)+`.
 
-1. Start a new container using the same version of Red Hat Enterprise Linux as what you will be building on and mount your source code directory:
+*Follow these steps for the Combined Workflow:*
+
+1. Prepare a container environment where you can run both Red Hat `subscription-manager` and the `rpm-lockfile-prototype` tool. Ideally this is the same version of Red Hat Enterprise Linux as your build, but as noted above, does not have to be. Mount your source code directory into the container.
 
 In this example, we'll using the Red Hat Enterprise Linux 9 Universal Base Image (UBI 9).
 

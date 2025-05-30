@@ -1,0 +1,3 @@
+= Openshift CI (Prow)
+
+In order to learn how to xref:testing:integration/adding.adoc[add a custom integration test] that would run a CI job in {ProductName}, please see link:https://github.com/openshift/konflux-tasks[github.com/openshift/konflux-tasks].
