@@ -14,7 +14,7 @@ For the clone task, the error message may look similar to:
 [clone] {"level":"error","ts":1721904304.0047252,"caller":"git/git.go:53","msg":"Error running git [checkout -f FETCH_HEAD]: exit status 128\nerror: unable to write file ...: No space left on device\n"
 ----
 
-The device that's running out of space is most likely the workspace declared in your `PipelineRun`
+The device that's running out of space is most likely the tenant namespace declared in your `PipelineRun`
 YAML files. *The solution is to request more disk space.* In the `.spec.workspaces` section in
 all the relevant PipelineRun files, increase the storage request.
 

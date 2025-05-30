@@ -18,7 +18,7 @@ Key steps include:
 
 . **Create patches for application-specific component configurations:** Prepare application-specific patches for all components in a given application, accommodating variations in specific patches.
 
-. **Bonus - Duplicating or expanding your application:** Discuss the general philosophy of Configuration-as-Code and how to extend, duplicate, or customize your application, components, and workspace as code.
+. **Bonus - Duplicating or expanding your application:** Discuss the general philosophy of Configuration-as-Code and how to extend, duplicate, or customize your application, components, and tenant namespace as code.
 
 NOTE: Throughout this document, substitute your application and component names for placeholder values like `application-a`, `application-b`, `component-a`, etc.
 

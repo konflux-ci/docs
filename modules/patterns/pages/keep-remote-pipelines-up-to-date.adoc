@@ -13,7 +13,7 @@
 
 [IMPORTANT]
 ====
-If the repository is private, be sure to have a Secret in your {ProductName} workspace to be able to clone it
+If the repository is private, be sure to have a Secret in your {ProductName} tenant namespace to be able to clone it
 ====
 
 === Basic definitions

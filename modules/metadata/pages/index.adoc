@@ -146,7 +146,7 @@ a|In {ProductName}:
 * Only Tekton Chains can access secret materials.
 * Builds run in ephemeral pods.
 * ServiceAccounts (API objects that are shared within projects) have reduced permissions.
-* Tekton Chains generates and signs provenance outside users’ workspaces.
+* Tekton Chains generates and signs provenance outside users’ tenant namespaces.
 * External parameters are fully enumerated in provenance.
 
 |===

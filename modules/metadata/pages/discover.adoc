@@ -18,7 +18,7 @@ Example:
 +
 [source]
 --
-IMAGE=quay.io/redhat-user-workloads/workspace-tenant/application/component@sha256:<output omitted>
+IMAGE=quay.io/redhat-user-workloads/namespace-tenant/application/component@sha256:<output omitted>
 --
 
 +
@@ -34,12 +34,12 @@ Example output:
 +
 [source]
 --
-📦 Supply Chain Security Related artifacts for an image: quay.io/redhat-user-workload/workspace-tenant/application/component@sha256:<sha-digest>
-└── 📦 SBOMs for an image tag: quay.io/redhat-user-workload/workspace-tenant/application/component:sha256-<sha-digest>.sbom
+📦 Supply Chain Security Related artifacts for an image: quay.io/redhat-user-workload/namespace-tenant/application/component@sha256:<sha-digest>
+└── 📦 SBOMs for an image tag: quay.io/redhat-user-workload/namespace-tenant/application/component:sha256-<sha-digest>.sbom
    └── 🍒 sha256:<sbom-sha-digest>
-└── 💾 Attestations for an image tag: quay.io/redhat-user-workload/workspace-tenant/application/component:sha256-<sha-digest>.att
+└── 💾 Attestations for an image tag: quay.io/redhat-user-workload/namespace-tenant/application/component:sha256-<sha-digest>.att
    └── 🍒 sha256:<attestation-sha-digest>
-└── 🔐 Signatures for an image tag: quay.io/redhat-user-workload/workspace-tenant/application/component:sha256-<sha-digest>.sig
+└── 🔐 Signatures for an image tag: quay.io/redhat-user-workload/namespace-tenant/application/component:sha256-<sha-digest>.sig
    └── 🍒 sha256:<signature-sha-digest>
 --
 

@@ -1,19 +1,19 @@
 = Managing a security fix
 
-Sometimes, you need to address an **embargoed security issue** in your application. So as not to disclose aspects of the security vulnerability prematurely, you will want to prepare a fix in private or with a limited set of collaborators. This document guides you on how to make a private copy of your Git repository and clone your application to a private workspace where you can prepare a fix and invite other collaborators only on a need-to-know basis, so that you can control who is aware of the issue while you develop the fix.
+Sometimes, you need to address an **embargoed security issue** in your application. So as not to disclose aspects of the security vulnerability prematurely, you will want to prepare a fix in private or with a limited set of collaborators. This document guides you on how to make a private copy of your Git repository and clone your application to a private tenant namespace where you can prepare a fix and invite other collaborators only on a need-to-know basis, so that you can control who is aware of the issue while you develop the fix.
 
 Key steps include:
 
-* **Clone affected application:** Cloning affected applications into a private workspace, enabling developers to tackle security issues without exposing sensitive information.
-* **Prepare the fix:** Preparing the fix with source code in your private git mirror and builds in your private workspace.
-* **Release the fix:** Releasing the build from your private workspace and "upstreaming" your patch from your private git mirror back to your team's normal development repo.
+* **Clone affected application:** Cloning affected applications into a private tenant namespace, enabling developers to tackle security issues without exposing sensitive information.
+* **Prepare the fix:** Preparing the fix with source code in your private git mirror and builds in your private tenant namespace.
+* **Release the fix:** Releasing the build from your private tenant namespace and "upstreaming" your patch from your private git mirror back to your team's normal development repo.
 
-== Cloning applications to a private workspace
-Cloning an application involves replicating the application's code and configuration into a dedicated private workspace, ensuring that sensitive information remains isolated and protected.
+== Cloning applications to a private tenant namespace 
+Cloning an application involves replicating the application's code and configuration into a dedicated private tenant namespace, ensuring that sensitive information remains isolated and protected.
 
 .**Prerequisites**
 
-* You have the link:https://github.com/konflux-ci/architecture/blob/main/ADR/0011-roles-and-permissions.md[Maintainer role] or greater in the original workspace where the embargoed issue was identified.
+* You have the link:https://github.com/konflux-ci/architecture/blob/main/ADR/0011-roles-and-permissions.md[Maintainer role] or greater in the original tenant namespace where the embargoed issue was identified.
 // Maintainer role was xref:getting-started/roles_permissions/ Currently no such file in konflux-ci/docs. Add a link if the doc is published.
 * You have xref:ROOT:getting-started.adoc#getting-started-with-the-cli[enabled CLI access for {ProductName}].
 
@@ -24,77 +24,77 @@ Cloning an application involves replicating the application's code and configura
 +
 NOTE: Creating a private fork of the public link:https://docs.github.com/en/repositories/creating-and-managing-repositories/duplicating-a-repository[GitHub repository] is not possible.
 
-. xref:ROOT:getting-started.adoc#for-developers[Request a new workspace] from your platform engineer. This workspace will serve as the private environment for cloning the affected application. Avoid adding information about the vulnerability to a workspace name.
+. Request a new tenant namespace from your platform engineer. This tenant namespace will serve as the private environment for cloning the affected application. Avoid adding information about the vulnerability to a tenant namespace name.
 
 +
 [IMPORTANT]
 ====
-* If you already have a private workspace that you used for another embargoed issue, you can re-use it. Remember to check the link:https://console.redhat.com/preview/application-pipeline/access[User Access] permissions and ensure that access to the workspace is granted to a minimal number of required collaborators.
+* If you already have a private tenant namespace that you used for another embargoed issue, you can re-use it. Remember to check the User Access permissions and ensure that access to the tenant namespace is granted to a minimal number of required collaborators.
 
-* You can reuse a personal workspace, but limit the link:https://console.redhat.com/preview/application-pipeline/access[User Access] to a minimal number of required collaborators.
+* You can reuse a personal tenant namespace, but limit the User Access to a minimal number of required collaborators.
 ====
 
-. Log in to the original workspace where the application was previously being developed using the `kubectl` CLI tool. (See xref:ROOT:getting-started.adoc#getting-started-with-the-cli[Getting started with CLI].) Append `/workspaces/<original-tenant-workspace>` to the {ProductName} API URL used in the `kubectl login` command to target a particular workspace other than your default user workspace.
+. Log in to the original tenant namespace where the application was previously being developed using the `kubectl` CLI tool. 
 // Add a link to the KUBECONFIG workflow when it's documented. Either approach is legit, up to a user to choose.
-. To export records the application from the original workspace with details changed to refer to your new private workspace, run the following command:
+. To export records the application from the original tenant namespace with details changed to refer to your new private tenant namespace, run the following command:
 
 +
 [source,bash]
 ----
-./rhtap export application <name_of_your_application>  --from <original-tenant-workspace> --to <private-workspace> --as-prebuilt-images --skip <impacted component git url>
+./rhtap export application <name_of_your_application>  --from <original-tenant-namespace> --to <private-tenant-namespace> --as-prebuilt-images --skip <impacted component git url>
 ----
 
 +
 NOTE: Ensure that you have excluded the impacted component from which you have created a private mirror in step 1.
 
-. Confirm that the YAML file has been generated under the `./data` directory. This file contains the necessary information for importing the application into the new workspace.
-. Log in to the newly created private workspace using the `kubectl` CLI tool. Append `/workspaces/<private-workspace>` to the {ProductName} API URL used in the `kubectl login` command to target the new private workspace.
-. Apply the generated YAML file to the new private workspace by using the following command:
+. Confirm that the YAML file has been generated under the `./data` directory. This file contains the necessary information for importing the application into the new tenant namespace.
+. Log in to the newly created private tenant namespace using the `kubectl` CLI tool.
+. Apply the generated YAML file to the new private tenant namespace by using the following command:
 
 +
 [source,bash]
 ----
-kubectl apply -f ./data/<path-to-yaml>
+kubectl apply -f ./data/<path-to-yaml> --namespace <private-tenant-namespace>
 ----
 
-. Within the {ProductName} UI, in the private workspace, import the private mirror as a new component in the application that you just created in step 7.
+. Within the {ProductName} UI, in the private tenant namespace, import the private mirror as a new component in the application that you just created in step 7.
 
-At this point, you should have a clone of your application in the new private workspace, with all of its components mirrored from the original workspace, except the impacted component, which is now linked to the new private Git mirror repository.
+At this point, you should have a clone of your application in the new private tenant namespace, with all of its components mirrored from the original tenant namespace, except the impacted component, which is now linked to the new private Git mirror repository.
 
 == Preparing the security fix
 
 .**Prerequisites**
 
-* You have cloned your application to a private workspace and have replaced the impacted component with a private mirror.
+* You have cloned your application to a private tenant namespace and have replaced the impacted component with a private mirror.
 
 .**Procedure**
 
-. Verify that pull requests to your private mirror create PipelineRuns in the private workspace and that integration tests run correctly.
+. Verify that pull requests to your private mirror create PipelineRuns in the private tenant namespace and that integration tests run correctly.
 . Prepare the fix to your security issue as a pull request against your private mirror.
-. Invite reviewers from your security department or select members from your team to review the patch and confirm that it fixes the embargoed security issue by link:https://github.com/konflux-ci/architecture/blob/main/ADR/0011-roles-and-permissions.md[granting them collaborator rights] in your workspace.
-//by link:https://redhat-appstudio.github.io/docs.appstudio.io/Documentation/main/getting-started/get-started/#adding-collaborators-to-your-workspace[granting them collaborator rights in your workspace]. Add a link to roles-and-permissions if it's published.
+. Invite reviewers from your security department or select members from your team to review the patch and confirm that it fixes the embargoed security issue by link:https://github.com/konflux-ci/architecture/blob/main/ADR/0011-roles-and-permissions.md[granting them collaborator rights] in your tenant namespace.
+//by link:https://redhat-appstudio.github.io/docs.appstudio.io/Documentation/main/getting-started/get-started/#adding-collaborators-to-your-tenant-namespace[granting them collaborator rights in your tenant namespace]. Add a link to roles-and-permissions if it's published.
 . When you are satisfied that the fix is ready, wait until the embargo disclosure time before releasing your fix.
 
 == Releasing the security fix
 
 .**Prerequisites**
 
-* You have prepared a fix in a private git mirror and private workspace.
+* You have prepared a fix in a private git mirror and private tenant namespace.
 * You have reviewed the fix with representatives from your security department and select members of your team on a need-to-know basis.
 * The date for lifting the embargo has arrived.
 
 .**Procedure**
 
-. In the private workspace, use the UI to identify the pullspec of the image bearing the fix, pinned to digest.
-. In your team's normal workspace (not the private workspace), use the CLI to identify a `Snapshot` that you want to use as a basis for your new release. A common choice is "the most recently released Snapshot", which you can find by picking through your history of Releases sorted by creation date to find the relevant Snapshot identifier.
+. In the private tenant namespace, use the UI to identify the pullspec of the image bearing the fix, pinned to digest.
+. In your team's normal tenant namespace (not the private tenant namespace), use the CLI to identify a `Snapshot` that you want to use as a basis for your new release. A common choice is "the most recently released Snapshot", which you can find by picking through your history of Releases sorted by creation date to find the relevant Snapshot identifier.
 . Use `kubectl` to extract the Snapshot that you want to use as a basis for your new release to a local yaml file with `kubectl get snapshots <that snapshot id> -o yaml > snapshot.yaml`
 . Edit the extracted file to construct a new `Snapshot` that replaces the impacted components pullspec with the pullspec of the image bearing the fix, pinned to digest. You can discard all annotations and labels and you should give the Snapshot a new `name`.
 . Create that new Snapshot in the system with `kubectl apply -f snapshot.yaml`.
 . Review your integration test pipelines to confirm that the `Snapshot` is valid and can be released.
 . Create a `Release` resource referencing the specified `Snapshot`. Follow a similar procedure as outlined above. Export the existing `Release` as a starting point. Modify it to reference the new `Snapshot` and make any necessary adjustments.
-. In your team's normal workspace (not the private workspace), use the UI to watch the progress of the `Release`. When completed, your fix is live and available to your customers.
+. In your team's normal tenant namespace (not the private tenant namespace), use the UI to watch the progress of the `Release`. When completed, your fix is live and available to your customers.
 . Extract the commit(s) from your private mirror and apply them back to the main Git repository used by your team for normal development.
 
 IMPORTANT: Ensure to apply the patch(es) from your private mirror to the Git repository that your team normally uses for managing development. Failure to do so results in security regressions in subsequent releases from your team.
 
-NOTE: It is possible that during the time that the issue is under embargo, other changes have been merged in the other components of your application. Those changes are built and integrated in your team's original workspace, but the components in the new private workspace are pinned to old versions of your components. They do not rebuild as new changes are merged. This is due to the `--as-prebuilt-images` flag you passed to the `rhtap export ...` command. In order to ensure that your in-progress change will work with the latest state of your application during development, you may want to periodically re-export the components from your original workspace and re-apply them to your private workspace in order to test that your in-progress change continues to work against the latest revision of the other components.
+NOTE: It is possible that during the time that the issue is under embargo, other changes have been merged in the other components of your application. Those changes are built and integrated in your team's original tenant namespace, but the components in the new private tenant namespace are pinned to old versions of your components. They do not rebuild as new changes are merged. This is due to the `--as-prebuilt-images` flag you passed to the `rhtap export ...` command. In order to ensure that your in-progress change will work with the latest state of your application during development, you may want to periodically re-export the components from your original tenant namespace and re-apply them to your private tenant namespace in order to test that your in-progress change continues to work against the latest revision of the other components.

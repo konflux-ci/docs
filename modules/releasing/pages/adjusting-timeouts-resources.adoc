@@ -46,12 +46,12 @@ metadata:
   labels:
     release.appstudio.openshift.io/auto-release: 'true'
   name: sre-production
-  namespace: managed-workspace
+  namespace: managed-tenant-namespace
 spec:
   applications:
     - demo-app
   data: <key>
-  origin: <dev-workspace>
+  origin: <dev-tenant-namespace>
   pipeline:
     pipelineRef:
       resolver: git
