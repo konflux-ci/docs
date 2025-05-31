@@ -46,4 +46,3 @@ urls:
     redirect_facility: static # The least convenient, but only available redirect on our hosting platform, see https://docs.antora.org/antora/latest/playbook/urls-redirect-facility/
     latest_prerelease_version_segment: next # Override the version in the navigation https://docs.antora.org/antora/latest/playbook/urls-redirect-facility/
     latest_version_segment_strategy: replace # Consequence of static redirect, see https://docs.antora.org/antora/latest/playbook/urls-redirect-facility/
-
