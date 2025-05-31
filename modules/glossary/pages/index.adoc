@@ -72,4 +72,4 @@
 
 [[tenant-workspace]]tenant workspace:: A {ProductName} workspace whose primary purpose is to build and test software artifacts using Tekton Pipelines.
 
-[[workspace]]workspace:: A Kubernetes namespace which is owned by either an individual or a group of individuals. All Tekton Pipelines are run within a workspace including build, test, and release pipelines. Users with access to {ProductName} will have access to at least one workspace but may have access to more than one. Access can be granted to individuals in link:https://konflux-ci.dev/architecture/ADR/0011-roles-and-permissions.html[three tiers], `Contributor`, `Maintainer`, and `Admin`.
+[[workspace]]workspace:: A Kubernetes namespace which is owned by either an individual or a group of individuals. All Tekton Pipelines are run within a workspace including build, test, and release pipelines. Users with access to {ProductName} will have access to at least one workspace but may have access to more than one. Access can be granted to individuals in link:https://konflux-ci.dev/architecture/ADR/0011-roles-and-permissions.html[three tiers], `Viewer`, `Contributor`, `Maintainer`, and `Admin`.
