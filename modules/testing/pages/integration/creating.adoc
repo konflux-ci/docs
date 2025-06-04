@@ -133,6 +133,45 @@ spec:
 
 .. For additional instructions on adding an integration test, see Adding an integration test.
 
+== Customize pipelineRun definition
+
+Integration service provides customization for both pipeline and pipelineRun definitions.
+There are certain attributes that can be defined only for pipelineRuns such as:
+
+* pipeline timeouts
+* service accounts
+* workspaces
+
+If this is your case, you need to set *`Spec.ResolverRef.ResourceKind`* to 
+pipelinerun(lower case `r`) within your integration test scenario definition(pipeline is being set by default). 
+
+
+Example file:
+
+[source,yaml]
+---
+apiVersion: appstudio.redhat.com/v1beta2
+kind: IntegrationTestScenario
+metadata:
+  name: example-pass
+  namespace: default
+spec:
+  application: application-sample
+  contexts:
+    - description: Application testing
+      name: application
+  resolverRef:
+    resolver: git
+    resourceKind: pipelinerun
+    params:
+      - name: url
+        value: https://github.com/konflux-ci/integration-examples
+      - name: revision
+        value: main
+      - name: pathInRepo
+        value: pipelineruns/integration_pipelinerun_pass.yaml
+---
+
 == Data injected into the PipelineRun of the integration test
 
 When you create a custom integration test, {ProductName} automatically adds certain parameters and labels to the PipelineRun of the integration test. This section explains what those parameters and labels are, and how they can help you.
