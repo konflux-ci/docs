@@ -8,6 +8,10 @@ This pattern has the additional benefit of helping you manage a race condition w
 
 == Manage Manual Releases with a GitOps process
 
+.Prerequisites
+
+. Optional: Get the `kubectl neat` plugin from link:https://github.com/itaysk/kubectl-neat[itaysk/kubectl-neat]. It isn't strictly necessary, but it is handy for stripping unnecessary values from `Snapshot` resources when you export them from your tenant namespace to git.
+
 .Setup
 
 . For your team, create a git repository in an SCM system of your choice (like GitHub, GitLab, or Forgejo).
