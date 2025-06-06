@@ -6,6 +6,7 @@
 *** xref:maintaining-references-before-release.adoc[Maintaining valid image references before a release]
 *** xref:running-user-scripts-on-the-build-pipeline.adoc[Running user scripts on the build pipeline]
 *** xref:mapping-tags-to-labels.adoc[Maintaining parity between tags and labels]
+*** xref:gitops-for-manual-releases.adoc[GitOps for Releases]
 *** xref:github-merge-queues.adoc[GitHub merge queues]
 *** xref:slack-notifications.adoc[Slack Webhook Notifications]
 *** xref:managing-security-fix.adoc[Managing a security fix]
