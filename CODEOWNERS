@@ -15,6 +15,7 @@
 /modules/releasing                                			@konflux-ci/release-service-maintainers
 /modules/patterns/pages/testing-releasing-single-component.adoc  	@konflux-ci/release-service-maintainers
 /modules/patterns/images/single-component-integration-test-scenario.png @konflux-ci/release-service-maintainers
+/modules/patterns/pages/gitops-for-manual-releases.adoc  		@konflux-ci/release-service-maintainers @ralphbean
 
 # Conforma
 /modules/compliance/       		                @konflux-ci/ec
