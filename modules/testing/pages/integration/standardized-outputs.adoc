@@ -17,6 +17,8 @@ It additionaly displays found vulnerabilities, patched(RHSA fix) and unpatched o
 
 image::vulnerabilities.png[role="border" alt="Vulnerabilities"]
 
+NOTE: Scan results within Konflux will only report vulnerabilities associated with RHSAs as fixable. This can lead to inconsistencies with Clair scan results found in Quay or elsewhere.
+
 == IMAGES_PROCESSED
 
 Result[json] for recording which image digests are processed (i.e. multi-arch images). This enables the ability to validate that all of the image manifest architectures have been scanned even if a task does not support scanning all image manifests.
