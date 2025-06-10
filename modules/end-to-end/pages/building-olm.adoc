@@ -9,7 +9,7 @@ OLM Operators include the following elements:
 * Bundle, which describes how to deploy a version of the application's Operands and Operator as defined by a ClusterServiceVersion (CSV) file
 * File-based catalogs, which describe how users can upgrade between different Bundle versions.
 
-Note the difference between an "OLM Operator" and an "Operator." An OLM Operator refers to the whole application, and an Operator is one part of the OLM Operator.
+Note the between an "OLM Operator" and an "Operator." An OLM Operator refers to the whole application, and an Operator is one part of the OLM Operator.
 
 The first procedure in this document explains how to use {ProductName} to build an OLM Operator in the most basic sense--building its Operator and bundle images. The second procedure is optional but recommended. It explains how you can automatically update the image references in the CSV of the bundle. The third procedure describes the process for generating the file-based catalog to inform OLM how to upgrade between OLM Operator versions.
 
