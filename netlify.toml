@@ -1,0 +1,8 @@
+# netlify.toml
+
+[build]
+  # An empty build command tells Netlify not to run a build,
+  # because our GitHub Action has already done it.
+  command = ""
+  # This is the directory that contains our pre-built site.
+  publish = "public"
