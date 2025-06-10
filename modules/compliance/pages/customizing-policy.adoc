@@ -1,6 +1,6 @@
 = Customizing Policy
 
-A Conforma Policy defines which checks are performed by Conforma during integration tests and
+A Policy defines which checks are performed by Conforma during integration tests and
 release. If Conforma reports violations, the best course of action, in most cases, is to adjust the build
 process to remedy the violation. For example, if Conforma reports that a certain required scanner was not
 executed, add the scanner to your build pipeline. Read the text associated with the violation as
