@@ -4,7 +4,7 @@ If you are developing an application that aligns with the link:https://operatorf
 
 OLM Operators include the following elements:
 
-* Operands, which are components or resources used by the application
+* Operands, which are components or resources application
 * Operator, which manages Operands
 * Bundle, which describes how to deploy a version of the application's Operands and Operator as defined by a ClusterServiceVersion (CSV) file
 * File-based catalogs, which describe how users can upgrade between different Bundle versions.
