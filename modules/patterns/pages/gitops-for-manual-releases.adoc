@@ -1,4 +1,4 @@
-= GitOps for Manual Releases
+= GitOps Manual Releases
 
 While {ProductName} supports continuous delivery as a first-class feature controlled by the `release.appstudio.openshift.io/auto-release` label on the xref:releasing:create-release-plan.adoc[ReleasePlan] and supported by the use of xref:releasing:using-collectors.adoc[release metadata collectors], for various reasons, some teams prefer to manage their release process in a slower paced, higher-touch manner.
 
