@@ -70,15 +70,30 @@ jobs:
         env:
           NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
           NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
-      # Use the 'deploy-url' output directly from the step above
+      # Use the output directly from the step above
       - name: Add comment
         uses: actions/github-script@v7
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
-            github.rest.issues.createComment({
-              issue_number: Number(${{ steps.data.outputs.PR_NUMBER }}),
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              body: `🚀 Preview is available at ${{ steps.preview.outputs.deploy-url }}`
-            })
+            try {
+              const netlifyOutput = JSON.parse('${{ steps.preview.outputs.outputs }}');
+              const deployUrl = netlifyOutput.deploy_url;
+
+              console.log(`The raw Netlify output is: ${{ steps.preview.outputs.outputs }}`);
+              console.log(`The parsed deploy URL is: ${deployUrl}`);
+
+              if (deployUrl && deployUrl.startsWith('https')) {
+                await github.rest.issues.createComment({
+                  issue_number: Number(${{ steps.data.outputs.PR_NUMBER }}),
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  body: `🚀 Preview is available at: ${deployUrl}`
+                });
+              } else {
+                core.setFailed('Could not find a valid deploy_url in the Netlify JSON output.');
+              }
+            } catch (error) {
+              console.log('${{ steps.preview.outputs.outputs }}');
+              core.setFailed(`Failed to parse Netlify output or find deploy URL. Error: ${error.message}`);
+            }
