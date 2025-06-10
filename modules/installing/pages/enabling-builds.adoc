@@ -9,7 +9,7 @@ Before users can create an application in {ProductName}, you must enable build p
 
 .Procedure:
 
-. Start a new link:https://smee.io/[smee] channel.
+. Start new link:https://smee.io/[smee] channel.
 . In the repository for your instance of {ProductName}, edit the file /smee/smee-client.yaml. Replace `<smee-channel>` with the webhook proxy URL from the previous step.
 . Create a GitHub App according to link:https://pipelinesascode.com/docs/install/github_apps/#manual-setup[these Pipelines as Code instructions]. For the *Webhook URL* field, use the webhook proxy URL for your smee channel.
 
