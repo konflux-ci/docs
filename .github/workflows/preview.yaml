@@ -70,33 +70,15 @@ jobs:
         env:
           NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
           NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
-      # This step extracts the URL directly from the deploy log
-      - name: Find Preview URL in logs
-        id: find_url
-        run: |
-          URL=$(echo "${{ steps.preview.outputs.log }}" | grep -o 'https://pr-.*\.netlify\.app')
-          echo "Found URL: $URL"
-          echo "PREVIEW_URL=$URL" >> $GITHUB_OUTPUT
-      # This step uses the URL we found in preview.yaml logs
+      # Use the 'deploy-url' output directly from the step above
       - name: Add comment
         uses: actions/github-script@v7
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
-            const url = '${{ steps.find_url.outputs.PREVIEW_URL }}'
-            if (url) {
-              github.rest.issues.createComment({
-                issue_number: Number(${{ steps.data.outputs.PR_NUMBER }}),
-                owner: context.repo.owner,
-                repo: context.repo.repo,
-                body: `🚀 Preview is available at ${url}`
-              })
-            } else {
-              core.setFailed('Could not find a preview URL to comment.')
-            }
             github.rest.issues.createComment({
               issue_number: Number(${{ steps.data.outputs.PR_NUMBER }}),
               owner: context.repo.owner,
               repo: context.repo.repo,
-              body: `🚀 Preview is available at ${{ steps.preview.outputs.url }}`
+              body: `🚀 Preview is available at ${{ steps.preview.outputs.deploy-url }}`
             })
