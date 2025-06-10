@@ -29,6 +29,8 @@ jobs:
       pull-requests: write
     if: github.event.workflow_run.event == 'pull_request' && github.event.workflow_run.conclusion == 'success'
     steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
       - name: Download pull request artifact
         uses: actions/github-script@v7
         with:
