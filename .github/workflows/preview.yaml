@@ -59,7 +59,7 @@ jobs:
           echo "PR_NUMBER=${PR_NUMBER}" >> $GITHUB_OUTPUT
           echo "PR_URL=https://github.com/${GITHUB_REPOSITORY}/pull/${PR_NUMBER}" >> $GITHUB_OUTPUT
       - name: Preview on Netlify
-        uses: netlify/actions/cli@master
+        uses: netlify/actions/cli@v1
         id: preview
         with:
           args: deploy --dir=public --alias="pr-${{ steps.data.outputs.PR_NUMBER }}" --message="Preview for ${{ steps.data.outputs.PR_URL}}"
@@ -75,5 +75,5 @@ jobs:
               issue_number: Number(${{ steps.data.outputs.PR_NUMBER }}),
               owner: context.repo.owner,
               repo: context.repo.repo,
-              body: `🚀 Preview is available at ${{ steps.preview.outputs.NETLIFY_URL }}`
+              body: `🚀 Preview is available at ${{ steps.preview.outputs.url }}`
             })
