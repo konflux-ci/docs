@@ -51,6 +51,8 @@ jobs:
             fs.writeFileSync('${{github.workspace}}/website.zip', Buffer.from(download.data));
       - name: Unzip website artifact
         run: unzip -q website.zip
+      - name: List all files to debug
+        run: ls -laR
       - name: Setup pull request data
         id: data
         run: |
