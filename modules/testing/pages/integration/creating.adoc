@@ -14,11 +14,11 @@ To create any custom test, complete the following steps:
 
 === Procedure with example
 
-To create a custom test that checks that your app serves the text “Hello world!”, complete the following steps:
+To create a custom test that checks the built component image in snapshot, complete the following steps:
 
 . In your preferred IDE, create a new `.yaml` file, with a name of your choosing.
 
-. Define a new Tekton pipeline. The following example is the beginning of a pipeline that uses `curl` to check that the app serves the text “Hello world!”.
+. Define a new Tekton pipeline. The following example is the beginning of a pipeline.
 
 +
 Example pipeline file:
@@ -39,7 +39,7 @@ spec:
   tasks:
 ----
 
-. In the `.pipeline.spec` path, declare a new task.
+. In the `.pipeline.spec` path, declare a new task that lists all containerImage and git source for all components in snapshot. More steps can be added to inspect the git source and containerImage.
 
 +
 Example task declaration:
@@ -60,15 +60,35 @@ tasks:
       - name: TEST_OUTPUT
         description: Test output
       steps:
-      - image: registry.redhat.io/openshift4/ose-cli:latest
+      - name: test-snapshot-component
+        image: registry.redhat.io/openshift4/ose-cli:latest
+        workingDir: /workspace
         env:
         - name: SNAPSHOT
           value: $(params.SNAPSHOT)
         script: |
+          #!/bin/bash
+          set -e
           dnf -y install jq
+          snapshotComponents=$(jq -c '.components[]' <<< "${SNAPSHOT}")
 
           echo -e "Example test task for the Snapshot:\n ${SNAPSHOT}"
-          # Run custom tests for the given Snapshot here
+          # Run custom tests for the given Snapshot here          
+          while read componentEntry
+          do
+            # Variables
+            componentName=$(echo "${componentEntry}" | jq -r '.name')
+            componentUrl=$(echo "${componentEntry}" | jq -r '.source.git.url')
+            componentUrlWithoutSuffix=$(echo $componentUrl | sed 's/\.git$//')
+            componentSha=$(echo "${componentEntry}" | jq -r '.source.git.revision')
+
+            echo "Print the infomation for component ${componentName} included in snapshot, more test can be added to inspect git source and containerImage in component:"
+            echo "${componentName}"
+            echo "${componentUrl}"
+            echo "${componentUrlWithoutSuffix}"
+            echo "${componentSha}"
+          done < <(echo "$snapshotComponents")
+
           # After the tests finish, record the overall result in the RESULT variable
           RESULT="SUCCESS"
 
@@ -117,21 +137,80 @@ spec:
           - name: SNAPSHOT
             value: $(params.SNAPSHOT)
           script: |
-            dnf -y install jq
-            echo -e "Example test task for the Snapshot:\n ${SNAPSHOT}"
-            # Run custom tests for the given Snapshot here
-            # After the tests finish, record the overall result in the RESULT variable
-            RESULT="SUCCESS"
+          #!/bin/bash
+          set -e
+          dnf -y install jq
+          snapshotComponents=$(jq -c '.components[]' <<< "${SNAPSHOT}")
 
-            # Output the standardized TEST_OUTPUT result in JSON form
-            TEST_OUTPUT=$(jq -rc --arg date $(date -u --iso-8601=seconds) --arg RESULT "${RESULT}" --null-input \
-              '{result: $RESULT, timestamp: $date, failures: 0, successes: 1, warnings: 0}')
-            echo -n "${TEST_OUTPUT}" | tee $(results.TEST_OUTPUT.path)
+          echo -e "Example test task for the Snapshot:\n ${SNAPSHOT}"
+          # Run custom tests for the given Snapshot here          
+          while read componentEntry
+          do
+            # Variables
+            componentName=$(echo "${componentEntry}" | jq -r '.name')
+            componentUrl=$(echo "${componentEntry}" | jq -r '.source.git.url')
+            componentUrlWithoutSuffix=$(echo $componentUrl | sed 's/\.git$//')
+            componentSha=$(echo "${componentEntry}" | jq -r '.source.git.revision')
+
+            echo "Print the infomation for component ${componentName} included in snapshot, more test can be added to inspect git source and containerImage in component::"
+            echo "${componentName}"
+            echo "${componentUrl}"
+            echo "${componentUrlWithoutSuffix}"
+            echo "${componentSha}"
+          done < <(echo "$snapshotComponents")
+
+          # After the tests finish, record the overall result in the RESULT variable
+          RESULT="SUCCESS"
+
+          # Output the standardized TEST_OUTPUT result in JSON form
+          TEST_OUTPUT=$(jq -rc --arg date $(date -u --iso-8601=seconds) --arg RESULT "${RESULT}" --null-input \
+            '{result: $RESULT, timestamp: $date, failures: 0, successes: 1, warnings: 0}')
+          echo -n "${TEST_OUTPUT}" | tee $(results.TEST_OUTPUT.path)
+
 ----
 
 . Add your new custom test as an integration test in {ProductName}.
 
 .. For additional instructions on adding an integration test, see Adding an integration test.
+
+== Customize pipelineRun definition
+
+Integration service provides customization for both pipeline and pipelineRun definitions.
+There are certain attributes that can be defined only for pipelineRuns such as:
+
+* pipeline timeouts
+* service accounts
+* workspaces
+
+If this is your case, you need to set *`Spec.ResolverRef.ResourceKind`* to 
+pipelinerun(lower case `r`) within your integration test scenario definition(pipeline is being set by default). 
+
+
+Example file:
+
+[source,yaml]
+---
+apiVersion: appstudio.redhat.com/v1beta2
+kind: IntegrationTestScenario
+metadata:
+  name: example-pass
+  namespace: default
+spec:
+  application: application-sample
+  contexts:
+    - description: Application testing
+      name: application
+  resolverRef:
+    resolver: git
+    resourceKind: pipelinerun
+    params:
+      - name: url
+        value: https://github.com/konflux-ci/integration-examples
+      - name: revision
+        value: main
+      - name: pathInRepo
+        value: pipelineruns/integration_pipelinerun_pass.yaml
+---
 
 == Data injected into the PipelineRun of the integration test
 

@@ -1,0 +1,182 @@
+= Pattern: Centralizing Tekton Pipeline Definitions in Your Repository
+
+This pattern describes how to extract a common Tekton `Pipeline` definition into a local file within your application's Git repository (e.g., `.tekton/build-pipeline.yaml`). Your `PipelineRun` files can then reference this local pipeline, promoting consistency, simplifying maintenance, and enabling version control of the pipeline logic alongside your application code.
+
+This approach is particularly beneficial when you need to customize a standard pipeline or ensure that all build triggers (e.g., push, pull request) use the exact same underlying pipeline tasks and structure.
+
+.Use Cases
+* Ensuring all `PipelineRun` files (for pushes, pull requests, manual triggers) use an identical, version-controlled pipeline definition.
+* Simplifying the maintenance of pipeline logic by having a single source of truth within the repository.* Facilitating easier implementation of other patterns, such as <<Pattern: Achieving Label and Tag Parity for Versioning>>, by providing a single pipeline file to modify.
+
+.Prerequisites
+* Your application has been onboarded to {ProductName}.
+* {ProductName} (via Pipelines-as-Code) has generated initial `PipelineRun` files in your repository's `.tekton/` directory, or you have `PipelineRun` files that reference a remote Tekton Hub or bundle.
+* You have identified the base Tekton `Pipeline` specification you intend to use and customize. This might be from:
+    * The `spec.pipelineSpec` embedded in one of your existing `PipelineRun` files. There is a helper command to extract the pipeline definition from the first PipelineRun file xref:centralize-pipeline-definitions.adoc#helper-command[here].
+    * A standard pipeline definition from the {ProductName} Tekton catalog (e.g., `docker-build-multi-platform-oci-ta`).
+
+.Procedure
+
+. **Create a Local Pipeline Definition File:**
+   In your repository, create a new YAML file within the `.tekton/` directory, for example, `.tekton/build-pipeline.yaml`. This file will contain your `kind: Pipeline` resource.
+
+. **Define the `Pipeline` Resource:**
+   Populate `.tekton/build-pipeline.yaml` with the `Pipeline` definition.
++
+[%collapsible]
+.Sample Pipeline File
+====
+[source,yaml]
+----
+# In .tekton/build-pipeline.yaml
+apiVersion: tekton.dev/v1
+kind: Pipeline
+metadata:
+  name: build-pipeline # Choose a descriptive name for your local pipeline
+  # Add any relevant labels for your organization
+  labels:
+    appstudio.openshift.io/application: your-application-name
+    appstudio.openshift.io/component: your-component-name
+    # Example labels from a standard pipeline (adjust as needed):
+    # pipelines.openshift.io/runtime: generic
+    # pipelines.openshift.io/strategy: docker
+    # pipelines.openshift.io/used-by: build-cloud
+spec:
+  description: |
+    Locally defined build pipeline for [Your Component/Application].
+    Based on [Original Pipeline Name, e.g., docker-build-multi-platform-oci-ta].
+  # --- PASTE OR DEFINE YOUR PIPELINE SPEC HERE ---
+  # This includes params, results, workspaces, tasks, and finally tasks.
+  # If starting from a standard {ProductName} pipeline, you can copy its spec.
+  # Example structure:
+  # params:
+  #   - name: git-url
+  #     type: string
+  #   # ... other pipeline parameters ...
+  # results:
+  #   - name: IMAGE_URL
+  #     value: $(tasks.actual-build-task.results.IMAGE_URL) # Adjust task name
+  #   # ... other pipeline results ...
+  # workspaces:
+  #   - name: git-auth
+  #     optional: true
+  #   # ... other pipeline workspaces ...
+  # tasks:
+  #   - name: clone-repository
+  #     taskRef: # Reference a task from the Tekton catalog or a local Task definition
+  #       resolver: bundles
+  #       params:
+  #         - name: name
+  #           value: git-clone-oci-ta # Or your chosen git clone task
+  #         - name: bundle
+  #           value: quay.io/konflux-ci/tekton-catalog/task-git-clone-oci-ta:0.1@sha...
+  #         - name: kind
+  #           value: task
+  #     params:
+  #       - name: url
+  #         value: $(params.git-url)
+  #       - name: revision
+  #         value: $(params.revision)
+  #     # ...
+  #   - name: your-custom-build-task # e.g., build-images using buildah-remote-oci-ta
+  #     taskRef: # ...
+  #     params: # ...
+  #     runAfter:
+  #       - clone-repository
+  #   # ... other tasks ...
+  # finally:
+  #   - name: cleanup-task
+  #     taskRef: # ...
+  #     params: # ...
+----
+====
+
+. **Update `PipelineRun` Files to Reference the Local Pipeline:**
+   Modify your existing `PipelineRun` files (e.g., `component-push.yaml`, `component-on-pull-request.yaml`) in the `.tekton/` directory.
+    * Remove the `spec.pipelineSpec` section if it contains an embedded pipeline definition.
+    * Remove or update the `spec.pipelineRef.bundle` if it points to a remote bundle you are now localizing.
+    * Ensure `spec.pipelineRef.name` points to the `metadata.name` you defined in your `.tekton/build-pipeline.yaml`.
++
+[%collapsible]
+.Sample PipelineRun File
+====
+[source,yaml]
+----
+# Example: In .tekton/component-push.yaml
+apiVersion: tekton.dev/v1
+kind: PipelineRun
+metadata:
+  # ... your existing metadata ...
+  name: component-on-push
+spec:
+  # REMOVE pipelineSpec if it exists:
+  # pipelineSpec:
+  #   tasks: [...]
+  #   params: [...]
+  #   ...
+
+  pipelineRef:
+    name: build-pipeline # This now references .tekton/build-pipeline.yaml
+  
+  params:
+    # ... your parameters for this PipelineRun ...
+  
+  workspaces:
+    # ... your workspaces for this PipelineRun ...
+----
+====
+
+. **Commit and Push Changes:**
+   Commit the new `.tekton/build-pipeline.yaml` file and the modified `PipelineRun` files to your Git repository.
+
+. **Apply the Pipeline Definition to Your Cluster (If Not Handled by PaC):**
+   Ensure the `Pipeline` resource defined in `.tekton/build-pipeline.yaml` is applied to your Kubernetes/OpenShift namespace where {ProductName} runs your builds. Pipelines-as-Code might handle this automatically if it detects a `kind: Pipeline` in the `.tekton` directory. If not, you might need to apply it manually or via your GitOps tooling:
+   `kubectl apply -f .tekton/build-pipeline.yaml -n your-namespace`
+
+.Verification
+* Trigger a new build (e.g., by pushing to your main branch or creating a PR).
+* {ProductName} (via Pipelines-as-Code) should create a `PipelineRun` instance that uses your locally defined `build-pipeline`.
+* Monitor the `PipelineRun` to ensure it executes as expected, using the tasks and logic defined in your `.tekton/build-pipeline.yaml`.
+
+[%collapsible]
+.Helper Command
+====
+To quickly extract a pipeline definition from your PipelineRun files, you can use these commands:
+
+[source,bash]
+----
+# Auto-detect a PipelineRun file and extract its pipeline definition
+PIPELINE_NAME="build-pipeline" # Change this to your desired pipeline name
+FIRST_FILE=$(find .tekton -name '*-push.yaml' -o -name '*-pull-request.yaml' | head -1)
+[ -z "$FIRST_FILE" ] && echo "No PipelineRun files found in .tekton/" && exit 1
+
+echo "Extracting pipeline from $FIRST_FILE..."
+yq eval '{"apiVersion": "tekton.dev/v1", "kind": "Pipeline", "metadata": {"name": "'$PIPELINE_NAME'"}, "spec": .spec.pipelineSpec}' "$FIRST_FILE" > ".tekton/${PIPELINE_NAME}.yaml"
+
+# Update all PipelineRun files to reference the extracted pipeline
+for f in .tekton/*-{push,pull-request}.yaml; do
+    [ -f "$f" ] && echo "Updating $f..." && yq eval 'del(.spec.pipelineSpec) | .spec.pipelineRef.name = "'$PIPELINE_NAME'"' -i "$f"
+done
+----
+
+The commands will:
+1. Find the first available PipelineRun file in your `.tekton` directory
+2. Create a new Pipeline file with proper metadata in the `.tekton` directory
+3. Update all matching PipelineRun files to reference the extracted pipeline
+
+[TIP]
+=====
+* Only modify the `PIPELINE_NAME` if you want something other than "build-pipeline"
+* The command automatically finds PipelineRun files matching `*-push.yaml` or `*-pull-request.yaml`
+* If you need to use a specific file, you can override it: `FIRST_FILE=.tekton/my-custom-file.yaml` before running the commands
+=====
+====
+
+.Benefits
+* **Maintainability**: Pipeline logic is defined in one place, making updates and troubleshooting easier.
+* **Consistency**: All `PipelineRun` instances referencing this local pipeline will use the exact same tasks and configurations.
+* **Version Control**: The pipeline definition is version-controlled alongside your application code, providing a clear history of changes.
+* **Customization Control**: You have full control over the pipeline definition without being tied to potentially changing remote bundle versions (unless your tasks still reference remote bundles, which is common).
+* **Simplified Complex Customizations**: When implementing patterns like <<Pattern: Achieving Label and Tag Parity for Versioning>>, you only need to modify one `build-pipeline.yaml` file instead of multiple `PipelineRun` files or managing complex embedded specs.
+
+By centralizing your Tekton `Pipeline` definition within your repository, you gain greater control, maintainability, and consistency over your build processes in {ProductName}.

@@ -1,0 +1,123 @@
+= GitOps for Manual Releases
+
+While {ProductName} supports continuous delivery as a first-class feature controlled by the `release.appstudio.openshift.io/auto-release` label on the xref:releasing:create-release-plan.adoc[ReleasePlan] and supported by the use of xref:releasing:using-collectors.adoc[release metadata collectors], for various reasons, some teams prefer to manage their release process in a slower paced, higher-touch manner.
+
+For teams with that posture, we recommend using a gitops process to manage release decisions. Treat your releases as code and gain the benefits of code review and multi-party sign-off.
+
+This pattern has the additional benefit of helping you manage a race condition with xref:testing:integration/snapshots/index.adoc[snapshot garbage collection]. Without this pattern, a slower-moving team may run into a situation where a snapshot that they decide to release is garbage-collected from the cluster before they can actually release it. The pattern here will guide you to export your release candidate snapshot to git so that you can be sure it is available and unchanged at release time.
+
+== Manage Manual Releases with a GitOps process
+
+.Prerequisites
+
+. Optional: Get the `kubectl neat` plugin from link:https://github.com/itaysk/kubectl-neat[itaysk/kubectl-neat]. It isn't strictly necessary, but it is handy for stripping unnecessary values from `Snapshot` resources when you export them from your tenant namespace to git.
+
+.Setup
+
+. For your team, create a git repository in an SCM system of your choice (like GitHub, GitLab, or Forgejo).
+. Configure the SCM to require approval from the people on your team who should be involved in approving a release. Use of `CODEOWNERS` is supported in both link:https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/about-code-owners[github] and link:https://docs.gitlab.com/user/project/codeowners/[gitlab]. With the following configuration, one person from all four groups will be required to sign off in order for a change to be merged to this repository.
+
+[source]
+----
+❯ cat CODEOWNERS
+[Managers]
+* @sally
+
+[Devs]
+* @jen @soren
+
+[QE]
+* @remus
+
+[Docs]
+* @john
+----
+
+
+. Establish a directory structure like the following:
+
++
+[source]
+----
+❯ tree
+.
+└── releases
+    ├── 1.2.0
+    │   ├── release.yaml
+    │   └── snapshot.yaml
+    └── 1.2.1
+        ├── release.yaml
+        └── snapshot.yaml
+----
+
+. Optional: set up an in-SCM pipeline (like a github workflow or a gitlab-ci pipeline) that will `kubectl apply -f releases/$RELEASE`, but only for new files that change. If you decide to do this, you'll need to procure a serviceaccount with the link:https://github.com/redhat-appstudio/infra-deployments/blob/main/components/konflux-rbac/production/base/konflux-releaser-bot-actions.yaml[permissions to create Releases and Snapshots] in your tenant namespace. Without this, you can manually `kubectl apply -f releases/$RELEASE` after merge. Manually doing this for your first few releases is appropriate while your team gets used to this new workflow.
+
+.Procedure
+
+Let's say you're preparing for an upcoming 1.3.0 release.
+
+. Create a new git branch for this:
+
++
+[source]
+----
+❯ git checkout -b release-1.3.0
+----
+
+. Create the directory: `mkdir releases/1.3.0`
+
++
+[source]
+----
+❯ mkdir releases/1.3.0
+----
+
+. Find the `Snapshot` that you intend to release, and export it from your namespace with:
+
++
+[source]
+----
+❯ kubectl get snapshots snapshot-7mb5s -o yaml | kubectl neat > releases/1.3.0/snapshot.yaml
+----
+
+. Edit that file to replace the name with something appropriate:
+
++
+[source]
+----
+❯ yq -i '.metadata.name = "your-project-1-3-0-rc01"' releases/1.3.0/snapshot.yaml
+# Confirm the name is as you expect
+❯ yq .metadata.name releases/1.3.0/snapshot.yaml                                 
+your-project-1-3-0-rc01
+----
+
+. Create a new release resource by hand or from template in the same directory as `releases/1.3.0/release.yaml`:
+
++
+[source,yaml]
+----
+apiVersion: appstudio.redhat.com/v1alpha1
+kind: Release
+metadata:
+  name: your-project-1-3-0
+  namespace: your-tenant
+spec:
+  gracePeriodDays: 30
+  releasePlan: your-production-release-plan-goes-here
+  snapshot: your-project-1-3-0-rc01
+----
+
+. At this point, you need to decide if you're going to explicitly list your `releaseNotes` manually on each Release, or if you're going to xref:releasing:using-collectors.adoc[use release metadata collectors] to assemble `releaseNotes` dynamically.
+
+NOTE: Discuss this with your team. The decision depends on your process outside of {ProductName}. Do you expect to be able to template your release notes text? Do you trust your issue tracking process enough to automatically query for issues that should be resolved in each upcoming `Release`? If so, xref:releasing:using-collectors.adoc[collectors] on your `ReleasePlan` will save you from assembling that information by hand. Or, if you prefer to explicitly list all of those details and have members of your team sign off on those details, then perhaps xref:releasing:using-collectors.adoc[collectors] are not for you.
+
+. When you have both the `snapshot.yaml` and the `release.yaml` prepared, commit them and submit a pull-request / merge-request. Solicit the team to review.
+. When you've reached sufficient approvals and the time is right, merge the change.
+. Then, either manually apply the change with `kubectl apply -f releases/1.3.0/` or watch the in-SCM pipeline you configured apply the change for you.
+. Monitor the release in the {ProductName} UI and/or by monitoring the `.status` field of the release with:
+
++
+[source]
+----
+❯ watch 'kubectl get releases your-project-1-3-0 -o yaml | yq .status'`
+----

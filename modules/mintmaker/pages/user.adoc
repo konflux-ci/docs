@@ -233,7 +233,7 @@ Due to performance considerations, since 20 November 2024, MintMaker is configur
 |===
 |*Schedule* | *Managers*
 |Every day before 5 AM | rpm, lockFileMaintenance
-|Monday after 5 AM | dockerfile
+|Every day after 5 AM | dockerfile
 |Tuesday after 5 AM | git-submodules
 |Wednesday after 5 AM | argocd, crossplane, fleet, flux, helm-requirements, helm-values, helmfile, helmsman, helmv3, jsonnet-bundler, kubernetes, kustomize
 |Thursday after 5 AM | asdf, fvm, hermit, homebrew, osgi, pre-commit, vendir

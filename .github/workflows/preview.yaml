@@ -29,6 +29,11 @@ jobs:
       pull-requests: write
     if: github.event.workflow_run.event == 'pull_request' && github.event.workflow_run.conclusion == 'success'
     steps:
+      # Step 1: Check out your repository code so netlify.toml is found
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      # Step 2: Download the built website files from the previous job
       - name: Download pull request artifact
         uses: actions/github-script@v7
         with:
@@ -49,8 +54,12 @@ jobs:
             });
             const fs = require('fs');
             fs.writeFileSync('${{github.workspace}}/website.zip', Buffer.from(download.data));
+
+      # Step 3: Unzip the website files
       - name: Unzip website artifact
         run: unzip -q website.zip
+
+      # Step 4: Get the PR number for the deploy alias
       - name: Setup pull request data
         id: data
         run: |
@@ -58,22 +67,40 @@ jobs:
           PR_NUMBER=${PR_NUMBER//[^0-9]/}
           echo "PR_NUMBER=${PR_NUMBER}" >> $GITHUB_OUTPUT
           echo "PR_URL=https://github.com/${GITHUB_REPOSITORY}/pull/${PR_NUMBER}" >> $GITHUB_OUTPUT
-      - name: Preview on Netlify
-        uses: netlify/actions/cli@master
-        id: preview
-        with:
-          args: deploy --dir=public --alias="pr-${{ steps.data.outputs.PR_NUMBER }}" --message="Preview for ${{ steps.data.outputs.PR_URL}}"
-        env:
+
+      # Step 5: Manually install the Netlify CLI tool
+      - name: Install Netlify CLI
+        run: npm install -g netlify-cli
+
+      # Step 6: Deploy to Netlify and capture the URL from the log
+      - name: Deploy to Netlify and Find URL
+        id: deploy
+        env: # <--- THIS IS THE CRITICAL BLOCK I FORGOT. IT IS NOW CORRECT.
           NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
           NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
+        run: |
+          # Run the deploy command and save its log to a file
+          netlify deploy --dir=public --alias="pr-${{ steps.data.outputs.PR_NUMBER }}" --message="Preview for ${{ steps.data.outputs.PR_URL}}" > netlify_output.log
+
+          # Print the log file for debugging
+          echo "--- CAPTURED NETLIFY LOG ---"
+          cat netlify_output.log
+          echo "----------------------------"
+
+          # Find the URL in the log file and set it as an output
+          URL=$(grep -o 'https://pr-.*\.netlify\.app' netlify_output.log)
+          echo "url=$URL" >> $GITHUB_OUTPUT
+
+      # Step 7: Post the comment with the URL we found
       - name: Add comment
+        if: success() && steps.deploy.outputs.url
         uses: actions/github-script@v7
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
-            github.rest.issues.createComment({
+            await github.rest.issues.createComment({
               issue_number: Number(${{ steps.data.outputs.PR_NUMBER }}),
               owner: context.repo.owner,
               repo: context.repo.repo,
-              body: `🚀 Preview is available at ${{ steps.preview.outputs.NETLIFY_URL }}`
-            })
+              body: `🚀 Preview is available at: ${{ steps.deploy.outputs.url }}`
+            });

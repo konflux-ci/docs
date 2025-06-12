@@ -68,4 +68,4 @@
 
 [[tekton-results]]Tekton results:: A mechanism that stores PipelineRun and TaskRun metadata in a separate database and underlying pod logs in cloud storage. After this metadata is stored in a separate database, the original resources are removed from the cluster.
 
-[[tenant-namespace]]tenant namespace:: A Kubernetes namespace which is owned by either an individual or a group of individuals. All Tekton Pipelines are run within a tenant namespace including build, test, and release pipelines. Access can be granted to individuals in link:https://konflux-ci.dev/architecture/ADR/0011-roles-and-permissions.html[three tiers], `Contributor`, `Maintainer`, and `Admin`.
+[[tenant-namespace]]tenant namespace:: A Kubernetes namespace which is owned by either an individual or a group of individuals. All Tekton Pipelines are run within a tenant namespace including build, test, and release pipelines. Access can be granted to individuals in link:https://konflux-ci.dev/architecture/ADR/0011-roles-and-permissions.html[three tiers], `Viewer`, `Contributor`, `Maintainer`, and `Admin`.
