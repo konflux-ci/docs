@@ -129,8 +129,8 @@ Only following options are possible to customize via ConfigMap (for more details
 
 
 .There are two possible ways to customize:
-. Create namespace wide config in ConfigMap named `namespace-wide-nudging-renovate-config` which will be used for all nudged components in your namespace,
-unless component specific config exists.
+. Create namespace wide config in ConfigMap named *`namespace-wide-nudging-renovate-config`* (*the name is mandatory*)
+which will be used for all nudged components in your namespace, unless component specific config exists.
 . Create config for specific nudged component in ConfigMap in your namespace and add annotation `build.appstudio.openshift.io/nudge_renovate_config_map` to the component with value of ConfigMap name and
 it will be used for the component in your namespace.
 
