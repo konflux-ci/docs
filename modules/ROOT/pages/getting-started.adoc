@@ -81,11 +81,9 @@ Artifacts that you build in your tenant namespace are pushed to an OCI registry
 along with their supporting metadata (including xref:metadata:index.adoc[SLSA provenance attestations and SBOMs]).
 
 === Application
-An Application CR owns multiple Components. You can think of it as the object in {ProductName} that
-models an ongoing supported product version.
+An Application CR owns multiple Components. It helps to logically group Components in the UI.
 
-An Application contains information about all of the Components which they own and the git repositories that
-they are built from. When a new Component's build pipeline is complete, a new Snapshot is created by the
+When a new Component's build pipeline is complete, a new Snapshot is created by the
 Integration Service containing the latest git and OCI reference from each of the Component CRs plus the just-produced
 Component artifact. This is used as the input to an IntegrationTestScenario.
 
