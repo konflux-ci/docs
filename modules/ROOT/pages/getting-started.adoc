@@ -33,9 +33,8 @@ xref:releasing:index.adoc[create Releases] to release specific Snapshots
 according to specific ReleasePlans.
 
 ==== Managed namespace
-These are namespaces where a privileged release engineering team or
-site-reliability engineering team manages release pipelines and credentials for
-your organization.
+These are namespaces where a managed environment team manages release pipelines
+and credentials for your organization.
 
 The primary interaction mode between tenant and managed namespaces is to create
 a Release in a tenant namespace referencing a specific Snapshot which will
