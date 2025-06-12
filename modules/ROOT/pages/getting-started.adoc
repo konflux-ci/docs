@@ -25,10 +25,12 @@ In {ProductName}, you operate in a tenant namespace which is scoped to your
 team. One team can span multiple namespaces if needed, each with many
 applications with components. Namespaces should NOT be shared by many teams.
 
-In your tenant namespace, you will create Components and Applications, run the
-build PipelineRuns that are defined in your git repositories, view and iterate
-on the results of your IntegrationTestScenarios, and create Releases to release
-specific Snapshots according to specific ReleasePlans.
+In your tenant namespace, you will xref:building:creating.adoc[create
+Components and Applications], run the xref:building:index.adoc[build
+PipelineRuns] that are defined in your git repositories, view and iterate on
+the xref:testing:index.adoc[results of your IntegrationTestScenarios], and
+xref:releasing:index.adoc[create Releases] to release specific Snapshots
+according to specific ReleasePlans.
 
 ==== Managed namespace
 These are namespaces where a privileged release engineering team or
@@ -37,7 +39,8 @@ your organization.
 
 The primary interaction mode between tenant and managed namespaces is to create
 a Release in a tenant namespace referencing a specific Snapshot which will
-trigger a specific release pipeline in the managed namespace.
+trigger a specific release pipeline in the managed namespace. See
+xref:releasing:index.adoc[release documentation] for more.
 
 === Custom Resource (CR)
 In Kubernetes, a
