@@ -77,7 +77,7 @@ from its use of https://pipelinesascode.com/[Pipelines as Code (PaC)]. PaC
 enables the use of a Tekton PipelineDefinition within a git repository and for
 that pipeline to be triggered upon new commits and PRs to the repository.
 
-Artifacts that you build in your tenant namespace (from git pull request, merge request or push events) are pushed to an OCI registry
+Artifacts that you build in your tenant namespace are pushed to an OCI registry
 along with their supporting metadata (including xref:metadata:index.adoc[SLSA provenance attestations and SBOMs]).
 
 === Application
