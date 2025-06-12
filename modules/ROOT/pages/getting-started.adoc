@@ -30,12 +30,6 @@ build PipelineRuns that are defined in your git repositories, view and iterate
 on the results of your IntegrationTestScenarios, and create Releases to release
 specific Snapshots according to specific ReleasePlans.
 
-NOTE: You can grant, modify, or remove other users' access to any namespace for
-which you have the `admin` role. Each namespace's admins have the
-responsibility to ensure that appropriate access is granted to users. If users
-are over-privileged, they might have access to any added secrets or to perform
-other unintended actions.
-
 ==== Managed namespace
 These are namespaces where a privileged release engineering team or
 site-reliability engineering team manages release pipelines and credentials for
