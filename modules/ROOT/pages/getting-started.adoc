@@ -115,10 +115,6 @@ for example, all Components pass the policy requirements, the policy evaluation 
 Component in a Snapshot fails the policy, however, the overall result is a failure even if all of the rest have
 clean passes.
 
-NOTE: This behavior can present issues when running the default enterprise contract ITS when an Application
-contains multiple Components. It is possible to enable "Single Component mode" when integration tests or release
-pipelines evaluate the ECP. See xref:patterns:testing-releasing-single-component.adoc[Testing and Release a Single Component]
-
 === ReleasePlan
 A ReleasePlan (RP) CR maps an Application you want to release with a release action.
 It defines the process to release future Snapshots of your Application in the managed namespace. It also defines
