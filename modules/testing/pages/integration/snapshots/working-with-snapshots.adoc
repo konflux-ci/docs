@@ -13,7 +13,7 @@ To create a manual snapshot, complete the following steps:
 
 . Identify the application and component images which you want tested and released.
 . In your preferred IDE, create a snapshot definition in a `.yaml` file.
-.. For example contents, see the example Snapshot section above.
+.. For example contents, xref:integration/snapshots/index.adoc#example-snapshot[see Example Snapshot].
 . Save the .yaml file and add the snapshot.yaml by running the following command:
 +
 [source,terminal]
