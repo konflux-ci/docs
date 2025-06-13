@@ -10,7 +10,7 @@ of certain managers. It is intended to supply xref:mintmaker:user.adoc#available
 | poetry | ✔ | ✔ | ✔ | ✔ | ✔
 | pdm | ✔ | ✔ | ✔ | ✔ | ✔
 | pip-compile footnote:[pip-tools is installed using Python 3.12 and cannot be invoked for any other Python version] | - | - | - | ✔ | -
-| pipenv | ✔ | ✔ | ✔ | ✔ | ✔
+| pipenv footnote:[Only `python_version` is supported, `python_full_version` can fail for specific Python versions] | ✔ | ✔ | ✔ | ✔ | ✔
 | uv footnote:[uv supports any Python version by installing it at runtime] | ✔ | ✔ | ✔ | ✔ | ✔
 |===
 
