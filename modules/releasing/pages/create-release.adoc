@@ -4,11 +4,11 @@ A Release CR is created to submit a specific Application Snapshot to be processe
 
 == Creating a `Release` object
 
-The development team creates a `Release` object in the developer workspace. The `Release` object includes a reference to the application snapshot that the development team wants to release, along with release plan that will be used to release the application.
+The development team creates a `Release` object in the developer tenant namespace. The `Release` object includes a reference to the application snapshot that the development team wants to release, along with release plan that will be used to release the application.
 
 .*Prerequisites*
 
-* You have an existing Development workspace.
+* You have an existing Development tenant namespace.
 * You have completed the steps listed in the xref:ROOT:getting-started.adoc#getting-started-with-the-cli[Getting started in the CLI] page.
 * You have completed the steps for creating a ReleasePlanAdmission and a matching ReleasePlan.
 
@@ -26,7 +26,7 @@ apiVersion: appstudio.redhat.com/v1alpha1
 kind: Release
 metadata:
  name: <name-of-this-release> <.>
- namespace: dev-workspace <.>
+ namespace: dev-tenant-namespace <.>
 spec:
  releasePlan: <release-plan-name> <.>
  snapshot: <application-snapshot-name> <.>
@@ -36,12 +36,12 @@ spec:
 
 +
 <.> The name of the release.
-<.> The development team's workspace.
+<.> The development team's tenant namespace.
 <.> The name of the release plan specifying the pipeline to run.
 <.> The name of the application snapshot that you want to release.
 <.> Optional: An unstructured key used for providing data for the managed Pipeline.
 
-. In the development workspace, apply the `Release.yaml` file and add the resource to your cluster by running the following command:
+. In the development tenant namespace, apply the `Release.yaml` file and add the resource to your cluster by running the following command:
 
 +
 [source,shell]

@@ -1,6 +1,6 @@
 = Deleting applications and components
 
-You can delete a component or application if you are a user with the workspace admin role.
+You can delete a component or application if you are a user with the {ProductName} admin role.
 
 WARNING: If you delete a component permanently, you delete all resources from the quay organization, user interface (UI), and upstream repositories. This includes all images that have been previously built by {ProductName} that haven't been copied into a different location, Tekton pipeline definitions, and other resources managed in those repositories. The deletion process submits a pull request (PR) to remove these pipeline definitions and associated resources.
 
@@ -12,7 +12,7 @@ WARNING: If you delete an application permanently, you delete all the components
 .*Prerequisites*
 
 * You have successfully signed into {ProductName}.
-* You have the workspace admin role.
+* You have the {ProductName} admin role.
 
 .*Procedures*
 
@@ -29,7 +29,7 @@ NOTE: You can also delete an application by selecting *Actions > Delete Applicat
 .*Prerequisites*
 
 * You have successfully signed into {ProductName}.
-* You have the workspace admin role.
+* You have the {ProductName} admin role.
 * You must have xref:ROOT:getting-started.adoc#getting-started-with-the-cli[enabled CLI access for {ProductName}].
 
 .*Procedures*

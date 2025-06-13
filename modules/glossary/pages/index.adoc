@@ -24,7 +24,7 @@
 
 [[its]]IntegrationTestScenario (ITS):: A Kubernetes resource that contains metadata for running an integration test including a reference to the Tekton pipeline. The integration service uses the ITS to trigger tests on an application with a new or updated component
 
-[[managed-workspace]]managed workspace:: A {ProductName} workspace whose primary purpose is to restrict access to release pipelines and the secrets required to run them. Access to these release pipelines are defined by the creation of Releases, their ReleasePlan, and the matching ReleasePlanAdmission. Manages workspaces are generally not used for running build pipelines.
+[[managed-tenant-namespace]]managed tenant namespace:: A {ProductName} tenant namespace whose primary purpose is to restrict access to release pipelines and the secrets required to run them. Access to these release pipelines are defined by the creation of Releases, their ReleasePlan, and the matching ReleasePlanAdmission. Manages tenant namespaces are generally not used for running build pipelines.
 
 [[pac]]pipelines as code:: A practice that defines pipelines by using source code in Git. Pipelines as Code is also the name of link:https://pipelinesascode.com[a subsystem] that executes those pipelines.
 
@@ -42,9 +42,9 @@
 
 [[release]]Release:: A Kubernetes resource indicating an intention to operate on a specific application snapshot according to the process defined in the indicated ReleasePlan.
 
-[[rp]]ReleasePlan (RP):: A Kubernetes resource defining the process to release a specific application snapshot to a target managed workspace. The RP is created for a specific application and is matched with a specific ReleasePlanAdmission.
+[[rp]]ReleasePlan (RP):: A Kubernetes resource defining the process to release a specific application snapshot to a target managed tenant namespaces. The RP is created for a specific application and is matched with a specific ReleasePlanAdmission.
 
-[[rpa]]ReleasePlanAdmission (RPA):: A Kubernetes resource defining the specific release pipeline to run as well as which Enterprise Contact Policy must pass. The RPA exists within a managed workspace.
+[[rpa]]ReleasePlanAdmission (RPA):: A Kubernetes resource defining the specific release pipeline to run as well as which Enterprise Contact Policy must pass. The RPA exists within a managed tenant namespace.
 
 [[security-testing]]security testing:: A process that determines if images meet security quality standards.
 
@@ -68,8 +68,4 @@
 
 [[tekton-results]]Tekton results:: A mechanism that stores PipelineRun and TaskRun metadata in a separate database and underlying pod logs in cloud storage. After this metadata is stored in a separate database, the original resources are removed from the cluster.
 
-[[tekton-workspace]]Tekton workspace:: A storage volume that a task requires at runtime to receive input or provide output. Required workspaces are defined in a Tekton PipelineRun.
-
-[[tenant-workspace]]tenant workspace:: A {ProductName} workspace whose primary purpose is to build and test software artifacts using Tekton Pipelines.
-
-[[workspace]]workspace:: A Kubernetes namespace which is owned by either an individual or a group of individuals. All Tekton Pipelines are run within a workspace including build, test, and release pipelines. Users with access to {ProductName} will have access to at least one workspace but may have access to more than one. Access can be granted to individuals in link:https://konflux-ci.dev/architecture/ADR/0011-roles-and-permissions.html[three tiers], `Viewer`, `Contributor`, `Maintainer`, and `Admin`.
+[[tenant-namespace]]tenant namespace:: A Kubernetes namespace which is owned by either an individual or a group of individuals. All Tekton Pipelines are run within a tenant namespace including build, test, and release pipelines. Access can be granted to individuals in link:https://konflux-ci.dev/architecture/ADR/0011-roles-and-permissions.html[three tiers], `Viewer`, `Contributor`, `Maintainer`, and `Admin`.

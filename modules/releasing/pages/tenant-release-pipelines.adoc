@@ -9,7 +9,7 @@ The gist here is that this workflow doesn't require a managed pipeline. You can 
 
 Before starting to use a tenant pipeline there are some prerequisites you will have to fulfill:
 
-* You have an existing Development workspace.
+* You have an existing Development tenant namespace.
 * You have completed the steps listed in the xref:ROOT:getting-started.adoc#getting-started-with-the-cli[Getting started in the CLI] page.
 * You have a ServiceAccount with Roles allowing you to consume Releases and Snapshots.
 * You have access to a tenant pipeline.
@@ -32,7 +32,7 @@ metadata:
     release.appstudio.openshift.io/auto-release: 'true' <.>
     release.appstudio.openshift.io/standing-attribution: 'true'
   name: publish
-  namespace: dev-workspace <.>
+  namespace: dev-tenant-namespace <.>
 spec:
   application: <application-name> <.>
   data:
@@ -44,7 +44,7 @@ spec:
         - name: demo-component-2
           repository: registry/destination-image-repository-2
           tags: [latest]
-  target: managed-workspace
+  target: managed-tenant-namespace
   tenantPipeline:
     params: <.>
     - name: paramForPipeline
@@ -63,15 +63,15 @@ spec:
 
 +
 <.> Optional: Control if Releases should be created automatically for this ReleasePlan when tests pass. Defaults to true.
-<.> The development team's workspace.
-<.> The name of the application that you want to release via a pipeline in the development workspace.
+<.> The development team's tenant namespace.
+<.> The name of the application that you want to release via a pipeline in the development tenant namespace.
 <.> A list containing the destination repository for each component
 <.> The parameters to pass to your pipeline. Note: the release-operator will automatically pass parameters `taskGitRevision` and `taskGitUrl` with the same values as the `pipelineRef` `revision` and `pipelineRef` `url` parameters respectively. So, you should not pass your own values for these two parameters in this section. If you do, tekton validation webhooks will block the pipelineRun creation.
-<.> Reference to the tenant pipeline to be executed in the development workspace.
+<.> Reference to the tenant pipeline to be executed in the development tenant namespace.
 <.> The name of the service account used to execute the tenant pipeline.
 
 . In case you want to avoid the execution of a managed pipeline, remove the `target` field from your `ReleasePlan.yaml` file.
-. In the Development workspace, apply the `ReleasePlan.yaml` file and add the resource to your cluster by running the following command:
+. In the Development tenant namespace, apply the `ReleasePlan.yaml` file and add the resource to your cluster by running the following command:
 
 +
 [source,shell]
@@ -79,7 +79,7 @@ spec:
 kubectl apply -f ReleasePlan.yaml -n dev
 ----
 
-. Provision any secrets needed by the particular release pipeline you chose and xref:building:creating-secrets.adoc[upload them to the Development workspace].
+. Provision any secrets needed by the particular release pipeline you chose and xref:building:creating-secrets.adoc[upload them to the Development tenant namespace].
 . Create an `rbac.yaml` file locally. Note: This is optional, as your tenant pipeline doesn't necessarily need to get any Releases, Snapshots, or ReleasePlans. However, the operator does pass references to these CRs to the tenant release pipeline and it is a common use case to use details from them in your pipeline.
 
 +
@@ -92,7 +92,7 @@ apiVersion: rbac.authorization.k8s.io/v1
 kind: Role
 metadata:
  name: publish-role <.>
- namespace: dev-workspace <.>
+ namespace: dev-tenant-namespace <.>
 rules:
 - apiGroups:
   - appstudio.redhat.com
@@ -116,7 +116,7 @@ apiVersion: rbac.authorization.k8s.io/v1
 kind: RoleBinding
 metadata:
  name: publish-rolebinding <.>
- namespace: dev-workspace <.>
+ namespace: dev-tenant-namespace <.>
 roleRef:
  apiGroup: rbac.authorization.k8s.io
  kind: Role
@@ -124,24 +124,24 @@ roleRef:
 subjects:
 - kind: ServiceAccount
   name: build-pipeline-$COMPONENT_NAME <.>
-  namespace: dev-workspace <.>
+  namespace: dev-tenant-namespace <.>
 ----
 
 +
 <.> The name of the Role.
-<.> The development team's workspace.
+<.> The development team's tenant namespace.
 <.> The name of the RoleBinding.
-<.> The development team's workspace.
+<.> The development team's tenant namespace.
 <.> The name of the Role from (1).
 <.> The name of the service account used to execute the tenant pipeline.
-<.> The development team's workspace.
+<.> The development team's tenant namespace.
 
-. In the Development workspace, apply the `rbac.yaml` file and add the resources to your cluster by running the following command:
+. In the Development tenant namespace, apply the `rbac.yaml` file and add the resources to your cluster by running the following command:
 
 +
 [source,shell]
 ----
-kubectl apply -f rbac.yaml -n dev-workspace
+kubectl apply -f rbac.yaml -n dev-tenant-namespace
 ----
 
 == Creating a new tenant pipeline ==
@@ -176,9 +176,9 @@ spec:
              echo "ReleasePlan $(params.releasePlan)"
              echo "Snapshot $(params.snapshot)"
 ----
-<.> Namespacedname to the Release populated automatically by the release service (eg. dev-workspace/my-tenant-release).
-<.> Namespacedname to the ReleasePlan populated automatically by the release service (eg. dev-workspace/publish).
-<.> Namespacedname to the Snapshot populated automatically by the release service (eg. dev-workspace/my-snapshot).
+<.> Namespacedname to the Release populated automatically by the release service (eg. dev-tenant-namespace/my-tenant-release).
+<.> Namespacedname to the ReleasePlan populated automatically by the release service (eg. dev-tenant-namespace/publish).
+<.> Namespacedname to the Snapshot populated automatically by the release service (eg. dev-tenant-namespace/my-snapshot).
 
 If you write a good reusable release pipeline, please submit it to our link:https://github.com/konflux-ci/release-service-catalog[catalog] so others can use it.
 
@@ -211,7 +211,7 @@ spec:
           value: "<path-to-your-pipeline>"
     serviceAccountName: build-pipeline-$COMPONENT_NAME <.>
 ----
-<.> Reference to the tenant pipeline to be executed in the development workspace.
+<.> Reference to the tenant pipeline to be executed in the development tenant namespace.
 <.> The name of the service account used to execute the tenant pipeline.
 
 Both tenant and final pipelines receive the same parameters (i.e. release, releasePlan, and snapshot), allowing them to be used interchangeably. The key difference is that the final pipeline runs at the end of the release workflow, meaning the release status will contain the final outcome and all generated artifacts.

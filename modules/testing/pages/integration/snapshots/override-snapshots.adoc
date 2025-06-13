@@ -4,7 +4,7 @@ In {ProductName}, the integration service provides users with the ability to res
 
 == Prerequisites
 - You have completed the steps listed in the xref:ROOT:getting-started.adoc#getting-started-with-the-cli[Getting started in the CLI] page.
-- You have an existing managed workspace such as `ws-sample`, an application such as `application-sample` and a component such as `component-sample`.
+- You have an existing managed tenant namespace such as `ws-sample`, an application such as `application-sample` and a component such as `component-sample`.
 
 == Procedures
 To create an `override` snapshot, complete the following steps:
@@ -45,7 +45,7 @@ spec:
 ----
 $ kubectl create -f snapshot.yaml -n ws-sample-tenant
 ----
-This command adds the `override` snapshot to your workspace and integration service will processe the `override` snapshot and update the component `component-sample` 's `.Spec.ContainerImage` to `quay.io/redhat-user-workloads/ws-sample-tenant/application-sample/component-sample@sha256:0db0a473a6abf5c15c424ab07cfbd5c40c06622fe648d4fe6a6b6abc224a0d0c`
+This command adds the `override` snapshot to your tenant namespace and integration service will processe the `override` snapshot and update the component `component-sample` 's `.Spec.ContainerImage` to `quay.io/redhat-user-workloads/ws-sample-tenant/application-sample/component-sample@sha256:0db0a473a6abf5c15c424ab07cfbd5c40c06622fe648d4fe6a6b6abc224a0d0c`
 
 == Verification
 After integration service processes the created `override` snapshot, you may verify snapshot and component by the following steps:

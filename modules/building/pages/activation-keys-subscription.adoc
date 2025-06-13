@@ -9,16 +9,16 @@ To learn how to create an activation keys see the https://docs.redhat.com/en/doc
 When your activation key is created, you will need to create a secret with two values: your "org id" and the name of your activation key.
 
 
-== Adding activation keys to the workspace
+== Adding activation keys to the tenant namespace
 
 You will need to create one or more secrets in your Konflux namespace (one per activation key). First, decide what to name the secrets and the scope they should have. You can control the scope of the activation key you add with the name.
 
-=== Adding subscription entitlement for an entire workspace
+=== Adding subscription entitlement for an entire tenant namespace
 
-Both the `+buildah+` and `+prefetch-dependencies+` tasks accept an activation key with a default name of `+activation-key+`. If you use this name for your secret, all of the builds in your workspace will automatically use the activation key.
+Both the `+buildah+` and `+prefetch-dependencies+` tasks accept an activation key with a default name of `+activation-key+`. If you use this name for your secret, all of the builds in your tenant namespace will automatically use the activation key.
 
 === Adding subscription entitlement for a specific component build
-Sometimes, you only want certain builds to have the activation key, particularly when you need to have more than one key with different repository configurations in the same workspace. To do this, choose a different name for your activation key secret (not `+activation-key+`). Then, add a parameter to your component's pipeline yaml:
+Sometimes, you only want certain builds to have the activation key, particularly when you need to have more than one key with different repository configurations in the same tenant namespace. To do this, choose a different name for your activation key secret (not `+activation-key+`). Then, add a parameter to your component's pipeline yaml:
 
 ----
 - name: ACTIVATION_KEY

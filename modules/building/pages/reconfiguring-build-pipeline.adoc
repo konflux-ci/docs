@@ -8,7 +8,7 @@ After you have created a component {ProductName}, you may find yourself in a sit
 
 .*Prerequisites*
 
-* You have an existing Development workspace.
+* You have an existing Development tenant namespace.
 * You have completed the steps listed in the xref:ROOT:getting-started.adoc#getting-started-with-the-cli[Getting started in the CLI] page.
 
 == Reset the build pipeline

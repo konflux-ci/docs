@@ -1,14 +1,14 @@
 = Creating a release plan
 
-A ReleasePlan (RP) CR is created for a specific Application. It defines the the process to release a specific Application Snapshot in a target workspace, whether automatic releases are enabled, as well as additional data to pass to a corresponding RPA.
+A ReleasePlan (RP) CR is created for a specific Application. It defines the the process to release a specific Application Snapshot in a target tenant namespace, whether automatic releases are enabled, as well as additional data to pass to a corresponding RPA.
 
 == Creating a `ReleasePlan` object
 
-The development team creates a `ReleasePlan` object in the developer workspace. The `ReleasePlan` object includes a reference to the application that the development team wants to release, along with workspace where the application is supposed to be released.
+The development team creates a `ReleasePlan` object in the developer tenant namespace. The `ReleasePlan` object includes a reference to the application that the development team wants to release, along with tenant namespace where the application is supposed to be released.
 
 .*Prerequisites*
 
-* You have an existing Development workspace.
+* You have an existing Development tenant namespace.
 * You have completed the steps listed in the xref:ROOT:getting-started.adoc#getting-started-with-the-cli[Getting started in the CLI] page.
 
 .*Procedures*
@@ -29,29 +29,29 @@ metadata:
    release.appstudio.openshift.io/standing-attribution: 'true'
    release.appstudio.openshift.io/releasePlanAdmission: 'rpa-name' <.>
  name: sre-production <.>
- namespace: dev-workspace <.>
+ namespace: dev-tenant-namespace <.>
 spec:
  application: <application-name> <.>
  data: <key> <.>
  pipelineRef: <pipeline-ref> <.>
  serviceAccount: <service-account> <.>
  releaseGracePeriodDays: <days> <.>
- target: managed-workspace <.>
+ target: managed-tenant-namespace <.>
 ----
 
 +
 <.> Optional: Control if Releases should be created automatically for this ReleasePlan when tests pass. Defaults to true.
 <.> Optional: The name of the RPA to use if more than one RPA references the specified application.
 <.> The name of the release plan.
-<.> The development team's workspace.
-<.> The name of the application that you want to deploy to the managed workspace.
+<.> The development team's tenant namespace.
+<.> The name of the application that you want to deploy to the managed tenant namespace.
 <.> Optional: An unstructured key used for providing data for the managed Pipeline.
 <.> Optional: Reference to the Pipeline to be executed by the release service.
 <.> Optional: The name of the service account to use in the Pipeline to gain elevated privileges. It's used only if you have defined the `pipelineRef` value.
 <.> Optional: The number of days a Release should be kept before being garbage collected. (default is 7 days)
-<.> The workspace to which the system deploys the application. This workspace is created by the Managed environment team (for example, your organization's SRE team)
+<.> The tenant namespace to which the system deploys the application. This tenant namespace is created by the Managed environment team (for example, your organization's SRE team)
 
-. In the development workspace, apply the `ReleasePlan.yaml` file and add the resource to your cluster by running the following command:
+. In the development tenant namespace, apply the `ReleasePlan.yaml` file and add the resource to your cluster by running the following command:
 
 +
 [source,shell]
