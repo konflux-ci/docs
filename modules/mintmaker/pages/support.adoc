@@ -14,6 +14,7 @@ of certain managers. It is intended to supply xref:mintmaker:user.adoc#available
 | uv footnote:[uv supports any Python version by installing it at runtime] | ✔ | ✔ | ✔ | ✔ | ✔
 |===
 
+- Only minor versions (e.g. 3.13) are generally supported, patch versions (e.g. 3.13.4) are not
 - Python 3.8 and older are not supported.
 - `peynv` is available and used to install Python 3.10 and Python 3.13, which are not available in UBI images.
 
