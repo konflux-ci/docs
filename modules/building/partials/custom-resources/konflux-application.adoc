@@ -5,8 +5,6 @@ kind: Application <.>
 metadata:
   name: <application-name>
   namespace: <namespace>
-  annotations:
-    application.thumbnail: "1"
 spec:
   displayName: <application-name>
 ----
