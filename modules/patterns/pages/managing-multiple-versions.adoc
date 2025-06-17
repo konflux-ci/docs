@@ -43,6 +43,11 @@ spec:
 
 To enable quickly creating multiple development streams, we must create a template for them.
 
+[NOTE]
+====
+Make sure that your component definition template doesn't have annotation `build.appstudio.openshift.io/request: configure-pac` configured. This will lead into repeated onboarding and suggesting new changes to your pipeline runs. Project Controller will do onboarding for you.
+====
+
 [source,yaml]
 .template.yaml
 ----
@@ -72,7 +77,6 @@ spec:
     metadata:
       annotations:
         build.appstudio.openshift.io/pipeline: '{"name":"docker-build","bundle":"latest"}'
-        build.appstudio.openshift.io/status: '{"pac":{"state":"enabled","merge-url":"https://github.com/konflux-ci/multi-version-konflux-sample/pull/1","configuration-time":"Wed, 07 Aug 2024 08:59:18 UTC"},"message":"done"}'
       name: multi-version-konflux-sample-{{.versionName}}
     spec:
       application: "multi-version-konflux-sample-{{.versionName}}"
