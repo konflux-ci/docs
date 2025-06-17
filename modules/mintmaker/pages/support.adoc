@@ -43,3 +43,6 @@ a| Match CVE data to package upgrades
 
 MintMaker sets the `GOTOOLCHAIN=auto` environment variable, so when updating dependencies,
 Go will choose the correct toolchain version automatically.
+
+Renovate will automatically update the go and toolchain directives in case it is required
+by an updated dependency. This cannot be changed in the configuration.
