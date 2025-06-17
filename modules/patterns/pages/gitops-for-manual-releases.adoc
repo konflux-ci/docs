@@ -6,6 +6,8 @@ For teams with that posture, we recommend using a gitops process to manage relea
 
 This pattern has the additional benefit of helping you manage a race condition with xref:testing:integration/snapshots/index.adoc[snapshot garbage collection]. Without this pattern, a slower-moving team may run into a situation where a snapshot that they decide to release is garbage-collected from the cluster before they can actually release it. The pattern here will guide you to export your release candidate snapshot to git so that you can be sure it is available and unchanged at release time.
 
+include::partial${context}-gitops-for-manual-releases-head-note.adoc[]
+
 == Manage Manual Releases with a GitOps process
 
 .Prerequisites
