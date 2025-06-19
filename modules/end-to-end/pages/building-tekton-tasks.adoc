@@ -1,0 +1,298 @@
+= Building Tekton tasks as bundles in {ProductName}
+
+This document provides a step-by-step guide on how to onboard your Tekton tasks to {ProductName}, enabling their integration into your build pipelines.
+
+
+== Prerequisites
+
+Before you begin, ensure you have the following:
+
+* A Github repository containing your Tekton tasks with a catalog structure, containing all the additional files (README, TROUBLESHOOTING, etc…)
+
+----
+tasks/
+└── echo/
+    ├── 0.1/
+    │   ├── echo.yaml
+    │   ├── README.md
+    │   ├── USAGE.MD
+    │   └── TROUBLESHOOT.md
+    └── 0.2/
+        ├── echo.yaml
+        └── README.md
+----
+
+* {ProductName} Github application installed in the repository xref:installing:github-app.adoc[GitHub App]
+
+* A quay organization to be used with on-pr and push pipelines.
+
+* Public repositories within the quay organization to push the bundles to when using the on-pr and push pipelines.
+
+* A quay organization for the released bundles.
+
+* A public repository within the release organization for the trusted tasks list.
+
+* Access to the {ProductName} environment.
+
+* Necessary permissions to create and manage components in {ProductName}.
+
+
+== Onboarding Steps
+
+The onboarding of tasks to {ProductName} is similar to onboarding other applications/components to {ProductName}, with the exception of not having a Dockerfile (we are not building images).
+
+
+=== Application, Components and ImageRepository
+
+Tekton tasks are built as standard OCI artifacts in {ProductName}.
+
+The xref:building:/creating.adoc[Creating applications and components] page can be referenced for more information on how to create an Application for all tasks and a Component for each task within this Application, as well as an ImageRepository resource to be used within the quay organization.
+
+
+[NOTE] 
+====
+* Each task and task version in the application should be represented by a component, each component should contain the pipeline in use (*tekton-bundle-builder-oci-ta*) and the context to the task within the GH repository (*tasks/echo/0.1* for example).
+* The Component's naming convention is <task_name>-v<task_version> (echo-v01)
+====
+
+Once these resources are added, a PR with *on-pr* and *push* pipelineruns will be sent to your repository.
+
+[NOTE] 
+====
+* The *on-pr* pipelinerun will be created with the context we  have defined for the component and with *on-cel-expression* to run the pipelinerun only in case a change was detected in the component, for example:
+
+[source, yaml]
+----
+pipelinesascode.tekton.dev/on-cel-expression: |
+    event == "pull_request"
+    && target_branch == "main"
+    && (
+    "tasks/echo/0.1/***".pathChanged() || ".tekton/echo-v01-pull-request.yaml".pathChanged()
+    )
+----
+However, when *branch protection* is enabled in your GH repository it might prevent the pipelinerun to run when needed for the branch protection, in this case updating the *on-cel-expression* in the on-pr pipelinerun will solve the issue.
+[source, yaml]
+----
+pipelinesascode.tekton.dev/on-cel-expression: event == "pull_request" && target_branch
+----
+
+* The *Push* pipelinerun is created with a default on-cel-expression.
+For now we need to manually update it to run only if changes were made in the context, example:
+
+[source, yaml]
+----
+pipelinesascode.tekton.dev/on-cel-expression: |
+    event == "push"
+    && target_branch == "main"
+    && (
+    "tasks/echo/0.1/***".pathChanged() || ".tekton/echo-v01-push.yaml".pathChanged()
+      )
+----
+====
+
+=== Integration tests
+Follow xref:testing:integration/index.adoc[Integration tests] to add integration tests to the application and components.
+
+Example of an *IntegrationTestScenario*:
+[source, yaml]
+----
+apiVersion: appstudio.redhat.com/v1beta2
+kind: IntegrationTestScenario
+metadata:
+  name: my-tasks-enterprise-contract
+  namespace: my-team-tenant
+spec:
+  application: my-tasks
+  contexts:
+    - description: Component testing for echo task version 0.1
+      name: component_echo-v01
+  params:
+    - name: POLICY_CONFIGURATION
+      value: rhtap-releng-tenant/tekton-bundle-standard
+  resolverRef:
+    params:
+      - name: url
+        value: https://github.com/konflux-ci/build-definitions
+      - name: revision
+        value: main
+      - name: pathInRepo
+        value: pipelines/enterprise-contract.yaml
+    resolver: git
+----
+
+[NOTE]
+====
+* Defining *component_<component_name>* will ensure the integration test runs only for this component
+* The *rhtap-releng-tenant/tekton-bundle-standard* policy should be used with Tekton tasks.
+====
+
+=== Release
+
+The release process for bundles includes both the release of Tekton tasks as bundles and updating the list of trusted-tasks OCI artifacts.
+
+
+This list will be used to notify the Conforma policies of our trusted tasks.
+As a preparation for the release, we need to first create a public Quay repository in our release Quay organization to hold this artifact.
+
+The repository should be in the same level as our released tasks. For example, if our tasks are released to *quay.io/konflux-ci/my-team-tasks*, we will need to create a public repository named *quay.io/konflux-ci/my-team-tasks/data-acceptable-bundles*
+
+So that the structure will be: 
+----
+quay.io/
+└── konflux-ci/
+    └── my-team-tasks/
+        ├── task1
+        ├── task2
+        ├── task3
+        └── data-acceptable-bundles
+----
+
+To release Tekton tasks as bundles, you will need to create the following resources in your tenant:
+
+* xref:releasing:create-release-plan.adoc[ReleasePlan]
+
+Example: 
+[source, yaml]
+----
+apiVersion: appstudio.redhat.com/v1alpha1
+kind: ReleasePlan
+metadata:
+  labels:
+    release.appstudio.openshift.io/auto-release: "true"
+    release.appstudio.openshift.io/releasePlanAdmission: my-tasks
+    release.appstudio.openshift.io/standing-attribution: "true"
+  name: my-tasks-release-to-quay-konflux-ser
+  namespace: my-tasks-tenant
+spec:
+  application: my-tasks
+  target: rhtap-releng-tenant  
+
+----
+
+* xref:releasing:create-release-plan-admission.adoc[ReleasePlanAdmission]
+
+Example:
+[source, yaml]
+----
+apiVersion: appstudio.redhat.com/v1alpha1
+kind: ReleasePlanAdmission
+metadata:
+  name: my-tasks
+  namespace: rhtap-releng-tenant
+  labels:
+    release.appstudio.openshift.io/auto-release: 'true'
+    pp.engineering.redhat.com/business-unit: application-developer
+spec:
+  applications:
+    - my-tasks
+  policy: tekton-bundle-standard
+  origin: my-tasks-tenant
+  data:
+    releaseNotes:
+      product_name: My Tasks
+      product_version: "0.1"      
+    mapping:
+      components:
+        - name: echo
+          repository: "quay.io/konflux-ci/my-team-tasks/task-echo"
+          tags:
+            - "0.1"
+    pyxis:
+      secret: pyxis-prod-secret
+      server: production
+    intention: production
+  pipeline:
+    pipelineRef:
+      resolver: git
+      params:
+        - name: url
+          value: "https://github.com/konflux-ci/release-service-catalog.git"
+        - name: revision
+          value: production
+        - name: pathInRepo
+          value: "pipelines/managed/push-tekton-task-bundles-to-external-registry/push-tekton-task-bundles-to-external-registry.yaml"
+    serviceAccountName: konflux-ci-servicerelease-sa
+    timeouts:
+      pipeline: "4h0m0s"
+      tasks: 4h0m0s
+----
+
+[NOTE]
+====
+* Map your components (tasks) to the release Quay repository
+* Use the *pipelines/managed/push-tekton-task-bundles-to-external-registry/push-tekton-task-bundles-to-external-registry.yaml* pipeline to push the bundles to a registry
+====
+
+These resources are essential for managing and approving the release of Tekton task bundles.
+
+=== Post Actions
+
+You may want to verify that the tasks are pushed as bundles correctly and that the trusted tasks list was updated.
+To do so after a release you may use https://tekton.dev/docs/cli/[Tekton-CLI] and https://oras.land/docs/[oras] tools to verify the oci artifacts.
+
+To get your bundle as a yaml file task definition you may use the command:
+
+[source, bash]
+---
+tkn bundle list <task's quay repository url> -o yaml
+---
+
+Example
+
+[source, bash]
+-----
+tkn bundle list tkn bundle list quay.io/konflux-ci/my-team-tasks/task-echo:0.1@sha256:d9a056f1ec3e6a8f60347a91f142ec90a54a324cc7fde3e37336ae35a1521234 -o yaml
+-----
+
+
+To get the list of trusted tasks you may use the command:
+
+[source, bash]
+----
+oras pull <release quay repository>/data-acceptable-bundles:latest
+----
+
+Example: +
+[source, bash]
+----
+oras pull quay.io/konflux-ci/my-team-tasks/data-acceptable-bundles:latest
+----
+The command will extract the list of trusted tasks to data/data/trusted_tekton_tasks.yml in your working directory
+
+
+=== Use onboarded tasks as trusted tasks
+
+To be able to use the onboarded tasks and let Conforma identify these tasks as trusted tasks we have to update the policies we are using and add the new trusted data sources.
+For this purpose, we will use the data-acceptable-bundles OCI artifact that was created/updated during the release process.
+Example of a policy that adds *quay.io/konflux-ci/my-team-tasks/data-acceptable-bundles:latest* as a trusted source:
+
+[source, yaml]
+----
+apiVersion: appstudio.redhat.com/v1alpha1
+kind: EnterpriseContractPolicy
+metadata:
+  name: default
+  namespace: enterprise-contract-service
+spec:
+  description: Conforma policy with the addition of 
+  oci::quay.io/konflux-ci/my-team-tasks/data-acceptable-bundles:latest as another data source
+  name: Default
+  publicKey: k8s://openshift-pipelines/public-key
+  sources:
+  - config:
+      exclude: []
+      include:
+      - '@slsa3'
+    data:
+    - oci::quay.io/konflux-ci/tekton-catalog/data-acceptable-bundles:latest
+    - github.com/release-engineering/rhtap-ec-policy//data
+    - oci::quay.io/konflux-ci/my-team-tasks/data-acceptable-bundles:latest
+    name: Default
+    policy:
+    - oci::quay.io/enterprise-contract/ec-release-policy:git-fe45153@sha256:94b62b263b947a762b08d5aa2715f37ff3ba25ff7462850dba9d9a8eec1b4c49
+----
+
+After completing all the steps above we should now have:
+
+* A task release as a bundle in our release repository
+* An OCI artifact named *data-acceptable-bundles* in our release repository, containing a SHA reference of the latest task release as a trusted task (all the previous versions of the task will appear with the expires_on parameter)
