@@ -59,7 +59,7 @@ work with {ProductName} APIs.
 A Component CR describes the properties for an OCI artifact including the git repository where the artifact is from,
 its latest built commit, initial build configuration parameters, and any relationships to
 other Components. The CR also contains a reference to its single owning Application.
-Component names are unique in a namespace, even when components are used in different application.
+Component names are unique in a namespace, even when components are used in different applications.
 
 === Build pipeline
 When you create a Component in {ProductName}, a build pipeline is pushed to the git repository in the `.tekton/`
