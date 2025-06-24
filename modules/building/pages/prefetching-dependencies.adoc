@@ -355,10 +355,10 @@ artifacts:
 === Using your prefetched generic assets
 You can find your generic prefetched assets in `/cachi2/output/deps/generic/<filename>` and access them in your `Containerfile`:
 
-[source]
----
+[source, Dockerfile]
+----
 RUN cp /cachi2/output/deps/generic/dependency-check.zip <location>
----
+----
 
 == [[netrc]]Creating the netrc secret
 
