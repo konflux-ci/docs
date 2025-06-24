@@ -352,6 +352,14 @@ artifacts:
 <2> `checksum` is expected to be specified as `algorith:hash`
 <3> If no `filename` is specified, it will be derived from the URL.
 
+=== Using your prefetched generic assets
+You can find your generic prefetched assets in `/cachi2/output/deps/generic/<filename>` and access them in your `Containerfile`:
+
+[source]
+---
+RUN cp /cachi2/output/deps/generic/dependency-check.zip <location>
+---
+
 == [[netrc]]Creating the netrc secret
 
 The `prefetch-dependencies` task supports link:https://everything.curl.dev/usingcurl/netrc.html[.netrc] files for authentication.
