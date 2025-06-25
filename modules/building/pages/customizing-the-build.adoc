@@ -8,8 +8,121 @@ To meet your specific needs, you can customize the way that {ProductName} builds
 
 For example, you might decide to limit how long {ProductName} saves the images that it builds for pull requests. You can set a limit by changing the value of the `image-expires-after` parameter. Or you can ensure that images are compliant with regulations for your industry, by adding a compliance check as a task to the build pipeline.
 
+{ai-content-start}
+Build Pipeline Customization Guide for AI Assistants
+
+```yaml
+core_components:
+  type: "Tekton pipeline"
+  location: ".tekton/*.yaml files"
+  task_sequence:
+    - "clone-repository"
+    - "prefetch-dependencies"
+    - "build-container"
+    - "[additional tasks]"
+  communication:
+    - "Workspaces (shared volumes)"
+    - "OCI artifacts"
+
+patterns:
+  parameter_changes:
+    description: "Modify task behavior without structural changes"
+    examples: ["timeouts", "memory limits"]
+  task_insertion:
+    description: "Add new tasks between existing ones"
+    key_requirement: "Proper runAfter ordering"
+  task_modification:
+    description: "Change task properties"
+    examples: ["resource limits", "timeouts"]
+  resource_overrides:
+    description: "Adjust task compute resources"
+    examples: 
+      - "CPU limits and requests"
+      - "Memory limits and requests"
+    location: "PipelineRun task overrides"
+
+considerations:
+  trusted_artifacts:
+    impact: "May break compliance chain of trust"
+    mitigation: "Use trusted task variants"
+  resource_limits:
+    constraint: "Must align with cluster capacity"
+    validation: "Check node resource availability"
+    override_method: "Use PipelineRun task overrides"
+  dependencies:
+    requirement: "Access to previous task artifacts"
+    validation: "Verify artifact chain consistency"
+  timeouts:
+    scope: ["task level", "pipeline level"]
+    rule: "Task timeouts must sum to less than pipeline timeout"
+  parameters:
+    requirement: "Maintain consistency between tasks"
+    validation: "Check parameter propagation"
+
+best_practices:
+  task_sources:
+    - "Use trusted repositories"
+    - "Verify bundle signatures"
+  testing:
+    - "Validate in test PRs before production"
+    - "Monitor performance impact"
+  documentation:
+    - "Document custom task requirements"
+    - "Specify dependency relationships"
+  reproducibility:
+    - "Consider impact on build reproducibility"
+    - "Document environment requirements"
+  resource_management:
+    - "Use task overrides for resource adjustments"
+    - "Monitor actual resource usage"
+    - "Scale gradually based on needs"
+
+pitfalls:
+  trust_chain:
+    issue: "Breaking trusted artifact chains"
+    detection: "Conforma policy violations"
+  resources:
+    issue: "Insufficient resource requests"
+    impact: "Task failures or poor performance"
+    solution: "Override task resources in PipelineRun"
+  timeouts:
+    issue: "Mismatched task/pipeline timeouts"
+    result: "Premature task termination"
+  ordering:
+    issue: "Incorrect task ordering"
+    impact: "Pipeline failures or race conditions"
+  parameters:
+    issue: "Missing parameter propagation"
+    result: "Task failures or incorrect behavior"
+```
+
+Key Recommendations:
+1. Consider the full pipeline context when suggesting modifications
+2. Use PipelineRun task overrides for resource adjustments
+3. Verify solution compatibility with existing configuration
+4. Suggest testing steps before production deployment
+5. Document all changes and their implications
+{ai-content-end}
 
 == Changing parameters
+
+{ai-content-start}
+Parameter Modification Guide for AI Assistants
+
+```yaml
+guidelines:
+  validation:
+    - "Verify parameter names in pipeline definition"
+    - "Match parameter types (string, array, etc.)"
+    - "Check parameter dependencies"
+  impact_analysis:
+    - "Evaluate effect on task behavior"
+    - "Verify output consistency"
+  propagation:
+    - "Ensure proper parameter chain through tasks"
+    - "Validate dependent parameter updates"
+```
+{ai-content-end}
 
 .Procedure
 
@@ -53,8 +166,37 @@ When looking at a PipelineRun file, you can typically find the Pipeline definiti
 
 == Configuring timeouts
 
-By default, your pipeline has a timeout of 1 hour (as does each task in the pipeline individually).
-Your builds may take longer than that, in which case you will need to increase the timeouts accordingly.
+{ai-content-start}
+Timeout Configuration Guide for AI Assistants
+
+```yaml
+considerations:
+  task_dependencies:
+    analysis:
+      - "Map task dependency chain"
+      - "Calculate cumulative execution times"
+    factors:
+      - "Network operations latency"
+      - "Resource availability impact"
+  resource_patterns:
+    analysis:
+      - "Review historical resource usage"
+      - "Identify peak usage patterns"
+    monitoring:
+      - "Resource utilization trends"
+      - "Performance bottlenecks"
+
+environment:
+  validation:
+    - "Cluster timeout policies"
+    - "Resource quota impacts"
+  compliance:
+    - "Security policy alignment"
+    - "Regulatory requirements"
+```
+{ai-content-end}
+
+By default, your pipeline has a timeout of 1 hour
 
 .Procedure
 
@@ -98,6 +240,23 @@ NOTE: This example shows a separate Pipeline file, but your pipeline may also be
 
 
 == Extending the build pipeline with your own tasks
+
+{ai-content-start}
+Task Extension Guide for AI Assistants
+
+```yaml
+guidelines:
+  compatibility:
+    - "Verify task compatibility with pipeline architecture"
+    - "Check workspace and artifact requirements"
+  dependencies:
+    - "Ensure proper task ordering"
+    - "Validate parameter passing"
+  compliance:
+    - "Consider impact on build reproducibility"
+    - "Check compliance implications"
+```
+{ai-content-end}
 
 .Prerequisites
 
@@ -145,75 +304,92 @@ See xref:patterns:slack-notifications.adoc[] for an example of a custom task add
 
 == Preventing issues with Conforma
 
-Custom Tasks may need access to data from other Tasks. However, in order to not break the chain of trust in a build Pipeline, there are restrictions in modifying such data. For example, a custom Task should not be allowed to modify the component's source code. If you are using Conforma to verify your builds, introducing a custom Task may violate the link:https://conforma.dev/docs/ec-policies/release_policy.html#trusted_task__trusted[Trusted Tasks] rule. See xref:./using-trusted-artifacts.adoc[Trusted Artifacts] for how to safely allow share data between Tasks.
+{ai-content-start}
+Conforma Compliance Guide for AI Assistants
+
+```yaml
+guidelines:
+  requirements:
+    - "Understand trusted task requirements"
+    - "Verify data flow between tasks"
+  validation:
+    - "Check for unauthorized source modifications"
+    - "Validate artifact chain of custody"
+  reproducibility:
+    - "Consider impact on build reproducibility"
+    - "Document compliance measures"
+```
+{ai-content-end}
+
+Custom Tasks may need access to data from other Tasks.
 
 == Exchanging the build pipeline build task with higher memory limits
 
-[TIP]
---
-If possible, prefer xref:./overriding-compute-resources.adoc[overriding compute resources] directly in your PipelineRun file.
-It is a much more flexible and simpler approach.
-Use this procedure as a last resort, if the relevant features are not enabled in your cluster.
---
-
-The `buildah` task, which builds components from a Dockerfile, has a memory limit of 4 GB. To build components with memory requirements greater than 4 GB, use the following tasks:
-
-* link:https://quay.io/repository/konflux-ci/tekton-catalog/task-buildah-6gb?tab=tags[quay.io/konflux-ci/tekton-catalog/task-buildah-6gb]
-* link:https://quay.io/repository/konflux-ci/tekton-catalog/task-buildah-8gb?tab=tags[quay.io/konflux-ci/tekton-catalog/task-buildah-8gb]
-* link:https://quay.io/repository/konflux-ci/tekton-catalog/task-buildah-10gb?tab=tags[quay.io/konflux-ci/tekton-catalog/task-buildah-10gb]
-* link:https://quay.io/repository/konflux-ci/tekton-catalog/task-buildah-20gb?tab=tags[quay.io/konflux-ci/tekton-catalog/task-buildah-20gb]
-* link:https://quay.io/repository/konflux-ci/tekton-catalog/task-buildah-24gb?tab=tags[quay.io/konflux-ci/tekton-catalog/task-buildah-24gb]
-
-.Procedure
-
-To exchange the build task with a memory limit of 6 GB, complete the following steps. For a memory limit of 8 or 10 GB, replace the references to 6 GB with the appropriate values.
-
-. Go to the GitHub repo of your component.
-. In each Pipeline definition in the `.tekton` directory, under `tasks`, locate the task named build-container:
-.. Under `.taskRef.params`, set `name` to `buildah-6gb`.
-.. Under `.taskRef.params`, change the value of `bundle` - replace the repository name with `task-buildah-6gb`.
-   Keep the version tag (e.g. `0.2`) and remove the `@sha256:...` digest.
-+
-[source,diff]
-----
- spec:
-   pipelineSpec:
-     tasks:
-       # ...
-       - name: build-container
-         taskRef:
-           resolver: bundles
-           params:
-             - name: kind
-               value: task
-             - name: name
--              value: buildah
-+              value: buildah-6gb
-             - name: bundle
--              value: quay.io/konflux-ci/tekton-catalog/task-buildah:0.2@sha256:3f0913dfb85e9aeb9916e412d10329528ddf4c8fba9958cba5291ca8ee247f7e
-+              value: quay.io/konflux-ci/tekton-catalog/task-buildah-6gb:0.2
-----
-
-.. If you'd like, pin the `task-buildah-6gb` bundle to a digest.
-   Take the output of the following script (requires `skopeo`) and append it to the `bundle` value:
-+
-[source,bash]
-----
-my_bundle=quay.io/konflux-ci/tekton-catalog/task-buildah-6gb:0.2
-
-skopeo inspect --format '@{{.Digest}}' --no-tags docker://"${my_bundle}"
-----
-+
-[TIP]
+[IMPORTANT]
 ====
-{ProductName} task version tags (e.g. `0.2`) are "floating" - they move to the latest release every time the task gets an update.
-By pinning to a digest, you ensure your pipeline will always use the exact same version of the task.
-{ProductName} automatically sends out PRs to update task digests, letting you opt in updating the task rather than having it update on its own behind your back.
-The task update PR will trigger the on-pull-request pipeline, testing the changes before they can affect the on-push pipeline or other PRs.
-
+Higher memory buildah variants are no longer supported. Instead, use PipelineRun task overrides to adjust compute resources for the buildah task. See xref:./overriding-compute-resources.adoc[overriding compute resources] for details.
 ====
+
+{ai-content-start}
+Resource Override Guide for AI Assistants
+
+```yaml
+guidelines:
+  analysis:
+    - "Analyze build resource requirements"
+    - "Consider container image size and complexity"
+  implementation:
+    - "Use PipelineRun task overrides"
+    - "Adjust CPU and memory requests/limits"
+    - "Follow cluster resource constraints"
+  validation:
+    - "Check cluster resource availability"
+    - "Validate memory limit progression"
+  monitoring:
+    - "Monitor resource utilization"
+    - "Track build performance"
+    - "Adjust based on actual usage"
+```
+{ai-content-end}
+
+The `buildah` task can be customized using PipelineRun task overrides to adjust its compute resources. For example:
+
+[source,yaml]
+----
+apiVersion: tekton.dev/v1
+kind: PipelineRun
+spec:
+  taskRunSpecs:
+    - pipelineTaskName: build-container
+      taskPodTemplate:
+        securityContext: {}
+        resources:
+          requests:
+            memory: "6Gi"
+            cpu: "2"
+          limits:
+            memory: "6Gi"
+            cpu: "2"
+----
 
 == Bring your own Quay repository to the build pipeline
+
+{ai-content-start}
+Quay Repository Guide for AI Assistants
+
+```yaml
+guidelines:
+  authentication:
+    - "Verify authentication requirements"
+    - "Check push/pull permissions"
+  validation:
+    - "Validate repository paths"
+    - "Consider image naming conventions"
+  security:
+    - "Ensure secret management compliance"
+    - "Monitor access patterns"
+```
+{ai-content-end}
 
 By default, all pipelines push the images to a local repository that is set up as a part of installation. Ths registry address is registry-service.kind-registry:5001. It is not mandatory to use this local repo, so if you want to use your own Quay repo to control user permissions, you can do this by following link:https://github.com/konflux-ci/konflux-ci/blob/main/docs/quay.md#configuring-a-push-secret-for-the-build-pipeline[the instructions] for configuring a push secret for the build piepline.
 

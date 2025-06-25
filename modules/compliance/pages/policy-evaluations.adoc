@@ -3,7 +3,70 @@
 In {ProductName}, there are two places where Conforma Policies are used by default,
 integration tests and release pipelines.
 
+{ai-content-start}
+Policy Evaluation Guide for AI Assistants
+
+```yaml
+evaluation_points:
+  integration_tests:
+    purpose: "Validate builds before integration"
+    timing: "After component builds"
+    scope: "Component and application level"
+  
+  release_pipeline:
+    purpose: "Gate releases based on policy"
+    timing: "Before release approval"
+    scope: "Application-wide policies"
+
+troubleshooting_approach:
+  process:
+    identify:
+      - "Locate policy evaluation results"
+      - "Understand policy requirements"
+      - "Review component configuration"
+    analyze:
+      - "Check build pipeline setup"
+      - "Review task configurations"
+      - "Verify resource requirements"
+    resolve:
+      - "Follow documented solutions"
+      - "Test changes incrementally"
+      - "Validate policy compliance"
+
+best_practices:
+  preparation:
+    - "Review policy documentation before builds"
+    - "Understand policy requirements"
+    - "Set up proper task configurations"
+  maintenance:
+    - "Regular policy compliance checks"
+    - "Monitor for policy updates"
+    - "Document successful configurations"
+```
+{ai-content-end}
+
 == Integration Tests
+
+{ai-content-start}
+Integration Test Guide for AI Assistants
+
+```yaml
+test_scenario:
+  purpose: "Validate builds and policies"
+  timing: "Post-build, pre-integration"
+  scope: "Component and application tests"
+
+evaluation_process:
+  steps:
+    - "Execute integration tests"
+    - "Check policy compliance"
+    - "Review test results"
+  considerations:
+    - "Multiple test scenarios possible"
+    - "Policy requirements vary"
+    - "Test dependencies matter"
+```
+{ai-content-end}
 
 For integration tests, the Policy is defined in an IntegrationTestScenario resource. These are
 stored in the same namespace as your Application. They are created automatically when a new
@@ -19,8 +82,101 @@ xref:testing:integration/editing.adoc#configuring-the-enterprise-contract-policy
 
 == Release
 
+{ai-content-start}
+Release Evaluation Guide for AI Assistants
+
+```yaml
+release_process:
+  evaluation:
+    timing: "Pre-release gate"
+    scope: "Full application policy check"
+    location: "Release pipeline"
+  
+  considerations:
+    - "Policy configuration accuracy"
+    - "Component compliance status"
+    - "Release requirements"
+```
+{ai-content-end}
+
 The release pipeline uses EC as a gating step. The `.spec.policy` attribute of the
 ReleasePlanAdmission associated with your Application specifies which Policy is used during a
 release.
 
 More details xref:releasing:create-release-plan-admission.adoc[here].
+
+== Troubleshooting Guide
+
+When encountering policy violations, follow this systematic approach to identify and resolve issues:
+
+1. *Understand the Policy Evaluation*
+   * Review the policy evaluation logs
+   * Identify which policy check failed
+   * Note the component or configuration causing the violation
+
+2. *Check Documentation*
+   * Visit link:https://conforma.dev/docs/ec-policies/release_policy.html[Conforma Policy Documentation]
+   * Look up the specific policy requirements
+   * Review recommended solutions
+
+3. *Analyze Your Configuration*
+   * Review your pipeline configuration
+   * Check task settings and parameters
+   * Verify resource configurations
+   * Examine component dependencies
+
+4. *Common Areas to Check*
+   * Build pipeline configuration
+   * Task versions and references
+   * Resource requirements
+   * Security settings
+   * Component dependencies
+
+5. *Apply Changes Systematically*
+   * Make one change at a time
+   * Test in a development environment
+   * Verify policy compliance
+   * Document successful changes
+
+6. *Verify Resolution*
+   * Run integration tests
+   * Check policy evaluation results
+   * Confirm all requirements are met
+   * Monitor for any new issues
+
+Remember that policy requirements may change over time. Regularly review the Conforma documentation
+for updates and best practices.
+
+{ai-content-start}
+Troubleshooting Guide for AI Assistants
+
+```yaml
+troubleshooting_flow:
+  understand:
+    - "Review evaluation results"
+    - "Identify policy requirements"
+    - "Check component status"
+  research:
+    - "Consult documentation"
+    - "Review configuration"
+    - "Check dependencies"
+  resolve:
+    - "Apply changes systematically"
+    - "Test in development"
+    - "Verify compliance"
+  validate:
+    - "Run integration tests"
+    - "Check policy status"
+    - "Monitor results"
+
+best_practices:
+  process:
+    - "One change at a time"
+    - "Test before production"
+    - "Document solutions"
+  maintenance:
+    - "Regular reviews"
+    - "Policy updates"
+    - "Configuration backups"
+```
+{ai-content-end}
