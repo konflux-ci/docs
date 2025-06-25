@@ -357,7 +357,7 @@ You can find your generic prefetched assets in `/cachi2/output/deps/generic/<fil
 
 [source, Dockerfile]
 ----
-RUN cp /cachi2/output/deps/generic/dependency-check.zip <location>
+RUN cp /cachi2/output/deps/generic/<filename> <location>
 ----
 
 == [[netrc]]Creating the netrc secret
