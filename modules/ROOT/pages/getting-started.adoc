@@ -55,13 +55,13 @@ A consequence of this fact is that commonplace Kubernetes client tools such as
 link:https://kubernetes.io/docs/reference/kubectl/[kubectl] understand and can
 work with {ProductName} APIs.
 
-=== Component
+==== Component
 A Component CR describes the properties for an OCI artifact including the git repository where the artifact is from,
 its latest built commit, initial build configuration parameters, and any relationships to
 other Components. The CR also contains a reference to its single owning Application.
 Component names are unique in a namespace, even when components are used in different application.
 
-=== Build pipeline
+===== Build pipeline
 When you create a Component in {ProductName}, a build pipeline is pushed to the git repository in the `.tekton/`
 directory and a webhook is installed.
 
@@ -86,7 +86,7 @@ When a new Component's build pipeline is complete, a new Snapshot is created by 
 Integration Service containing the latest git and OCI reference from each of the Component CRs plus the just-produced
 Component artifact. This is used as the input to an IntegrationTestScenario.
 
-=== Snapshot
+==== Snapshot
 A Snapshot CR is an immutable set of Component references. It can be created from push or pull request events.
 A Snapshot defines a set of Components which are either tested or released together.
 
@@ -95,7 +95,7 @@ Snapshots in it. Understand that at any point in time, a given
 Snapshot _might not necessarily_ represent the latest built artifacts for all
 Components in your tenant namespace.
 
-=== IntegrationTestScenario
+==== IntegrationTestScenario
 An IntegrationTestScenario (ITS) CR is a Tekton Pipeline defining a test which is intended to run against an
 entire Snapshot. The Integration Service runs all ITSs which are configured for the Snapshot's Application. A
 default ITS is automatically created for every new Application to enable all Components to be checked against
@@ -104,7 +104,7 @@ a specified EnterpriseContractPolicy.
 Each ITS can be configured as optional for release. All non-optional tests must pass before the new Component
 build is "promoted" to update the references on the Component CR.
 
-=== EnterpriseContractPolicy
+==== EnterpriseContractPolicy
 Building in {ProductName} follows a "build once, release multiple times" mentality where each release can have
 separate requirements on the builds before allowing the action. These build requirements are codified in an
 EnterpriseContractPolicy (ECP).
@@ -114,13 +114,13 @@ for example, all Components pass the policy requirements, the policy evaluation 
 Component in a Snapshot fails the policy, however, the overall result is a failure even if all of the rest have
 clean passes.
 
-=== ReleasePlan
+==== ReleasePlan
 A ReleasePlan (RP) CR maps an Application you want to release with a release action.
 It defines the process to release future Snapshots of your Application in the managed namespace. It also defines
 whether or not you have automatic releases enabled and additional data to be supplied to each release
 pipeline that runs in the future.
 
-=== ReleasePlanAdmission
+==== ReleasePlanAdmission
 You also need to create a ReleasePlanAdmission (RPA) CR in the managed namespace. It defines the specific pipeline to
 run and a given ECP which needs to pass for any Snapshot before that pipeline can proceed. It also defines important
 details about the delivery of your content that we want to exercise some control over. For example, if your release pipeline uses an
@@ -128,7 +128,7 @@ link:https://github.com/konflux-ci/release-service-catalog/blob/production/tasks
 task, the `.spec.data.mapping.components` section of this resource will define which destination repositories your
 content is pushed to.
 
-=== Release
+==== Release
 Every time you want to release newly built artifacts, you will create a Release CR in *your* tenant namespace. The Release
 CR represents your intent to release some content to customers. It is an active resource that, when present, will
 initiate the push of content.
