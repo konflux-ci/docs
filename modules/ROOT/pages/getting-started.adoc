@@ -41,6 +41,18 @@ a Release in a tenant namespace referencing a specific Snapshot which will
 trigger a specific release pipeline in the managed namespace. See
 xref:releasing:index.adoc[release documentation] for more.
 
+=== OCI Artifact
+
+OCI is the link:https://github.com/opencontainers[open containers initiative].
+It contains an link:https://github.com/opencontainers/image-spec[image spec]
+that permits storing
+link:https://github.com/opencontainers/image-spec/blob/main/artifacts-guidance.md[artifacts
+other than container images] in container registries, which we call "OCI
+Artifacts".
+
+Artifacts that you build in your tenant namespace are pushed to an OCI registry
+along with their supporting metadata (including xref:metadata:index.adoc[SLSA provenance attestations and SBOMs]).
+
 === Custom Resource (CR)
 In Kubernetes, a
 link:https://kubernetes.io/docs/concepts/extend-kubernetes/api-extension/custom-resources/[Custom
@@ -75,9 +87,6 @@ CVEs with clair-in-ci, and running an antivirus scan on the artifact.
 from its use of https://pipelinesascode.com/[Pipelines as Code (PaC)]. PaC
 enables the use of a Tekton PipelineDefinition within a git repository and for
 that pipeline to be triggered upon new commits and PRs to the repository.
-
-Artifacts that you build in your tenant namespace are pushed to an OCI registry
-along with their supporting metadata (including xref:metadata:index.adoc[SLSA provenance attestations and SBOMs]).
 
 === Application
 An Application CR owns multiple Components. It helps to logically group Components in the UI.
