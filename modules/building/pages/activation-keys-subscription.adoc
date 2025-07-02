@@ -291,7 +291,7 @@ enabled = 1
 ----
 --
 
-. Install the tools needed ot run rpm-lockfile-prototype:
+. Install the tools needed to run rpm-lockfile-prototype:
 
 +
 --
