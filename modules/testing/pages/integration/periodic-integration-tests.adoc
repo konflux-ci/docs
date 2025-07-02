@@ -19,10 +19,18 @@ If the Integration Test is designed to only run periodically rather than during 
 
 === Procedure with example
 
-This procedure assumes that you already have an integration test created and a ServiceAccount available in your tenant.
+This procedure details how to grant the necessary snapshot access to a ServiceAccount, which is required to run periodic Integration Tests. It assumes you have an integration test created and a ServiceAccount available in your tenant namespace.
 
-. Create a `Role` and `RoleBinding` to grant the necessary snapshot access to the ServiceAccount, which will be used to trigger the periodic Integration Tests
+. Identify an Existing Role (Recommended)
+* Check for an existing `Role` or `ClusterRole` that already has permissions to create snapshots.
+* Many environments have roles with broad access (e.g., a `ClusterRole` with `verbs: ["*"]`). Examine the roles available and compare to the example below to ensure the correct permissions are available within the role.
+
+. If No Existing Role, Create a New Role and RoleBinding
+
+If you cannot use an existing role with snapshot permissions, a *tenant administrator* must manually create a new `Role` and `RoleBinding`, as outlined in the example.
+
 [source,yaml]
+---
 kind: Role
 apiVersion: rbac.authorization.k8s.io/v1
 metadata:
@@ -53,6 +61,10 @@ roleRef:
   kind: Role
   name: periodic-jobs-role
   apiGroup: rbac.authorization.k8s.io
+---
+
+
+[start=3]
 
 . Create a CronJob that will trigger a Periodic Integration Test scenario via snaphot labels.
 
@@ -122,13 +134,15 @@ spec:
                   kubectl -n "${KONFLUX_TENANT_NAME}" label snapshot "${LATEST_SNAPSHOT}" test.appstudio.openshift.io/run="${KONFLUX_SCENARIO_NAME}"
 
                   echo "[INFO] Integration Service E2E tests successfully triggered!"
+          restartPolicy: Never <.>
           serviceAccountName: default
           serviceAccount: default
 ----
-<.> The name of the tenant.
-<.> The Integration Test name to be triggered by the CronJob.
-<.> The tenant from where to annotate the component snapshot to trigger Periodic Integration Test.
-<.> The {ProductName} application name associated with the Integration Test that will be triggered by the CronJob.
-<.> The {ProductName} componet name.
+<1> The name of the tenant.
+<2> The Integration Test name to be triggered by the CronJob.
+<3> The tenant from where to annotate the component snapshot to trigger Periodic Integration Test.
+<4> The {ProductName} application name associated with the Integration Test that will be triggered by the CronJob.
+<5> The {ProductName} component name.
+<6> Restart Policy can be "Never" or "OnFailure".
 
 Once the CronJob is triggered and completes, your integration test pipelines should begin executing in the {ProductName} UI.
