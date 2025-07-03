@@ -55,6 +55,19 @@ metadata:
 
 With this new expression in place, {ProductName} will start "pull request" pipelines whenever it sees a pull request (like normal) **or** whenever it sees a push to a branch that matches the special pattern used by GitHub merge queues.
 
+As a final step, label the pipelinerun to make sure the snapshot builds coming from `gh-readonly-queue/main/` branches are not released by accident:
+[source, yaml]
+----
+apiVersion: tekton.dev/v1
+kind: PipelineRun
+metadata:
+  annotations:
+    pipelinesascode.tekton.dev/on-cel-expression: (event == "pull_request" && target_branch == "main") || (event == "push" && target_branch.startsWith("gh-readonly-queue/main/"))
+  labels:
+    release.appstudio.openshift.io/auto-release: "false"
+...
+----
+
 === Verify the changes
 
 Try opening two pull requests at once. For the merge options, you should see "Merge when ready" and "This repository uses the merge queue for all merges into the <target branch> branch." Try merging both of them at once and observe the behavior as both are added to a merge queue.
