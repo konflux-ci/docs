@@ -79,7 +79,7 @@ Snapshot CRs themselves consume resources. To manage this and stay within quota,
 * **Eligibility:** GC applies to Snapshots that are **not** referenced by an active `Release` CR.
 * **Mechanism:** GC is based on **retention counts**, not age. {ProductName} keeps a specific number of the most recent unreferenced snapshots and deletes the oldest ones beyond that limit.
 ** Default retention counts:
-*** **~=600** non-PR (push event) snapshots.
+*** **~=500** non-PR (push event) snapshots.
 *** **70** PR event snapshots.
 * **Exception:** Snapshots annotated with `test.appstudio.openshift.io/keep-snapshot=true` will not be garbage collected
 
