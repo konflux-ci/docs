@@ -99,105 +99,34 @@ For more Go-specific `.netrc` details, see link:https://go.dev/doc/faq#git_https
 == [[pip]]Enabling prefetch builds for `pip`
 Cachi2 supports pip by parsing of `pip` requirements files, including but not limited to, `requirements.txt` files placed in the root of your repository. By generically parsing `pip` requirements files, Cachi2 downloads the specified dependencies.
 
-IMPORTANT: The requirements file can have a different name because you can use multiple files to provide the dependencies. These requirements files function as lockfiles, encompassing all transitive dependencies. You must actively pin each transitive dependency listed in the requirements file to a specific version.
+IMPORTANT: These requirements files function as lockfiles, encompassing all transitive dependencies. You must actively pin each transitive dependency listed in the requirements file to a specific version. Check the link:https://github.com/hermetoproject/hermeto/blob/main/docs/pip.md#requirementstxt[Cachi2 documentation] for more information on how to generate the requirements file.
 
-.Prerequisites
-* You have an environment that closely matches the environment in the container build, meaning it has the same operating system and the same python _$major.$minor_ version.
+=== Building from source
+By default, Cachi2 will only fetch the source distribution from each dependency present in the requirements file. This is to force `pip` to build every dependency from source instead of relying on pre-built wheels, bringing a greater transparency to the content that will be made available to the build.
 
-* You have installed the link:https://github.com/jazzband/pip-tools[pip-tools] package.
+In many cases, it is necessary to include additional build dependencies that are not automatically added by `pip-compile` on the requirements file. To overcome this limitation, we recommend the use of the link:https://pybuild-deps.readthedocs.io/en/latest/index.html[pybuild-deps] tool. This tool will generate a `requirements-build.txt` that contains all the build dependencies that are needed to build the project from source.
 
+== Procedure
 To prefetch dependencies for a component build, complete the following steps:
 
-. Download the link:https://raw.githubusercontent.com/containerbuildsystem/cachito/master/bin/pip_find_builddeps.py[pip_find_builddeps.py] script directly from GitHub.
+. Go to the `.tekton` directory and find the `.yaml` files related to the `*pull request*` and `*push*` processes.
+. Configure the hermetic pipeline by adding the following parameters in both `.yaml` files:
 
-+
-NOTE: This script has no runtime dependency other than `pip`.
-
-. Add the script that you downloaded in a directory that is already included in your $PATH. For example, you can use the `~/bin` directory in your home folder. Ensure that it exists or create it if needed. To add it to the $PATH permanently, you can modify the shell configuration file (for example, `.bashrc`, `.bash_profile`, or `.zshrc`)  and restart the terminal after appending the following line:
-
-+
-[source,bash]
+[source,yaml]
 ----
-export PATH="$HOME/bin:$PATH"
-----
-. Open the terminal and go to the directory where you placed the `pip_find_builddeps.py` script and run the following command to make it executable:
-
-+
-[source,bash]
-----
-chmod +x pip_find_builddeps.py
+spec:
+    params:
+        -   ...
+        -   name: prefetch-input
+            value: '{"type": "pip", "path": "."}'
 ----
 
-. Go to your component's source code.
-
-. Review the root of your repository for a metadata file, for example, `pyproject.toml`, `setup.py`, or `setup.cfg`. If there is no metadata file, create one, because Cachi2 looks for the name and version of your project in the metadata files.
-
-+
-[source,metadata]
-----
-[metadata]
-name = "my_package"
-version = "0.1.0"
-----
-
-+
-NOTE: Instead of a `pyproject.toml` file, you can also create a `setup.py` or `setup.cfg` file. For information about the metadata of these files, see link:https://github.com/containerbuildsystem/cachi2/blob/main/docs/pip.md#project-metadata[Project metadata].
-
-. Generate a fully resolved `requirements.txt` file that contains all the transitive dependencies and pins them to a specific version and hash by using the following command:
-
-+
-[source,command]
-----
-$ pip-compile pyproject.toml --generate-hashes
-----
-+
-[NOTE]
-==== 
-* To successfully run the previous command, your environment must be as close as possible to the environment in the container build. That is, the environment should have the same operating system and the same Python _$major.$minor_ version.
-
-* The previous command assumes that you have defined project dependencies in `pyproject.toml`. However, if you have defined the project dependencies in either the `setup.py`, `requirements.txt`, or `requirements.in` files, make sure you update the command accordingly.
-====
-+
-. Add the `requirements.txt` file to the root of your component source code. 
-
-. In the root of your repository create a `requirements-build.in` file.
-
-. Copy the build system requirements from the `pyproject.toml` file to the `requirements-build.in` file.
-
-[start=10]
-. Run the `pip_find_builddeps.py` script and `pip-compile` the outputs by using the following command:
-
-+
-[source,command]
-----
-$ pip_find_builddeps.py requirements.txt \
---append \
---only-write-on-update \
--o requirements-build.in
-----
-
-. Use the `pip-compile` command to convert the `requirements-build.in` file in to the `requirements-build.txt` file by using the following command:
-
-+
-[source,command]
-----
-$ pip-compile requirements-build.in --allow-unsafe --generate-hashes
-----
-
-. Add the `requirement-build.txt` file to your project. It does not require any changes to your build process. 
-
-+
-NOTE: `pip` automatically installs the build dependencies when needed for explicit installation. The purpose of the `requirement-build.txt` file is to enable Cachi2 to fetch the build dependencies and provide them to `pip` for offline installation in a network-isolated environment.
-
-+
 [NOTE]
 ====
 * By default, Cachi2 processes `requirements.txt` and `requirements-build.txt` at a specified path.
-
-* When adding these parameters, you can safely ignore the default values for the link:https://github.com/burrsutter/partner-catalog-stage/blob/e2ebb05ba8b4e842010710898d555ed3ba687329/.tekton/partner-catalog-stage-wgxd-pull-request.yaml#L90[`pipelineSpec.params`] in the `.yaml` files.
 ====
 
-.. Optional: For requirements files without default names and path, add the following hermetic pipeline `prefetch-input` parameters in both the `.yaml` files:
+.. Optional: In case the requirements files do not use the standard names, or in case more than a single requirements or requirements-build file is needed, you can use the following additional parameters:
 
 +
 [source,yaml]
@@ -206,11 +135,25 @@ spec:
     params:
         -   ...
         -   name: prefetch-input
-            value: '{"type": "pip", "path": ".", "requirements_files": ["requirements.txt", "requirements-extras.txt", "tests/requirements.txt"]}' <1>
+            value: '{"type": "pip", "path": ".", "requirements_files": ["requirements.txt", "requirements-extras.txt", "tests/requirements.txt", "requirements_build_files": ["other-build-requirements.txt"]}'
 ----
-<1> The `*prefetch-input*` parameter specifies the path to the directory that has the lockfile and the package metadata files. In the previous example, the `.` indicates that the package manager lockfile is located in the root of the repository. Additionally, if you have multiple directories, you can provide the path to those directories in the JSON array format. For example, `[{"path": ".", "type": "pip", , "requirements_files": ["requirements.txt", "requirements-extras.txt", "tests/requirements.txt"]}, {"path": "subpath/to/the/other/directory", "type": "pip", "requirements_files": ["requirements.txt", "requirements-extras.txt", "tests/requirements.txt"]}]`.
 
-NOTE: To troubleshoot any issues you might experience when you enable prefetch builds for `pip` with source dependencies, see link:https://github.com/containerbuildsystem/cachi2/blob/main/docs/pip.md#troubleshooting[cachi2 documentation]
+NOTE: To troubleshoot any issues you might experience when you enable prefetch builds for `pip` with source dependencies, see link:https://github.com/hermetoproject/hermeto/blob/main/docs/pip.md#troubleshooting[cachi2 documentation]
+
+=== Building by enabling the prefetching of wheels
+
+In case you don't want to build every dependency from source, Cachi2 can be configured to also fetch wheels alongside the source distributions:
+
+[source,yaml]
+----
+spec:
+    params:
+        -   ...
+        -   name: prefetch-input
+            value: '{"type": "pip", "path": ".", "allow_binary": true}'
+----
+
+Note that you don't need to generate a `requirements-build.txt` file as described in the section above in case the prefetching of wheels is enabled.
 
 === [[custom-index-servers]]Prefetching `pip` dependencies from custom index servers
 
