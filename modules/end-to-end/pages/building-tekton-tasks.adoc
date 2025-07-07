@@ -97,7 +97,7 @@ pipelinesascode.tekton.dev/on-cel-expression: |
 ----
 ====
 
-
+include::partial${context}-building-tekton-tasks-integration.adoc[]
 
 === Release
 
