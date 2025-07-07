@@ -1,0 +1,12 @@
+The repository should be in the same level as our released tasks. For example, if our tasks are released to *<OCI registry>/<Organization>/my-team-tasks*, we should publish the list to a public repository named *<OCI registry>/<Organization>/my-team-tasks/data-acceptable-bundles*
+
+So that the structure will be: 
+----
+OCI registry/
+└── Organization/
+    └── my-team-tasks/
+        ├── task1
+        ├── task2
+        ├── task3
+        └── data-acceptable-bundles
+----
