@@ -10,6 +10,7 @@
 
 # integration
 /modules/testing/       @konflux-ci/integration-service-maintainers
+/modules/testing/pages/integration/third-parties/rapidast.adoc  @sfowl @ccronca
 
 # release
 /modules/releasing                                			@konflux-ci/release-service-maintainers
