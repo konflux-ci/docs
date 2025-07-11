@@ -48,19 +48,25 @@ Sometimes, you only want certain builds to have the activation key, particularly
 
 Alternatively, you can create the secret through the CLI. After logging into your cluster and navigating to your namespace, run the following command:
 
+[source,bash]
 ----
-kubectl create secret generic activation-key -n <your-tenant> --from-literal=org=<your org id> --from-literal=activationkey=<your activation key name>
+kubectl create secret generic activation-key -n <your-tenant> \
+  --from-literal=org=<your org id> \
+  --from-literal=activationkey=<your activation key name>
 ----
 
 [[Create-custom-activation-key-secret]]
 === Create custom activation key secret
+
 Create custom activation key secrets with extra labels and annotations so that they can be matched to their repositories.
+
 [NOTE]
 ====
 * This procedure is only necessary if you want to have your RPM lockfiles automatically updated by MintMaker. Otherwise, you can create your custom secrets without the extra labels and annotations.
 * The default `+activation-key+` secret doesn't need to follow this procedure, it will be applied to all namespaces repositories as a fallback option.
 * Additional configuration must be performed, as described in xref:ROOT:mintmaker:rpm-lockfile.adoc#rpm-lockfile-with-rpms-that-require-subscription[RPM lockfile with RPMs that require subscription]
 ====
+
 These secrets can only be created through the CLI:
 
 [source,bash]
@@ -70,6 +76,7 @@ kubectl create -f activation-key-secret.yaml
 
 [source,yaml]
 ----
+# activation-key-secret.yaml
 apiVersion: v1
 kind: Secret
 metadata:
@@ -83,6 +90,7 @@ stringData:
   org: <YOUR ORG ID>
   activationkey: <YOUR ACTIVATION KEY>
 ----
+
 This secret will be matched to all repositories with the same Git host. If you want to narrow the matching to specific repositories, you have to add the `appstudio.redhat.com/scm.repository` annotation to the secret metadata:
 
 [source,yaml]
@@ -122,6 +130,7 @@ stringData:
   org: <YOUR ORG ID>
   activationkey: <YOUR ACTIVATION KEY>
 ----
+
 Multiple repositories can be listed under the `appstudio.redhat.com/scm.repository` annotation. Separate repository names with commas when listing them. The secret will be used for all repositories that match the specified paths.
 
 [IMPORTANT]
@@ -137,8 +146,9 @@ Multiple repositories can be listed under the `appstudio.redhat.com/scm.reposito
 
 The buildah task will use a provided activation key to register itself with Red Hat subscription manager and mount the necessary certificates to the build environment. Simply add `+dnf+` or `+yum install+` commands to your Containerfile. 
 
-TIP: If your activation key includes more than the default repositories, add the following command inside your Containerfile in order update repository metadata:
+TIP: If your activation key includes more than the default `BaseOS` and `AppStream` repositories, add the following command inside your Containerfile in order update repository metadata:
 
+[source,bash]
 ----
 subscription-manager refresh
 ----
@@ -208,17 +218,24 @@ NOTE: For this step we will assume that you have source code in your current wor
 
 *Follow these steps for the Combined Workflow:*
 
-1. Prepare a container environment where you can run both Red Hat `subscription-manager` and the `rpm-lockfile-prototype` tool. Ideally this is the same version of Red Hat Enterprise Linux as your build, but as noted above, does not have to be. Mount your source code directory into the container.
+. Prepare a container environment where you can run both Red Hat `subscription-manager` and the `rpm-lockfile-prototype` tool. Ideally this is the same version of Red Hat Enterprise Linux as your build, but as noted above, does not have to be. Mount your source code directory into the container.
 
++
+--
 In this example, we'll using the Red Hat Enterprise Linux 9 Universal Base Image (UBI 9).
 
+[source,bash]
 ----
 podman run --rm -it -v $(pwd):/source:Z registry.access.redhat.com/ubi9
 ----
 
-[start=2]
+--
+
 . Register with your activation key from the previous step:
 
++
+--
+[source,bash]
 ----
 subscription-manager register --activationkey="$KEY_NAME" --org="$ORG_ID"
 ----
@@ -226,11 +243,15 @@ subscription-manager register --activationkey="$KEY_NAME" --org="$ORG_ID"
 IMPORTANT: You may see a message saying `+subscription-manager is operating in
 container mode. Use your host system to manage subscriptions.+`, which is not
 applicable if you're running the container on Fedora or MacOS.
+--
 
-[start=3]
 . Verify that you have the correct repositories and enable missing source repositories.
+
++
+--
 NOTE: It is normal to only see the repositories for your current architecture at this stage.
 
+[source,bash]
 ----
 [root@ yum.repos.d]# dnf repolist --enabled
 Updating Subscription Management repositories.
@@ -252,8 +273,9 @@ ubi-9-baseos-rpms
 ubi-9-codeready-builder    
 ----
 
-You must locate and enable the appropriate RPM repositories in `+redhat.repo+` by changing `+enabled = 0+` to `+enabled = 1+`.
+To enable the source RPM repositories, locate the appropriate RPM repositories in `+redhat.repo+` and change `+enabled = 0+` to `+enabled = 1+`:
 
+[source,toml]
 ----
 [rhocp-4.16-for-rhel-9-$basearch-rpms]
 name = Red Hat OpenShift Container Platform 4.16 for RHEL 9 $basearch (RPMs)
@@ -267,10 +289,13 @@ baseurl = https://cdn.redhat.com/content/dist/layered/rhel9/$basearch/rhocp/4.16
 enabled = 1
 ...
 ----
+--
 
-[start=4]
-. Install necessary tooling
+. Install the tools needed to run rpm-lockfile-prototype:
 
++
+--
+[source,bash]
 ----
 dnf install -y pip skopeo
 pip install --user https://github.com/konflux-ci/rpm-lockfile-prototype/archive/refs/tags/v0.13.1.tar.gz
@@ -278,37 +303,45 @@ pip install --user https://github.com/konflux-ci/rpm-lockfile-prototype/archive/
 
 NOTE: You can find the latest version of `+rpm-lockfile-prototype+` on https://github.com/konflux-ci/rpm-lockfile-prototype[GitHub], or viewing the repository https://github.com/konflux-ci/rpm-lockfile-prototype/tags[tags].
 
-[start=5]
-. Copy the default repository file configured by `+subscription-manager+` to the `+source/+` directory
+--
 
+. Copy the default repository file configured by `+subscription-manager+` to the `+source/+` directory (the directory mounted from your host filesystem).
+
++
+[source,bash]
 ----
 cp /etc/yum.repos.d/redhat.repo /source/redhat.repo
 ----
 
-[start=6]
 . Substitute the current architecture with `$basearch` in `+redhat.repo+` to facilitate fetching for multiple architectures
 
++
+[source,bash]
 ----
 sed -i "s/$(uname -m)/\$basearch/g" redhat.repo
 ----
 
-[start=7]
-. Authenticate to the Red Hat container registry
+. Authenticate to the Red Hat container registry using your Red Hat Customer Portal credentials:
 
++
+[source,bash]
 ----
 skopeo login registry.redhat.io
 ----
 
-[start=8]
-. Configure `+rpms.in.yaml+`
-There are three things to configure:
+. Configure `+rpms.in.yaml+`. There are three things to configure:
+
++
+--
+
 .. Add `./redhat.repo` under `contentOrigin.repofiles` in `+rpms.in.yaml+`
 .. Add the RPM we want Konflux to prefetch for hermetic builds (`+openshift-clients+`)
 .. Configure the enabled architectures
 
 The following is an example of what your `+rpms.in.yaml+` file should look like:
 
-----                                                                                                                            
+[source,yaml]
+----
 contentOrigin:
   # Define at least one source of packages, but you can have as many as you want.
   repofiles:
@@ -339,8 +372,13 @@ context:
 
 NOTE: In the source directory for this example there is a Containerfile named `+Containerfile+` which starts with the line `FROM registry.access.redhat.com/ubi9/ubi`, which is the reason why we're using a RHEL 9 UBI image to generate the lock file.
 
-[start=9]
+--
+
 . Create the lock file
+
++
+--
+[source,bash]
 ----
 cd /source; rpm-lockfile-prototype -f Containerfile rpms.in.yaml
 ----
@@ -349,14 +387,14 @@ If you encounter SSL errors (`+Problem with the local SSL certificates+`), make
 sure the `+sslclientkey+` and `+sslclientcert+` options in `+redhat.repo+`
 resolve to the correct path on the file system. These options point to
 certificates and keys that use a unique identifier (e.g., `+sslclientcert =
-/etc/pki/entitlement-host/$ID.pem+`). You may see SSL issues if you copied a
-repository configuration file from a different system registered with a
+/etc/pki/entitlement/$ID.pem+`). You may see SSL issues if you copied a
+repository configuration file from a different system/container registered with a
 different entitlement or activation key.
 
 If successful, you should see a `+rpms.lock.yaml+` file in the source directory:
 
+[source,yaml]
 ----
----
 lockfileVersion: 1
 lockfileVendor: redhat
 arches:
@@ -374,7 +412,8 @@ arches:
 
 TIP: If you see warnings like "`+WARNING:root:No sources found for...+`" then there is a source repository that still needs to be enabled in your repository configuration. If so, and you need source RPMs, be sure to enable the source RPM repositories in `+redhat.repo+` and regenerate the lock file.
 
-[start=10]
-Finally, commit the `+rpms.in.yaml+`, `+rpms.lock.yaml+` and `+redhat.repo+` to
+--
+
+. Exit the container, and commit the `+rpms.in.yaml+`, `+rpms.lock.yaml+` and `+redhat.repo+` to
 source control. Konflux will use these files to prefetch RPMs for hermetic
 builds.
