@@ -173,7 +173,7 @@ spec:
 <.> Namespacedname to the ReleasePlan populated automatically by the release service (eg. dev-tenant-namespace/publish).
 <.> Namespacedname to the Snapshot populated automatically by the release service (eg. dev-tenant-namespace/my-snapshot).
 
-If you write a good reusable release pipeline, please submit it to our link:https://github.com/konflux-ci/release-service-catalog[catalog] so others can use it.
+If you write a good reusable release pipeline, please submit it to our link:https://github.com/konflux-ci/community-catalog[community catalog], so others can use it.
 
 == Final pipeline
 
