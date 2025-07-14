@@ -54,11 +54,11 @@ spec:
           value: $(params.JENKINS_HOST_URL)
         - name: JOB_NAME
           value: $(params.JOB_NAME)
-	- name: JENKINS_SECRETS
-	  value: my-jenkins-credentials
-	- name: JOB_PARAMS
-	  value: |
-	  - KONFLUX_SNAPSHOT=$(params.SNAPSHOT)
+        - name: JENKINS_SECRETS
+          value: my-jenkins-credentials
+        - name: JOB_PARAMS
+          value:
+          - KONFLUX_SNAPSHOT=$(params.SNAPSHOT)
 
 ----
 
