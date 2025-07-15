@@ -110,6 +110,33 @@ NOTE: You can also use **kubectl edit** to add the build-nudges-ref instead of p
 * Ensure that the existing references in the repositories of your components are correct.
 * Try running the necessary commands again, and ensure you have the correct syntax.
 
+== What is nudged
+Only when push pipeline finishes, nudge will be performed (on re-run as well).
+
+When `component1` is nudging `component2`, image which will be nudged is output image from `component1`
+and it will be nudged in the repository of `component2`.
+
+Output image is specified in push pipeline run yaml file in param `output-image`
+eg. `quay.io/user-tenant/user-image`.
+
+Additionally also image from distribution repositories based on ReleasePlanAdmission will be nudged as well,
+for that to work ReleasePlanAdmission has to exist and contain:
+[source,yaml]
+--
+spec:
+  data:
+    mapping:
+      components:
+        - name: component1
+          repository: quay.io/some-org/released-image
+--
+Where component name has to be the same as nudging component eg. `component1`.
+
+In such case both image references will be nudged:
+
+- `quay.io/user-tenant/user-image`
+- `quay.io/some-org/released-image`
+
 == Customizing nudging PRs
 Nudging feature is using renovate `https://docs.renovatebot.com/` to actually do the job,
 for which you can customize some options specified in ConfigMap in your namespace.
