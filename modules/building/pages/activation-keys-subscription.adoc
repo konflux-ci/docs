@@ -417,3 +417,5 @@ TIP: If you see warnings like "`+WARNING:root:No sources found for...+`" then th
 . Exit the container, and commit the `+rpms.in.yaml+`, `+rpms.lock.yaml+` and `+redhat.repo+` to
 source control. Konflux will use these files to prefetch RPMs for hermetic
 builds.
+
+. Reminder. You still need to xref:ROOT:building:prefetching-dependencies.adoc#rpm[enable prefetching for RPMs] if this step hasn't been done yet.
