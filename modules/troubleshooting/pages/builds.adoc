@@ -96,15 +96,16 @@ FILES=$@
 
 # Find existing image references
 OLD_REFS="$(\
-    yq '... | select(has("resolver")) | .params // [] | .[] | select(.name == "bundle") | .value'  $FILES | \
+    yq '.. | select(type == "object" and has("resolver")) | .params // [] | .[] | select(.name == "bundle") | .value'  $FILES | \
     grep -v -- '---' | \
+    sed 's/^"\(.*\)"$/\1/' | \
     sort -u \
 )"
 
 # Find updates for image references
 for old_ref in ${OLD_REFS}; do
     repo_tag="${old_ref%@*}"
-    new_digest="$(skopeo inspect --no-tags docker://${repo_tag} | yq '.Digest')"
+    new_digest="$(skopeo inspect --no-tags docker://${repo_tag} | yq -r '.Digest')"
     new_ref="${repo_tag}@${new_digest}"
     [[ $new_ref == $old_ref ]] && continue
     echo "New digest found! $new_ref"
