@@ -26,7 +26,7 @@ apiVersion: appstudio.redhat.com/v1alpha1
 kind: ReleasePlanAdmission
 metadata:
  labels:
-   release.appstudio.openshift.io/auto-release: 'true' <.>
+   release.appstudio.openshift.io/block-releases: 'false' <.>
  name: sre-production <.>
  namespace: managed-tenant-namespace <.>
 spec:
@@ -42,7 +42,7 @@ spec:
 ----
 
 +
-<.> Optional: Control whether or not this ReleasePlanAdmission is entirely disabled. If set to false, attempted releases will fail with a validation error. Defaults to true.
+<.> Optional: Control whether or not this ReleasePlanAdmission is entirely disabled. If set to true, attempted releases will fail with a validation error. Defaults to false.
 <.> The name of the release plan admission.
 <.> The Managed environment team's tenant namespace.
 <.> A list of applications that you want to enable to be deployed in the managed tenant namespace.

@@ -185,7 +185,7 @@ MatchedReleasePlanAdmission defines the relevant information for a matched Relea
 |===
 | Field | Description | Default | Validation
 | *`name`* __string__ | Name contains the namespaced name of the releasePlanAdmission + |  | 
-| *`active`* __boolean__ | Active indicates whether the ReleasePlanAdmission is set to auto-release or not + |  | 
+| *`active`* __boolean__ | Active indicates whether the ReleasePlanAdmission is set to block-releases or not + |  | 
 |===
 
 
