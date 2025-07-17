@@ -44,7 +44,7 @@ apiVersion: appstudio.redhat.com/v1alpha1
 kind: ReleasePlanAdmission
 metadata:
   labels:
-    release.appstudio.openshift.io/auto-release: 'true'
+    release.appstudio.openshift.io/block-releases: 'false'
   name: sre-production
   namespace: managed-tenant-namespace
 spec:
