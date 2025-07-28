@@ -142,7 +142,7 @@ metadata:
   name: my-tasks
   namespace: rhtap-releng-tenant
   labels:
-    release.appstudio.openshift.io/auto-release: 'true'
+    release.appstudio.openshift.io/block-releases: 'false'
     pp.engineering.redhat.com/business-unit: application-developer
 spec:
   applications:
