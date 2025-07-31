@@ -30,14 +30,12 @@ For every build, Cachi2 generates a software bill of materials (SBOM) where all 
 |xref:cargo[cargo]
 |`Rust`
 
-|xref:rpm[rpm]*
+|xref:rpm[rpm]
 |`N/A`
 
 |xref:generic[generic]
 |`N/A`
 |===
-
-NOTE: *The link:https://github.com/konflux-ci/rpm-lockfile-prototype?tab=readme-ov-file#what-is-this[rpm-lockfile-prototype] and the link:https://github.com/containerbuildsystem/cachi2?tab=readme-ov-file#package-managers[rpm package manager for cachi2] are not fully supported. You can use them to prefetch rpms for your hermetic builds, but the file format and technology may change in the future. If you're interested in the future of this topic, join the discussion at link:https://github.com/rpm-software-management/dnf5/issues/833[rpm-software-management/dnf5#833].
 
 == Procedure
 To prefetch dependencies for a component build, complete the following steps:
@@ -202,7 +200,7 @@ You have a `Cargo.lock` file in your repository that lists all the dependencies.
 
 == [[rpm]]Enabling prefetch builds for `rpm`
 
-Cachi2 has a dev-preview package manager capable of fetching `rpm` dependencies. This requires the use of a pair of `rpms.in.yaml` and `rpms.lock.yaml` files to be committed to your repository. You write a `rpms.in.yaml` file and the link:https://github.com/konflux-ci/rpm-lockfile-prototype?tab=readme-ov-file#what-is-this[rpm-lockfile-prototype] CLI tool resolves that to produce a `rpms.lock.yaml` file. Cachi2 fetches those specific rpms and enables your build to install them without network access.
+Cachi2 has a package manager capable of fetching `rpm` dependencies. This requires the use of a pair of `rpms.in.yaml` and `rpms.lock.yaml` files to be committed to your repository. You write a `rpms.in.yaml` file and the link:https://github.com/konflux-ci/rpm-lockfile-prototype?tab=readme-ov-file#what-is-this[rpm-lockfile-prototype] CLI tool resolves that to produce a `rpms.lock.yaml` file. Cachi2 fetches those specific rpms and enables your build to install them without network access.
 
 .Prerequisites
 * You have an up-to-date installation of link:https://github.com/konflux-ci/rpm-lockfile-prototype?tab=readme-ov-file#installation[rpm-lockfile-prototype].
@@ -255,21 +253,6 @@ spec:
     - name: prefetch-input
       value: '{"type": "rpm", "path": "."}' <1>
 ----
-
-. Additionally, pass an extra parameter to the `prefetch-dependencies` task in the `.spec.pipelineSpec.tasks` section to indicate that "dev package managers" should be enabled.
-
-+
-[source,yaml]
-----
-    tasks:
-        -   ...
-        -   name: prefetch-dependencies
-            params:
-                - ...
-                - name: dev-package-managers <1>
-                  value: "true"
-----
-<1> You won't find `dev-package-managers` as a param on the `prefetch-dependencies` task. You have to add it, and set it to true. This is because Cachi2 hasn't declared stable support for rpm lockfile processing yet. It's new technology and the link:https://github.com/rpm-software-management/dnf5/issues/833[conversation] about which way forward in the dnf community is still ongoing.
 
 NOTE: Konflux also supports prefetching RPM content which requires a Red Hat subscription. For more information see xref:./activation-keys-subscription.adoc#hermetic-network-isolated-builds[Using Red Hat activation keys to access subscription content].
 
