@@ -6,7 +6,7 @@ set -e
 genRoot="$(pwd)/api-gen"
 genSrc="${genRoot}/src"
 config="$(pwd)/api-gen/crd-ref-docs.yaml"
-destRoot="$(pwd)/modules/ROOT/pages/reference/kube-apis"
+destRoot="$(pwd)/modules/reference/pages/kube-apis"
 
 function gen_ref_docs {
     # First argument is the repository name in the konflux-ci GitHub org.
@@ -48,5 +48,6 @@ gen_ref_docs "conforma" "Conforma" "https://github.com/enterprise-contract/enter
 gen_ref_docs "image-controller" "Image"
 gen_ref_docs "integration-service" "Integration Test"
 gen_ref_docs "release-service" "Release"
+gen_ref_docs "mintmaker" "DependencyUpdateCheck"
 
 popd

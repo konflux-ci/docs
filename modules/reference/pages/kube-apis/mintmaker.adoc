@@ -1,0 +1,177 @@
+// Generated documentation. Please do not edit.
+:anchor_prefix: k8s-api
+
+[id="reference"]
+== DependencyUpdateCheck API Reference
+
+.Packages
+- xref:{anchor_prefix}-appstudio-redhat-com-v1alpha1[$$appstudio.redhat.com/v1alpha1$$]
+
+
+[id="{anchor_prefix}-appstudio-redhat-com-v1alpha1"]
+=== appstudio.redhat.com/v1alpha1
+
+Package v1alpha1 contains API Schema definitions for the appstudio v1alpha1 API group
+
+.Resource Types
+- xref:{anchor_prefix}-github-com-konflux-ci-mintmaker-api-v1alpha1-dependencyupdatecheck[$$DependencyUpdateCheck$$]
+- xref:{anchor_prefix}-github-com-konflux-ci-mintmaker-api-v1alpha1-dependencyupdatechecklist[$$DependencyUpdateCheckList$$]
+
+
+
+[id="{anchor_prefix}-github-com-konflux-ci-mintmaker-api-v1alpha1-applicationspec"]
+==== ApplicationSpec
+
+
+
+
+
+
+
+.Appears In:
+****
+- xref:{anchor_prefix}-github-com-konflux-ci-mintmaker-api-v1alpha1-namespacespec[$$NamespaceSpec$$]
+****
+
+[cols="20a,50a,15a,15a", options="header"]
+|===
+| Field | Description | Default | Validation
+| *`application`* __string__ | Specifies the name of the application for which to run Mintmaker. +
+Required. + |  | Pattern: `^[a-z0-9]([-a-z0-9]*[a-z0-9])?$` +
+
+| *`components`* __xref:{anchor_prefix}-github-com-konflux-ci-mintmaker-api-v1alpha1-component[$$Component$$] array__ | Specifies the list of components of an application for which to run MintMaker. +
+If omitted, MintMaker will run for all application's components. + |  | MaxLength: 63 +
+Pattern: `^[a-z0-9]([-a-z0-9]*[a-z0-9])?$` +
+
+|===
+
+
+[id="{anchor_prefix}-github-com-konflux-ci-mintmaker-api-v1alpha1-component"]
+==== Component
+
+_Underlying type:_ _string_
+
+
+
+.Validation:
+- MaxLength: 63
+- Pattern: `^[a-z0-9]([-a-z0-9]*[a-z0-9])?$`
+
+.Appears In:
+****
+- xref:{anchor_prefix}-github-com-konflux-ci-mintmaker-api-v1alpha1-applicationspec[$$ApplicationSpec$$]
+****
+
+
+
+[id="{anchor_prefix}-github-com-konflux-ci-mintmaker-api-v1alpha1-dependencyupdatecheck"]
+==== DependencyUpdateCheck
+
+
+
+DependencyUpdateCheck is the Schema for the dependencyupdatechecks API
+
+
+
+.Appears In:
+****
+- xref:{anchor_prefix}-github-com-konflux-ci-mintmaker-api-v1alpha1-dependencyupdatechecklist[$$DependencyUpdateCheckList$$]
+****
+
+[cols="20a,50a,15a,15a", options="header"]
+|===
+| Field | Description | Default | Validation
+| *`apiVersion`* __string__ | `appstudio.redhat.com/v1alpha1` | |
+| *`kind`* __string__ | `DependencyUpdateCheck` | |
+| *`metadata`* __link:https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.3/#objectmeta-v1-meta[$$ObjectMeta$$]__ | Refer to Kubernetes API documentation for fields of `metadata`.
+ |  | 
+| *`spec`* __xref:{anchor_prefix}-github-com-konflux-ci-mintmaker-api-v1alpha1-dependencyupdatecheckspec[$$DependencyUpdateCheckSpec$$]__ |  |  | 
+| *`status`* __xref:{anchor_prefix}-github-com-konflux-ci-mintmaker-api-v1alpha1-dependencyupdatecheckstatus[$$DependencyUpdateCheckStatus$$]__ |  |  | 
+|===
+
+
+[id="{anchor_prefix}-github-com-konflux-ci-mintmaker-api-v1alpha1-dependencyupdatechecklist"]
+==== DependencyUpdateCheckList
+
+
+
+DependencyUpdateCheckList contains a list of DependencyUpdateCheck
+
+
+
+
+
+[cols="20a,50a,15a,15a", options="header"]
+|===
+| Field | Description | Default | Validation
+| *`apiVersion`* __string__ | `appstudio.redhat.com/v1alpha1` | |
+| *`kind`* __string__ | `DependencyUpdateCheckList` | |
+| *`metadata`* __link:https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.3/#listmeta-v1-meta[$$ListMeta$$]__ | Refer to Kubernetes API documentation for fields of `metadata`.
+ |  | 
+| *`items`* __xref:{anchor_prefix}-github-com-konflux-ci-mintmaker-api-v1alpha1-dependencyupdatecheck[$$DependencyUpdateCheck$$] array__ |  |  | 
+|===
+
+
+[id="{anchor_prefix}-github-com-konflux-ci-mintmaker-api-v1alpha1-dependencyupdatecheckspec"]
+==== DependencyUpdateCheckSpec
+
+
+
+DependencyUpdateCheckSpec defines the desired state of DependencyUpdateCheck
+
+
+
+.Appears In:
+****
+- xref:{anchor_prefix}-github-com-konflux-ci-mintmaker-api-v1alpha1-dependencyupdatecheck[$$DependencyUpdateCheck$$]
+****
+
+[cols="20a,50a,15a,15a", options="header"]
+|===
+| Field | Description | Default | Validation
+| *`namespaces`* __xref:{anchor_prefix}-github-com-konflux-ci-mintmaker-api-v1alpha1-namespacespec[$$NamespaceSpec$$] array__ | Specifies the list of namespaces for which to run MintMaker. +
+If omitted, MintMaker will run for all namespaces. + |  | 
+|===
+
+
+[id="{anchor_prefix}-github-com-konflux-ci-mintmaker-api-v1alpha1-dependencyupdatecheckstatus"]
+==== DependencyUpdateCheckStatus
+
+
+
+DependencyUpdateCheckStatus defines the observed state of DependencyUpdateCheck
+
+
+
+.Appears In:
+****
+- xref:{anchor_prefix}-github-com-konflux-ci-mintmaker-api-v1alpha1-dependencyupdatecheck[$$DependencyUpdateCheck$$]
+****
+
+
+
+[id="{anchor_prefix}-github-com-konflux-ci-mintmaker-api-v1alpha1-namespacespec"]
+==== NamespaceSpec
+
+
+
+
+
+
+
+.Appears In:
+****
+- xref:{anchor_prefix}-github-com-konflux-ci-mintmaker-api-v1alpha1-dependencyupdatecheckspec[$$DependencyUpdateCheckSpec$$]
+****
+
+[cols="20a,50a,15a,15a", options="header"]
+|===
+| Field | Description | Default | Validation
+| *`namespace`* __string__ | Specifies the name of the namespace for which to run Mintmaker. +
+Required. + |  | Pattern: `^[a-z0-9]([-a-z0-9]*[a-z0-9])?$` +
+
+| *`applications`* __xref:{anchor_prefix}-github-com-konflux-ci-mintmaker-api-v1alpha1-applicationspec[$$ApplicationSpec$$] array__ | Specifies the list of applications in a namespace for which to run MintMaker. +
+If omitted, MintMaker will run for all namespace's applications. + |  | 
+|===
+
+

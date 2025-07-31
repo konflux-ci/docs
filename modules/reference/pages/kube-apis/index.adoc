@@ -12,3 +12,4 @@ Below are the Kubernetes API extensions added by Konflux.
 * xref:reference:kube-apis/release-service.adoc#k8s-api-github-com-konflux-ci-release-service-api-v1alpha1-releaseplan[ReleasePlan]
 * xref:reference:kube-apis/release-service.adoc#k8s-api-github-com-konflux-ci-release-service-api-v1alpha1-releaseplanadmission[ReleasePlanAdmission]
 * xref:reference:kube-apis/release-service.adoc#k8s-api-github-com-konflux-ci-release-service-api-v1alpha1-releaseserviceconfig[ReleaseServiceConfig]
+* xref:reference:kube-apis/mintmaker.adoc#k8s-api-github-com-konflux-ci-release-service-api-v1alpha1-dependencyupdatecheck[DependencyUpdateCheck]
