@@ -46,7 +46,7 @@ spec:
 +
 [source,shell]
 ----
-$ kubectl apply -f Release.yaml -n dev
+$ kubectl apply -f Release.yaml
 ----
 
 .*Verification*
@@ -56,3 +56,57 @@ $ kubectl apply -f Release.yaml -n dev
 . Click on the *Releases* tab
 . See the recent releases that have been created for the application.
 . You can find a link to the release pipeline run by clicking on the name of the release that you created.
+
+== "Re-triggering" a `Release`
+
+`Release` objects create workloads with a finite lifecycle. Once created, a `Release` object's `spec` field cannot be modified.
+To "re-trigger" a release, create a new instance of the desired `Release` object using the same values in the `spec` field.
+
+
+WARNING: Creating multiple `Release` objects for the same snapshot can result in duplicate actions taken during the release process.
+Consult with the team managing the release pipeline before creating a new `Release` object for a given snapshot.
+
+.*Procedures*
+
+. Create a new `Release.yaml` object locally, using similar values to the original `Release` object.
+
++
+*Example `Release.yaml` object*
+
++
+[source,yaml]
+----
+apiVersion: appstudio.redhat.com/v1alpha1
+kind: Release
+metadata:
+ name: <new-name-of-this-release> <.>
+ namespace: dev-tenant-namespace <.>
+spec:
+ releasePlan: <release-plan-name> <.>
+ snapshot: <application-snapshot-name> <.>
+ data: <key> <.>
+----
+
++
+<.> The name of the release. Use a different name than the original release.
+<.> The development team's tenant namespace.
+<.> The name of the release plan specifying the pipeline to run. Use the same value as the original release.
+<.> The name of the application snapshot that you want to release. Use the same value as the original release.
+<.> Optional: An unstructured key used for providing data for the managed Pipeline. Use the same value as the original release.
+
+. Apply the new `Release.yaml` object to the cluster by running the following command:
+
++
+[source,shell]
+----
+$ kubectl apply -f Release.yaml
+----
+
+.*Verification*
+
+. In the {ProductName} UI, select the *Applications* tab
+. Click the released application
+. Click the *Releases* tab
+. View the recent releases created for the application
+. Click the name of the release to view the results of its release pipeline
+
