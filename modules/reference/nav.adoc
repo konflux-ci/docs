@@ -11,3 +11,4 @@
 *** xref:kube-apis/release-service.adoc#k8s-api-github-com-konflux-ci-release-service-api-v1alpha1-releaseplan[ReleasePlan]
 *** xref:kube-apis/release-service.adoc#k8s-api-github-com-konflux-ci-release-service-api-v1alpha1-releaseplanadmission[ReleasePlanAdmission]
 *** xref:kube-apis/release-service.adoc#k8s-api-github-com-konflux-ci-release-service-api-v1alpha1-releaseserviceconfig[ReleaseServiceConfig]
+*** xref:kube-apis/mintmaker.adoc#k8s-api-github-com-konflux-ci-release-service-api-v1alpha1-dependencyupdatecheck[DependencyUpdateCheck]
