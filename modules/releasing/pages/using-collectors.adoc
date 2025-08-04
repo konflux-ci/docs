@@ -46,7 +46,6 @@ spec:
         type: jira <.>
     secrets: <.>
       - jira-collectors-secret
-    serviceAccountName: collector-service
   data: <key> <.>
   target: managed-tenant-namespace
 ----
