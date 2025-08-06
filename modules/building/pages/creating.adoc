@@ -9,7 +9,7 @@ Before being able to onboard a component to {ProductName}, you will need to ensu
 NOTE: Component names must be unique in a namespace, even when components are used in different application.
 
 CAUTION: {ProductName} pushes directly to branches in your onboarded repositories. In order to properly onboard, you need to ensure
-that no rules prevent pushes to the branch patterns *`appstudio-*`* and *`konflux/mintmaker/*`*.
+that no rules prevent pushes to the branch patterns *`konflux-*`* and *`konflux/mintmaker/*`*.
 
 === With the UI
 .Prerequisites:
