@@ -1,6 +1,8 @@
 = Creating a release
 
-A Release CR is created to submit a specific Application Snapshot to be processed according to the referenced ReleasePlan.
+A `Release` object informs Konflux that an Application's
+xref:testing:page$integration/snapshots/index.adoc[Snapshot] is ready to be released, in accordiance
+with its associated xref:create-release-plan.adoc[ReleasePlan].
 
 == Creating a `Release` object
 
@@ -17,36 +19,13 @@ The development team creates a `Release` object in the developer tenant namespac
 . Create a `Release.yaml` object locally.
 
 +
-*Example `Release.yaml` object*
+include::releasing:partial$example-manual-release.adoc[]
 
-+
-[source,yaml]
-----
-apiVersion: appstudio.redhat.com/v1alpha1
-kind: Release
-metadata:
- name: <name-of-this-release> <.>
- namespace: dev-tenant-namespace <.>
-spec:
- releasePlan: <release-plan-name> <.>
- snapshot: <application-snapshot-name> <.>
- data: <key> <.>
-----
-
-
-+
-<.> The name of the release.
-<.> The development team's tenant namespace.
-<.> The name of the release plan specifying the pipeline to run.
-<.> The name of the application snapshot that you want to release.
-<.> Optional: An unstructured key used for providing data for the managed Pipeline.
-
-. In the development tenant namespace, apply the `Release.yaml` file and add the resource to your cluster by running the following command:
-
+. In the development tenant namespace, create the `Release` object using the `kubectl` command line:
 +
 [source,shell]
 ----
-$ kubectl apply -f Release.yaml
+$ kubectl create -f Release.yaml
 ----
 
 .*Verification*
@@ -70,36 +49,41 @@ Consult with the team managing the release pipeline before creating a new `Relea
 
 . Create a new `Release.yaml` object locally, using similar values to the original `Release` object.
 
-+
-*Example `Release.yaml` object*
-
-+
-[source,yaml]
-----
-apiVersion: appstudio.redhat.com/v1alpha1
-kind: Release
-metadata:
- name: <new-name-of-this-release> <.>
- namespace: dev-tenant-namespace <.>
-spec:
- releasePlan: <release-plan-name> <.>
- snapshot: <application-snapshot-name> <.>
- data: <key> <.>
-----
-
-+
-<.> The name of the release. Use a different name than the original release.
-<.> The development team's tenant namespace.
-<.> The name of the release plan specifying the pipeline to run. Use the same value as the original release.
-<.> The name of the application snapshot that you want to release. Use the same value as the original release.
-<.> Optional: An unstructured key used for providing data for the managed Pipeline. Use the same value as the original release.
-
-. Apply the new `Release.yaml` object to the cluster by running the following command:
-
+.. Use `kubectl` to obtain the data of an existing `Release` object:
 +
 [source,shell]
 ----
-$ kubectl apply -f Release.yaml
+$ kubectl get release <release-name> -n <dev-tenant-namespace> -o yaml > Release.yaml
+----
+
+.. Alternatively, use https://github.com/itaysk/kubectl-neat[kubectl-neat] to remove unnecessary fields from the `Release` object:
++
+[source,shell]
+----
+$ kubectl neat get release <release-name> -n <dev-tenant-namespace> -o yaml > Release.yaml
+----
+
+. Remove the following fields from the `Release.yaml` object:
+.. `metadata` fields:
+... `annotations`
+... `creationTimestamp`
+... `finalizers`
+... `generation`
+... `name`
+... `ownerReferences`
+... `resourceVersion`
+... `uid`
+.. `status` - remove entirely or set its value to `{}`
+
+. Verify that the `Release.yaml` object is valid:
++
+include::releasing:partial$example-manual-release.adoc[]
+
+. Create the new `Release` object using the data in `Release.yaml`:
++
+[source,shell]
+----
+$ kubectl create -f Release.yaml
 ----
 
 .*Verification*
