@@ -1,0 +1,27 @@
+*Example `Release.yaml` object for a manually created release*
+
++
+[source,yaml]
+----
+apiVersion: appstudio.redhat.com/v1alpha1
+kind: Release
+metadata:
+ generateName: <name-of-this-release-prefix> <.>
+ namespace: dev-tenant-namespace <.>
+ labels:
+   release.appstudio.openshift.io/automated: "false" <.>
+   release.appstudio.openshift.io/author: my-userid <.>
+spec:
+ releasePlan: <release-plan-name> <.>
+ snapshot: <application-snapshot-name> <.>
+ data: <key> <.>
+----
+
++
+<.> The prefix of the release's name. Konflux will append a unique suffix when the `Release` object is created.
+<.> The development team's tenant namespace.
+<.> Label indicating that the release was not automatically created by Konflux. This value must be set to `"false"` using quotation marks.
+<.> The ID of the user who created the release. This is required for manually created releases.
+<.> The name of the release plan specifying the pipeline to run.
+<.> The name of the application snapshot that you want to release.
+<.> Optional: An unstructured key used for providing data for the managed release Pipeline.
