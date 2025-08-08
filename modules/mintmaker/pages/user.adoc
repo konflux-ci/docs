@@ -51,6 +51,16 @@ For groups: `group_<group ID>_bot_<32 hex characters>@noreply.gitlab.com`
 The project ID or group ID must come from your project or group when
 xref:building:creating-secrets.adoc#gitlab-source-secret[setting up the secrets].
 
+=== Registry credentials
+
+Renovate requires registry credentials to update container images from private registries. Users must provide these credentials via secrets and link them to the component-specific service account in their user namespace.
+
+NOTE: If you have already provided registry credentials for building, MintMaker will automatically reuse them.
+
+If you aren't receiving updates for an image from an authenticated registry, ensure that a secret with the registry credentials has been created and linked to the appropriate component-specific service account. You can find instructions for creating and linking these secrets xref:ROOT:building:creating-secrets.adoc#creating-registry-pull-secrets[here].
+
+IMPORTANT: The secret type must be `kubernetes.io/dockerconfigjson`. MintMaker will ignore any other secret types.
+
 == Configuration
 
 Renovate is a very configurable tool. Since every project has its unique
