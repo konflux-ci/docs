@@ -105,6 +105,9 @@ for more information.
 All pipeline runs associated with that commit should resume in the *Activity* > *Pipeline runs* tab.
 
 +
+IMPORTANT: Triggering build this way won't trigger nudging PR
+
++
 NOTE: This procedure only works to retrigger the build pipeline for the latest commit on the branch.
 
 +
