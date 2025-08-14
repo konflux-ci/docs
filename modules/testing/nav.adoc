@@ -2,6 +2,7 @@
 *** xref:build/index.adoc[Build-time tests]
 **** xref:build/snyk.adoc[Enabling Snyk]
 *** xref:integration/index.adoc[Integration tests]
+**** xref:integration/integration-testing-guide.adoc[Integration testing guide]
 **** xref:integration/adding.adoc[Adding an integration test]
 **** xref:integration/creating.adoc[Creating a custom integration test]
 **** xref:integration/editing.adoc[Editing integration tests]
