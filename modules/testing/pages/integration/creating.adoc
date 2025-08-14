@@ -20,6 +20,8 @@ To create a custom test that checks the built component image in snapshot, compl
 
 . Define a new Tekton pipeline. The following example is the beginning of a pipeline.
 
+. NOTE: Browse the https://github.com/konflux-ci/tekton-integration-catalog[tekton-integration-catalog] for reusable pipelines, tasks, and step actions to help you get started.
+
 +
 Example pipeline file:
 
