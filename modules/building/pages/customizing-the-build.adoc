@@ -147,71 +147,9 @@ See xref:patterns:slack-notifications.adoc[] for an example of a custom task add
 
 Custom Tasks may need access to data from other Tasks. However, in order to not break the chain of trust in a build Pipeline, there are restrictions in modifying such data. For example, a custom Task should not be allowed to modify the component's source code. If you are using Conforma to verify your builds, introducing a custom Task may violate the link:https://conforma.dev/docs/ec-policies/release_policy.html#trusted_task__trusted[Trusted Tasks] rule. See xref:./using-trusted-artifacts.adoc[Trusted Artifacts] for how to safely allow share data between Tasks.
 
-== Exchanging the build pipeline build task with higher memory limits
+== Increasing memory or cpu limits for buildah or any other task
 
-[TIP]
---
-If possible, prefer xref:./overriding-compute-resources.adoc[overriding compute resources] directly in your PipelineRun file.
-It is a much more flexible and simpler approach.
-Use this procedure as a last resort, if the relevant features are not enabled in your cluster.
---
-
-The `buildah` task, which builds components from a Dockerfile, has a memory limit of 4 GB. To build components with memory requirements greater than 4 GB, use the following tasks:
-
-* link:https://quay.io/repository/konflux-ci/tekton-catalog/task-buildah-6gb?tab=tags[quay.io/konflux-ci/tekton-catalog/task-buildah-6gb]
-* link:https://quay.io/repository/konflux-ci/tekton-catalog/task-buildah-8gb?tab=tags[quay.io/konflux-ci/tekton-catalog/task-buildah-8gb]
-* link:https://quay.io/repository/konflux-ci/tekton-catalog/task-buildah-10gb?tab=tags[quay.io/konflux-ci/tekton-catalog/task-buildah-10gb]
-* link:https://quay.io/repository/konflux-ci/tekton-catalog/task-buildah-20gb?tab=tags[quay.io/konflux-ci/tekton-catalog/task-buildah-20gb]
-* link:https://quay.io/repository/konflux-ci/tekton-catalog/task-buildah-24gb?tab=tags[quay.io/konflux-ci/tekton-catalog/task-buildah-24gb]
-
-.Procedure
-
-To exchange the build task with a memory limit of 6 GB, complete the following steps. For a memory limit of 8 or 10 GB, replace the references to 6 GB with the appropriate values.
-
-. Go to the GitHub repo of your component.
-. In each Pipeline definition in the `.tekton` directory, under `tasks`, locate the task named build-container:
-.. Under `.taskRef.params`, set `name` to `buildah-6gb`.
-.. Under `.taskRef.params`, change the value of `bundle` - replace the repository name with `task-buildah-6gb`.
-   Keep the version tag (e.g. `0.2`) and remove the `@sha256:...` digest.
-+
-[source,diff]
-----
- spec:
-   pipelineSpec:
-     tasks:
-       # ...
-       - name: build-container
-         taskRef:
-           resolver: bundles
-           params:
-             - name: kind
-               value: task
-             - name: name
--              value: buildah
-+              value: buildah-6gb
-             - name: bundle
--              value: quay.io/konflux-ci/tekton-catalog/task-buildah:0.2@sha256:3f0913dfb85e9aeb9916e412d10329528ddf4c8fba9958cba5291ca8ee247f7e
-+              value: quay.io/konflux-ci/tekton-catalog/task-buildah-6gb:0.2
-----
-
-.. If you'd like, pin the `task-buildah-6gb` bundle to a digest.
-   Take the output of the following script (requires `skopeo`) and append it to the `bundle` value:
-+
-[source,bash]
-----
-my_bundle=quay.io/konflux-ci/tekton-catalog/task-buildah-6gb:0.2
-
-skopeo inspect --format '@{{.Digest}}' --no-tags docker://"${my_bundle}"
-----
-+
-[TIP]
-====
-{ProductName} task version tags (e.g. `0.2`) are "floating" - they move to the latest release every time the task gets an update.
-By pinning to a digest, you ensure your pipeline will always use the exact same version of the task.
-{ProductName} automatically sends out PRs to update task digests, letting you opt in updating the task rather than having it update on its own behind your back.
-The task update PR will trigger the on-pull-request pipeline, testing the changes before they can affect the on-push pipeline or other PRs.
-
-====
+Refer to xref:./overriding-compute-resources.adoc[overriding compute resources].
 
 == Bring your own Quay repository to the build pipeline
 
