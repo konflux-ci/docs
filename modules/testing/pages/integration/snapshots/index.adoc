@@ -85,6 +85,19 @@ Snapshot CRs themselves consume resources. To manage this and stay within quota,
 
 IMPORTANT: These retention counts are **not user-configurable**.
 
+[NOTE]
+====
+It's possible to encounter a situation where new Snapshots cannot be created because the namespace has reached its 1024 Snapshot quota, even though the garbage collector (GC) is not pruning anything.
+
+**Cause**: This deadlock occurs when a large number of Snapshot CRs are protected from count-based GC by active Release CRs. While these Snapshots are protected, they still count towards the global quota. If the number of unreferenced Snapshots is below the retention limits (~500 push, 70 PR), the GC will not clear anything, but the total number of Snapshots (referenced + unreferenced) can still exceed 1024, blocking new snapshot creation.
+
+**Mitigation**: The primary way to prevent this is to manage the lifecycle of your Release CRs.
+
+**Configure the Grace Period**: Ensure the releaseGracePeriodDays field in your ReleasePlan is set to a reasonable value that reflects your team's release cadence. A shorter grace period ensures Release CRs expire more quickly, freeing up their associated Snapshots for garbage collection.
+
+**Manual Deletion**: In an urgent situation, you can manually delete old or unnecessary Release CRs to immediately make their Snapshots eligible for GC. 
+====
+
 === Relationship with Releases
 
 * When you create a `Release` CR from a Snapshot, that Snapshot is protected from the count-based garbage collection described above *if the Release exists*.
