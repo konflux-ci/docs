@@ -1,0 +1,356 @@
+// Generated documentation. Please do not edit.
+:anchor_prefix: k8s-api
+
+[id="reference"]
+== Project Controller API Reference
+
+.Packages
+- xref:{anchor_prefix}-projctl-konflux-dev-v1beta1[$$projctl.konflux.dev/v1beta1$$]
+
+
+[id="{anchor_prefix}-projctl-konflux-dev-v1beta1"]
+=== projctl.konflux.dev/v1beta1
+
+Package v1beta1 contains API Schema definitions for the projctl v1beta1 API group
+
+.Resource Types
+- xref:{anchor_prefix}-github-com-konflux-ci-project-controller-api-v1beta1-project[$$Project$$]
+- xref:{anchor_prefix}-github-com-konflux-ci-project-controller-api-v1beta1-projectdevelopmentstream[$$ProjectDevelopmentStream$$]
+- xref:{anchor_prefix}-github-com-konflux-ci-project-controller-api-v1beta1-projectdevelopmentstreamlist[$$ProjectDevelopmentStreamList$$]
+- xref:{anchor_prefix}-github-com-konflux-ci-project-controller-api-v1beta1-projectdevelopmentstreamtemplate[$$ProjectDevelopmentStreamTemplate$$]
+- xref:{anchor_prefix}-github-com-konflux-ci-project-controller-api-v1beta1-projectdevelopmentstreamtemplatelist[$$ProjectDevelopmentStreamTemplateList$$]
+- xref:{anchor_prefix}-github-com-konflux-ci-project-controller-api-v1beta1-projectlist[$$ProjectList$$]
+
+
+
+[id="{anchor_prefix}-github-com-konflux-ci-project-controller-api-v1beta1-project"]
+==== Project
+
+
+
+Project is the Schema for the projects API
+
+
+
+.Appears In:
+****
+- xref:{anchor_prefix}-github-com-konflux-ci-project-controller-api-v1beta1-projectlist[$$ProjectList$$]
+****
+
+[cols="20a,50a,15a,15a", options="header"]
+|===
+| Field | Description | Default | Validation
+| *`apiVersion`* __string__ | `projctl.konflux.dev/v1beta1` | |
+| *`kind`* __string__ | `Project` | |
+| *`metadata`* __link:https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.3/#objectmeta-v1-meta[$$ObjectMeta$$]__ | Refer to Kubernetes API documentation for fields of `metadata`.
+ |  | 
+| *`spec`* __xref:{anchor_prefix}-github-com-konflux-ci-project-controller-api-v1beta1-projectspec[$$ProjectSpec$$]__ |  |  | 
+|===
+
+
+[id="{anchor_prefix}-github-com-konflux-ci-project-controller-api-v1beta1-projectdevelopmentstream"]
+==== ProjectDevelopmentStream
+
+
+
+ProjectDevelopmentStream is the Schema for the projectdevelopmentstreams API
+
+
+
+.Appears In:
+****
+- xref:{anchor_prefix}-github-com-konflux-ci-project-controller-api-v1beta1-projectdevelopmentstreamlist[$$ProjectDevelopmentStreamList$$]
+****
+
+[cols="20a,50a,15a,15a", options="header"]
+|===
+| Field | Description | Default | Validation
+| *`apiVersion`* __string__ | `projctl.konflux.dev/v1beta1` | |
+| *`kind`* __string__ | `ProjectDevelopmentStream` | |
+| *`metadata`* __link:https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.3/#objectmeta-v1-meta[$$ObjectMeta$$]__ | Refer to Kubernetes API documentation for fields of `metadata`.
+ |  | 
+| *`spec`* __xref:{anchor_prefix}-github-com-konflux-ci-project-controller-api-v1beta1-projectdevelopmentstreamspec[$$ProjectDevelopmentStreamSpec$$]__ |  |  | 
+| *`status`* __xref:{anchor_prefix}-github-com-konflux-ci-project-controller-api-v1beta1-projectdevelopmentstreamstatus[$$ProjectDevelopmentStreamStatus$$]__ |  |  | 
+|===
+
+
+[id="{anchor_prefix}-github-com-konflux-ci-project-controller-api-v1beta1-projectdevelopmentstreamlist"]
+==== ProjectDevelopmentStreamList
+
+
+
+ProjectDevelopmentStreamList contains a list of ProjectDevelopmentStream
+
+
+
+
+
+[cols="20a,50a,15a,15a", options="header"]
+|===
+| Field | Description | Default | Validation
+| *`apiVersion`* __string__ | `projctl.konflux.dev/v1beta1` | |
+| *`kind`* __string__ | `ProjectDevelopmentStreamList` | |
+| *`metadata`* __link:https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.3/#listmeta-v1-meta[$$ListMeta$$]__ | Refer to Kubernetes API documentation for fields of `metadata`.
+ |  | 
+| *`items`* __xref:{anchor_prefix}-github-com-konflux-ci-project-controller-api-v1beta1-projectdevelopmentstream[$$ProjectDevelopmentStream$$] array__ |  |  | 
+|===
+
+
+[id="{anchor_prefix}-github-com-konflux-ci-project-controller-api-v1beta1-projectdevelopmentstreamspec"]
+==== ProjectDevelopmentStreamSpec
+
+
+
+ProjectDevelopmentStreamSpec defines the desired state of ProjectDevelopmentStream
+
+
+
+.Appears In:
+****
+- xref:{anchor_prefix}-github-com-konflux-ci-project-controller-api-v1beta1-projectdevelopmentstream[$$ProjectDevelopmentStream$$]
+****
+
+[cols="20a,50a,15a,15a", options="header"]
+|===
+| Field | Description | Default | Validation
+| *`project`* __string__ | The name of the project this stream belongs to + |  | 
+| *`template`* __xref:{anchor_prefix}-github-com-konflux-ci-project-controller-api-v1beta1-projectdevelopmentstreamspectemplateref[$$ProjectDevelopmentStreamSpecTemplateRef$$]__ | An optional template to use for creating resources owned by this +
+ProjectDevelopmentStream + |  | 
+|===
+
+
+[id="{anchor_prefix}-github-com-konflux-ci-project-controller-api-v1beta1-projectdevelopmentstreamspectemplateref"]
+==== ProjectDevelopmentStreamSpecTemplateRef
+
+
+
+ProjectDevelopmentStreamSpecTemplateRef defines which optional template is
+associated with this ProjectDevelopmentStream and how to apply it
+
+
+
+.Appears In:
+****
+- xref:{anchor_prefix}-github-com-konflux-ci-project-controller-api-v1beta1-projectdevelopmentstreamspec[$$ProjectDevelopmentStreamSpec$$]
+****
+
+[cols="20a,50a,15a,15a", options="header"]
+|===
+| Field | Description | Default | Validation
+| *`name`* __string__ | The name of the ProjectDevelopmentStreamTemplate to use + |  | 
+| *`values`* __xref:{anchor_prefix}-github-com-konflux-ci-project-controller-api-v1beta1-projectdevelopmentstreamspectemplatevalue[$$ProjectDevelopmentStreamSpecTemplateValue$$] array__ | Values for template variables + |  | 
+|===
+
+
+[id="{anchor_prefix}-github-com-konflux-ci-project-controller-api-v1beta1-projectdevelopmentstreamspectemplatevalue"]
+==== ProjectDevelopmentStreamSpecTemplateValue
+
+
+
+Provide a value for a variable specified in an associated
+ProjectDevelopmentStreamTemplate
+
+
+
+.Appears In:
+****
+- xref:{anchor_prefix}-github-com-konflux-ci-project-controller-api-v1beta1-projectdevelopmentstreamspectemplateref[$$ProjectDevelopmentStreamSpecTemplateRef$$]
+****
+
+[cols="20a,50a,15a,15a", options="header"]
+|===
+| Field | Description | Default | Validation
+| *`name`* __string__ | The name of the template variable to provide a value for + |  | 
+| *`value`* __string__ | The value to be placed in the template variable + |  | 
+|===
+
+
+[id="{anchor_prefix}-github-com-konflux-ci-project-controller-api-v1beta1-projectdevelopmentstreamstatus"]
+==== ProjectDevelopmentStreamStatus
+
+
+
+ProjectDevelopmentStreamStatus defines the observed state of ProjectDevelopmentStream
+
+
+
+.Appears In:
+****
+- xref:{anchor_prefix}-github-com-konflux-ci-project-controller-api-v1beta1-projectdevelopmentstream[$$ProjectDevelopmentStream$$]
+****
+
+[cols="20a,50a,15a,15a", options="header"]
+|===
+| Field | Description | Default | Validation
+| *`conditions`* __link:https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.3/#condition-v1-meta[$$Condition$$] array__ | Represents the observations of a ProjectDevelopmentStream's current state. +
+Known .status.conditions.type are: "TemplateApplied", and "TemplateGenerated" + |  | 
+|===
+
+
+[id="{anchor_prefix}-github-com-konflux-ci-project-controller-api-v1beta1-projectdevelopmentstreamtemplate"]
+==== ProjectDevelopmentStreamTemplate
+
+
+
+ProjectDevelopmentStreamTemplate is the Schema for the projectdevelopmentstreamtemplates API
+
+
+
+.Appears In:
+****
+- xref:{anchor_prefix}-github-com-konflux-ci-project-controller-api-v1beta1-projectdevelopmentstreamtemplatelist[$$ProjectDevelopmentStreamTemplateList$$]
+****
+
+[cols="20a,50a,15a,15a", options="header"]
+|===
+| Field | Description | Default | Validation
+| *`apiVersion`* __string__ | `projctl.konflux.dev/v1beta1` | |
+| *`kind`* __string__ | `ProjectDevelopmentStreamTemplate` | |
+| *`metadata`* __link:https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.3/#objectmeta-v1-meta[$$ObjectMeta$$]__ | Refer to Kubernetes API documentation for fields of `metadata`.
+ |  | 
+| *`spec`* __xref:{anchor_prefix}-github-com-konflux-ci-project-controller-api-v1beta1-projectdevelopmentstreamtemplatespec[$$ProjectDevelopmentStreamTemplateSpec$$]__ |  |  | 
+|===
+
+
+[id="{anchor_prefix}-github-com-konflux-ci-project-controller-api-v1beta1-projectdevelopmentstreamtemplatelist"]
+==== ProjectDevelopmentStreamTemplateList
+
+
+
+ProjectDevelopmentStreamTemplateList contains a list of ProjectDevelopmentStreamTemplate
+
+
+
+
+
+[cols="20a,50a,15a,15a", options="header"]
+|===
+| Field | Description | Default | Validation
+| *`apiVersion`* __string__ | `projctl.konflux.dev/v1beta1` | |
+| *`kind`* __string__ | `ProjectDevelopmentStreamTemplateList` | |
+| *`metadata`* __link:https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.3/#listmeta-v1-meta[$$ListMeta$$]__ | Refer to Kubernetes API documentation for fields of `metadata`.
+ |  | 
+| *`items`* __xref:{anchor_prefix}-github-com-konflux-ci-project-controller-api-v1beta1-projectdevelopmentstreamtemplate[$$ProjectDevelopmentStreamTemplate$$] array__ |  |  | 
+|===
+
+
+[id="{anchor_prefix}-github-com-konflux-ci-project-controller-api-v1beta1-projectdevelopmentstreamtemplatespec"]
+==== ProjectDevelopmentStreamTemplateSpec
+
+
+
+ProjectDevelopmentStreamTemplateSpec defines the resources to be generated
+using a ProjectDevelopmentStreamTemplate
+
+
+
+.Appears In:
+****
+- xref:{anchor_prefix}-github-com-konflux-ci-project-controller-api-v1beta1-projectdevelopmentstreamtemplate[$$ProjectDevelopmentStreamTemplate$$]
+****
+
+[cols="20a,50a,15a,15a", options="header"]
+|===
+| Field | Description | Default | Validation
+| *`project`* __string__ | The name of the project this stream template belongs to + |  | 
+| *`variables`* __xref:{anchor_prefix}-github-com-konflux-ci-project-controller-api-v1beta1-projectdevelopmentstreamtemplatevariable[$$ProjectDevelopmentStreamTemplateVariable$$] array__ | List of variables to allow customizing the template results. The order +
+variables in the list is significant as earlier variables can be +
+referenced by the default values for later variables + |  | 
+| *`resources`* __xref:{anchor_prefix}-github-com-konflux-ci-project-controller-api-v1beta1-unstructuredobj[$$UnstructuredObj$$] array__ | List of resources to be created for version made from this template +
+certain values for resource properties may include references to +
+variables using the Go-text/template syntax + |  | 
+|===
+
+
+[id="{anchor_prefix}-github-com-konflux-ci-project-controller-api-v1beta1-projectdevelopmentstreamtemplatevariable"]
+==== ProjectDevelopmentStreamTemplateVariable
+
+
+
+Settings for a variable to be used to customize the template results
+
+
+
+.Appears In:
+****
+- xref:{anchor_prefix}-github-com-konflux-ci-project-controller-api-v1beta1-projectdevelopmentstreamtemplatespec[$$ProjectDevelopmentStreamTemplateSpec$$]
+****
+
+[cols="20a,50a,15a,15a", options="header"]
+|===
+| Field | Description | Default | Validation
+| *`name`* __string__ | Variable name + |  | 
+| *`defaultValue`* __string__ | Optional default value for use when a value for the variable is not given +
+can reference values of other previously defined variables using the Go +
+text/template syntax + |  | 
+| *`description`* __string__ | Optional description for the variable for display in the UI + |  | 
+|===
+
+
+[id="{anchor_prefix}-github-com-konflux-ci-project-controller-api-v1beta1-projectlist"]
+==== ProjectList
+
+
+
+ProjectList contains a list of Project
+
+
+
+
+
+[cols="20a,50a,15a,15a", options="header"]
+|===
+| Field | Description | Default | Validation
+| *`apiVersion`* __string__ | `projctl.konflux.dev/v1beta1` | |
+| *`kind`* __string__ | `ProjectList` | |
+| *`metadata`* __link:https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.3/#listmeta-v1-meta[$$ListMeta$$]__ | Refer to Kubernetes API documentation for fields of `metadata`.
+ |  | 
+| *`items`* __xref:{anchor_prefix}-github-com-konflux-ci-project-controller-api-v1beta1-project[$$Project$$] array__ |  |  | 
+|===
+
+
+[id="{anchor_prefix}-github-com-konflux-ci-project-controller-api-v1beta1-projectspec"]
+==== ProjectSpec
+
+
+
+ProjectSpec defines the desired state of Project
+
+
+
+.Appears In:
+****
+- xref:{anchor_prefix}-github-com-konflux-ci-project-controller-api-v1beta1-project[$$Project$$]
+****
+
+[cols="20a,50a,15a,15a", options="header"]
+|===
+| Field | Description | Default | Validation
+| *`displayName`* __string__ | A nice human-readable name to be displayed in the UI + |  | 
+| *`description`* __string__ | A text describing the project, its purpose, etc. + |  | 
+|===
+
+
+[id="{anchor_prefix}-github-com-konflux-ci-project-controller-api-v1beta1-unstructuredobj"]
+==== UnstructuredObj
+
+
+
+
+
+
+
+.Appears In:
+****
+- xref:{anchor_prefix}-github-com-konflux-ci-project-controller-api-v1beta1-projectdevelopmentstreamtemplatespec[$$ProjectDevelopmentStreamTemplateSpec$$]
+****
+
+[cols="20a,50a,15a,15a", options="header"]
+|===
+| Field | Description | Default | Validation
+| *`Object`* __object (keys:string, values:link:https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.3/#interface{}-unstructured-v1[$$interface{}$$])__ | Object is a JSON compatible map with string, float, int, bool, []interface{}, or +
+map[string]interface{} +
+children. + |  | 
+|===
+
+

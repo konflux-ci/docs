@@ -49,5 +49,6 @@ gen_ref_docs "image-controller" "Image"
 gen_ref_docs "integration-service" "Integration Test"
 gen_ref_docs "release-service" "Release"
 gen_ref_docs "mintmaker" "DependencyUpdateCheck"
+gen_ref_docs "project-controller" "Project Controller"
 
 popd
