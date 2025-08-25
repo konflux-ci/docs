@@ -1,0 +1,165 @@
+== Best Practices for Integration Testing
+
+=== Design Atomic Tests
+
+* **Single Responsibility**: Each integration test should focus on testing one specific integration point or workflow
+* **Isolation**: Tests should be independent and not rely on the state from other tests
+* **Deterministic**: Tests should produce consistent results across different environments
+
+=== Leverage Konflux's Snapshot-based Testing
+
+* **Snapshot Composition**: Konflux automatically creates snapshots combining the latest tested components with your new build
+* **Atomic Updates**: Only one component reference is updated per snapshot, ensuring each artifact can be tested independently
+* **Integration Test Scenarios**: Use `IntegrationTestScenario` resources to define your test suites
+
+== Available Tasks and StepActions from Konflux Repositories
+
+The link:https://github.com/konflux-ci/tekton-integration-catalog[tekton-integration-catalog] provides a rich collection of reusable tekton tasks and step actions that can be used to help you quickly build integration test scenarios. Here are the key resources you should know about before getting started creating your first custom Integration Test Scenario tekton pipeline:
+
+=== Test Analysis and Reporting
+
+==== analyze-test-results StepAction
+* **Location**: Available in https://github.com/konflux-ci/release-service-catalog/tree/development/stepactions
+* **Purpose**: Analyzes test results and provides structured output for decision making
+* **Use Case**: Aggregate test results from multiple test suites and determine overall test status
+* **Documentation**: Available in the respective stepaction directory
+
+==== test-metadata Task
+* **Location**: Available in https://github.com/konflux-ci/release-service-catalog/tree/development/tasks
+* **Purpose**: Collects and stores metadata about test execution
+* **Use Case**: Track test execution history, performance metrics, and test environment details
+* **Versions**: Multiple versions available for different use cases
+
+=== Test Coverage and Quality Analysis
+
+==== Sealights Integration
+* **StepActions**: Available in https://github.com/konflux-ci/build-definitions/tree/main/stepactions
+  ** Creating test sessions for coverage tracking
+  ** Uploading test results to Sealights
+* **Tasks**: Available in https://github.com/konflux-ci/build-definitions/tree/main/task (specific tasks may vary by version)
+* **Purpose**: Provides comprehensive test coverage analysis and quality metrics
+* **Use Case**: Monitor test coverage across your application components and track quality improvements over time
+
+=== Infrastructure and Environment Management
+
+==== Cluster Resource Management
+* **Location**: Available in https://github.com/konflux-ci/build-definitions/tree/main/stepactions
+* **Purpose**: Collects cluster resource information for debugging and analysis
+* **Use Case**: Gather diagnostic information when tests fail due to resource constraints
+
+==== Failure Handling
+* **Location**: Available in https://github.com/konflux-ci/build-definitions/tree/main/stepactions
+* **Purpose**: Provides conditional failure logic for complex testing scenarios
+* **Use Case**: Implement sophisticated failure handling in multi-step test pipelines
+
+=== Quality Assurance and Code Analysis
+
+==== Static Analysis Security Testing (SAST)
+* **Purpose**: Automated security scanning during the testing phase
+* **Integration**: Built into Konflux pipelines by default
+* **Best Practice**: Review SAST results and address security findings before release
+
+== Implementation Examples
+
+=== Real Component Team Pipeline Examples
+
+The best way to understand how to use the tekton-integration-catalog tools effectively is to examine real component team pipelines. Here's a comprehensive example from the integration team's e2e testing pipeline that showcases the value of putting these helpful tools together:
+
+==== Konflux E2E Tests Pipeline
+
+The integration team's pipeline demonstrates effective use of multiple catalog resources:
+
+* **Pipeline**: link:https://github.com/konflux-ci/release-service/blob/main/integration-tests/pipelines/konflux-e2e-tests-pipeline.yaml#L279[konflux-e2e-tests-pipeline.yaml]
+* **Key Features**:
+  ** Uses multiple StepActions from the catalog for comprehensive testing
+  ** Implements proper test metadata collection
+  ** Includes failure handling and resource gathering for debugging
+  ** Demonstrates integration between different testing tools
+
+==== Example IntegrationTestScenario Using Real Pipeline
+
+[source,yaml]
+----
+apiVersion: appstudio.redhat.com/v1beta2
+kind: IntegrationTestScenario
+metadata:
+  name: konflux-e2e-integration-tests
+  namespace: release-service-dev
+spec:
+  application: release-service
+  resolverRef:
+    resolver: git
+    params:
+    - name: url
+      value: https://github.com/konflux-ci/release-service
+    - name: revision
+      value: main
+    - name: pathInRepo
+      value: integration-tests/pipelines/konflux-e2e-tests-pipeline.yaml
+  params:
+  - name: test-suite-name
+    value: "konflux-e2e-tests"
+----
+
+=== Using Test Metadata Collection
+
+[source,yaml]
+----
+apiVersion: tekton.dev/v1
+kind: Pipeline
+metadata:
+  name: integration-test-with-metadata
+spec:
+  tasks:
+  - name: run-tests
+    # Your test execution task
+  - name: collect-test-metadata
+    taskRef:
+      resolver: git
+      params:
+      - name: url
+        value: https://github.com/konflux-ci/release-service-catalog
+      - name: revision
+        value: development
+      - name: pathInRepo
+        value: tasks/test-metadata/test-metadata.yaml
+    params:
+    - name: test-results
+      value: $(tasks.run-tests.results.test-output)
+    runAfter:
+    - run-tests
+----
+
+== Integration with External Testing Systems
+
+While Konflux provides comprehensive testing capabilities, you may need to integrate with external testing systems:
+
+=== Testing Farm Integration
+* Use integration service tasks to call out to Testing Farm
+* Avoid unnecessary indirection through message buses
+* Implement direct API calls for better traceability
+
+=== Custom Testing Systems
+* Create custom tasks that call your existing testing infrastructure
+* Plan to migrate tests to run natively on Konflux for better performance
+* Use Konflux's testing capabilities to reduce network hops and improve resource utilization
+
+== Troubleshooting and Monitoring
+
+=== Common Issues and Solutions
+
+* **Test Timeouts**: Tekton has limitations on very long-running tests (24+ hours). Consider breaking long tests into smaller chunks
+* **Resource Constraints**: Use the `gather-cluster-resources` StepAction to diagnose resource-related test failures
+* **Flaky Tests**: Implement retry logic and proper error handling for transient failures
+
+=== Monitoring Test Health
+
+* Use test metadata collection to track test performance over time
+* Monitor test coverage trends with Sealights integration
+* Set up alerts for consistent test failures or degrading performance
+
+== Getting Help
+
+* **Documentation**: Refer to individual task READMEs in the tekton-integration-catalog
+* **Community Support**: Use the "Ask for support" workflow on the https://redhat-internal.slack.com/archives/C04PZ7H0VA8[#konflux-users] Slack channel
+* **Contributing**: Consider contributing new testing tasks to the catalog if you develop useful testing patterns
