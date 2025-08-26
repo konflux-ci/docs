@@ -24,4 +24,4 @@ Safeguard sensitive data with {ProductName}'s stringent access controls and gove
 
 link:https://slsa.dev[Supply-chain Levels for Software Artifacts (SLSA)] is a security framework produced through industry collaboration. We use this framework as a guide for reinforcing the build process we use for your applications, to better secure your software supply chain.
 
-To see how we meet the requirements set out by SLSA, see xref:metadata:index.adoc#supply-chain-security-through-slsa-conformity
+To see how we meet the requirements set out by SLSA, see xref:metadata:index.adoc#supply-chain-security-through-slsa-conformity[Supply chain security through SLSA conformity]
