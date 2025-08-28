@@ -611,3 +611,14 @@ or just for specific images using the https://docs.renovatebot.com/configuration
 ----
 
 or take a look at the https://docs.renovatebot.com/presets-workarounds/#workaroundssupportredhatimageversion[workarounds:supportRedHatImageVersion] preset for other available options.
+
+=== Cleanup
+
+Renovate creates a branch for each update, but these branches will not be removed,
+because MintMaker disables the `pruneStaleBranches` option. It is not recommended
+to enable this option, however alternative options exist.
+
+==== Automatic deletion of branches on GitHub
+
+You can enable the option to *Automatically delete head branches* as described
+in https://docs.github.com/en/repositories/configuring-branches-and-merges-in-your-repository/configuring-pull-request-merges/managing-the-automatic-deletion-of-branches[this GitHub documentation page].
