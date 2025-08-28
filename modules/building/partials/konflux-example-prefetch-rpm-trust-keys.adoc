@@ -1,0 +1,5 @@
+[source,Dockerfile]
+----
+RUN rpmkeys --import /etc/pki/rpm-gpg/RPM-GPG-KEY-* --root "${NEWROOT}"
+RUN dnf install -y "--installroot=${NEWROOT}" bash
+----
