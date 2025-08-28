@@ -132,6 +132,28 @@ MintMaker presets, you can also explore options from the https://docs.renovatebo
 CAUTION: *RPM manager currently does not support automerge based on severity
 information, this feature is WIP. 
 
+=== Overriding manager specific configuration
+
+To override a single manager's configuration, you need to follow the same pattern
+used in the base config, for example to override the grouping of `tekton` manager:
+
+[source,json]
+----
+{
+  "tekton": {
+    "packageRules": [
+      {
+        "matchPackageNames": [],
+        ...
+      }
+    ]
+  }
+}
+----
+
+If you were to define the `packageRules` outside of the `tekton` option,
+your rules wouldn't take any effect, because `tekton` -> `packageRules` is more specific.
+
 == Available managers
 
 Renovate is based around the concept of package managers. Package managers
