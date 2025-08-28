@@ -81,9 +81,11 @@ may use a configuration from a specific commit. However, in most cases, there
 won't be any conflicts between the deployed version and the latest version. For
 reference purposes, you can refer to the latest version of the configuration.
 
-Individual repositories can override this config to tweak
-Renovate's behavior to their needs by adding a `renovate.json`
-file in the top level directory of the repository's *default branch*.
+Individual repositories can override this config to tweak Renovate's behavior to
+their needs by adding a `renovate.json` file in the top level directory (or any
+of the locations listed at the top of https://docs.renovatebot.com/configuration-options/[this page]
+are also supported, for simplicity, this document always refers to `renovate.json`)
+of the repository's *default branch*.
 All available configuration options can be found in 
 https://docs.renovatebot.com/configuration-options/[Renovate documentation].
 
