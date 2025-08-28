@@ -76,6 +76,8 @@ The base configuration can be found https://github.com/konflux-ci/mintmaker/blob
 This config file is applied to all repositories onboarded in Konflux and serves
 as our global Renovate configuration.
 
+IMPORTANT: Do not copy the base configuration to your own project. Always start with an empty configuration file as described below.
+
 NOTE: While this link points to the latest global configuration, our deployment
 may use a configuration from a specific commit. However, in most cases, there
 won't be any conflicts between the deployed version and the latest version. For
