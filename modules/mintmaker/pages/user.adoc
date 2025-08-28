@@ -521,12 +521,23 @@ alternatively, to enable non-major updates only for specific packages, you can u
   ]
 }
 ----
+
 See Renovate's https://docs.renovatebot.com/key-concepts/automerge/#configuration-examples[docs]
 on this topic for further examples. They show how to set automerge for specific
 dependency groups, types, etc.
 
 Finally, to check if automerge is cofigured for a given PR/MR, you can look for 
 the annotation "Automerge: Enabled" in the PR/MR body.
+
+==== Bypassing approvals
+
+In order to allow Renovate to automatically merge PRs with dependency updates
+in repositories that normally require code reviews before merging,
+you can configure a bypass rule just for Renovate, by navigating to
+*Settings* -> *Rules* -> *Rulesets* and adding *Red Hat Konflux* app
+to a bypass list, like so:
+
+image::approval-bypass.png[height="auto" alt="Image showing how to add a bypass rule for Red Hat Konflux app"]
 
 === Inherited config
 
