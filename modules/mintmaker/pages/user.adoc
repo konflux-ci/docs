@@ -76,6 +76,8 @@ The base configuration can be found https://github.com/konflux-ci/mintmaker/blob
 This config file is applied to all repositories onboarded in Konflux and serves
 as our global Renovate configuration.
 
+IMPORTANT: Do not copy the base configuration to your own project. Always start with an empty configuration file as described below.
+
 NOTE: While this link points to the latest global configuration, our deployment
 may use a configuration from a specific commit. However, in most cases, there
 won't be any conflicts between the deployed version and the latest version. For
@@ -101,7 +103,7 @@ When customizing your configs, use the following base template to build on:
 === Configuration presets
 
 Before diving deeper into all the possible configuarion options, consider using
-one of MintMaker's prepared presets. Presets provide predefined options that can
+one of MintMaker's https://github.com/konflux-ci/mintmaker-presets[prepared presets]. Presets provide predefined options that can
 be added to the `extends` field in your renovate.json, as suggested below.
 Multiple presets can be combined as needed.
 
@@ -129,6 +131,28 @@ MintMaker presets, you can also explore options from the https://docs.renovatebo
 
 CAUTION: *RPM manager currently does not support automerge based on severity
 information, this feature is WIP. 
+
+=== Overriding manager specific configuration
+
+To override a single manager's configuration, you need to follow the same pattern
+used in the base config, for example to override the grouping of `tekton` manager:
+
+[source,json]
+----
+{
+  "tekton": {
+    "packageRules": [
+      {
+        "matchPackageNames": [],
+        ...
+      }
+    ]
+  }
+}
+----
+
+If you were to define the `packageRules` outside of the `tekton` option,
+your rules wouldn't take any effect, because `tekton` -> `packageRules` is more specific.
 
 == Available managers
 
