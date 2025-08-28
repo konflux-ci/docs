@@ -103,7 +103,7 @@ When customizing your configs, use the following base template to build on:
 === Configuration presets
 
 Before diving deeper into all the possible configuarion options, consider using
-one of MintMaker's prepared presets. Presets provide predefined options that can
+one of MintMaker's https://github.com/konflux-ci/mintmaker-presets[prepared presets]. Presets provide predefined options that can
 be added to the `extends` field in your renovate.json, as suggested below.
 Multiple presets can be combined as needed.
 
