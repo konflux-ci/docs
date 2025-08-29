@@ -21,7 +21,7 @@ The SLSA Build (v1.0) specification assigns two primary responsibilities to buil
 
 SLSA also includes three Build Levels, which provide you with increasing guarantees about how build platforms fulfill these responsibilities. Any build platform that generates provenance conforms to the SLSA framework’s Build Level 1 (L1) specifications. Build platforms produce artifacts with higher Build Levels by hardening provenance against forgery and by isolating the build process. As of the v1.0 specification, Build Level 3 (L3) is the highest Build Level. {ProductName} produces Build L3 artifacts.
 
-The rest of this document further explains our key responsibilities, provenance and build isolation, and how we fulfill those responsibilities. It concludes with a table summarizing how {ProductName} meets the requirements for SLSA Build L3. 
+The rest of this document further explains our key responsibilities, provenance and build isolation, and how we fulfill those responsibilities. It concludes with a table summarizing how {ProductName} meets the requirements for SLSA Build L3.
 
 
 === SLSA Provenance
@@ -30,11 +30,11 @@ In the context of its framework, link:https://slsa.dev/spec/v1.0/provenance[SLSA
 
 ==== Attestation
 
-You can think of attestation like a recipe: a recipe tells you how someone made a certain dish, and attestation tells you how a build platform created a software artifact. SLSA provenance is a form of attestation. The SLSA provenance that {ProductName} provides includes a subject that tells you which artifact the attestation belongs to, and a predicate that explains how {ProductName} built each artifact, including relevant links. 
+You can think of attestation like a recipe: a recipe tells you how someone made a certain dish, and attestation tells you how a build platform created a software artifact. SLSA provenance is a form of attestation. The SLSA provenance that {ProductName} provides includes a subject that tells you which artifact the attestation belongs to, and a predicate that explains how {ProductName} built each artifact, including relevant links.
 
 ==== Signing the attestation
 
-At higher Build Levels, SLSA directs build platforms to harden their provenance by signing each attestation. With the signature, you can verify that no one tampered with the attestation for your artifacts. Currently, {ProductName} signs attestations using a private key. 
+At higher Build Levels, SLSA directs build platforms to harden their provenance by signing each attestation. With the signature, you can verify that no one tampered with the attestation for your artifacts. Currently, {ProductName} signs attestations using a private key.
 
 ==== Evaluating provenance
 
@@ -44,9 +44,9 @@ In its Build Levels, SLSA evaluates provenance based on three questions:
 * Authenticity: How certain are you that the provenance came from the builder?
 * Accuracy: How difficult is it to tamper with provenance during the build process?
 
-Completeness of provenance comes from its attestation format, and authenticity derives from the signature. 
+Completeness of provenance comes from its attestation format, and authenticity derives from the signature.
 
-Accuracy is where provenance and build isolation intersect. To generate unforgeable provenance, build platforms must store those secret materials in a secure management system that platform users cannot access. In {ProductName}, only Tekton Chains, which generates and signs provenance, has access to the private key. 
+Accuracy is where provenance and build isolation intersect. To generate unforgeable provenance, build platforms must store those secret materials in a secure management system that platform users cannot access. In {ProductName}, only Tekton Chains, which generates and signs provenance, has access to the private key.
 
 
 == Build isolation
@@ -55,25 +55,25 @@ According to the SLSA framework, our other primary responsibility is to guarante
 
 === Hosted
 
-If builds run on an individual’s workstation, they become inconsistent. This inconsistency can cause mundane technical issues, but it also introduces security risks. What if undetected malware is lurking on that person’s machine? 
+If builds run on an individual’s workstation, they become inconsistent. This inconsistency can cause mundane technical issues, but it also introduces security risks. What if undetected malware is lurking on that person’s machine?
 
 To shrink the attack plane, SLSA dictates that builds should execute “using a hosted build platform on shared or dedicated infrastructure, not on an individual’s workstation.” By using an environment that comes from a known, auditable state, build platforms can largely ensure that they generate artifacts in the same way every time.
 
-{ProductName} is a hosted build platform. We execute builds on Amazon Web Services (AWS) through Red Hat OpenShift Service on AWS (ROSA). 
+{ProductName} is a hosted build platform. We execute builds on Amazon Web Services (AWS) through Red Hat OpenShift Service on AWS (ROSA).
 
 
 === Internally isolated
 
 Running builds in a hosted environment can protect your builds from malware installed on an individual’s workstation. But an attacker could gain access to your instance of a hosted build platform. What if they inject a malicious payload into one of your artifacts during the build process, and falsify the provenance to cover their tracks? Or what if they use one build to poison an environment that another build uses?
 
-To mitigate these threats, and others, SLSA instructs build platforms to execute builds in an environment that, within the larger hosted environment, is internally isolated from other builds, users, and the control plane. The only external influence that is permissible is influence that the build itself requests, such as dependencies.  
+To mitigate these threats, and others, SLSA instructs build platforms to execute builds in an environment that, within the larger hosted environment, is internally isolated from other builds, users, and the control plane. The only external influence that is permissible is influence that the build itself requests, such as dependencies.
 
 {ProductName} internally isolates builds within ROSA using several different tactics. For example, Tekton Chains generates and signs provenance in its own namespace, separate from the one that runs user-defined build steps, so attackers cannot forge provenance. And builds themselves run in their own ephemeral pods, so they cannot persist or influence the build environment of subsequent builds.
 
 
 == How we meet the requirements for SLSA Build L3
 
-The following table summarizes how {ProductName} conforms to the specification for producing SLSA Build L3 software artifacts. 
+The following table summarizes how {ProductName} conforms to the specification for producing SLSA Build L3 software artifacts.
 
 [cols="1,1, 1"]
 |===
@@ -153,9 +153,5 @@ a|In {ProductName}:
 
 == Additional resources
 
-* Learn xref:metadata:index.adoc[how to inspect the SLSA] provenance for your components.
 * Visit the link:https://slsa.dev/spec/v1.0/[SLSA overview page], the link:https://slsa.dev/spec/v1.0/levels[Build Levels] page, or the link:https://slsa.dev/spec/v1.0/verifying-systems[verifying build platforms] page.
-
-== Additional resources
-* Learn about the SLSA framework and xref:metadata:index.adoc#supply-chain-security-through-slsa-conformity[how {ProductName} meets the requirements of SLSA Build Level 3].
 * Conforma is a powerful tool that you can also use to verify your SLSA provenance; visit link:https://conforma.dev/docs/user-guide/cli.html#_validating_an_image[this page]  to learn how to use the EC CLI tool to verify your provenance. You will need the public key used by Tekton Chains, which you can find by following link:https://conforma.dev/docs/user-guide/cli.html#_finding_the_public_key[these instructions].
