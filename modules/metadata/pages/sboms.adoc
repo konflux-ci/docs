@@ -54,7 +54,7 @@ In the CLI, complete the following steps to download the SBOM for a component:
 +
 [source]
 ----
-$ cosign download sbom $IMAGE
+$ cosign download sbom --platform linux/amd64 $IMAGE
 ----
 
 +
@@ -63,7 +63,7 @@ $ cosign download sbom $IMAGE
 +
 [source]
 ----
-$ cosign download sbom $IMAGE > sbom.txt
+$ cosign download sbom --platform linux/amd64 $IMAGE > sbom.txt
 ----
 
 == Reading the SBOM
