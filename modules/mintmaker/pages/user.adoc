@@ -539,6 +539,24 @@ to a bypass list, like so:
 
 image::approval-bypass.png[height="auto" alt="Image showing how to add a bypass rule for Red Hat Konflux app"]
 
+==== Automerge using OpenShift CI/Prow
+
+Since the Red Hat Konflux app is a trusted app for the OpenShift CI bot, you can
+configure Renovate to automatically add approval labels by using the following config:
+
+[source,json]
+----
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "addLabels": [
+    "/approve",
+    "/lgtm"
+  ]
+}
+----
+
+You can also combine https://docs.renovatebot.com/configuration-options/#addlabels[`addLabels`] with any https://docs.renovatebot.com/configuration-options/#packagerules[`packageRules`] combination.
+
 === Inherited config
 
 Renovate supports the use of an https://docs.renovatebot.com/config-overview/#inherited-config[Inherited config].
