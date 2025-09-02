@@ -1,0 +1,108 @@
+= Applying task migrations
+
+{ProductName} allows task owners to write migrations to bring pipeline changes
+to users. Generally, users do not need to care about how the migrations are
+defined and how {ProductName} applies migrations to their build pipelines.
+MintMaker is configured well and the updates are sent regularly along with
+Renovate update pull request together. However, in case users requires to apply
+migrations by themselves, this document illustrates how to do that.
+
+== Apply migration with pipeline-migraiton-tool
+
+. Install pipeline-migration-tool:
+
++
+Choose a release from
+https://github.com/konflux-ci/pipeline-migration-tool/releases[releases] page
+and install a specific version.
+
++
+[source,bash]
+----
+pipx install https://github.com/konflux-ci/pipeline-migration-tool/archive/refs/tags/v0.4.2.zip
+----
+
++
+then, there are two executables available in the `$PATH`,
+`pipeline-migration-tool` and `pmt`. Each of them is usable. In this document,
+`pmt` will be used.
+
+. Identify bundle upgrades
+
++
+If there is some migration, you can see "migration" appearing in the Notes
+column in the description of a Renovate update pull request. For example:
+
++
+image::doc-mintmaker-renovate-update-pr.png[]
+
++
+Then, check the bundle update from changes page:
+
++
+[source,diff]
+----
+           - name: name
+             value: clamav-scan
+           - name: bundle
+-            value: quay.io/konflux-ci/tekton-catalog/task-clamav-scan:0.2@sha256:7749146f7e4fe530846f1b15c9366178ec9f44776ef1922a60d3e7e2b8c6426b
++            value: quay.io/konflux-ci/tekton-catalog/task-clamav-scan:0.3@sha256:cce2dfcc5bd6e91ee54aacdadad523b013eeae5cdaa7f6a4624b8cbcc040f439
+           - name: kind
+             value: task
+         resolver: bundles
+----
+
+. Run command to apply migration. Convert the bundle update into upgrade data,
+  then run CLI `pmt` from the Component repository root directory with the
+  upgrade data:
+
++
+[source,bash]
+----
+cd path/to/component-repo
+
+pmt migrate -u '
+[
+    {
+        "depName": "quay.io/konflux-ci/tekton-catalog/task-clamav-scan",
+        "currentValue": "0.2",
+        "currentDigest": "sha256:7749146f7e4fe530846f1b15c9366178ec9f44776ef1922a60d3e7e2b8c6426b",
+        "newValue": "0.3",
+        "newDigest": "sha256:cce2dfcc5bd6e91ee54aacdadad523b013eeae5cdaa7f6a4624b8cbcc040f439",
+        "packageFile": ".tekton/<pipeline file>", <.>
+        "parentDir": ".tekton",
+        "depTypes": ["tekton-bundle"]
+    },
+    {
+        "depName": "quay.io/konflux-ci/tekton-catalog/task-clamav-scan",
+        "currentValue": "0.2",
+        "currentDigest": "sha256:7749146f7e4fe530846f1b15c9366178ec9f44776ef1922a60d3e7e2b8c6426b",
+        "newValue": "0.3",
+        "newDigest": "sha256:cce2dfcc5bd6e91ee54aacdadad523b013eeae5cdaa7f6a4624b8cbcc040f439",
+        "packageFile": ".tekton/<pipeline file>", <.>
+        "parentDir": ".tekton",
+        "depTypes": ["tekton-bundle"]
+    }
+    , ... <.>
+]
+'
+----
+
++
+<.> Replace `<pipeline file>` with actual file name which is under `.tekton/` directory.
+<.> Likewise. Specify another pipeline file.
+<.> More upgrades can be specified if there is.
+
++
+[NOTE]
+====
+When saying build pipeline and pipeline file, it means a YAML file including
+tekton `Pipeline` definition or `PipelineRun` definition where `Pipeline` is
+embedded in `.spec.pipelineSpec`.
+====
+
+== Additional resources
+
+- https://github.com/konflux-ci/build-definitions?tab=readme-ov-file#task-migration[Task migrations]
+- https://github.com/konflux-ci/pipeline-migration-tool[pipeline-migraion-tool code repository]
+
