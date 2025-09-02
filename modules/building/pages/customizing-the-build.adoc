@@ -103,7 +103,7 @@ NOTE: This example shows a separate Pipeline file, but your pipeline may also be
 
 . (optional) Ensure your build pipeline is using
   xref:./using-trusted-artifacts.adoc[Trusted Artifacts]. This can prevent subsequent failures
-  reported by link:https://conforma.dev/docs/ec-policies/release_policy.html#trusted_task__trusted[Conforma's Trusted Tasks]
+  reported by link:https://conforma.dev/docs/policy/packages/release_trusted_task.html#trusted_task__trusted[Conforma's Trusted Tasks]
   check. See xref:./customizing-the-build.adoc#preventing-issues-with-conforma[Preventing Issues with Conforma]
   for more information.
 
@@ -145,7 +145,7 @@ See xref:patterns:slack-notifications.adoc[] for an example of a custom task add
 
 == Preventing issues with Conforma
 
-Custom Tasks may need access to data from other Tasks. However, in order to not break the chain of trust in a build Pipeline, there are restrictions in modifying such data. For example, a custom Task should not be allowed to modify the component's source code. If you are using Conforma to verify your builds, introducing a custom Task may violate the link:https://conforma.dev/docs/ec-policies/release_policy.html#trusted_task__trusted[Trusted Tasks] rule. See xref:./using-trusted-artifacts.adoc[Trusted Artifacts] for how to safely allow share data between Tasks.
+Custom Tasks may need access to data from other Tasks. However, in order to not break the chain of trust in a build Pipeline, there are restrictions in modifying such data. For example, a custom Task should not be allowed to modify the component's source code. If you are using Conforma to verify your builds, introducing a custom Task may violate the link:https://conforma.dev/docs/policy/packages/release_trusted_task.html#trusted_task__trusted[Trusted Tasks] rule. See xref:./using-trusted-artifacts.adoc[Trusted Artifacts] for how to safely allow share data between Tasks.
 
 == Increasing memory or cpu limits for buildah or any other task
 
