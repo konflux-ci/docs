@@ -101,6 +101,11 @@ tekton `Pipeline` definition or `PipelineRun` definition where `Pipeline` is
 embedded in `.spec.pipelineSpec`.
 ====
 
+. For whatever the reason, in case there is no migration delivered by the
+  bundle update. The linked `migration` document always includes instructions
+  for making changes to build pipelines. When necessary, consult the linked
+  document and follow the instructions to do manual update.
+
 == Additional resources
 
 - https://github.com/konflux-ci/build-definitions?tab=readme-ov-file#task-migration[Task migrations]
