@@ -2,7 +2,7 @@
 
 In order to retain the integrity of the build process, {ProductName} provides two modes of
 operation. The first is by ensuring that every Task in the build Pipeline is
-link:https://conforma.dev/docs/ec-policies/release_policy.html#trusted_task_package[trusted].
+link:https://conforma.dev/docs/policy/packages/release_trusted_task.html[trusted].
 The second relies on Trusted Artifacts to securely allow sharing of data between Tasks. See
 link:https://konflux-ci.dev/architecture/ADR/0036-trusted-artifacts.html[ADR-36] for more
 information.
