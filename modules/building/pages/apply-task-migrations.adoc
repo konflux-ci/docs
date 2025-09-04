@@ -3,7 +3,7 @@
 {ProductName} allows task owners to write migrations to bring pipeline changes
 to users. Generally, users do not need to care about how the migrations are
 defined and how {ProductName} applies migrations to their build pipelines.
-MintMaker applies the migrations automatically as part of the regular pull requests that update Tekton tasks. However, in case users requires to apply
+MintMaker applies the migrations automatically as part of the regular pull requests that update Tekton tasks. However, in case users are required to apply
 migrations by themselves, this document illustrates how to do that.
 
 == Apply migration with pipeline-migraiton-tool
@@ -94,9 +94,8 @@ pmt migrate -u '
 +
 [NOTE]
 ====
-When saying build pipeline and pipeline file, it means a YAML file including
-tekton `Pipeline` definition or `PipelineRun` definition where `Pipeline` is
-embedded in `.spec.pipelineSpec`.
+In this context, 'build pipeline' or 'pipeline file' are refering to a YAML file including a
+Tekton `Pipeline` or `PipelineRun` definition.
 ====
 
 == Apply migration manually
