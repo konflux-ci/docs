@@ -1,0 +1,3 @@
+Note that while there are many similarities between running `hermeto` as a command-line tool, and as part of a pipeline (i.e. in {ProductName}), the most important *difference* is:
+
+**Always** use the JSON-formatted input when running as part of a pipeline, and give special attention to the extra options allowed by JSON input.
