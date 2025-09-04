@@ -1,27 +1,52 @@
-* *Robust Security*
+=== CI/CD Automation
+
+{ProductName} simplifies your DevOps processes through:
+
+* *Automated Pipelines*: {ProductName} provides default pipeline configurations for building, testing, and deploying production software. You can trigger these pipelines via Git events, such as when team members accept push or pull requests. {ProductName} posts the results back to your source control management system.
+
+* *Integration with GitHub*: {ProductName} allows you to integrate with OpenShift pipelines using a GitHub app. This integration enables you to run Texton PipelineRuns based on GitHub events, which you can define in your repository's `.tekton` folder.
+
+* *Red Hat Subscription Support*: {ProductName} supports activation keys, allowing you to access Red Hat software using tools like `buildah` and `prefetch-dependencies`, which simplifies dependency management in your software supply chain.
+
+=== Collaboration
+
+{ProductName} encourages you to collaborate with its open-source community through resources such as the {ProductName} community site and eBooks on modern DevOps practices.
+
+=== Customization and Flexibility
+
+{ProductName} allows you to customize your project to meet your specific requirements, maintain high security standards, and adapt to various enterprise needs. {ProductName}'s adaptable platform ensures compliance without sacrificing flexibility.
+
+=== Open Source
+
+{ProductName} is distributed under the Apache 2.0 license and is built on top of Kubernetes. You can set {ProductName} up locally or as a cloud-native platform for your development teams. {ProductName} utilizes standard command-line tools, such as `kubectl` and `oc`, for managing resources.
+
+=== Robust Software Supply Chain Security
+
+{ProductName} offers unparalleled transparency into your software's build process, helping you address vulnerabilities before they become issues. {ProductName} emphasizes robust security through the following mechanisms:
+
+* *Hermetic Builds:* {ProductName} isolates your builds from changes to the host system to ensure consistency and produce accurate Software Bills of Materials (SBOMs) for tracking components, dependencies, and so forth.
+
+* *SLSA Compliance*: {ProductName} supports level three Supply Chain Levels for Software Artifacts (SLSAs), allowing you to generate secure, detailed records for each build step to ensure transparency and trust in your software supply chain.
 
 +
-Enhance the security of your software supply chain. {ProductName} offers unparalleled transparency into your software’s composition, helping you address vulnerabilities before they become issues.
+*Note*: link:https://slsa.dev[SLSA] is a security framework created through industry collaboration. We use this framework as a guide to reinforce the build process we use for your applications, thereby enhancing the security of your software supply chain. To see how we meet the requirements set out by SLSA, see xref:metadata:index.adoc#supply-chain-security-through-slsa-conformity[Supply chain security through SLSA conformity].
 
-* *Customizable Compliance*
+* *Stringent Access Controls*: {ProductName} allows you to implement policies to safeguard your sensitive data and ensure access compliance without giving up flexibility.
 
-+
-Achieve the highest security standards and customize your development process to meet specific project requirements. {ProductName}'s adaptable platform ensures compliance without sacrificing flexibility.
+* *Vulnerability Detection*: {ProductName} automatically scans for critical vulnerabilities every time you submit a pull request and verifies your container images against custom rules and secure frameworks.
 
-* *Efficient Deployment*
+=== Strict Data Governance
 
-+
-Build once, deploy anywhere. {ProductName} optimizes your release process, allowing for multiple deployments without redundancy and significantly reducing time-to-market.
+{ProductName} safeguards your sensitive data with stringent access controls and governance policies, ensuring rigorous data protection.
 
-* *Strict Data Governance*
+=== Testing and Deployment
 
-+
-Safeguard sensitive data with {ProductName}'s stringent access controls and governance policies, ensuring rigorous data protection.
+{ProductName} provides the following features to facilitate testing and deploying your software:
 
-*Choose {ProductName} — where efficiency meets security.*
+* *Build Once, Deploy Anywhere*: {ProductName} optimizes your release process for multiple deployments without redundancy, which reduces your time-to-market
 
-== Supply chain security through SLSA conformity
+* *Integration Testing*: {ProductName} runs your integration tests for complex applications and displays the results in your source control management system.
 
-link:https://slsa.dev[Supply-chain Levels for Software Artifacts (SLSA)] is a security framework produced through industry collaboration. We use this framework as a guide for reinforcing the build process we use for your applications, to better secure your software supply chain.
+* *Supports Multiple Architectures*: {ProductName} supports architectures like *amd64* and *arm64*, offering you flexibility when targeting diverse deployment environments.
 
-To see how we meet the requirements set out by SLSA, see xref:metadata:index.adoc#supply-chain-security-through-slsa-conformity[Supply chain security through SLSA conformity]
+* *OpenShift Clusters*: {ProductName} provides OpenShift clusters, enabling teams to test applications, including those that require administrative access for Operator Lifecycle Manager (OLM) operators.
