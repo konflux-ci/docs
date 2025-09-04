@@ -3,8 +3,7 @@
 {ProductName} allows task owners to write migrations to bring pipeline changes
 to users. Generally, users do not need to care about how the migrations are
 defined and how {ProductName} applies migrations to their build pipelines.
-MintMaker is configured well and the updates are sent regularly along with
-Renovate update pull request together. However, in case users requires to apply
+MintMaker applies the migrations automatically as part of the regular pull requests that update Tekton tasks. However, in case users requires to apply
 migrations by themselves, this document illustrates how to do that.
 
 == Apply migration with pipeline-migraiton-tool
@@ -23,9 +22,8 @@ pipx install https://github.com/konflux-ci/pipeline-migration-tool/archive/refs/
 ----
 
 +
-then, there are two executables available in the `$PATH`,
-`pipeline-migration-tool` and `pmt`. Each of them is usable. In this document,
-`pmt` will be used.
+This installs two executables in `$PATH` - `pipeline-migration-tool` and its alias, `pmt`.
+In this document, we will use `pmt`.
 
 . Identify bundle upgrades
 
@@ -91,7 +89,7 @@ pmt migrate -u '
 +
 <.> Replace `<pipeline file>` with actual file name which is under `.tekton/` directory.
 <.> Likewise. Specify another pipeline file.
-<.> More upgrades can be specified if there is.
+<.> You can specify more upgrades if there are any.
 
 +
 [NOTE]
@@ -102,7 +100,7 @@ embedded in `.spec.pipelineSpec`.
 ====
 
 . For whatever the reason, in case there is no migration delivered by the
-  bundle update. The linked `migration` document always includes instructions
+  bundle update. The linked `migration` document should include instructions
   for making changes to build pipelines. When necessary, consult the linked
   document and follow the instructions to do manual update.
 
