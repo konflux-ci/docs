@@ -4,7 +4,7 @@
 
 * *Automated Pipelines*: {ProductName} provides default pipeline configurations for building, testing, and deploying production software. You can trigger these pipelines via Git events, such as when team members accept push or pull requests. {ProductName} posts the results back to your source control management system.
 
-* *Integration with GitHub*: {ProductName} allows you to integrate with OpenShift pipelines using a GitHub app. This integration enables you to run Texton PipelineRuns based on GitHub events, which you can define in your repository's `.tekton` folder.
+* *Integration with GitHub and GitLab*: {ProductName} allows you to integrate with Tekton. This integration enables you to run Tekton PipelineRuns based on GitHub or GitLab events, which you can define in your repository's `.tekton` folder. We will add more source control management providers in the future.
 
 * *Red Hat Subscription Support*: {ProductName} supports activation keys, allowing you to access Red Hat software using tools like `buildah` and `prefetch-dependencies`, which simplifies dependency management in your software supply chain.
 
@@ -18,7 +18,7 @@
 
 === Open Source
 
-{ProductName} is distributed under the Apache 2.0 license and is built on top of Kubernetes. You can set {ProductName} up locally or as a cloud-native platform for your development teams. {ProductName} utilizes standard command-line tools, such as `kubectl` and `oc`, for managing resources.
+The core components of {ProductName} are distributed under the Apache 2.0 license and built on top of Kubernetes and OpenShift. You can set {ProductName} up locally or as a cloud-native platform for your development teams. {ProductName} utilizes standard command-line tools, such as Kubernetes' `kubectl` and OpenShift's `oc`, for managing resources.
 
 === Robust Software Supply Chain Security
 
@@ -31,13 +31,9 @@
 +
 *Note*: link:https://slsa.dev[SLSA] is a security framework created through industry collaboration. We use this framework as a guide to reinforce the build process we use for your applications, thereby enhancing the security of your software supply chain. To see how we meet the requirements set out by SLSA, see xref:metadata:index.adoc#supply-chain-security-through-slsa-conformity[Supply chain security through SLSA conformity].
 
-* *Stringent Access Controls*: {ProductName} allows you to implement policies to safeguard your sensitive data and ensure access compliance without giving up flexibility.
+* *Stringent Access Controls*: {ProductName} allows you to implement policies using native Kubernetes features like Role-Based Access Control (RBAC) and tenant namespaces to safeguard your sensitive data and ensure access compliance without giving up flexibility.
 
 * *Vulnerability Detection*: {ProductName} automatically scans for critical vulnerabilities every time you submit a pull request and verifies your container images against custom rules and secure frameworks.
-
-=== Strict Data Governance
-
-{ProductName} safeguards your sensitive data with stringent access controls and governance policies, ensuring rigorous data protection.
 
 === Testing and Deployment
 
@@ -48,5 +44,3 @@
 * *Integration Testing*: {ProductName} runs your integration tests for complex applications and displays the results in your source control management system.
 
 * *Supports Multiple Architectures*: {ProductName} supports architectures like *amd64* and *arm64*, offering you flexibility when targeting diverse deployment environments.
-
-* *OpenShift Clusters*: {ProductName} provides OpenShift clusters, enabling teams to test applications, including those that require administrative access for Operator Lifecycle Manager (OLM) operators.
