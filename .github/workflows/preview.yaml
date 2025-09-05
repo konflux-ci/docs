@@ -35,7 +35,7 @@ jobs:
 
       # Step 2: Download the built website files from the previous job
       - name: Download pull request artifact
-        uses: actions/github-script@v7
+        uses: actions/github-script@v8
         with:
           script: |
             const artifacts = await github.rest.actions.listWorkflowRunArtifacts({
@@ -94,7 +94,7 @@ jobs:
       # Step 7: Post the comment with the URL we found
       - name: Add comment
         if: success() && steps.deploy.outputs.url
-        uses: actions/github-script@v7
+        uses: actions/github-script@v8
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
