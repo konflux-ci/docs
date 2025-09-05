@@ -18,3 +18,4 @@
 *** xref:overriding-compute-resources.adoc[Overriding compute resources]
 *** xref:activation-keys-subscription.adoc[Using Red Hat subscription content]
 *** xref:reconfiguring-build-pipeline.adoc[Reconfiguring the build pipeline]
+*** xref:apply-task-migrations.adoc[Applying task migrations]
