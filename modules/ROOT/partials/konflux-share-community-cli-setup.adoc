@@ -1,0 +1,1 @@
+As an admin of your tenant, you can run the following command:

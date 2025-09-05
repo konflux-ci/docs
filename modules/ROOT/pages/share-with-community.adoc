@@ -1,0 +1,27 @@
+= Share Tenant with the Community
+
+As a tenant admin, you may want to give visibility on your project to the Konflux users outside your team.
+
+For this purpose, Konflux allows you to bind the `system:authenticated` group to the link:https://konflux-ci.dev/architecture/ADR/0011-roles-and-permissions.html[konflux-viewer-user-actions Role].
+As a result, each authenticated user in Konflux will be allowed to view your Tenant namespace and its resources from CLI and UI.
+
+include::partial${context}-share-community-first-paragraph.adoc[]
+
+== Share via CLI
+
+To share visibility with every authenticated user in Konflux, you need to create a `RoleBinding` binding the `konflux-viewer-user-actions` role to the `system:authenticated` Group.
+
+include::partial${context}-share-community-cli-setup.adoc[]
+
+[source,bash]
+----
+# set your tenant namespace
+tenant_namespace=<my-ns-tenant>
+
+# create the RoleBinding
+kubectl create rolebinding \
+  --clusterrole 'konflux-viewer-user-actions' \
+  --group 'system:authenticated' \
+  --namespace "${tenant_namespace}" \
+  konflux-public-viewer
+----
