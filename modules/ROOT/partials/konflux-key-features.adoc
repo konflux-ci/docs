@@ -10,7 +10,7 @@
 
 === Collaboration
 
-{ProductName} encourages you to collaborate with its open-source community through resources such as the {ProductName} community site and eBooks on modern DevOps practices.
+{ProductName} encourages you to collaborate with its open-source community through resources such as its link:https://github.com/konflux-ci/community[community] and link:https://github.com/konflux-ci[overview pages] on GitHub.
 
 === Customization and Flexibility
 
