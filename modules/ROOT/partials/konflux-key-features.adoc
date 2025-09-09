@@ -4,9 +4,9 @@
 
 * *Automated Pipelines*: {ProductName} provides default pipeline configurations for building, testing, and deploying production software. You can trigger these pipelines via Git events, such as when team members accept push or pull requests. {ProductName} posts the results back to your source control management system.
 
-* *Integration with GitHub and GitLab*: {ProductName} allows you to integrate with Tekton. This integration enables you to run Tekton PipelineRuns based on GitHub or GitLab events, which you can define in your repository's `.tekton` folder. We will add more source control management providers in the future.
+* *Integration with GitHub and GitLab*: {ProductName} allows you to integrate your build processes into GitHub or GitLab. This integration uses the Tekton framework to run pipelines in your Konflux cluster. We will add more source control management providers in the future.
 
-* *Red Hat Subscription Support*: {ProductName} supports activation keys, allowing you to access Red Hat software using tools like `buildah` and `prefetch-dependencies`, which simplifies dependency management in your software supply chain.
+* *Red Hat Subscription Support*: {ProductName} allows you to integrate subscription content into your pipeline to build software that uses these RPMs as dependencies.
 
 === Collaboration
 
@@ -24,12 +24,9 @@ The core components of {ProductName} are distributed under the Apache 2.0 licens
 
 {ProductName} offers unparalleled transparency into your software's build process, helping you address vulnerabilities before they become issues. {ProductName} emphasizes robust security through the following mechanisms:
 
-* *Hermetic Builds:* {ProductName} isolates your builds from changes to the host system to ensure consistency and produce accurate Software Bills of Materials (SBOMs) for tracking components, dependencies, and so forth.
+* *Hermetic Builds:* {ProductName} supports using hermetic builds to isolate your build processes from changes to the host system to ensure consistency and produce accurate Software Bills of Materials (SBOMs) for tracking components, dependencies, and so forth.
 
-* *SLSA Compliance*: {ProductName} supports level three Supply Chain Levels for Software Artifacts (SLSAs), allowing you to generate secure, detailed records for each build step to ensure transparency and trust in your software supply chain.
-
-+
-*Note*: link:https://slsa.dev[SLSA] is a security framework created through industry collaboration. We use this framework as a guide to reinforce the build process we use for your applications, thereby enhancing the security of your software supply chain. To see how we meet the requirements set out by SLSA, see xref:metadata:index.adoc#supply-chain-security-through-slsa-conformity[Supply chain security through SLSA conformity].
+* *SLSA Compliance*: {ProductName} supports level three Supply Chain Levels for Software Artifacts (SLSAs) reference.footnote:[link:https://slsa.dev[SLSA] is a security framework created through industry collaboration. We use this framework as a guide to reinforce the build process we use for your applications, thereby enhancing the security of your software supply chain. To see how we meet the requirements set out by SLSA, see xref:metadata:index.adoc#supply-chain-security-through-slsa-conformity[Supply chain security through SLSA conformity].], allowing you to generate secure, detailed records for each build step to ensure transparency and trust in your software supply chain.
 
 * *Stringent Access Controls*: {ProductName} allows you to implement policies using native Kubernetes features like Role-Based Access Control (RBAC) and tenant namespaces to safeguard your sensitive data and ensure access compliance without giving up flexibility.
 
