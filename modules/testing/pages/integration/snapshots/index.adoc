@@ -44,7 +44,7 @@ Snapshots can be generated in several ways:
 * **Automatic (Push Events):** This is the primary mechanism for generating snapshots intended for release pipelines.
 ** When code is pushed to a branch tracked by your Components (e.g., `main`, `release-4.19`), {ProductName} triggers the associated build pipelines defined in the `.tekton/` directory of your component repositories.
 ** Once the build is complete, a Snapshot CR is automatically created. It contains references to the container image digest produced by that successful build along with the latest images for all other Components in the Application.
-** These push-event snapshots are typically labeled with `pac.test.appstudio.openshift.io/event-type=push`.
+** These push-event snapshots are typically labeled with `pac.test.appstudio.openshift.io/event-type=push`. Snapshots without `pac.test.appstudio.openshift.io/event-type` or `pac.test.appstudio.openshift.io/pull-request` annotations are treated as push snapshots.
 ** They may be used for xref:releasing:create-release.adoc[creating a release].
 
 * **Automatic (Pull Request Events):** Snapshots are also generated for Pull Requests (PRs) to enable automated testing of proposed changes.
