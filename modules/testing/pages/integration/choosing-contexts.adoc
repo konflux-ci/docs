@@ -13,8 +13,9 @@ The full list of supported contexts is:
 use `component_COMPONENT` context, do not explicitly set the `pull_request` or `push` context. See the NOTE below.
 * "pull_request" - runs the integration test in case of the Snapshot being created for a `pull request` event
 ** This context is run for each component build in the pull request.
-* "push" - runs the integration test in case of the Snapshot being created for a `push` event
-* "override" - runs the integration test for an `override` Snapshot
+* "push" - runs the integration test in case of the Snapshot being created for a `push` event. If the event is not set on the Snapshot
+** and the Snapshot does not have a pull request label the integration service assumes it is a push snapshot.
+* "override" - runs the integration test for Snapshots with the `override` event type
 ** See more in xref:testing:integration/snapshots/override-snapshots.adoc[Creating an override snapshot]
 * "disabled" - disables the execution of the given integration test if it's the only context that's defined
 ** This can be useful if the scenario in question needs to only be executed manually, see more about running
