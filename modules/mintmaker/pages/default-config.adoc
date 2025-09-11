@@ -60,13 +60,6 @@ It also includes links for migration guides in case of major changes.
 Since March 2025, MintMaker can also perform task migrations automatically
 using the https://github.com/konflux-ci/pipeline-migration-tool[pipeline-migration-tool] project.
 
-== RPM updates
-
-Updates to xref:mintmaker:rpm-lockfile.adoc[RPM lockfiles] are a bit special,
-because they require grouping by default and must disable `lockFileMaintenance`.
-We recommend not changing the configuration related to RPM updates besides
-`schedule` or `enabled` options.
-
 == Go updates
 
 By default, MintMaker enables:
