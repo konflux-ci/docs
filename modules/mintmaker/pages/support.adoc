@@ -42,15 +42,15 @@ argument you can force the locking mechanism to use any Python version you need.
 | *Capability* | *Supported*
 | Generate a new `rpms.lock.yaml` | No
 | Update existing `rpms.lock.yaml` | Yes
-| Update multiple lock files in subdirectories | No
-| Work with different lock file in multiple branches | No footnote:[Only a single branch is properly supported at the moment]
-| Display individual package upgrades in PR description | Yes
+| Update multiple lock files in subdirectories | Yes
+| Work with different lock file in multiple branches | Yes
+| Display individual package upgrades in PR description | No
 a| Match CVE data to package upgrades
 
-(root `rpms.lock.yaml`) | Yes footnote:[Occassionally the `[SECURITY\]` label might be missing, despite CVE description being included]
+(root `rpms.lock.yaml`) | Yes
 a| Match CVE data to package upgrades
 
-(subdirectory `rpms.lock.yaml`) | No
+(subdirectory `rpms.lock.yaml`) | Yes
 |===
 
 == Go dependencies
