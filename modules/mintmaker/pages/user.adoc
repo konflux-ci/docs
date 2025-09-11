@@ -227,7 +227,7 @@ enabled managers is available below.
 `pip_setup`, `pipenv`, `poetry`, `pyenv`, `runtime-version`,
 `setup-cfg`, `pep723`
 
-|*RPM* |`rpm`
+|*RPM* |`rpm-lockfile`
 
 |*Ruby* |+++<del>+++`bundler`, `puppet`, `ruby-version`+++</del>+++
 
@@ -268,7 +268,7 @@ Due to performance considerations, since 20 November 2024, MintMaker is configur
 [cols="30%,70%",option="header"]
 |===
 |*Schedule* | *Managers*
-|Every day before 5 AM | rpm, lockFileMaintenance
+|Every day before 5 AM | rpm-lockfile, lockFileMaintenance
 |Every day after 5 AM | dockerfile
 |Tuesday after 5 AM | git-submodules
 |Wednesday after 5 AM | argocd, crossplane, fleet, flux, helm-requirements, helm-values, helmfile, helmsman, helmv3, jsonnet-bundler, kubernetes, kustomize

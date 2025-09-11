@@ -12,10 +12,3 @@ on their severity.
 
 The CVE data is provided by Red Hat. The https://github.com/konflux-ci/mintmaker-osv-database[database] that MintMaker uses is rebuilt every hour
 and includes CVE data up to 120 days old.
-
-== Limitations for RPM lockfiles
-
-Security updates are provided only for the lockfile in the *root* folder
-of a repository. While you may receive updates for more than one lockfile,
-the CVE data is only extracted for the root one. See xref:mintmaker:rpm-lockfile.adoc[RPM lockfiles] and xref:mintmaker:support.adoc#rpm-lock-files[Support matrix]
-for further information.

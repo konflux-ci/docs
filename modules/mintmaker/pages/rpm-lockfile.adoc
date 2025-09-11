@@ -20,19 +20,14 @@ lockfile is not consistent anymore and needs to be updated.
 
 In MintMaker, all RPM updates are grouped into a single PR/MR. This is because
 the lockfile implementation doesn't allow for single dependency updates
-and it needs to be refreshed as a whole every time. While the individual RPM
-updates _will_ be listed in the PR/MR description, it is not possible
-to break them into multiple PRs/MRs.
+and it needs to be refreshed as a whole every time.
 
 
 Please find how to generate RPM lockfile in xref:ROOT:building:prefetching-dependencies.adoc#rpm[documentation for enabling RPM prefetching].
 
+== How MintMaker detects RPM lockfiles
 
-== Multiple lockfiles in one repository
-
-Updating multiple RPM lockfiles inside a single repository is currently xref:mintmaker:support.adoc#rpm-lock-files[not supported].
-
-The RPM lockfile is also required to be located in the root folder of the repository.
+MintMaker searches the repository for files named `rpms.in.yaml`/`rpms.in.yml` and assumes that a lockfile named `rpms.lock.yaml`/`rpms.lock.yml` exists in that same directory. MintMaker supports multiple lockfiles in a repository, but they must be placed in different directories.
 
 == RPM lockfile with RPMs that require subscription
 
