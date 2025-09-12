@@ -9,9 +9,9 @@ You can find these definitions in the xref:glossary:index.adoc[glossary].
 === Namespace
 In Kubernetes, link:https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/[namespaces]
 provide a foundational mechanism for isolating groups of resources within a single cluster.
-{ProductName} scopes all the resources and APIs you interact with to namespaces, including your Components, Applications, Snapshots, Secrets, and the Tekton PipelineRuns that perform builds, tests, and releases.
+{ProductName} scopes all the resources and APIs you interact with to namespaces, including your components, applications, snapshots, secrets, and the Tekton PipelineRuns that perform builds, tests, and releases.
 
-==== Tenant namespace
+=== Tenant namespace
 Tenant namespaces are where Tekton Pipelines produce artifacts that more than one individual can access according to their roles and the permissions defined by link:https://konflux-ci.dev/architecture/ADR/0011-roles-and-permissions.html[those roles].
 The tenant namespaces can be either for an individual or a team.
 
@@ -28,7 +28,7 @@ You will use your tenant namespaces to do the following:
 - View and iterate on the xref:testing:index.adoc[results of your IntegrationTestScenarios].
 - xref:releasing:index.adoc[Create releases] for specific snapshots according to your ReleasePlans.
 
-==== Managed Namespaces
+=== Managed Namespaces
 Managed namespaces are where you manage release pipelines and credentials for your organization.
 The primary interaction between a tenant and managed namespaces involves creating a release in a tenant namespace that references a specific snapshot in the managed namespace.
 You can then trigger the release pipeline for that snapshot in the managed namespace.
@@ -36,7 +36,7 @@ See xref:releasing:index.adoc[release documentation] for more information.
 
 === OCI Artifact
 OCI is the link:https://github.com/opencontainers[open containers initiative].
-It contains an link:https://github.com/opencontainers/image-spec[image spec] that permits storing link:https://github.com/opencontainers/image-spec/blob/main/artifacts-guidance.md[artifacts other than container images] in container registries, which we call *OCI Artifacts*.
+This initiative contains an link:https://github.com/opencontainers/image-spec[image spec] that permits storing link:https://github.com/opencontainers/image-spec/blob/main/artifacts-guidance.md[artifacts other than container images] in container registries, which we call *OCI Artifacts*.
 
 Konflux pushes artifacts that you build in your tenant namespace to an OCI registry along with their supporting metadata (including xref:metadata:index.adoc[SLSA provenance attestations and SBOMs]).
 
@@ -53,7 +53,7 @@ If you're familiar with common Kubernetes resources such as Pods and Deployments
 
 This setup enables commonplace Kubernetes client tools, such as link:https://kubernetes.io/docs/reference/kubectl/[kubectl], to understand and interact with {ProductName} APIs.
 
-==== Component
+=== Component
 A *Component CR* describes the properties of an OCI artifact.
 These properties include the following:
 
@@ -65,7 +65,7 @@ These properties include the following:
 The CR also contains a reference to the single application that owns it.
 Component names are unique in a namespace, even when you use the components in different applications.
 
-===== Build Pipeline
+=== Build Pipeline
 When you create a component in {ProductName}, the system pushes a build pipeline to the Git repository in the `.tekton` directory and installs a webhook.
 
 Upon a new push or pull request (_pull requests_ are referred to as _merge requests_ in GitLab's terminology), the system runs the pipeline defined in the Git repository.
@@ -95,7 +95,7 @@ It helps to logically group components in the UI.
 When a new component's build pipeline is complete, the Integration Service, which contains the latest Git and OCI references, creates a new snapshot from each of the Component CRs, as well as the just-produced component artifact.
 The IntegrationTestScenarios use this output to run.
 
-==== Snapshot
+=== Snapshot
 A *Snapshot CR* is an immutable set of component references.
 It can be created from push or pull request events.
 A snapshot defines a set of components, which are either tested or released together.
@@ -103,14 +103,14 @@ A snapshot defines a set of components, which are either tested or released toge
 Over time, as you produce more builds, your tenant namespace will contain many snapshots.
 Understand that at any point in time, a given snapshot _might not necessarily_ represent the latest built artifacts for all components in your tenant namespace.
 
-==== IntegrationTestScenario
+=== IntegrationTestScenario
 An *IntegrationTestScenario (ITS) CR* is a Tekton Pipeline that defines a test to run against an entire snapshot.
 The Integration Service runs all configured ITSs for the snapshot's application.
 The system also creates a default ITS for every new application to enable EnterpriseContractPolicy checks on all components.
 
 You can configure each ITS as optional for release. All non-optional tests must pass before the new component build is "promoted" to update the references on the component CR.
 
-==== EnterpriseContractPolicy
+=== EnterpriseContractPolicy
 Building in {ProductName} follows a "build once, release multiple times" mentality, where each release can have separate requirements on the builds before allowing the action.
 You codify these build requirements in an EnterpriseContractPolicy (ECP).
 
@@ -118,18 +118,18 @@ When {ProductName} evaluates an ECP against a snapshot, it returns a single resu
 For example, if all components pass the policy requirements, the policy evaluation is true.
 If a single component in a snapshot fails the policy, however, the overall result is a failure even if all of the rest have clean passes.
 
-==== ReleasePlan
+=== ReleasePlan
 A *ReleasePlan (RP) CR* maps an Application you want to release with a release action.
 It defines the process to release future Snapshots of your Application in the managed namespace.
 It also determines whether automatic releases are enabled and whether you want to provide additional data to each future release pipeline.
 
-==== ReleasePlanAdmission
+=== ReleasePlanAdmission
 You also need to create a *ReleasePlanAdmission (RPA) CR* in the managed namespace.
 It defines the specific pipeline to run and a given ECP, which must pass for each snapshot before that pipeline can proceed.
 It also establishes essential details about the delivery of your content that we want to exercise some control over.
 For example, if your release pipeline uses an link:https://Github.com/konflux-ci/release-service-catalog/blob/production/tasks/managed/apply-mapping/apply-mapping.yaml[apply-mapping] task, the `.spec.data.mapping.components` section of this resource will define which destination repositories to push your content to.
 
-==== Release
+=== Release
 Every time you want to release newly built artifacts, you will create a Release CR in *your* tenant namespace.
 The Release CR represents your intent to release some content to customers.
 It is an active resource that, when present, will initiate the push of content.
