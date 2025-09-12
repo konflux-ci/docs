@@ -71,7 +71,11 @@ spec:
 
 . Review and merge the pull request.
 
-IMPORTANT: Refer to link:https://hermetoproject.github.io/hermeto/usage[Hermeto Usage] for more detail on Hermeto configuration and usage. Note, however, that this docs applies specifically to using `hermeto` as a command-line tool, and you might have to make allowances for running in a pipeline in {ProductName}.
+IMPORTANT: Refer to link:https://hermetoproject.github.io/hermeto/usage[Hermeto Usage] for more detail on Hermeto configuration and usage.
+
+        Note that while there are some differences between using `hermeto` as a command-line tool, and running it in a pipeline (i.e. in {ProductName}), the most important usage pattern is the same, namely:
+
+        **Always** use JSON-formatted input to Hermeto when running in a pipeline environment (e.g. in {ProductName}, include it in the task definition). Check the walkthrough for the specfic package manager you're using if you're not certain as to how it should work.
 
 == Verification
 * From the {ProductName} *Applications* view, go to *Activity > Pipeline runs*.
@@ -100,7 +104,10 @@ For more Go-specific `.netrc` details, see the link:https://go.dev/doc/faq#git_h
 
 Refer to the link:https://hermetoproject.github.io/hermeto/gomod/#example[gomod walkthrough] for a detailed example of using gomod with Hermeto.
 
-IMPORTANT: You *must* take into account the differences between using Hermeto in a pipeline, and using `hermeto` as a command-line tool.
+IMPORTANT: Note that while there are some differences between using `hermeto` as a command-line tool, and running it in a pipeline (i.e. in {ProductName}), the most important usage pattern is the same, namely:
+
+        **Always** use JSON-formatted input to Hermeto when running in a pipeline environment (e.g. in {ProductName}, include it in the task definition). Check the walkthrough linked above if you're not certain as to how it should work.
+
 
 == [[pip]]Enabling prefetch builds for `pip`
 Hermeto supports pip by parsing of `pip` requirements files, including but not limited to, `requirements.txt` files placed in the root of your repository. By generically parsing `pip` requirements files, Hermeto downloads the specified dependencies.
@@ -184,7 +191,9 @@ For more pip-specific details on netrc files, review the link:https://pip.pypa.i
 
 Refer to the link:https://hermetoproject.github.io/hermeto/pip/#example[pip walkthrough] for a detailed example of using pip with Hermeto.
 
-IMPORTANT: You *must* take into account the differences between using Hermeto in a pipeline, and using `hermeto` as a command-line tool.
+IMPORTANT: Note that while there are some differences between using `hermeto` as a command-line tool, and running it in a pipeline (i.e. in {ProductName}), the most important usage pattern is the same, namely:
+
+**Always** use JSON-formatted input to Hermeto when running in a pipeline environment (e.g. in {ProductName}, include it in the task definition). Check the example if you're not certain as to how it should work.
 
 == [[npm]]Enabling prefetch builds for `npm`
 Hermeto supports `npm` by fetching any dependencies you declare in your `package.json` and `package-lock.json` project files. The npm CLI manages the `package-lock.json` file automatically, and Hermeto fetches any dependencies and enables your build to install them without network access.
@@ -196,7 +205,9 @@ Hermeto supports `npm` by fetching any dependencies you declare in your `package
 
 Refer to the link:https://hermetoproject.github.io/hermeto/npm/#example[npm walkthrough] for a detailed example of using npm with Hermeto.
 
-IMPORTANT: You *must* take into account the differences between using Hermeto in a pipeline, and using `hermeto` as a command-line tool.
+IMPORTANT: Note that while there are some differences between using `hermeto` as a command-line tool, and running it in a pipeline (i.e. in {ProductName}), the most important usage pattern is the same, namely:
+
+**Always** use JSON-formatted input to Hermeto when running in a pipeline environment (e.g. in {ProductName}, include it in the task definition). Check the example if you're not certain as to how it should work.
 
 == [[yarn]]Enabling prefetch builds for `yarn`
 
@@ -210,7 +221,9 @@ Supported versions: 1.x, 3.x, and 4.x. Hermeto automatically detects the version
 
 Refer to the link:https://hermetoproject.github.io/hermeto/yarn/#example[yarn walkthrough] for a detailed example of using yarn with Hermeto.
 
-IMPORTANT: You *must* take into account the differences between using Hermeto in a pipeline, and using `hermeto` as a command-line tool.
+IMPORTANT: Note that while there are some differences between using `hermeto` as a command-line tool, and running it in a pipeline (i.e. in {ProductName}), the most important usage pattern is the same, namely:
+
+**Always** use JSON-formatted input to Hermeto when running in a pipeline environment (e.g. in {ProductName}, include it in the task definition). Check the example if you're not certain as to how it should work.
 
 == [[bundler]]Enabling prefetch builds for `bundler`
 
@@ -222,7 +235,9 @@ You have a `Gemfile` and a `Gemfile.lock` file in your repository that lists all
 
 Refer to the link:https://hermetoproject.github.io/hermeto/bundler/#hermetic-build[bundler walkthrough] for a detailed example of using bundler with Hermeto.
 
-IMPORTANT: You *must* take into account the differences between using Hermeto in a pipeline, and using `hermeto` as a command-line tool.
+IMPORTANT: Note that while there are some differences between using `hermeto` as a command-line tool, and running it in a pipeline (i.e. in {ProductName}), the most important usage pattern is the same, namely:
+
+**Always** use JSON-formatted input to Hermeto when running in a pipeline environment (e.g. in {ProductName}, include it in the task definition). Check the example if you're not certain as to how it should work.
 
 == [[cargo]]Enabling prefetch builds for `cargo`
 
@@ -234,7 +249,9 @@ You have a `Cargo.lock` file in your repository that lists all the dependencies.
 
 Refer to the link:https://hermetoproject.github.io/hermeto/cargo/#example[cargo walkthrough] for a detailed example of using cargo with Hermeto.
 
-IMPORTANT: You *must* take into account the differences between using Hermeto in a pipeline, and using `hermeto` as a command-line tool.
+IMPORTANT: Note that while there are some differences between using `hermeto` as a command-line tool, and running it in a pipeline (i.e. in {ProductName}), the most important usage pattern is the same, namely:
+
+**Always** use JSON-formatted input to Hermeto when running in a pipeline environment (e.g. in {ProductName}, include it in the task definition). Check the example if you're not certain as to how it should work.
 
 == [[rpm]]Enabling prefetch builds for `rpm`
 
@@ -334,7 +351,10 @@ RUN cp /cachi2/output/deps/generic/<filename> <location>
 
 Refer to the link:https://hermetoproject.github.io/hermeto/generic/#example[generic fetcher walkthrough] for a detailed example of using generic with Hermeto.
 
-IMPORTANT: You *must* take into account the differences between using Hermeto in a pipeline, and using `hermeto` as a command-line tool.
+IMPORTANT: Note that while there are some differences between using `hermeto` as a command-line tool, and running it in a pipeline (i.e. in {ProductName}), the most important usage pattern is the same, namely:
+
+**Always** use JSON-formatted input to Hermeto when running in a pipeline environment (e.g. in {ProductName}, include it in the task definition). Check the example if you're not certain as to how it should work.
+
 
 == [[netrc]]Creating the netrc secret
 
