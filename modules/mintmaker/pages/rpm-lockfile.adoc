@@ -29,6 +29,18 @@ Please find how to generate RPM lockfile in xref:ROOT:building:prefetching-depen
 
 MintMaker searches the repository for files named `rpms.in.yaml`/`rpms.in.yml` and assumes that a lockfile named `rpms.lock.yaml`/`rpms.lock.yml` exists in that same directory. MintMaker supports multiple lockfiles in a repository, but they must be placed in different directories.
 
+== How to enable automerge for RPM security updates
+
+It's possible to configure RPM security updates to automerge based on the severity of the fixed CVEs. To enable this functionality, add the following setting to your renovate configuration:
+
+[source,json]
+----
+{
+  "rpmVulnerabilityAutomerge": "ALL" | "MEDIUM" | "HIGH" | "CRITICAL"
+}
+----
+The setting can be set to one of these four values, and the security updates will be automerged if the severity of the fixed CVEs will be at least as high as the configured value. `ALL` will automerge every RPM security update. If this configuration option is not set, automerge is implicitly disabled.
+
 == RPM lockfile with RPMs that require subscription
 
 MintMaker is able to update RPM lockfiles containing RPMs that require subscription, but some setup needs to be completed first. Firstly, activation key secret needs to be added to the user namespace. This process is described in detail in the xref:ROOT:building:activation-keys-subscription.adoc[Using Red Hat activation keys to access subscription content] article. Secondly, the RPM repofile needs to be modified to make use of the custom authentication certificate and key. For each repository requiring authentication, please set `sslclientkey = $SSL_CLIENT_KEY` and `sslclientcert = $SSL_CLIENT_CERT`. This will ensure that MintMaker sets the correct paths for the authentication. For example:

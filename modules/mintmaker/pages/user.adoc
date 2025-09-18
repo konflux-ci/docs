@@ -120,7 +120,7 @@ MintMaker presets, you can also explore options from the https://docs.renovatebo
 [options="header"]
 |===
 |*Preset name* |*Description*
-|cve-automerge-all | Automerge all CVE fixes
+|cve-automerge-all* | Automerge all CVE fixes
 |cve-automerge-critical* | Automerge CVE fixes with Critical severity
 |cve-automerge-high* | Automerge CVE fixes with High severity or higher
 |cve-automerge-moderate* | Automerge CVE fixes with Moderate severity or higher
@@ -129,8 +129,7 @@ MintMaker presets, you can also explore options from the https://docs.renovatebo
 |group-python-poetry | Group Poetry updates into a single PR
 |===
 
-CAUTION: *RPM manager currently does not support automerge based on severity
-information, this feature is WIP. 
+CAUTION: *These presets will not enable automerge for RPM security updates. The instructions for enabling automerge for RPMs can be found xref:mintmaker:rpm-lockfile.adoc#how-to-enable-automerge-for-rpm-security-updates[here]
 
 === Overriding manager specific configuration
 
