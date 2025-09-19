@@ -171,7 +171,7 @@ Note that you don't need to generate a `requirements-build.txt` file as describe
 
 === [[custom-index-servers]]Prefetching `pip` dependencies from custom index servers
 
-Hermeto supports the link:https://pip.pypa.io/en/stable/cli/pip_install/#install-index-url[--index-url] option.
+Hermeto supports pip's link:https://pip.pypa.io/en/stable/cli/pip_install/#install-index-url[--index-url] option.
 You can add this option to your `requirements.txt` file(s), instructing Hermeto to download packages from the specified
 index server. For example:
 
@@ -294,7 +294,7 @@ include::partial${context}-example-prefetch-rpm-copy-repo.adoc[]
 include::partial${context}-example-prefetch-rpm-trust-keys.adoc[]
 
 +
-NOTE: For every repository defined in your set of repo files, make sure to add the corresponding sources repo (or make sure to enable them, if they're already present). Otherwise, the lockfile generator will not include any SRPMs in your lockfile, hermeto won't download any SRPMs and the source container for your build will be incomplete.
+NOTE: For every repository defined in your set of repo files, make sure to add the corresponding sources repo (or make sure to enable them, if they're already present). Otherwise, the lockfile generator will not include any SRPMs in your lockfile, Hermeto won't download any SRPMs, and the source container for your build will be incomplete.
 
 . Run the following command to resolve your `rpms.in.yaml` file and produce a `rpms.lock.yaml` file.
 
@@ -308,7 +308,7 @@ include::partial${context}-example-prefetch-rpm-lockfile.adoc[]
 +
 NOTE: The list of `arches.packages` is omitted for brevity.
 
-. Add/Update the prefetch-input param in the PipelineRun yaml so that the prefetch-task for RPMs is enabled. Update the path if the RPM files are not in the default directory.
+. Add/Update the prefetch-input param in the PipelineRun YAML so that the prefetch-task for RPMs is enabled. Update the path if the RPM files are not in the default directory.
 +
 [source,yaml]
 ----
@@ -319,7 +319,7 @@ spec:
       value: '{"type": "rpm", "path": "."}' <1>
 ----
 
-. You can specify additional DNF repository configuration options (see dnf.conf man page) that will be set for a particular repository in the generated hermeto.repo files
+. You can specify additional DNF repository configuration options (see `dnf.conf` man page) that will be set for a particular repository in the generated `hermeto.repo` files
 +
 include::partial${context}-example-prefetch-rpm-dnf-repo-options.adoc[]
 
