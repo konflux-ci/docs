@@ -1,0 +1,265 @@
+:imagedir: ../images/
+
+= Setting Up an On-Premises Konflux Container
+
+== Introduction
+{ProductName} provides a modular platform that you can host on site to manage your organization's secure software supply chains.
+This document will show you how to set up your own on-premises Konflux containers and teach you about the following key components, concepts, and features:
+
+- Add-On Service
+- Authentication Tokens
+- Image and Artifact Registries
+- Konflux UI
+- Konflux-CI Core Services
+- Namespace Management
+- Security and Compliance Tools
+- Tekton Pipelines and Tasks
+
+[NOTE]
+====
+This document makes the following assumtions:
+
+- You are installing Konflux on Red Hat Enterprise Linux 10 or later. If you're using another distribution, you may need to adjust some of the commands to fit your environment.
+- You have already attached a subscription to your RHEL 10 server. If you haven't attached a subscription to your server, please see these instructions (TODO: Find or write instructions for this).
+
+TODO: I'm new to Konflux, so forgive the naive question: Can Konflux run in vanilla Kubernetes clusters or does it require an OpenShift cluster?
+
+TODO: Is this the right way to attach a subscription to a RHEL 10 server that doesn't already have a subscription attached to it?
+
+- `sudo subscription-manager register`
+- `sudo subscription-manager attach --auto`
+====
+
+== Step-by-Step On-Premises Setup
+{ProductName} is designed for on-premises deployments on Kubernetes clusters.
+{ProductName} uses Kind for local testing and a full Tekton/Kubernetes setup for production.
+Currently, {ProductName} is only supported on X86_64 Linux platforms.
+
+=== Step 1: Install and Configure Dependencies
+Before you begin configuring {ProductName} in your organization, you'll need to ensure that you have the following dependencies installed.
+
+- buldah
+- container-tools (Installing this package will install the following dependencies.)
+  -- flatpak-session-helper
+  -- fuse-commonfuse-overlayfs
+  -- fuse3
+  -- libslirp
+  -- podman-docker
+  -- python3-podman
+  -- skopeo
+  -- slirp4netns
+  -- toolbox
+  -- udica
+- curl
+- git
+- gzip
+- podman
+- tar
+- wget
+
+TODO: Find out if podman-compose is required.
+
+After you've installed all the dependencies, enable the podman service so it starts automatically when you restart your server.
+
+[source, bash]
+----
+sudo systemctl enable --now podman.socket
+----
+
+=== Step 2: Download and Install OpenShift
+OpenShift isn't available in RHEL's default repositories, so you'll need to download it from the Red Hat Developers' website.
+Follow the steps below to download and install OpenShift.
+
+. Download the latest version of OpenShift from the Red Hat Developers' website and place it into your `/home` directory.
+
++
+[source, bash]
+----
+cd ~
+wget https://developers.redhat.com/content-gateway/rest/mirror/pub/openshift-v4/clients/crc/latest/crc-linux-amd64.tar.xz
+----
+
+. Use the `tar` command to extract the OpenShift installation files.
+
++
+[source, bash]
+----
+cd ~
+tar xvf crc-linux-amd64.tar.xs
+----
+
++
+This will create a directory called `~/crc-linux-<version_number>-amd64`.
+
+. Create a directory to store OpenShift's `crc` command in your `/home` directory.
+
++
+[source, bash]
+----
+mkdir -p ~/.local/bin
+----
+
+. Copy OpenShift's `crc` command from your `~/crc-link-<version_number>-amd64` directory to your `~/.local/bin` directory.
+
++
+----
+cp ~/crc-link-<version_number>-amd64 ~/.local/bin
+----
+
++
+Make sure to replace `<version_number>` in the previous command with the actual version number of your un-tarred OpenShift directory.
+
+. RHEL 10 should come configured with `~/.local/bin` in your path.
+You can test this by typing `which crc` in your terminal.
+The command should return `~./local/bin`.
+If you see this error:
+
++
+[source, bash]
+----
+/usr/bin/which: no crc in (<all_the_directories_in_your_path>)
+----
+
++
+You will need to add `~/.local/bin` to your path.
+To add the `~/.local/bin` directory to your path, edit the `~/.bash_profile` file in your home directory and add this line to the bottom.
+
++
+[source, bash]
+----
+export PATH="$HOME/.local/bin:$PATH"
+----
+
+When you have finished, save the file and either log out and log back in again or use the `source` command to load your changes into your environment.
+
+[source, bash]
+----
+source ~/.bash_profile
+----
+
+=== Step 3: Configure crc
+`CRC` (CodeReady Containers) runs OpenShift in a virtualized environment.
+Before starting OpenShift, you'll need to configure its resources (RAM, CPU, and Storage) and then run the initial `crc setup` command.
+
+
+Let's start by running the following commands to configure OpenShift to use *10752 MiB of RAM* (this is the minimum amount of RAM OpenShift requires to run), *4 CPU cores*, and *50 GiB of storage space*.
+You can always configure your OpenShift instance with more than these minimums.
+
+. `crc config set memory 10752`
+. `crc config set cpus 4`
+. `crc config set disk-size 50`
+
+Next, run the setup command.
+
+[source, bash]
+----
+crc setup
+----
+
+This command will download over 6 GiB of files and may take several minutes to complete.
+It also performs the following tasks:
+
+- Adjusts your system's DNS configuration to resolve OpenShift-specific domains.
+- Initializes your overall environment and ensure your system has the proper configuration to run OpenShift.
+- Configures the verification checks that the system will perform when you run the `crc start` command (See the <<Step 4: Start OpenShift>> section for information on running OpenShift).
+
+Due to the large number of files the `crc setup` command downloads, this step will take several minutes.
+
+TODO: Do we always want to use MiB and GiB rather than MB and GB, or are there cases where the difference matters?
+
+=== Step 4: Start OpenShift
+Now that you've configured OpenShift, run the following command to start your OpenShift container:
+
+[source, bash]
+----
+crc start
+----
+
+If OpenShift fails to start, you can try starting it with debugging enabled to help you troubleshoot the issue.
+Type the following command to start OpenShift with debugging enabled:
+
+[source, bash]
+----
+crc start --log-level debug
+----
+
+Once you have OpenShift running on your Linux server, you should see the following message in your terminal:
+
+[quote, OpenShift Dashboard]
+Please enter the pull secret.
+
+You can get this secret from the https://console.redhat.com/openshift/create/local[OpenShift Console].
+You will need to have a Red Hat Developer account and log in using those credentials.
+Once you have logged in, you can download your pull secret by clicking on the `Download pull secret` button or the link to copy your pull secret.
+For this tutorial, we will download the secret and load it into our `crc` configuration.
+Let's download your pull secret and add it to your `crc` configuration by following these steps:
+
+. Navigate to the https://console.redhat.com/openshift/create/local[OpenShift Console].
+
+. Click on the `Download pull secret` button to download your `pull-secret.txt` file.
+
++
+image::pull-secret.png[Image of the "Download pull secret" button.]
+
+. Create a directory to store your pull secret.
+
++
+[source, bash]
+----
+mkdir ~/.local/secrets
+----
+
+. Copy your `pull-secret.txt` file to `~/.local/secrets`.
+
++
+The following command assumes you saved `pull-secret.txt` to your `~/Downloads` directory.
+If you have saved your pull secret elsewhere, replace `~/Downloads` with the directory in which you save your `pull-secret.txt` file.
+
++
+[source, bash]
+----
+cp ~/Downloads/pull-secret.txt ~/.local/secrets/
+----
+
+. Finally, use the `crc` command to configure your pull secret.
+
++
+[NOTE]
+====
+Since the `crc setup` command is blocking your current terminal with the `Please enter the pull secret` prompt, you will need to log into another terminal to configure it.
+If you are using a server with a graphical interface, you can open a new tab in your terminal and type the following command there.
+If you are running on a server without a graphical interface, you must press `ALT+F2` to switch to another terminal before typing the following command:
+====
+
++
+[source, bash]
+----
+crc config set pull-secret-file ~/.local/secrets/pull-secret.txt
+----
+
+Be sure to switch back to your original terminal before continuing.
+
+Your OpenShift container should now be running.
+You should be able to access it from the URL that the `crc start` command shows you (https://console.openshift.console.apps-rcr.testing/dashboards).
+If you don't see the OpenShift Dashboard URL, you can run the following command and `crc` will show it to you again.
+
+[source, bash]
+----
+crc console
+----
+
+[NOTE]
+====
+You may need to manually edit your `/etc/hosts`  file to allow you to access this URL.
+For example:
+
+`localhost https://console.openshift.console.apps-rcr.testing/dashboards`
+
+If you run into any other URL that aren't working, add them to your `/etc/hosts` file as well.
+====
+
+=== Step 5: Install Konflux
+=== Step 6: Deploy Test Resources and Users
+=== Step 7: Configure Authentication
+=== Step 8: Onboard Applications and Components
+=== Step 9: Customize and Scale
