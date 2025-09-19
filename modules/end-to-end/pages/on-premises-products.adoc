@@ -22,7 +22,7 @@ This document makes the following assumtions:
 - You are installing Konflux on Red Hat Enterprise Linux 10 or later. If you're using another distribution, you may need to adjust some of the commands to fit your environment.
 - You have already attached a subscription to your RHEL 10 server. If you haven't attached a subscription to your server, please see these instructions (TODO: Find or write instructions for this).
 
-TODO: I'm new to Konflux, so forgive the naive question: Can Konflux run in vanilla Kubernetes clusters or does it require an OpenShift cluster?
+TODO: I'm new to Konflux, so forgive the naive question: Can Konflux run in regular Kubernetes clusters or does it require an OpenShift cluster?
 
 TODO: Is this the right way to attach a subscription to a RHEL 10 server that doesn't already have a subscription attached to it?
 
@@ -226,7 +226,7 @@ cp ~/Downloads/pull-secret.txt ~/.local/secrets/
 +
 [NOTE]
 ====
-Since the `crc setup` command is blocking your current terminal with the `Please enter the pull secret` prompt, you will need to log into another terminal to configure it.
+Since the `crc setup` command is blocking your current terminal with the `Please enter the pull secret` prompt, you will need to log in to another terminal to configure it.
 If you are using a server with a graphical interface, you can open a new tab in your terminal and type the following command there.
 If you are running on a server without a graphical interface, you must press `ALT+F2` to switch to another terminal before typing the following command:
 ====
