@@ -117,10 +117,10 @@ spec:
 
   pipelineRef:
     name: build-pipeline # This now references .tekton/build-pipeline.yaml
-  
+
   params:
     # ... your parameters for this PipelineRun ...
-  
+
   workspaces:
     # ... your workspaces for this PipelineRun ...
 ----
@@ -180,3 +180,30 @@ The commands will:
 * **Simplified Complex Customizations**: When implementing patterns like <<Pattern: Achieving Label and Tag Parity for Versioning>>, you only need to modify one `build-pipeline.yaml` file instead of multiple `PipelineRun` files or managing complex embedded specs.
 
 By centralizing your Tekton `Pipeline` definition within your repository, you gain greater control, maintainability, and consistency over your build processes in {ProductName}.
+
+.Scripted Procedure (Optional)
+Use the script below as an alternative approach to steps 1-3 in the Procedure above. Adjust the variables, if needed, and run it from the root of your git repository.
+
+[source,bash]
+----
+# Adjust these if you more than one component onboarded to Konflux.
+PULL_REQUEST="$(ls -1 .tekton/*pull-request.yaml)"
+PUSH="$(ls -1 .tekton/*push.yaml)"
+BUILD_PIPELINE='.tekton/build-pipeline.yaml'
+
+< "${PULL_REQUEST}" yq \
+  '.spec.pipelineSpec as $spec | {
+    "apiVersion": "tekton.dev/v1",
+    "kind": "Pipeline",
+    "metadata": {"name": "build"},
+    "spec": $spec
+   }' > "${BUILD_PIPELINE}"
+
+yq -i \
+	'del(.spec.pipelineSpec) | .spec.pipelineRef = {"name": "build"}' \
+    "${PULL_REQUEST}"
+
+yq -i \
+	'del(.spec.pipelineSpec) | .spec.pipelineRef = {"name": "build"}' \
+    "${PUSH}"
+----
