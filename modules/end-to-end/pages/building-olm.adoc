@@ -1,6 +1,6 @@
-= Building an Operator Lifecycle Manager (OLM) Operator in {ProductName}
+= Building, Testing, and Releasing an Operator Lifecycle Manager (OLM) Operator in {ProductName}
 
-If you are developing an application that aligns with the link:https://operatorframework.io/[Operator Framework], and managing it with link:https://olm.operatorframework.io/docs/[Operator Lifecycle Manager (OLM)], you can build that application in {ProductName}. We refer to such applications as OLM Operators.
+OLM Operators are applications that align with the link:https://operatorframework.io/[Operator Framework] and are managed with link:https://olm.operatorframework.io/docs/[Operator Lifecycle Manager (OLM)]. This end-to-end guide describes how you can build, test, and release OLM Operators in {ProductName}.
 
 OLM Operators include the following elements:
 
@@ -11,19 +11,36 @@ OLM Operators include the following elements:
 
 Note the difference between an "OLM Operator" and an "Operator." An OLM Operator refers to the whole application, and an Operator is one part of the OLM Operator.
 
-The first procedure in this document explains how to use {ProductName} to build an OLM Operator in the most basic sense--building its Operator and bundle images. The second procedure is optional but recommended. It explains how you can automatically update the image references in the CSV of the bundle. The third procedure describes the process for generating the file-based catalog to inform OLM how to upgrade between OLM Operator versions.
+This guide contain the following sections: 
 
-NOTE: A link:https://github.com/konflux-ci/olm-operator-konflux-sample[sample repository] has been prepared which covers many of the steps for creating and maintaining OLM operators.
+* Building the Operator and the bundle
+* Testing the OLM Operator
+* Releasing the OLM Operator
 
+Each section contains both instructions and links to sample repositories you can use as models for your own environment. 
+
+*Prerequisites*: 
+
+* You have the link:https://olm.operatorframework.io/docs/getting-started/Operator[OLM installed] on your Kubernetes cluster. 
+
+* You have published your Operator on link:https://quay.io/[Quay].
 
 == Building the Operator and the bundle
 
+These procedures describe building the OLM operator in the most basic sense--building its Operator and bundle images. The procedures also include a detailed example you can use to model the steps needed in your own specific environment. 
+
+The building procedures include:
+
+* Building the OLM Operator
+* Updating the image references in the CSV of the bundle
+* Generating the file-based catalog
+
 [NOTE]
 ====
-This procedure assumes that the source code for your Operator and bundle, including the Dockerfiles, are in the same git repository, per OLM convention.
+These procedures assume that the source code for your Operator and bundle, including the Dockerfiles, are in the same git repository, per OLM convention.
 ====
 
-.Procedure
+* General build procedure:
 
 . In the {ProductName} UI,  xref:building:/creating.adoc[create a new application] for your OLM Operator in {ProductName}.
 . In your new application, xref:building:/creating.adoc[add a new component] for your Operator. Be sure to specify the correct path to the Operator's Dockerfile within its git repository.
@@ -31,7 +48,13 @@ This procedure assumes that the source code for your Operator and bundle, includ
 . (Optional) If you are using a file-based Catalog (FBC) for your OLM Operator, you must build the FBC as another component in its own separate application in {ProductName}.
 . (Optional) You may want to configure {ProductName} to xref:building:/redundant-rebuilds.adoc[prevent redundant rebuilds] for this application. For example, you can configure {ProductName} to rebuild your bundle image only if a commit is made to its Dockerfile or the `/bundle` directory, instead of rebuilding it whenever any commit is made to your OLM Operator's git repository.
 
-== Automating updates for image references in the CSV
+* Example OLM Operator with build procedure:
+
+You can modify the steps in this link:https://github.com/konflux-ci/olm-operator-konflux-sample[git repository with a example OLM Operator] for your environment. 
+
+=== Automating updates for image references in the CSV
+
+This procedure is optional but recommended. It explains how you can automatically update the image references in the CSV of the bundle.
 
 In order to enable your operator to be installed in disconnected environments, it is important to include sha digest image references in the link:https://sdk.operatorframework.io/docs/olm-integration/generation/#csv-fields[CSV's `spec.relatedImages`].
 
@@ -48,7 +71,8 @@ In order to enable your operator to be installed in disconnected environments, i
 +
 NOTE: If you want to update the references in your CSV to match where the operands and operators will be pushed to, see how to xref:patterns:maintaining-references-before-release.adoc[maintain references before release].
 
-== Building the file-based catalog
+=== Building the file-based catalog
+This procedure describes the process for generating the file-based catalog to inform OLM how to upgrade between OLM Operator versions.
 
 .Procedure
 
@@ -63,3 +87,248 @@ NOTE: If the Containerfile populates the cache, the image produced with a FBC fr
 ----
 RUN ["/bin/opm", "serve", "/configs", "--cache-dir=/tmp/cache", "--cache-only"]
 ----
+
+== Testing the OLM Operator
+Integration testing of OLM Operators focuses on verifying that the Operator and its associated components, like Custom Resources (CRs), interact correctly within the OLM framework on a Kubernetes or OpenShift cluster. Integration testing of the OLM Operator using Konflux involves using a Tekton pipeline defined in source control that runs after components are built. The pipeline performs a test against all components in a snapshot as a whole. How you perform integration testing of your OLM Operator depends upon the components in your environment. 
+
+In general, testing of OLM Operators involves the following general steps: 
+
+=== Prepare the Environment:
+
+. Set up a local development environment with access to a Kubernetes or OpenShift cluster.
+. Ensure you have the necessary tools: 
+* Operator SDK 
+* oc/kubectl cli 
+* Podman/Docker
+
+*Package the Operator*:
+
+. Build and push the Operator bundle image, which contains the Operator's manifests and metadata.
+. (Optional) Validate the Operator bundle package to ensure it adheres to OLM specifications.
+. Build and push an index image. The index image acts as a catalog for OLM to discover and install Operators.
+
+*Deploy and Test with OLM*:
+
+* Create a custom CatalogSource object in your cluster that points to your index image. This makes your Operator visible to OLM.
+* Create a Subscription object to subscribe to your Operator from the CatalogSource. This triggers OLM to install the Operator.
+* Verify the Operator's installation status and ensure all expected resources (e.g., ClusterServiceVersion, CustomResourceDefinitions) are deployed and in a healthy state.
+** Create instances of your Operator's Custom Resources and verify that the Operator correctly reconciles them and manages the application lifecycle (for example, deploying pods and services).
+** Test upgrade scenarios by updating the Operator's version in the bundle and observing the OLM's upgrade process.
+** Test deletion scenarios by removing the Subscription and verifying that the OLM correctly uninstalls the Operator and cleans up associated resources.
+
+.Procedure
+
+. Use the Konflux interface to link:https://konflux-ci.dev/docs/testing/integration/adding/[add a user-defined integration test scenario (ITS)] to the Konflux UI. 
++
+
+The ITS you create should point to the pipeline that performs the following steps: 
+
+* Cluster Setup: Provisioning a Kubernetes cluster using Kind or a dedicated test cluster.
+
+* CatalogSource Creation: Creating link:https://olm.operatorframework.io/docs/concepts/crds/catalogsource/[a CatalogSource object] that points to your Operator's index image (which contains your bundle).
+
+* Subscription Creation: Creating an OLM Subscription https://olm.operatorframework.io/docs/concepts/crds/subscription/ to deploy your Operator from the CatalogSource.
+
+* Operator Deployment Verification: Ensuring the Operator is successfully deployed and running.
+
+Be sure to configure the pipeline to trigger based on relevant events. See link:https://konflux-ci.dev/docs/testing/integration/choosing-contexts/[choosing integration contexts].
+
+The ITS is created by defining the ITS yaml in the tenants-config repo. Once the yaml file is added to the repo, it is automatically added to the UI. 
+
+You can use this link:https://gitlab.cee.redhat.com/releng/konflux-release-data/-/blob/main/tenants-config/cl[this example] as a model.
+
+[start=2]
+. Configure the Enterprise Contract policy by link:https://konflux-ci.dev/docs/testing/integration/editing/[editing the Enterprise Contract ITS] you just created.
++
+
+TODO: Do we need some clarification on Enterprise Contract Policy ITS and User-defined ITS?
+
+. link:https://konflux-ci.dev/docs/patterns/testing-releasing-single-component/#updating-conforma-integration-test-scenarios[Create an IntegrationTestScenario (ITS)]. 
++
+
+Define this CR to run automated tests against your operator. Konflux will automatically trigger these tests for new Snapshots. The release won't proceed until these tests pass. Enterprise Contract checks run on Snapshots after the build pipeline. The standard workflow involves configuring an ITS to run an EC check.You  should configure your ITS to point to the same EC policy (ECP) that you intend to release against. The Integration Service can create the final release automatically if all ITSs pass and auto-release is configured.
++
+
+Note:  If the EC check is failing, you can configure policy parameters on the Integration Test Scenario. This can be done via the Konflux UI under "Integration tests" -> "Edit integration test" -> "Parameters". For instance, you can set the POLICY_CONFIGURATION parameter to whatever your EC release policy is.
+You can set the policy intention (for example, pipeline_intention of "production" or "staging") to control which policy rules are enforced during the test.
++
+ 
+Conforma/OLM Checks: Specific compliance checks relevant to OLM, such as verify-conforma and ecosystem-cert-preflight-checks, are part of the integration test suite and run automatically. These checks are vital because any problems found during the EC check will also become release blockers.
++
+
+Note: You can configure Konflux to test a single component rather than the whole application.
+
+TODO: Need to add the steps for this single-componenent test and perhaps move this topic. 
+
+[start=4]
+. link:https://konflux-ci.dev/docs/building/customizing-the-build/[Customize your build pipeline].
++
+
+This pipeline should include:
+
+* Test Execution: Running your integration tests against the deployed Operator. These tests could use frameworks like ginkgo/gomega, robot framework, or custom scripts to interact with the Operator's custom resources and verify its behavior.
+
+* Cleanup (Optional): Removing the deployed Operator and OLM resources.
+
+[start=5]
+. Execute and Monitor:
++
+
+Trigger the Konflux pipeline (either manually or automatically through configured triggers).
+TODO: How exactly? 
+
+[start=6]
+. Monitor the pipeline execution in the Konflux UI, observing the logs for each task to identify any issues during Operator deployment or test execution.
+
+[start=7]
+. Analyze the test results to ensure the Operator functions as expected in an OLM-managed environment.
+
+*Sample repository integration test*
+
+This link:https://github.com/konflux-ci/tekton-integration-catalog/tree/main/pipelines/deploy-fbc-operator/0.2[example repository] is part of a collection of Tekton resources and helpers designed to make tests easier to run, manage, and automate. The example contains prebuilt Tekton Tasks and StepActions you can use as a model and modify to your specific needs.
+
+== Releasing the OLM Operator
+
+Releasing an Operator Lifecycle Manager (OLM) operator with Konflux involves using Konflux's built-in CI/CD services to automate your release pipeline. This process leverages several Konflux Custom Resources (CRs) to manage the build, test, and delivery of your OLM bundle. The release process ensures that your OLM Operator conforms to the Enterprise Contract Policy defined in the Managed Namespace. The Enterprise Contract Policy defines the configuration for the enforcement of the Enterprise Contract by specifying the rules needed for a container image to be compliant with your organization’s software release policy requirements.
+
+This section lists the steps for releasing an OLM operator with Konflux.
+
+TODO: Are the following instructions too generic as they apply to any container image? Should we just refer the users to the following: 
+
+To release an OLM Operator you relese the bundle (container image) and the FBC build for the the OLM bundle. This will make the OLM Operator available in a production-ready catalog. 
+
+link:https://github.com/konflux-ci/olm-operator-konflux-sample/blob/main/docs/konflux-onboarding.md[Release instructions for OLM Operators].
+
+TODO: Where do the Update Graph instrucitons go? They are at the end of this section now. 
+
+
+
+*Prerequisites*: 
+
+Konflux requires that OLM Operators migrate to FBC before publishing bundles to the catalog.
+
+.Procedure
+
+TODO: is this a managed tenant namespace pipeline that is used here? 
+
+. In the ReleasePlan, set up the link:https://konflux-ci.dev/docs/releasing/tenant-release-pipelines/[release pipeline] with CRs
+Konflux uses several CRs to define and manage the release workflow. 
+
+. link:https://konflux-ci.dev/docs/releasing/create-release-plan/[Define a ReleasePlan ]
++
+
+Create this CR in your development namespace. It specifies the application you want to release and references a ReleasePlanAdmission CR that will be created by the managed environment team.[]
++
+
+TODO: In the release plan or release pipeline set label?
+. Set the auto-release label to "true" to automate releases once tests pass, or "false" for manual approval.
+
+. link:https://konflux-ci.dev/docs/releasing/create-release-plan-admission/[Define a ReleasePlanAdmission (RPA)]
++
+This CR is typically managed by a different team (for example, the SRE or managed environment team) and specifies what happens in the managed namespace. It defines the pipeline that will be executed for the release. and enforces an EnterpriseContractPolicy (ECP) to ensure security and compliance before proceeding.
+
+.  Define a link:https://conforma.dev/docs/policy/release_policy.html[Release Policy].
++
+
+Start from one of the premade rule collections, or use your own custom set of rules.
+
+[start=6]
+. Be sure you have created an link:https://konflux-ci.dev/docs/patterns/testing-releasing-single-component/#updating-conforma-integration-test-scenarios[IntegrationTestScenario].
++
+
+This CR is used to run automated tests against your operator. Konflux will automatically trigger these tests for new Snapshots. The release won't proceed until these tests pass. 
+ 
+. Trigger the build and testing pipeline
++
+Push a commit to the branch specified in your Component CR to trigger the build and testing pipeline. Konflux then does the following:
+ 
+* Builds your operator: The system automatically detects the new commit and triggers a build pipeline to create your OLM bundle and push it as an OCI artifact to your container registry.
+
+* Creates a Snapshot: After a successful build, Konflux creates a Snapshot CR, which represents a specific, immutable collection of your operator's artifacts.
+ 
+* Runs integration tests: The system automatically triggers the IntegrationTestScenario against the new Snapshot.
+ 
+. Initiate the release.
++
+
+*For automated releases*:
++
+
+If you configured auto-release: "true" in your ReleasePlan, the process is automatic.
+Once the IntegrationTestScenario passes, the Integration Service automatically creates a Release CR in your development namespace.
+This Release CR triggers the release pipeline defined in the ReleasePlanAdmission.
++
+ 
+*For manual releases*:
++
+
+If you configured auto-release: "false", you will manually create a Release CR.
++
+
+Create a Release CR in your development namespace.
+Point the spec.snapshot field to the Snapshot you want to release.
+Reference the ReleasePlan to use the correct release strategy.
++
+ 
+. Execute the release pipeline.
++
+
+The creation of the Release CR kicks off the release pipeline run in the managed namespace. The Release Operator in the managed namespace recognizes the Release CR and its associated ReleasePlanAdmission and creates a Release PipelineRun using the details from the RPA.
+This pipeline handles tasks such as:
+
+* Pushing your validated OLM bundle to a production-ready catalog.
+* Performing final checks and security scans.
+* Updating external systems, such as JIRA tickets.
+
+. Trigger the Release:
++
+
+*CLI Method*: 
+Create a new release object (e.g., using a release.yaml file) and apply it using:
++
+
+oc apply -f release.yaml in the tenant namespace.
++
+
+*UI Method*: 
+Go to the Releases page, select the ReleasePlans tab, and click the "Trigger Release Plan" option in the kebab menu for the desired RP.
++
+
+A Release PipelineRun is created from the RPA. This pipeline handles tasks such as:
++
+
+* Pushing your validated OLM bundle to a production-ready catalog.
++
+
+* Performing final checks and security scans.
++
+
+* Updating external systems, such as JIRA tickets.
++
+
+* Re-releasing: If a release pipeline fails, you cannot re-trigger the existing PipelineRun. You must recreate the release object. This involves finding the failed release using:
++
+
+oc get releases --sort-by .metadata.creationTimestamp
++
+
+Then, make a local copy, delete the .status block and unnecessary .metadata fields (except name and namespace), and give  it a new unique name before reapplying it (oc apply -f release.yaml).
+
+You can monitor the status of the release pipeline in the Konflux UI.
+
+*Example release pipeline*
+
+Modify this link:https://github.com/konflux-ci/release-service-catalog/tree/development/pipelines/managed/push-to-external-registry[example pipeline] to fit the needs of your environment. 
+
+TODO Is this used for testing or releasing? How is it used? At the command line? https://conforma.dev/docs/policy/packages/release_olm.html
+
+=== Create the initial update graph
+
+The last step in releasing an OLM operator is creating the first update graph. All update graphs are defined in file-based catalogs (FBCs) by means of olm.channel blobs. The FBC is a fully plaintext-based (JSON or YAML) file that enables catalog editing, composability, and extensibility. Each olm.channel defines the set of bundles present in the channel and the update graph edges between each entry in the channel. 
+
+See link:https://olm.operatorframework.io/docs/concepts/olm-architecture/operator-catalog/creating-an-update-graph/[create your update graph].
+
+See the link:https://github.com/konflux-ci/release-service-catalog/tree/development/pipelines/managed/fbc-release[example file based catalog] which manages an update graph. Modify this example to fit your environment. 
+
+After the container images themselves have been pushed, release the file-based-catalog (FBC):
+ https://konflux-ci.dev/docs/releasing/

@@ -1,4 +1,4 @@
 ** End-to-end guides
-*** xref:end-to-end:building-olm.adoc[Building an OLM operator]
+*** xref:end-to-end:building-olm.adoc[Building, testing, and releasing an OLM operator]
 *** xref:end-to-end:building-tekton-tasks.adoc[Building Tekton tasks]
 include::partial${context}-nav.adoc[]
