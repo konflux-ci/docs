@@ -2,29 +2,37 @@
 
 == Onboarding components to {ProductName}
 
-{ProductName} supports two methods for creating applications and components.
+{ProductName} supports two methods for creating applications and components:
 
-Before being able to onboard a component to {ProductName}, you will need to ensure that the instance has appropriate access to the git repository. This means either installing your organization’s {ProductName} GitHub App on the source code repository or xref:building:creating-secrets.adoc#creating-source-control-secrets[create a secret] to enable access to a GitLab repository.
+* With the UI
+* With the CLI
 
-NOTE: Component names must be unique in a namespace, even when components are used in different application.
+Applications in Konflux are simply logical groupings of components. So to create an application, you must first create at least one component. 
+
+Before being able to onboard a component to {ProductName}, you need to ensure that the instance has appropriate access to the git repository. This means either installing your organization’s {ProductName} GitHub App on the source code repository or xref:building:creating-secrets.adoc#creating-source-control-secrets[creating a secret] to enable access to a GitLab repository.
+
+NOTE: All resource names (like Applications and Components) must be unique in a namespace, even when the same resource is used in different applications.
 
 CAUTION: {ProductName} pushes directly to branches in your onboarded repositories. In order to properly onboard, you need to ensure
 that no rules prevent pushes to the branch patterns *`konflux-*`* and *`konflux/mintmaker/*`*.
 
-=== With the UI
+=== Creating applications and components with the UI
+
 .Prerequisites:
 
-* xref:installing:enabling-builds.adoc[Enabled] build pipelines for your instance of {ProductName}.
-* xref:installing:enabling-builds.adoc#enable-image-controller[Enabled] image controller for your instance of {ProductName}.
+* xref:installing:enabling-builds.adoc[Enabled build pipelines] for your instance of {ProductName}.
+* xref:installing:enabling-builds.adoc#enable-image-controller[Enabled image controller] for your instance of {ProductName}.
 
-==== Create initial Application and Component
+==== Create initial application and component
+
 .*Procedures*
 
 . In the {ProductName} UI, go to the *Applications* page.
 . Click the *Create application* button.
-. Enter a name for the application
+. Enter a name for the application.
 . Click the *Add a component* button.
 +
+
 NOTE: For *Gitlab* provider, make sure to xref:building:creating-secrets.adoc#creating-source-control-secrets[create a source control secret] before creating the component.
   . Enter the URL for the git repository.
   . (Optional) After clicking out of the repository URL, expand the *Show advanced Git options*.
@@ -39,12 +47,10 @@ NOTE: For *Gitlab* provider, make sure to xref:building:creating-secrets.adoc#cr
 +
 NOTE: GitHub and GitLab are supported source control providers. GitLab support requires the configuration of xref:building:creating-secrets.adoc#creating-source-control-secrets[source control secrets].
 
-NOTE: When Component is immediately removed after creation it might result with orphaned ImageRepository which ownership
-wasn't yet assigned to the Component and when trying to create Component again with the same name UI will
-complain with error that ImageRepository already exists, solution is to remove manually ImageRepository
-from OCP.
+NOTE: When an application or component is immediately removed after creation, the action might result in an orphaned ImageRepository where ownership
+was not yet assigned to the resource. When you try to create the resource again with the same name, the UI will send an error message that the ImageRepository already exists. The solution is to manually remove ImageRepository from OCP.
 
-==== Create additional Components in an Application
+==== Create additional components in an application
 
 .*Procedures*
 
@@ -54,7 +60,7 @@ from OCP.
 . Follow the procedure above for specifying the component.
 . Click *Add component*.
 
-=== With the CLI
+=== Creating applications and components with the CLI
 
 .Prerequisites:
 
@@ -93,7 +99,9 @@ $ kubectl apply -f Application.yaml -f Component.yaml -f ImageRepository.yaml
 NOTE: You can create additional components and applications with the same file locally by adding additional custom resource configurations. 
 
 . Now, you can trigger your application’s first build pipeline. In the git repository for your application, using your preferred text editor, open a pull request against the `/.tekton/pull-request.yaml` file. 
-.. Specifically, replace any existing value for the `git-url` field with the git URL for your application’s repository. (This is the URL you would use to clone the repository locally; it ends with `.git`.)
++
+
+Specifically, replace any existing value for the `git-url` field with the git URL for your application’s repository. (This is the URL you would use to clone the repository locally; it ends with `.git`.)
 
 +
 NOTE: The PipelineRun will run only for submitters who have permission to run PipelineRuns or who receive an `/ok-to-test` comment from an authorized user. +
@@ -101,51 +109,61 @@ For further details on PipelineRun permissions, please refer to the https://pipe
 
 . Once the PR is made, a build pipeline should start. You can track its progress in the {ProductName} UI or you can see the final status in GitHub after the pipeline completes. If the pipeline is successful, you can merge the PR.
 
-== Using different from default image repository
+== Using a custom image repository
 
-When using ImageRepository object, you will end up with image repository in
-a default organization, if you want to use your own repository
-don't create ImageRepository and follow this section.
+When using the ImageRepository object, you will end up with an image repository in
+a default organization. If you want to use your own repository
+don't create the ImageRepository object. Instead, use the following procedure.
 
-Create your own repository in quay.io (or other registry, our example will be for quay.io)
+.*Procedure*
 
-In quay.io web UI, go to your organization and click on *Create New Repository*, enter repository name
-and visibility and click on *Create Public/Private Repository* button.
-eg. `quay.io/test_organization/own-repository`
+. Create your own repository in quay.io (or another other registry. This example is for quay.io.
 
-Create robot account in your organization and grant write permission to your repository,
-you can also create another robot account only with read permissions.
+. In quay.io web UI, go to your organization and click on *Create New Repository*, enter the repository name
+and visibility, and click on *Create Public/Private Repository*.For example, enter `quay.io/ test_organization/own-repository`
 
-In quay.io web UI, go to your organization, click on *Robot Accounts* in the left menu,
-then click on *Create Robot Account*, enter name of robot account and click on *Create robot account* button,
-in the list of repos find your repository and set *write* permission for it and then click on *Add permissions* button.
+. Create a robot account in your organization and grant write permission to your repository. You can also create another robot account with only read permissions.
+
+. In the quay.io web UI, go to your organization, click on *Robot Accounts* in the left menu,
+then click on *Create Robot Account*. 
+. Enter the name of the robot account and click on the *Create robot account* button. 
+. In the list of repos, find your repository and set *write* permission for it, and then click on the *Add permissions* button.
++
 
 When you click on the newly created robot account on *Robot Accounts* page, you can get details of the account.
-In the openened popup for the account first you will see credentials *Username* and *Token* (we will use them later),
-when you click on *Kubernetes Secret* you can download secret yml file (we will use it later).
 
-Now we will have to create secret with repository credentials.
+. In the opened popup for the account, first you will see the credentials *Username* and *Token* (take note of these as they will be used later).
 
-=== Creating Secret via {ProductName} UI
-You can now xref:building:creating-secrets.adoc#example-of-creating-a-quay-io-secret[create a secret]
-with the credentials above.
+. Click on *Kubernetes Secret* to download a secret yaml file (it will be used later in this procedure).
+
+Next, you have to create secret with repository credentials.
+
+=== Creating a Secret via {ProductName} UI
+
+.*Procedure*
+
+. xref:building:creating-secrets.adoc#example-of-creating-a-quay-io-secret[Create a secret] with the credentials above.
++
+
 Make sure to use the most narrowly valid scope for the `registry server address` field
 when adding the secret.
++
 
-When adding the secret (image registry) with the UI, you will have to choose components to which component specific
-service accounts `build-pipeline-$COMPONENT_NAME` secret will be linked to,
-so that it can be leveraged by builds.
+When adding the secret (image registry) with the UI, you have to choose components to which component-specific
+service accounts `build-pipeline-$COMPONENT_NAME` the secret will be linked to. You do this so that the secret can be leveraged by builds.
 
-=== Creating Secret manually
+=== Creating a Secret manually
 
-If you aren't using quay.io registry and have only login & password, you will have to podman login
-with credentials, and then get docker config json from  `$XDG_RUNTIME_DIR/containers/auth.json` base64 encode it
-and add to the secret.
+If you aren't using quay.io registry and have only a login and password, you have to use a podman login
+with credentials, and then get the docker config json from  `$XDG_RUNTIME_DIR/containers/auth.json`, base64 encode it,
+and add it to the secret.
 
-Download secret yml for your robot account (from *Robot Accounts* page described above)
+.*Procedure*
+
+. Download the secret yaml for your robot account (from the *Robot Accounts* page described above)
 and save it as `Secret.yaml`.
 
-It will look like this:
+Here is an example file:
 
 [source,yaml]
 ----
@@ -158,18 +176,21 @@ data:
 type: kubernetes.io/dockerconfigjson
 ----
 
-Edit the file and add `metadata.namespace` with value of your namespace: `<your-tenant>`
+[start=2]
+. Edit the file and add `metadata.namespace` with the value of your namespace: `<your-tenant>`
++
 
-Encoded credentials from quay.io will be by default for `quay.io` repository, unless you are using only custom repository
-for whole namespace, with robot account for all repos and will have only one secret in the namespace for registry,
-you will have to change the repository in the encoded credentials
+Encoded credentials from quay.io will be by default for the `quay.io` repository. 
+
+. If you are using only a custom repository
+for the whole namespace, a robot account for all repos, and have only one secret in the namespace for the registry, change the repository in the encoded credentials
 from `quay.io` to `quay.io/test_organization/own-repository`.
 
-To get new <base64-encoded-credentials> follow these steps:
+. To get new <base64-encoded-credentials> follow these steps:
 
-Decode encoded credentials save them to file : `echo <base64-encoded-credentials> | base64 -d > auth.json`
+.. Decode encoded credentials and save them to a file: `echo <base64-encoded-credentials> | base64 -d > auth.json`
 
-file will look like
+Here is an example file:
 
 [source,json]
 ----
@@ -183,22 +204,23 @@ file will look like
 }
 ----
 
-Edit file and change `quay.io` to full repository name `quay.io/test_organization/own-repository`.
+[start=2]
+.. Edit the file and change `quay.io` to full repository name `quay.io/test_organization/own-repository`.
 
-Encode credentials again: `cat auth.json | base64 -w0`
-and change `<base64-encoded-credentials>` to newly generated credentials in `Secret.yaml`.
+.. Encode the credentials again: `cat auth.json | base64 -w0`
+and change `<base64-encoded-credentials>` to the newly generated credentials in `Secret.yaml`. 
 
-
-And create the secret:
+.. Create the secret:
 
 [source,shell]
 ----
 $ kubectl apply -f Secret.yaml
 ----
 
-Now we will have to also link the secret to the component specific service account `build-pipeline-$COMPONENT_NAME`,
-edit service account either with OCP UI or Cli and to the `secrets` section of the service account
-add your newly created secret, service account should look like:
+[start=5]
+.. Link the secret to the component-specific service account `build-pipeline-$COMPONENT_NAME`,
+edit the service account either with OCP UI or the CLI, and to the `secrets` section of the service account
+add your newly created secret. The service account should look like the following example:
 
 [source,yaml]
 ----
@@ -211,25 +233,23 @@ secrets:
   - name: secret-name
 ----
 
-=== Creating component which will be using your own repository
+=== Creating the component that uses your own repository
 
-Now that we have create secret with credential to our own repository,
-we can finally create component using it.
-Follow examples above about how to create Component via Cli,
-but now you will have to set `spec.containerImage` to your own repository `quay.io/test_organization/own-repository`.
+Now that you have created a secret with credential to your own repository, you can create a component using it.
 
+Follow the examples in the previous subsections on how to create a component using the CLI, but now you have to set `spec.containerImage` to your own repository `quay.io/test_organization/own-repository`.
 
 == Finding the built images
 
 After a pipeline completes with a built artifact, you may want to test the resulting image to ensure that it works properly. The `IMAGE_URL` Tekton result (discoverable from the UI or CLI) should be set to the pullspec for the image.
 
-NOTE: {ProductName} automatically deletes images built for PR pipelines five days after building them.
+CAUTION: {ProductName} automatically deletes images built for PR pipelines five days after building them.
 
 === With the UI
 
 All build PipelineRuns are visible in the {ProductName} UI. The location of these images in the OCI registry is reported on the *Activity* page.
 
-.Procedure
+.*Procedure*
 
 In the console, complete the following steps to find the image pullspec for a completed PipelineRun:
 
@@ -243,14 +263,13 @@ In the console, complete the following steps to find the image pullspec for a co
 
 After the build PipelineRuns are completed from git push events, the Components are updated with the location of the artifact in the OCI registry.
 
-
 .Prerequisites
 
 * xref:ROOT:getting-started.adoc#getting-started-with-the-cli[Login] to {ProductName}.
 
 * Install the link:https://stedolan.github.io/jq/download/[jq] CLI tool.
 
-.Procedure
+.*Procedure*
 
 In the CLI, complete the following steps to find the latest pullspec for a component:
 
