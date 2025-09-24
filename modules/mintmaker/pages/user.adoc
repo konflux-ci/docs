@@ -262,51 +262,44 @@ and repository-level configurations. When enabling additional managers in your r
 MintMaker has a base schedule which runs every 4 hours, starting at 00:00 UTC (i.e. 04:00, 08:00, 12:00, ...).
 While you can configure some aspects of your renovate schedule (see below), you cannot influence MintMaker to run any more frequently than this base schedule.
 
-Due to performance considerations, since 20 November 2024, MintMaker is configured to run different managers at different times. The current schedule for individual managers is:
+All enabled managers run according to this base schedule, except the Tekton manager which has a manager-specific schedule and runs on Saturdays after 5 AM UTC.
 
 [cols="30%,70%",option="header"]
 |===
-|*Schedule* | *Managers*
-|Every day before 5 AM | rpm-lockfile, lockFileMaintenance
-|Every day after 5 AM | dockerfile
-|Tuesday after 5 AM | git-submodules
-|Wednesday after 5 AM | argocd, crossplane, fleet, flux, helm-requirements, helm-values, helmfile, helmsman, helmv3, jsonnet-bundler, kubernetes, kustomize
-|Thursday after 5 AM | asdf, fvm, hermit, homebrew, osgi, pre-commit, vendir
-|Friday after 5 AM | Terraform managers
-|Saturday after 5 AM | Python managers, tekton
-|Sunday after 5 AM | gomod, ocb
+|*Schedule (UTC)* | *Managers*
+|at any time | managers except tekton
+|saturday after 5 AM | tekton
 |===
-
-All times are in UTC.
 
 === Overriding the default schedule
 
 While you cannot override the base renovate schedule (every 4 hours), you can override when different managers are scheduled for your repository by modifying the https://docs.renovatebot.com/key-concepts/scheduling/[`schedule`] config option.
 
-To apply the schedule globally in your repository (to apply the schedule for all managers), use `schedule` in the top
-level of the config file:
+**Top-level schedule**: Apply the schedule globally in your repository for all managers by using `schedule` in the top level of the config file:
 
 [source,json]
 ----
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
-  "schedule": ["at any time"]
+  "schedule": ["* * * * 0,6"]
 }
 ----
 
-NOTE: MintMaker's global Renovate configuration includes manager-specific schedules (e.g., tekton manager runs "after 5am on saturday"). These manager-specific schedules take precedence over the top-level "schedule" setting from your repo's renovate config file. To use your preferred schedule, you must explicitly override the manager-specific schedules as following:
+NOTE: MintMaker's global Renovate configuration includes a manager-specific schedule for the Tekton manager as described above. This manager-specific schedules take precedence over the top-level "schedule" setting from your repo's Renovate config file. To use your preferred schedule for the Tekton manager, you must explicitly override this manager-specific schedule.
+
+**Manager-specific schedule**: Configure schedules for specific managers:
 
 [source,json]
 ----
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
-  "dockerfile": {
-    "schedule": ["at any time"]
+  "tekton": {
+    "schedule": ["* * * * 0,6"]
   }
 }
 ----
 
-If you have multiple manager-specific schedules to override, you can add a package rule like this:
+If you have multiple manager-specific schedules to configure or override, you can add a package rule like this:
 
 [source,json]
 ----
@@ -314,8 +307,8 @@ If you have multiple manager-specific schedules to override, you can add a packa
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
   "packageRules": [
     {
-      "matchManagers": ["dockerfile", "gomod", "tekton"],
-      "schedule": ["at any time"]
+      "matchManagers": ["gomod", "tekton"],
+      "schedule": ["* * * * 0,6"]
     }
   ]
 }
