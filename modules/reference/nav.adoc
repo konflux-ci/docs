@@ -4,7 +4,7 @@
 *** xref:kube-apis/application-api.adoc#k8s-api-github-com-konflux-ci-application-api-api-v1alpha1-application[Application]
 *** xref:kube-apis/application-api.adoc#k8s-api-github-com-konflux-ci-application-api-api-v1alpha1-component[Component]
 *** xref:kube-apis/application-api.adoc#k8s-api-github-com-konflux-ci-application-api-api-v1alpha1-snapshot[Snapshot]
-*** xref:kube-apis/enterprise-contract.adoc#k8s-api-github-com-enterprise-contract-enterprise-contract-controller-api-v1alpha1-enterprisecontractpolicy[EnterpriseContractPolicy]
+*** xref:kube-apis/enterprise-contract.adoc#k8s-api-github-com-conforma-crds-api-v1alpha1-enterprisecontractpolicy[EnterpriseContractPolicy]
 *** xref:kube-apis/image-controller.adoc#k8s-api-github-com-konflux-ci-image-controller-api-v1alpha1-imagerepository[ImageRepository]
 *** xref:kube-apis/integration-service.adoc#k8s-api-github-com-konflux-ci-integration-service-api-v1alpha1-integrationtestscenario[IntegrationTestScenario]
 *** xref:kube-apis/release-service.adoc#k8s-api-github-com-konflux-ci-release-service-api-v1alpha1-release[Release]

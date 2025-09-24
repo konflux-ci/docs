@@ -14,12 +14,12 @@
 Package v1alpha1 contains API Schema definitions for the appstudio.redhat.com v1alpha1 API group
 
 .Resource Types
-- xref:{anchor_prefix}-github-com-enterprise-contract-enterprise-contract-controller-api-v1alpha1-enterprisecontractpolicy[$$EnterpriseContractPolicy$$]
-- xref:{anchor_prefix}-github-com-enterprise-contract-enterprise-contract-controller-api-v1alpha1-enterprisecontractpolicylist[$$EnterpriseContractPolicyList$$]
+- xref:{anchor_prefix}-github-com-conforma-crds-api-v1alpha1-enterprisecontractpolicy[$$EnterpriseContractPolicy$$]
+- xref:{anchor_prefix}-github-com-conforma-crds-api-v1alpha1-enterprisecontractpolicylist[$$EnterpriseContractPolicyList$$]
 
 
 
-[id="{anchor_prefix}-github-com-enterprise-contract-enterprise-contract-controller-api-v1alpha1-enterprisecontractpolicy"]
+[id="{anchor_prefix}-github-com-conforma-crds-api-v1alpha1-enterprisecontractpolicy"]
 ==== EnterpriseContractPolicy
 
 
@@ -30,7 +30,7 @@ EnterpriseContractPolicy is the Schema for the enterprisecontractpolicies API
 
 .Appears In:
 ****
-- xref:{anchor_prefix}-github-com-enterprise-contract-enterprise-contract-controller-api-v1alpha1-enterprisecontractpolicylist[$$EnterpriseContractPolicyList$$]
+- xref:{anchor_prefix}-github-com-conforma-crds-api-v1alpha1-enterprisecontractpolicylist[$$EnterpriseContractPolicyList$$]
 ****
 
 [cols="20a,50a,15a,15a", options="header"]
@@ -40,12 +40,12 @@ EnterpriseContractPolicy is the Schema for the enterprisecontractpolicies API
 | *`kind`* __string__ | `EnterpriseContractPolicy` | |
 | *`metadata`* __link:https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.3/#objectmeta-v1-meta[$$ObjectMeta$$]__ | Refer to Kubernetes API documentation for fields of `metadata`.
  |  | 
-| *`spec`* __xref:{anchor_prefix}-github-com-enterprise-contract-enterprise-contract-controller-api-v1alpha1-enterprisecontractpolicyspec[$$EnterpriseContractPolicySpec$$]__ |  |  | 
-| *`status`* __xref:{anchor_prefix}-github-com-enterprise-contract-enterprise-contract-controller-api-v1alpha1-enterprisecontractpolicystatus[$$EnterpriseContractPolicyStatus$$]__ |  |  | 
+| *`spec`* __xref:{anchor_prefix}-github-com-conforma-crds-api-v1alpha1-enterprisecontractpolicyspec[$$EnterpriseContractPolicySpec$$]__ |  |  | 
+| *`status`* __xref:{anchor_prefix}-github-com-conforma-crds-api-v1alpha1-enterprisecontractpolicystatus[$$EnterpriseContractPolicyStatus$$]__ |  |  | 
 |===
 
 
-[id="{anchor_prefix}-github-com-enterprise-contract-enterprise-contract-controller-api-v1alpha1-enterprisecontractpolicyconfiguration"]
+[id="{anchor_prefix}-github-com-conforma-crds-api-v1alpha1-enterprisecontractpolicyconfiguration"]
 ==== EnterpriseContractPolicyConfiguration
 
 
@@ -57,7 +57,7 @@ DEPRECATED: Use the config for a policy source instead.
 
 .Appears In:
 ****
-- xref:{anchor_prefix}-github-com-enterprise-contract-enterprise-contract-controller-api-v1alpha1-enterprisecontractpolicyspec[$$EnterpriseContractPolicySpec$$]
+- xref:{anchor_prefix}-github-com-conforma-crds-api-v1alpha1-enterprisecontractpolicyspec[$$EnterpriseContractPolicySpec$$]
 ****
 
 [cols="20a,50a,15a,15a", options="header"]
@@ -72,7 +72,7 @@ with the "@" prefix. + |  |
 |===
 
 
-[id="{anchor_prefix}-github-com-enterprise-contract-enterprise-contract-controller-api-v1alpha1-enterprisecontractpolicylist"]
+[id="{anchor_prefix}-github-com-conforma-crds-api-v1alpha1-enterprisecontractpolicylist"]
 ==== EnterpriseContractPolicyList
 
 
@@ -90,11 +90,11 @@ EnterpriseContractPolicyList contains a list of EnterpriseContractPolicy
 | *`kind`* __string__ | `EnterpriseContractPolicyList` | |
 | *`metadata`* __link:https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.3/#listmeta-v1-meta[$$ListMeta$$]__ | Refer to Kubernetes API documentation for fields of `metadata`.
  |  | 
-| *`items`* __xref:{anchor_prefix}-github-com-enterprise-contract-enterprise-contract-controller-api-v1alpha1-enterprisecontractpolicy[$$EnterpriseContractPolicy$$] array__ |  |  | 
+| *`items`* __xref:{anchor_prefix}-github-com-conforma-crds-api-v1alpha1-enterprisecontractpolicy[$$EnterpriseContractPolicy$$] array__ |  |  | 
 |===
 
 
-[id="{anchor_prefix}-github-com-enterprise-contract-enterprise-contract-controller-api-v1alpha1-enterprisecontractpolicyspec"]
+[id="{anchor_prefix}-github-com-conforma-crds-api-v1alpha1-enterprisecontractpolicyspec"]
 ==== EnterpriseContractPolicySpec
 
 
@@ -105,7 +105,7 @@ EnterpriseContractPolicySpec is used to configure the Enterprise Contract Policy
 
 .Appears In:
 ****
-- xref:{anchor_prefix}-github-com-enterprise-contract-enterprise-contract-controller-api-v1alpha1-enterprisecontractpolicy[$$EnterpriseContractPolicy$$]
+- xref:{anchor_prefix}-github-com-conforma-crds-api-v1alpha1-enterprisecontractpolicy[$$EnterpriseContractPolicy$$]
 ****
 
 [cols="20a,50a,15a,15a", options="header"]
@@ -113,16 +113,16 @@ EnterpriseContractPolicySpec is used to configure the Enterprise Contract Policy
 | Field | Description | Default | Validation
 | *`name`* __string__ | Optional name of the policy + |  | 
 | *`description`* __string__ | Description of the policy or its intended use + |  | 
-| *`sources`* __xref:{anchor_prefix}-github-com-enterprise-contract-enterprise-contract-controller-api-v1alpha1-source[$$Source$$] array__ | One or more groups of policy rules + |  | MinItems: 1 +
+| *`sources`* __xref:{anchor_prefix}-github-com-conforma-crds-api-v1alpha1-source[$$Source$$] array__ | One or more groups of policy rules + |  | MinItems: 1 +
 
-| *`configuration`* __xref:{anchor_prefix}-github-com-enterprise-contract-enterprise-contract-controller-api-v1alpha1-enterprisecontractpolicyconfiguration[$$EnterpriseContractPolicyConfiguration$$]__ | Configuration handles policy modification configuration (exclusions and inclusions) + |  | 
+| *`configuration`* __xref:{anchor_prefix}-github-com-conforma-crds-api-v1alpha1-enterprisecontractpolicyconfiguration[$$EnterpriseContractPolicyConfiguration$$]__ | Configuration handles policy modification configuration (exclusions and inclusions) + |  | 
 | *`rekorUrl`* __string__ | URL of the Rekor instance. Empty string disables Rekor integration + |  | 
 | *`publicKey`* __string__ | Public key used to validate the signature of images and attestations + |  | 
-| *`identity`* __xref:{anchor_prefix}-github-com-enterprise-contract-enterprise-contract-controller-api-v1alpha1-identity[$$Identity$$]__ | Identity to be used for keyless verification. This is an experimental feature. + |  | 
+| *`identity`* __xref:{anchor_prefix}-github-com-conforma-crds-api-v1alpha1-identity[$$Identity$$]__ | Identity to be used for keyless verification. This is an experimental feature. + |  | 
 |===
 
 
-[id="{anchor_prefix}-github-com-enterprise-contract-enterprise-contract-controller-api-v1alpha1-enterprisecontractpolicystatus"]
+[id="{anchor_prefix}-github-com-conforma-crds-api-v1alpha1-enterprisecontractpolicystatus"]
 ==== EnterpriseContractPolicyStatus
 
 
@@ -133,12 +133,12 @@ EnterpriseContractPolicyStatus defines the observed state of EnterpriseContractP
 
 .Appears In:
 ****
-- xref:{anchor_prefix}-github-com-enterprise-contract-enterprise-contract-controller-api-v1alpha1-enterprisecontractpolicy[$$EnterpriseContractPolicy$$]
+- xref:{anchor_prefix}-github-com-conforma-crds-api-v1alpha1-enterprisecontractpolicy[$$EnterpriseContractPolicy$$]
 ****
 
 
 
-[id="{anchor_prefix}-github-com-enterprise-contract-enterprise-contract-controller-api-v1alpha1-identity"]
+[id="{anchor_prefix}-github-com-conforma-crds-api-v1alpha1-identity"]
 ==== Identity
 
 
@@ -149,7 +149,7 @@ Identity defines the allowed identity for keyless signing.
 
 .Appears In:
 ****
-- xref:{anchor_prefix}-github-com-enterprise-contract-enterprise-contract-controller-api-v1alpha1-enterprisecontractpolicyspec[$$EnterpriseContractPolicySpec$$]
+- xref:{anchor_prefix}-github-com-conforma-crds-api-v1alpha1-enterprisecontractpolicyspec[$$EnterpriseContractPolicySpec$$]
 ****
 
 [cols="20a,50a,15a,15a", options="header"]
@@ -164,7 +164,7 @@ keyless verification. + |  |
 |===
 
 
-[id="{anchor_prefix}-github-com-enterprise-contract-enterprise-contract-controller-api-v1alpha1-source"]
+[id="{anchor_prefix}-github-com-conforma-crds-api-v1alpha1-source"]
 ==== Source
 
 
@@ -175,7 +175,7 @@ Source defines policies and data that are evaluated together
 
 .Appears In:
 ****
-- xref:{anchor_prefix}-github-com-enterprise-contract-enterprise-contract-controller-api-v1alpha1-enterprisecontractpolicyspec[$$EnterpriseContractPolicySpec$$]
+- xref:{anchor_prefix}-github-com-conforma-crds-api-v1alpha1-enterprisecontractpolicyspec[$$EnterpriseContractPolicySpec$$]
 ****
 
 [cols="20a,50a,15a,15a", options="header"]
@@ -187,16 +187,16 @@ Source defines policies and data that are evaluated together
 | *`data`* __string array__ | List of go-getter style policy data source urls + |  | 
 | *`ruleData`* __link:https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.3/#json-v1-apiextensions-k8s-io[$$JSON$$]__ | Arbitrary rule data that will be visible to policy rules + |  | Type: object +
 
-| *`config`* __xref:{anchor_prefix}-github-com-enterprise-contract-enterprise-contract-controller-api-v1alpha1-sourceconfig[$$SourceConfig$$]__ | Config specifies which policy rules are included, or excluded, from the +
+| *`config`* __xref:{anchor_prefix}-github-com-conforma-crds-api-v1alpha1-sourceconfig[$$SourceConfig$$]__ | Config specifies which policy rules are included, or excluded, from the +
 provided policy source urls. + |  | Type: object +
 
-| *`volatileConfig`* __xref:{anchor_prefix}-github-com-enterprise-contract-enterprise-contract-controller-api-v1alpha1-volatilesourceconfig[$$VolatileSourceConfig$$]__ | Specifies volatile configuration that can include or exclude policy rules +
+| *`volatileConfig`* __xref:{anchor_prefix}-github-com-conforma-crds-api-v1alpha1-volatilesourceconfig[$$VolatileSourceConfig$$]__ | Specifies volatile configuration that can include or exclude policy rules +
 based on effective time. + |  | Type: object +
 
 |===
 
 
-[id="{anchor_prefix}-github-com-enterprise-contract-enterprise-contract-controller-api-v1alpha1-sourceconfig"]
+[id="{anchor_prefix}-github-com-conforma-crds-api-v1alpha1-sourceconfig"]
 ==== SourceConfig
 
 
@@ -207,7 +207,7 @@ SourceConfig specifies config options for a policy source.
 
 .Appears In:
 ****
-- xref:{anchor_prefix}-github-com-enterprise-contract-enterprise-contract-controller-api-v1alpha1-source[$$Source$$]
+- xref:{anchor_prefix}-github-com-conforma-crds-api-v1alpha1-source[$$Source$$]
 ****
 
 [cols="20a,50a,15a,15a", options="header"]
@@ -220,7 +220,7 @@ These take precedence over policy exclusions. + |  |
 |===
 
 
-[id="{anchor_prefix}-github-com-enterprise-contract-enterprise-contract-controller-api-v1alpha1-volatilecriteria"]
+[id="{anchor_prefix}-github-com-conforma-crds-api-v1alpha1-volatilecriteria"]
 ==== VolatileCriteria
 
 
@@ -231,7 +231,7 @@ VolatileCriteria includes or excludes a policy rule with effective dates as an o
 
 .Appears In:
 ****
-- xref:{anchor_prefix}-github-com-enterprise-contract-enterprise-contract-controller-api-v1alpha1-volatilesourceconfig[$$VolatileSourceConfig$$]
+- xref:{anchor_prefix}-github-com-conforma-crds-api-v1alpha1-volatilesourceconfig[$$VolatileSourceConfig$$]
 ****
 
 [cols="20a,50a,15a,15a", options="header"]
@@ -252,7 +252,7 @@ ImageRef is used to specify an image by its digest. + |  | Pattern: `^sha256:[a-
 |===
 
 
-[id="{anchor_prefix}-github-com-enterprise-contract-enterprise-contract-controller-api-v1alpha1-volatilesourceconfig"]
+[id="{anchor_prefix}-github-com-conforma-crds-api-v1alpha1-volatilesourceconfig"]
 ==== VolatileSourceConfig
 
 
@@ -263,15 +263,15 @@ VolatileSourceConfig specifies volatile configuration for a policy source.
 
 .Appears In:
 ****
-- xref:{anchor_prefix}-github-com-enterprise-contract-enterprise-contract-controller-api-v1alpha1-source[$$Source$$]
+- xref:{anchor_prefix}-github-com-conforma-crds-api-v1alpha1-source[$$Source$$]
 ****
 
 [cols="20a,50a,15a,15a", options="header"]
 |===
 | Field | Description | Default | Validation
-| *`exclude`* __xref:{anchor_prefix}-github-com-enterprise-contract-enterprise-contract-controller-api-v1alpha1-volatilecriteria[$$VolatileCriteria$$] array__ | Exclude is a set of policy exclusions that, in case of failure, do not block +
+| *`exclude`* __xref:{anchor_prefix}-github-com-conforma-crds-api-v1alpha1-volatilecriteria[$$VolatileCriteria$$] array__ | Exclude is a set of policy exclusions that, in case of failure, do not block +
 the success of the outcome. + |  | 
-| *`include`* __xref:{anchor_prefix}-github-com-enterprise-contract-enterprise-contract-controller-api-v1alpha1-volatilecriteria[$$VolatileCriteria$$] array__ | Include is a set of policy inclusions that are added to the policy evaluation. +
+| *`include`* __xref:{anchor_prefix}-github-com-conforma-crds-api-v1alpha1-volatilecriteria[$$VolatileCriteria$$] array__ | Include is a set of policy inclusions that are added to the policy evaluation. +
 These take precedence over policy exclusions. + |  | 
 |===
 
