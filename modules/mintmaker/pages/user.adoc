@@ -230,7 +230,7 @@ enabled managers is available below.
 
 |*Ruby* |+++<del>+++`bundler`, `puppet`, `ruby-version`+++</del>+++
 
-|*Rust* |+++<del>+++`cargo`+++</del>+++
+|*Rust* |`cargo`
 
 |*Swift* |+++<del>+++`cocoapods`, `mint`, `swift`+++</del>+++
 
