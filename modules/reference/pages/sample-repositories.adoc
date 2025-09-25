@@ -7,7 +7,7 @@ either use these as reference or you can fork them and try to onboard the reposi
 
 This repository demonstrates the configuration for a simple multi-architecture build.
 
-https://github.com/konflux-ci/multi-arch-konflux-sample
+https://github.com/konflux-ci/multi-arch-konflux-example
 
 == OLM operator
 
