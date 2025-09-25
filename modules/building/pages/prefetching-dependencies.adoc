@@ -1,8 +1,8 @@
 = Prefetching package manager dependencies for hermetic builds
 
-In {ProductName}, you can run a hermetic build by restricting network access to the build, but without network a build can’t fetch component dependencies from a repository and might fail. To avoid that, {ProductName} can prefetch dependencies for your hermetic builds using link:https://github.com/containerbuildsystem/cachi2/blob/main/README.md[Cachi2].
+In {ProductName}, you can run a hermetic build by restricting network access to the build; but without network access, a build will not be able to fetch component dependencies from remote repositories, and might fail. To avoid that, {ProductName} can prefetch dependencies for your hermetic builds using link:https://hermetoproject.github.io/hermeto[Hermeto].
 
-For every build, Cachi2 generates a software bill of materials (SBOM) where all dependencies are properly declared and pinned to specific versions. Also, Cachi2 ensures that arbitrary code is never executed during the prefetch, meaning, for example, that the build doesn’t pull any undeclared dependencies. Such measures result in very accurate SBOMs and improve the build reproducibility. For more information about SBOMs, see xref:metadata:sboms.adoc[Inspecting SBOMs].
+For every build, Hermeto generates a software bill of materials (SBOM) where all dependencies are properly declared and pinned to specific versions. Also, Hermeto ensures that arbitrary code is never executed during the prefetch, meaning, for example, that the build doesn't pull any undeclared dependencies. This results in very accurate SBOMs and improved build reproducibility. For more information about SBOMs, see xref:metadata:sboms.adoc[Inspecting SBOMs].
 
 [#available-package-managers]
 .Available package managers
@@ -71,6 +71,13 @@ spec:
 
 . Review and merge the pull request.
 
+[IMPORTANT]
+====
+Refer to the link:https://hermetoproject.github.io/hermeto/usage[hermetic build walkthrough] for more detail on configuration and usage.
+
+include::partial${context}-prefetch-hermeto-note.adoc[]
+====
+
 == Verification
 * From the {ProductName} *Applications* view, go to *Activity > Pipeline runs*.
 ** Go to the pipeline run with *Build* in the *Type* column and confirm that the `prefetch-dependencies` stage displays a green checkmark. This indicates that the build process successfully fetched all dependencies.
@@ -92,15 +99,24 @@ In {ProductName}, from the *Applications* view, select the application build you
 
 To enable downloading modules from private repos, Go supports authentication via `.netrc`.
 You can create a netrc Secret for your pipeline as described xref:netrc[below].
-For more Go-specific `.netrc` details, see link:https://go.dev/doc/faq#git_https[the Go docs].
+For more Go-specific `.netrc` details, see the link:https://go.dev/doc/faq#git_https[Go docs].
+
+=== [[go-walkthrough]]`gomod` walkthrough
+
+[IMPORTANT]
+====
+Refer to the link:https://hermetoproject.github.io/hermeto/gomod#example[gomod hermetic build walkthrough] for more detail on configuration and usage.
+
+include::partial${context}-prefetch-hermeto-note.adoc[]
+====
 
 == [[pip]]Enabling prefetch builds for `pip`
-Cachi2 supports pip by parsing of `pip` requirements files, including but not limited to, `requirements.txt` files placed in the root of your repository. By generically parsing `pip` requirements files, Cachi2 downloads the specified dependencies.
+Hermeto supports pip by parsing of `pip` requirements files, including but not limited to, `requirements.txt` files placed in the root of your repository. By generically parsing `pip` requirements files, Hermeto downloads the specified dependencies.
 
-IMPORTANT: These requirements files function as lockfiles, encompassing all transitive dependencies. You must actively pin each transitive dependency listed in the requirements file to a specific version. Check the link:https://github.com/hermetoproject/hermeto/blob/main/docs/pip.md#requirementstxt[Cachi2 documentation] for more information on how to generate the requirements file.
+IMPORTANT: These requirements files function as lockfiles, encompassing all transitive dependencies. You must actively pin each transitive dependency listed in the requirements file to a specific version. Check the link:https://hermetoproject.github.io/hermeto/pip/#requirementstxt[Hermeto documentation] for more information on how to generate the requirements file.
 
 === Building from source
-By default, Cachi2 will only fetch the source distribution from each dependency present in the requirements file. This is to force `pip` to build every dependency from source instead of relying on pre-built wheels, bringing a greater transparency to the content that will be made available to the build.
+By default, Hermeto will only fetch the source distribution from each dependency present in the requirements file. This is to force `pip` to build every dependency from source instead of relying on pre-built wheels, bringing a greater transparency to the content that will be made available to the build.
 
 In many cases, it is necessary to include additional build dependencies that are not automatically added by `pip-compile` on the requirements file. To overcome this limitation, we recommend the use of the link:https://pybuild-deps.readthedocs.io/en/latest/index.html[pybuild-deps] tool. This tool will generate a `requirements-build.txt` that contains all the build dependencies that are needed to build the project from source.
 
@@ -121,7 +137,7 @@ spec:
 
 [NOTE]
 ====
-* By default, Cachi2 processes `requirements.txt` and `requirements-build.txt` at a specified path.
+* By default, Hermeto processes `requirements.txt` and `requirements-build.txt` at a specified path.
 ====
 
 .. Optional: In case the requirements files do not use the standard names, or in case more than a single requirements or requirements-build file is needed, you can use the following additional parameters:
@@ -136,11 +152,11 @@ spec:
             value: '{"type": "pip", "path": ".", "requirements_files": ["requirements.txt", "requirements-extras.txt", "tests/requirements.txt", "requirements_build_files": ["other-build-requirements.txt"]}'
 ----
 
-NOTE: To troubleshoot any issues you might experience when you enable prefetch builds for `pip` with source dependencies, see link:https://github.com/hermetoproject/hermeto/blob/main/docs/pip.md#troubleshooting[cachi2 documentation]
+NOTE: To troubleshoot any issues you might experience when you enable prefetch builds for `pip` with source dependencies, see the link:https://hermetoproject.github.io/hermeto/pip/#troubleshooting[Hermeto documentation]
 
 === Building by enabling the prefetching of wheels
 
-In case you don't want to build every dependency from source, Cachi2 can be configured to also fetch wheels alongside the source distributions:
+In case you don't want to build every dependency from source, Hermeto can be configured to also fetch wheels alongside the source distributions:
 
 [source,yaml]
 ----
@@ -155,8 +171,8 @@ Note that you don't need to generate a `requirements-build.txt` file as describe
 
 === [[custom-index-servers]]Prefetching `pip` dependencies from custom index servers
 
-Cachi2 supports the link:https://pip.pypa.io/en/stable/cli/pip_install/#install-index-url[--index-url] option.
-You can add this option to your `requirements.txt` file(s), instructing Cachi2 to download packages from the specified
+Hermeto supports pip's link:https://pip.pypa.io/en/stable/cli/pip_install/#install-index-url[--index-url] option.
+You can add this option to your `requirements.txt` file(s), instructing Hermeto to download packages from the specified
 index server. For example:
 
 [source,text]
@@ -172,19 +188,46 @@ requests==2.32.2 \
 WARNING: Do not include credentials in the index URL. If needed, provide authentication through a `.netrc` file (as described xref:netrc[below]).
 For more pip-specific details on netrc files, review the link:https://pip.pypa.io/en/stable/topics/authentication/#netrc-support[pip documentation for netrc support].
 
+=== [[pip-walkthrough]]`pip` walkthrough
+
+[IMPORTANT]
+====
+Refer to the link:https://hermetoproject.github.io/hermeto/pip#example[pip hermetic build walkthrough] for more detail on configuration and usage.
+
+include::partial${context}-prefetch-hermeto-note.adoc[]
+====
+
 == [[npm]]Enabling prefetch builds for `npm`
-Cachi2 supports `npm` by fetching any dependencies you declare in your `package.json` and `package-lock.json` project files. The npm CLI manages the `package-lock.json` file automatically, and Cachi2 fetches any dependencies and enables your build to install them without network access.
+Hermeto supports `npm` by fetching any dependencies you declare in your `package.json` and `package-lock.json` project files. The npm CLI manages the `package-lock.json` file automatically, and Hermeto fetches any dependencies and enables your build to install them without network access.
 
 .Prerequisites
 * You have an up-to-date link:https://docs.npmjs.com/cli/v9/configuring-npm/package-lock-json[`package-lock.json`] file, newer than version 1, in your source repository. To make sure that you have the latest `package-lock.json` file, or to create a lockfile, run the link:https://docs.npmjs.com/cli/v9/commands/npm-install?v=true[`npm-install`] command. You can also look at the `lockfileVersion` attribute in your `package-lock.json` file to make sure its value is a number greater than `*1*`.
 
+=== [[npm-walkthrough]]`npm` walkthrough
+
+[IMPORTANT]
+====
+Refer to the link:https://hermetoproject.github.io/hermeto/npm#example[npm hermetic build walkthrough] for more detail on configuration and usage.
+
+include::partial${context}-prefetch-hermeto-note.adoc[]
+====
+
 == [[yarn]]Enabling prefetch builds for `yarn`
 
-Supported versions: 1.x and 3.x. Cachi2 automatically detects the version of `yarn` and fetches any dependencies you declare in your `package.json` and `yarn.lock` project files.
+Supported versions: 1.x, 3.x, and 4.x. Hermeto automatically detects the version of `yarn` and fetches any dependencies you declare in your `package.json` and `yarn.lock` project files.
 
 .Prerequisites
 
-* You have an up-to-date `yarn.lock` file in your source repository. To ensure you have the latest `yarn.lock` file or to create it, run the `yarn install` command. If `yarn.lock` is not up-to-date, Cachi2 will not fetch the dependencies.
+* You have an up-to-date `yarn.lock` file in your source repository. To ensure you have the latest `yarn.lock` file or to create it, run the `yarn install` command. If `yarn.lock` is not up-to-date, Hermeto will not fetch the dependencies.
+
+=== [[yarn-walkthrough]]`yarn` walkthrough
+
+[IMPORTANT]
+====
+Refer to the link:https://hermetoproject.github.io/hermeto/yarn#example[yarn hermetic build walkthrough] for more detail on configuration and usage.
+
+include::partial${context}-prefetch-hermeto-note.adoc[]
+====
 
 == [[bundler]]Enabling prefetch builds for `bundler`
 
@@ -192,15 +235,33 @@ Supported versions: 1.x and 3.x. Cachi2 automatically detects the version of `ya
 
 You have a `Gemfile` and a `Gemfile.lock` file in your repository that lists all the dependencies. The `Gemfile.lock` is generated from the `Gemfile` and contains all transitive dependencies pinned to specific versions.
 
+=== [[bundler-walkthrough]]`bundler` walkthrough
+
+[IMPORTANT]
+====
+Refer to the link:https://hermetoproject.github.io/hermeto/bundler#hermetic-build[bundler hermetic build walkthrough] for more detail on configuration and usage.
+
+include::partial${context}-prefetch-hermeto-note.adoc[]
+====
+
 == [[cargo]]Enabling prefetch builds for `cargo`
 
 .Prerequisites
 
 You have a `Cargo.lock` file in your repository that lists all the dependencies. The `Cargo.lock` file is generated by running the `cargo generate-lockfile` command and contains all transitive dependencies pinned to specific versions.
 
+=== [[cargo-walkthrough]]`cargo` walkthrough
+
+[IMPORTANT]
+====
+Refer to the link:https://hermetoproject.github.io/hermeto/cargo#hermetic-build[cargo hermetic build walkthrough] for more detail on configuration and usage.
+
+include::partial${context}-prefetch-hermeto-note.adoc[]
+====
+
 == [[rpm]]Enabling prefetch builds for `rpm`
 
-Cachi2 has a package manager capable of fetching `rpm` dependencies. This requires the use of a pair of `rpms.in.yaml` and `rpms.lock.yaml` files to be committed to your repository. You write a `rpms.in.yaml` file and the link:https://github.com/konflux-ci/rpm-lockfile-prototype?tab=readme-ov-file#what-is-this[rpm-lockfile-prototype] CLI tool resolves that to produce a `rpms.lock.yaml` file. Cachi2 fetches those specific rpms and enables your build to install them without network access.
+Hermeto has a package manager capable of fetching `rpm` dependencies. This requires the use of a pair of `rpms.in.yaml` and `rpms.lock.yaml` files to be committed to your repository. You write a `rpms.in.yaml` file and the link:https://github.com/konflux-ci/rpm-lockfile-prototype?tab=readme-ov-file#what-is-this[rpm-lockfile-prototype] CLI tool resolves that to produce a `rpms.lock.yaml` file. Hermeto fetches those specific rpms and enables your build to install them without network access.
 
 .Prerequisites
 * You have an up-to-date installation of link:https://github.com/konflux-ci/rpm-lockfile-prototype?tab=readme-ov-file#installation[rpm-lockfile-prototype].
@@ -233,7 +294,7 @@ include::partial${context}-example-prefetch-rpm-copy-repo.adoc[]
 include::partial${context}-example-prefetch-rpm-trust-keys.adoc[]
 
 +
-NOTE: For every repository defined in your set of repo files, make sure to add the corresponding sources repo (or make sure to enable them, if they’re already present). Otherwise, the lockfile generator will not include any SRPMs in your lockfile, cachi2 won’t download any SRPMs and the source container for your build will be incomplete.
+NOTE: For every repository defined in your set of repo files, make sure to add the corresponding sources repo (or make sure to enable them, if they're already present). Otherwise, the lockfile generator will not include any SRPMs in your lockfile, Hermeto won't download any SRPMs, and the source container for your build will be incomplete.
 
 . Run the following command to resolve your `rpms.in.yaml` file and produce a `rpms.lock.yaml` file.
 
@@ -247,8 +308,7 @@ include::partial${context}-example-prefetch-rpm-lockfile.adoc[]
 +
 NOTE: The list of `arches.packages` is omitted for brevity.
 
-. Add/Update the prefetch-input param in the PipelineRun yaml so that the prefetch-task for RPMs is enabled. Update the path if the RPM files are not in the default directory.
-
+. Add/Update the prefetch-input param in the PipelineRun YAML so that the prefetch-task for RPMs is enabled. Update the path if the RPM files are not in the default directory.
 +
 [source,yaml]
 ----
@@ -259,14 +319,27 @@ spec:
       value: '{"type": "rpm", "path": "."}' <1>
 ----
 
+. You can specify additional DNF repository configuration options (see `dnf.conf` man page) that will be set for a particular repository in the generated `hermeto.repo` files
++
+include::partial${context}-example-prefetch-rpm-dnf-repo-options.adoc[]
+
 NOTE: Konflux also supports prefetching RPM content which requires a Red Hat subscription. For more information see xref:./activation-keys-subscription.adoc#hermetic-network-isolated-builds[Using Red Hat activation keys to access subscription content].
 
+=== [[rpm-walkthrough]]`rpm` walkthrough
+
+[IMPORTANT]
+====
+Refer to the link:https://hermetoproject.github.io/hermeto/rpm#example[rpm hermetic build walkthrough] for more detail on configuration and usage.
+
+include::partial${context}-prefetch-hermeto-note.adoc[]
+====
+
 == [[generic]]Enabling prefetch builds for `generic fetcher`
-If you need to prefetch arbitrary files for your build, Cachi2 supports `generic fetcher` for that purpose. It uses a custom lockfile named `artifacts.lock.yaml` to achieve this. This file needs to be either commited in the source repository, or explicitly specified as an absolute path. The latter is useful in case you for some reason need the lockfile to be dynamic and committing it to the repository would be problematic. For more information on supported types of artifacts, see link:https://github.com/containerbuildsystem/cachi2/blob/main/docs/generic.md[Cachi2 documentation].
+If you need to prefetch arbitrary files for your build, Hermeto supports `generic fetcher` for that purpose. It uses a custom lockfile named `artifacts.lock.yaml` to achieve this. This file needs to be either commited in the source repository, or explicitly specified as an absolute path. The latter is useful in case you for some reason need the lockfile to be dynamic and committing it to the repository would be problematic. For more information on supported types of artifacts, see the link:https://hermetoproject.github.io/hermeto/generic[Hermeto documentation].
 
 To prefetch dependencies for a component build, complete the following steps:
 
-. Create a `artifacts.lock.yaml` file in your git repository, with a list of files to prefetch, their checksums, and optionally their filenames. See link:https://github.com/containerbuildsystem/cachi2/blob/main/docs/generic.md[Cachi2 documentation] for complete overview of the lockfile format.
+. Create an `artifacts.lock.yaml` file in your git repository, with a list of files to prefetch, their checksums, and optionally their filenames. See the link:https://hermetoproject.github.io/hermeto/generic[Hermeto documentation] for complete overview of the lockfile format.
 
 +
 [source,yaml]
@@ -290,6 +363,15 @@ You can find your generic prefetched assets in `/cachi2/output/deps/generic/<fil
 ----
 RUN cp /cachi2/output/deps/generic/<filename> <location>
 ----
+
+=== [[generic-walkthrough]]`generic fetcher` walkthrough
+
+[IMPORTANT]
+====
+Refer to the link:https://hermetoproject.github.io/hermeto/generic/#example[generic fetcher hermetic build walkthrough] for more detail on configuration and usage.
+
+include::partial${context}-prefetch-hermeto-note.adoc[]
+====
 
 == [[netrc]]Creating the netrc secret
 

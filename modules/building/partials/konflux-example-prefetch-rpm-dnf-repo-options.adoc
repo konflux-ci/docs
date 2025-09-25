@@ -1,0 +1,17 @@
+[source,json]
+----
+{
+  "type": "rpm",
+  "path": ".",
+  "options": {
+    "dnf": {                            // These need to be set **per-repository**
+      "my-repo-id": {                   // Repository ID from the lockfile
+        "gpgcheck": "0",                // Disable GPG signature checking
+        "enabled": "1",                 // Enable the repository
+        "priority": "10",               // Set repository priority
+        "sslverify": "false"            // Disable TLS verification for this repo
+      }
+    }
+  }
+}
+----
