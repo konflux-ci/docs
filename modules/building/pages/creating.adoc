@@ -150,7 +150,7 @@ and add it to the secret.
 
 You have to  xref:building:creating-secrets.adoc#creating-a-secret-manually[create a secret manually].
 
-. Link the secret to an appropriate service account used for the integration tests. See xref:testing/integration:accessing-private-repositories.adoc[Accessing Private Repositories].
+. Link the secret to an appropriate service account used for the integration tests. See xref:testing:integration/accessing-private-repositories.adoc[Accessing Private Repositories].
 
 
 === Creating the component that uses your own repository
