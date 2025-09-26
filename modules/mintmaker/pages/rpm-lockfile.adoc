@@ -62,3 +62,7 @@ corresponding environment variables if you run the `rpm-lockfile-prototype`
 script manually. These environment variables must be prefixed with `DNF_VAR_`.
 For example, for the `SSL_CLIENT_KEY` variable, you should set an environment
 variable named `DNF_VAR_SSL_CLIENT_KEY`.
+
+== What to do if RPM security PRs don't contain any vulnerabilities
+
+This behavior is caused by an upstream renovate bug, where the old renovate branch is reused in the creation of a new PR. Manually removing the renovate branch (for example `konflux/mintmaker/main/lock-file-maintenance-vulnerability`) in your git repository should resolve the issue. To prevent this issue from happening in the future, enable auto deletion of source branches in your repository. In GitLab, check the option `Enable "Delete source branch" option by default` in the `Merge requests` repository settings. For GitHub, follow https://docs.github.com/en/repositories/configuring-branches-and-merges-in-your-repository/configuring-pull-request-merges/managing-the-automatic-deletion-of-branches[these instructions].
