@@ -111,13 +111,13 @@ For further details on PipelineRun permissions, please refer to the https://pipe
 
 == Using a custom image repository
 
-When using the ImageRepository object, you will end up with an image repository in
-a default organization. If you want to use your own repository
-don't create the ImageRepository object. Instead, use the following procedure.
+When using the ImageRepository resource, you will end up with an image repository in
+a default organization (for example, for Red Hat it would be `redhat-user-workloads`). The repository is unique to the deployment of the image repository controller. If you want to use your own repository,
+don't create the ImageRepository resource. Instead, use the following procedure.
 
 .*Procedure*
 
-. Create your own repository in quay.io (or another other registry. This example is for quay.io.
+. Create your own repository in quay.io (or another registry). This example is for quay.io.
 
 . In quay.io web UI, go to your organization and click on *Create New Repository*, enter the repository name
 and visibility, and click on *Create Public/Private Repository*.For example, enter `quay.io/ test_organization/own-repository`
@@ -136,102 +136,22 @@ When you click on the newly created robot account on *Robot Accounts* page, you 
 
 . Click on *Kubernetes Secret* to download a secret yaml file (it will be used later in this procedure).
 
-Next, you have to create secret with repository credentials.
-
-=== Creating a Secret via {ProductName} UI
-
-.*Procedure*
-
-. xref:building:creating-secrets.adoc#example-of-creating-a-quay-io-secret[Create a secret] with the credentials above.
-+
-
-Make sure to use the most narrowly valid scope for the `registry server address` field
-when adding the secret.
+. Create a secret with repository credentials. Use xref:building:creating-secrets.adoc[creating secrets]  with the credentials above.
 +
 
 When adding the secret (image registry) with the UI, you have to choose components to which component-specific
 service accounts `build-pipeline-$COMPONENT_NAME` the secret will be linked to. You do this so that the secret can be leveraged by builds.
-
-=== Creating a Secret manually
-
-If you aren't using quay.io registry and have only a login and password, you have to use a podman login
-with credentials, and then get the docker config json from  `$XDG_RUNTIME_DIR/containers/auth.json`, base64 encode it,
-and add it to the secret.
-
-.*Procedure*
-
-. Download the secret yaml for your robot account (from the *Robot Accounts* page described above)
-and save it as `Secret.yaml`.
-
-Here is an example file:
-
-[source,yaml]
-----
-apiVersion: v1
-kind: Secret
-metadata:
-  name: secret-name
-data:
-  .dockerconfigjson: <base64-encoded-credentials>
-type: kubernetes.io/dockerconfigjson
-----
-
-[start=2]
-. Edit the file and add `metadata.namespace` with the value of your namespace: `<your-tenant>`
 +
 
-Encoded credentials from quay.io will be by default for the `quay.io` repository. 
+. If you aren't using quay.io registry and have only a login and password, you have to use a podman login
+with credentials, and then get the docker config json from  `$XDG_RUNTIME_DIR/containers/auth.json`, base64 encode it,
+and add it to the secret.
++
 
-. If you are using only a custom repository
-for the whole namespace, a robot account for all repos, and have only one secret in the namespace for the registry, change the repository in the encoded credentials
-from `quay.io` to `quay.io/test_organization/own-repository`.
+You have to  xref:building:creating-secrets.adoc#creating-a-secret-manually[create a secret manually].
 
-. To get new <base64-encoded-credentials> follow these steps:
+. Link the secret to an appropriate service account used for the integration tests. See xref:testing/integration:accessing-private-repositories.adoc[Accessing Private Repositories].
 
-.. Decode encoded credentials and save them to a file: `echo <base64-encoded-credentials> | base64 -d > auth.json`
-
-Here is an example file:
-
-[source,json]
-----
-{
-  "auths": {
-    "quay.io": {
-      "auth": "<base64-encoded-auth>",
-      "email": ""
-    }
-  }
-}
-----
-
-[start=2]
-.. Edit the file and change `quay.io` to full repository name `quay.io/test_organization/own-repository`.
-
-.. Encode the credentials again: `cat auth.json | base64 -w0`
-and change `<base64-encoded-credentials>` to the newly generated credentials in `Secret.yaml`. 
-
-.. Create the secret:
-
-[source,shell]
-----
-$ kubectl apply -f Secret.yaml
-----
-
-[start=5]
-.. Link the secret to the component-specific service account `build-pipeline-$COMPONENT_NAME`,
-edit the service account either with OCP UI or the CLI, and to the `secrets` section of the service account
-add your newly created secret. The service account should look like the following example:
-
-[source,yaml]
-----
-kind: ServiceAccount
-apiVersion: v1
-metadata:
-  name: build-pipeline-$COMPONENT_NAME
-  namespace: <your-tenant>
-secrets:
-  - name: secret-name
-----
 
 === Creating the component that uses your own repository
 
