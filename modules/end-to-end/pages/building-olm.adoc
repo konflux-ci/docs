@@ -214,7 +214,7 @@ TODO: is this a managed tenant namespace pipeline that is used here?
 . In the ReleasePlan, set up the xref:releasing:tenant-release-pipelines.adoc[release pipeline] with CRs
 Konflux uses several CRs to define and manage the release workflow. 
 
-. xref:releasing:create-release-plan.adoc[release pipeline][Define a ReleasePlan ]
+. xref:releasing:create-release-plan.adoc[Define a ReleasePlan].
 +
 
 Create this CR in your development namespace. It specifies the application you want to release and references a ReleasePlanAdmission CR that will be created by the managed environment team.[]
