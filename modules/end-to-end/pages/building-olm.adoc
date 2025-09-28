@@ -223,7 +223,7 @@ Create this CR in your development namespace. It specifies the application you w
 TODO: In the release plan or release pipeline set label?
 . Set the auto-release label to "true" to automate releases once tests pass, or "false" for manual approval.
 
-. xref:releasing/create-release-plan-admission.adoc[Define a ReleasePlanAdmission (RPA)]
+. xref:releasing:create-release-plan-admission.adoc[Define a ReleasePlanAdmission (RPA)]
 +
 This CR is typically managed by a different team (for example, the SRE or managed environment team) and specifies what happens in the managed namespace. It defines the pipeline that will be executed for the release. and enforces an EnterpriseContractPolicy (ECP) to ensure security and compliance before proceeding.
 
@@ -320,15 +320,15 @@ You can monitor the status of the release pipeline in the Konflux UI.
 
 Modify this link:https://github.com/konflux-ci/release-service-catalog/tree/development/pipelines/managed/push-to-external-registry[example pipeline] to fit the needs of your environment. 
 
-TODO Is this used for testing or releasing? How is it used? At the command line? https://conforma.dev/docs/policy/packages/release_olm.html
+// TODO Is this used for testing or releasing? How is it used? At the command line? Use the instructios in link:https://conforma.dev/docs/policy/packages/release_olm.html[Releasing OLM operators]/
 
 === Create the initial update graph
 
-The last step in releasing an OLM operator is creating the first update graph. All update graphs are defined in file-based catalogs (FBCs) by means of olm.channel blobs. The FBC is a fully plaintext-based (JSON or YAML) file that enables catalog editing, composability, and extensibility. Each olm.channel defines the set of bundles present in the channel and the update graph edges between each entry in the channel. 
+The last step in releasing an OLM operator is creating the first update graph. All update graphs are defined in file-based catalogs (FBCs) by means of olm.channel blobs. The FBC is a fully plain text based (JSON or YAML) file that enables catalog editing, composability, and extensibility. Each olm.channel defines the set of bundles present in the channel and the update graph edges between each entry in the channel. 
 
 See link:https://olm.operatorframework.io/docs/concepts/olm-architecture/operator-catalog/creating-an-update-graph/[create your update graph].
 
 See the link:https://github.com/konflux-ci/release-service-catalog/tree/development/pipelines/managed/fbc-release[example file based catalog] which manages an update graph. Modify this example to fit your environment. 
 
 After the container images themselves have been pushed, release the file-based-catalog (FBC):
- link:releasing.adoc[release the file-based-catalog (FBC)]
+ link:releasing.adoc[release the file-based-catalog (FBC)].
