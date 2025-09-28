@@ -135,7 +135,7 @@ Be sure to configure the pipeline to trigger based on relevant events. See link:
 
 The ITS is created by defining the ITS yaml in the tenants-config repo. Once the yaml file is added to the repo, it is automatically added to the UI. 
 
-You can use this link:https://gitlab.cee.redhat.com/releng/konflux-release-data/-/blob/main/tenants-config/cl[this example] as a model.
+You can use link:https://gitlab.cee.redhat.com/releng/konflux-release-data/-/blob/main/tenants-config/cl[this example] as a model.
 
 [start=2]
 . Configure the Enterprise Contract policy by link:https://konflux-ci.dev/docs/testing/integration/editing/[editing the Enterprise Contract ITS] you just created.
