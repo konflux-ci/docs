@@ -104,8 +104,10 @@ NOTE: You can create additional components and applications with the same file l
 Specifically, replace any existing value for the `git-url` field with the git URL for your application’s repository. (This is the URL you would use to clone the repository locally; it ends with `.git`.)
 
 +
-NOTE: The PipelineRun will run only for submitters who have permission to run PipelineRuns or who receive an `/ok-to-test` comment from an authorized user. +
-For further details on PipelineRun permissions, please refer to the https://pipelinesascode.com/docs/guide/running/[PipelinesAsCode documentation].
+NOTE: The PipelineRun will run only for submitters who have permission to run PipelineRuns or who receive an `/ok-to-test` comment from an authorized user. 
++
+
+For further details on PipelineRun permissions, please refer to the link:https://pipelinesascode.com/docs/guide/running/[PipelinesAsCode documentation].
 
 . Once the PR is made, a build pipeline should start. You can track its progress in the {ProductName} UI or you can see the final status in GitHub after the pipeline completes. If the pipeline is successful, you can merge the PR.
 
@@ -136,11 +138,11 @@ When you click on the newly created robot account on *Robot Accounts* page, you 
 
 . Click on *Kubernetes Secret* to download a secret yaml file (it will be used later in this procedure).
 
-. Create a secret with repository credentials. Use xref:building:creating-secrets.adoc[creating secrets]  with the credentials above.
+. Create a secret with repository credentials. Use xref:building:creating-secrets.adoc[creating secrets] with the credentials above.
 +
 
 When adding the secret (image registry) with the UI, you have to choose components to which component-specific
-service accounts `build-pipeline-$COMPONENT_NAME` the secret will be linked to. You do this so that the secret can be leveraged by builds.
+service accounts `build-pipeline-$COMPONENT_NAME` the secret will be linked to. You d o this so that the secret can be leveraged by builds.
 +
 
 . If you aren't using quay.io registry and have only a login and password, you have to use a podman login
