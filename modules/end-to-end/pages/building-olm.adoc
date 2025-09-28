@@ -118,7 +118,7 @@ In general, testing of OLM Operators involves the following general steps:
 
 .Procedure
 
-. Use the Konflux interface to link:https://konflux-ci.dev/docs/testing/integration/adding/[add a user-defined integration test scenario (ITS)] to the Konflux UI. 
+. Use the Konflux interface to xref:testing:integration/adding.adoc[add a user-defined integration test scenario (ITS)] to the Konflux UI. 
 +
 
 The ITS you create should point to the pipeline that performs the following steps: 
@@ -131,25 +131,25 @@ The ITS you create should point to the pipeline that performs the following step
 
 * Operator Deployment Verification: Ensuring the Operator is successfully deployed and running.
 
-Be sure to configure the pipeline to trigger based on relevant events. See link:https://konflux-ci.dev/docs/testing/integration/choosing-contexts/[choosing integration contexts].
+Be sure to configure the pipeline to trigger based on relevant events. See xref:testing:integration/choosing-contexts.adoc[choosing integration contexts].
 
 The ITS is created by defining the ITS yaml in the tenants-config repo. Once the yaml file is added to the repo, it is automatically added to the UI. 
 
 You can use link:https://gitlab.cee.redhat.com/releng/konflux-release-data/-/blob/main/tenants-config/cl[this example] as a model.
 
 [start=2]
-. Configure the Enterprise Contract policy by link:https://konflux-ci.dev/docs/testing/integration/editing/[editing the Enterprise Contract ITS] you just created.
+. Configure the Enterprise Contract policy by xref:testing:integration/editing.adoc[editing the Enterprise Contract ITS] you just created.
 +
 
 TODO: Do we need some clarification on Enterprise Contract Policy ITS and User-defined ITS?
 
-. link:https://konflux-ci.dev/docs/patterns/testing-releasing-single-component/#updating-conforma-integration-test-scenarios[Create an IntegrationTestScenario (ITS)]. 
+. xref:patterns:testing-releasing-single-component.adoc#updating-conforma-integration-test-scenarios[Create an IntegrationTestScenario (ITS)]. 
 +
 
-Define this CR to run automated tests against your operator. Konflux will automatically trigger these tests for new Snapshots. The release won't proceed until these tests pass. Enterprise Contract checks run on Snapshots after the build pipeline. The standard workflow involves configuring an ITS to run an EC check.You  should configure your ITS to point to the same EC policy (ECP) that you intend to release against. The Integration Service can create the final release automatically if all ITSs pass and auto-release is configured.
+Define this CR to run automated tests against your operator. Konflux will automatically trigger these tests for new Snapshots. The release won't proceed until these tests pass. Enterprise Contract checks run on Snapshots after the build pipeline. The standard workflow involves configuring an ITS to run an EC check. You should configure your ITS to point to the same EC policy (ECP) that you intend to release against. The Integration Service can create the final release automatically if all ITSs pass and auto-release is configured.
 +
 
-Note:  If the EC check is failing, you can configure policy parameters on the Integration Test Scenario. This can be done via the Konflux UI under "Integration tests" -> "Edit integration test" -> "Parameters". For instance, you can set the POLICY_CONFIGURATION parameter to whatever your EC release policy is.
+Note:  If the EC check is failing, you can configure policy parameters on the Integration Test Scenario. This can be done via the Konflux UI under "Integration tests" -> "Edit integration test" -> "Parameters". For example, you can set the POLICY_CONFIGURATION parameter to whatever your EC release policy is.
 You can set the policy intention (for example, pipeline_intention of "production" or "staging") to control which policy rules are enforced during the test.
 +
  
@@ -161,7 +161,7 @@ Note: You can configure Konflux to test a single component rather than the whole
 TODO: Need to add the steps for this single-componenent test and perhaps move this topic. 
 
 [start=4]
-. link:https://konflux-ci.dev/docs/building/customizing-the-build/[Customize your build pipeline].
+. xref:building:customizing-the-build.adoc[Customize your build pipeline].
 +
 
 This pipeline should include:
@@ -211,10 +211,10 @@ Konflux requires that OLM Operators migrate to FBC before publishing bundles to 
 
 TODO: is this a managed tenant namespace pipeline that is used here? 
 
-. In the ReleasePlan, set up the link:https://konflux-ci.dev/docs/releasing/tenant-release-pipelines/[release pipeline] with CRs
+. In the ReleasePlan, set up the xref:releasing:tenant-release-pipelines.adoc[release pipeline] with CRs
 Konflux uses several CRs to define and manage the release workflow. 
 
-. link:https://konflux-ci.dev/docs/releasing/create-release-plan/[Define a ReleasePlan ]
+. xref:releasing:create-release-plan.adoc[release pipeline][Define a ReleasePlan ]
 +
 
 Create this CR in your development namespace. It specifies the application you want to release and references a ReleasePlanAdmission CR that will be created by the managed environment team.[]
@@ -223,7 +223,7 @@ Create this CR in your development namespace. It specifies the application you w
 TODO: In the release plan or release pipeline set label?
 . Set the auto-release label to "true" to automate releases once tests pass, or "false" for manual approval.
 
-. link:https://konflux-ci.dev/docs/releasing/create-release-plan-admission/[Define a ReleasePlanAdmission (RPA)]
+. xref:releasing/create-release-plan-admission.adoc[Define a ReleasePlanAdmission (RPA)]
 +
 This CR is typically managed by a different team (for example, the SRE or managed environment team) and specifies what happens in the managed namespace. It defines the pipeline that will be executed for the release. and enforces an EnterpriseContractPolicy (ECP) to ensure security and compliance before proceeding.
 
@@ -233,7 +233,7 @@ This CR is typically managed by a different team (for example, the SRE or manage
 Start from one of the premade rule collections, or use your own custom set of rules.
 
 [start=6]
-. Be sure you have created an link:https://konflux-ci.dev/docs/patterns/testing-releasing-single-component/#updating-conforma-integration-test-scenarios[IntegrationTestScenario].
+. Be sure you have created an xref:link:patterns:testing-releasing-single-component.adoc#updating-conforma-integration-test-scenarios[IntegrationTestScenario].
 +
 
 This CR is used to run automated tests against your operator. Konflux will automatically trigger these tests for new Snapshots. The release won't proceed until these tests pass. 
@@ -331,4 +331,4 @@ See link:https://olm.operatorframework.io/docs/concepts/olm-architecture/operato
 See the link:https://github.com/konflux-ci/release-service-catalog/tree/development/pipelines/managed/fbc-release[example file based catalog] which manages an update graph. Modify this example to fit your environment. 
 
 After the container images themselves have been pushed, release the file-based-catalog (FBC):
- https://konflux-ci.dev/docs/releasing/
+ link:releasing.adoc[release the file-based-catalog (FBC)]
