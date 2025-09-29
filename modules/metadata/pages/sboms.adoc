@@ -4,6 +4,12 @@ A software bill of materials (SBOM) provides greater transparency for your softw
 
 You can use an SBOM to better understand the composition of your software. In particular, you can use various tools to scan your SBOM and determine if any of your dependencies have known vulnerabilities. Furthermore, to comply with cybersecurity regulations, your organization might need to provide its customers with the SBOM for your application's components. For example, in the United States, the link:https://www.whitehouse.gov/briefing-room/presidential-actions/2021/05/12/executive-order-on-improving-the-nations-cybersecurity/[Executive Order on Improving the Nation's Cybersecurity] requires vendors to provide SBOMs, and in Europe, the link:https://www.cisa.gov/sites/default/files/2023-09/EU%20Commission%20SBOM%20Work_508c.pdf[Cyber Resilience Act] does the same.
 
+== Types of SBOMs produced by {ProductName}
+
+{ProductName} produces *build-time* and *release-time* SBOMs. *Build-time* SBOMs are created directly during the build phase of the component. *Release-time* SBOMs are augmented with additional information which is known only during the release phase of the component. This includes information about the repository to which the component will be released.
+
+Both of these formats correspond to the link:https://www.cisa.gov/sites/default/files/2023-04/sbom-types-document-508c.pdf[build SBOM specification by CISA] (only information about deployment-independent parameters is present in SBOMs created).
+
 == Managing SBOMs with Mobster
 
 In {ProductName}, SBOMs are generated and managed by the Mobster tool. Mobster provides a unified interface to generate, augment, validate, and distribute SBOMs throughout their lifecycle, and supports operational needs such as incident response. All SBOM-related activities in {ProductName} should be performed with Mobster. For details, see link:https://konflux-ci.dev/mobster/[Mobster - SBOM management tool].
@@ -31,7 +37,7 @@ In the console, complete the following steps to download the SBOM for a componen
 The SBOM is unsigned so there is no way to verify whether it has been tampered with after being pushed to the registry. Additional integrity verification should be performed before distributing the artifact if needed.
 ====
 
-== Downloading an SBOM in the CLI
+== Downloading build-time SBOMs in the CLI
 
 .Prerequisites
 
@@ -45,14 +51,14 @@ The SBOM is unsigned so there is no way to verify whether it has been tampered w
 
 .Procedure
 
-In the CLI, complete the following steps to download the SBOM for a component:
+In the CLI, complete the following steps to download the build-time SBOM for a component:
 
 . Use Cosign to download the SBOM. Pass the IMAGE environment variable as an argument into Cosign's `download sbom` command.
 
 +
 .Example
 +
-[source]
+[.wrap,console]
 ----
 $ cosign download sbom --platform linux/amd64 $IMAGE
 ----
@@ -61,10 +67,57 @@ $ cosign download sbom --platform linux/amd64 $IMAGE
 .. (Optional) To view the full SBOM in a searchable format, you can redirect the output:
 
 +
-[source]
+[.wrap,console]
 ----
 $ cosign download sbom --platform linux/amd64 $IMAGE > sbom.txt
 ----
+
+== Downloading release-time SBOMs in the CLI
+
+{ProductName} also supports release-time SBOMs that are attached to the image registry as in-toto attestations. These SBOMs can be downloaded and verified using `cosign verify-attestation` with the appropriate type and a public key.
+
+.Prerequisites
+
+* Install the link:https://docs.sigstore.dev/cosign/installation/[Cosign] CLI tool.
+
+* Install the link:https://stedolan.github.io/jq/download/[jq] CLI tool.
+
+* You have the reference to the released component in the format `<repository url>@sha256:<digest>`.
+
+* (Optional) You have the public key for verification of the signatures created by the signing key referenced in the field `.sign.cosignSecretName` in the xref:releasing:create-release-plan-admission.adoc[ReleasePlanAdmission] saved to `public-key.pub`. If this prerequisite is not met, you can switch to using `cosign download attestation` instead of `cosign verify-attestation`. Remember that the argument `--type` changes to `--predicate-type` with `cosign download attestation`.
+
+.Procedure
+
+In the CLI, complete the following steps to download and verify the release-time SBOM for a component:
+
+. Use Cosign to verify and download the SBOM attestation. Pass the IMAGE environment variable and specify the SBOM predicate type (valid options are "spdxjson" and "cyclonedx"):
+
++
+.Example
++
+[.wrap,console]
+----
+$ cosign verify-attestation --insecure-ignore-tlog=true --type=spdxjson --key=public-key.pub $IMAGE
+----
++
+.. Extract the SBOM content from the attestation payload using jq:
++
+[.wrap,console]
+----
+$ cosign verify-attestation --insecure-ignore-tlog=true --type=spdxjson --key=public-key.pub $IMAGE | jq -r '.payload | @base64d | fromjson | .predicate'
+----
++
+.. (Optional) To save the SBOM to a file:
++
+[.wrap,console]
+----
+$ cosign verify-attestation --insecure-ignore-tlog=true --type spdxjson --key public-key.pub $IMAGE | jq -r '.payload | @base64d | fromjson | .predicate' > release-sbom.json
+----
+
+[NOTE]
+====
+Release-time SBOMs are cryptographically signed and can be verified for authenticity and integrity using a public key. This provides stronger security guarantees compared to unsigned build-time SBOMs.
+====
 
 == Reading the SBOM
 In the SBOM, as the following sample excerpt shows, you can see four characteristics of each library that a component uses:
