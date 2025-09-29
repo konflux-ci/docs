@@ -320,4 +320,4 @@ See link:https://olm.operatorframework.io/docs/concepts/olm-architecture/operato
 
 See the link:https://github.com/konflux-ci/release-service-catalog/tree/development/pipelines/managed/fbc-release[example file based catalog] which manages an update graph. Modify this example to fit your environment. 
 
-After the container images themselves have been pushed, release the file-based-catalog (FBC): xref:releasing.adoc[Release the file-based-catalog (FBC)].
+After the container images themselves have been pushed, release the file-based-catalog (FBC) using Konflux: xref:releasing:index.adoc[Releasing an application].
