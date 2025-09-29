@@ -91,9 +91,10 @@ RUN ["/bin/opm", "serve", "/configs", "--cache-dir=/tmp/cache", "--cache-only"]
 == Testing the OLM Operator
 Integration testing of OLM Operators focuses on verifying that the Operator and its associated components, like Custom Resources (CRs), interact correctly within the OLM framework on a Kubernetes or OpenShift cluster. Integration testing of the OLM Operator using Konflux involves using a Tekton pipeline defined in source control that runs after components are built. The pipeline performs a test against all components in a snapshot as a whole. How you perform integration testing of your OLM Operator depends upon the components in your environment. 
 
+=== Testing overview
 In general, testing of OLM Operators involves the following general steps: 
 
-=== Prepare the Environment:
+*Prepare the Environment*:
 
 . Set up a local development environment with access to a Kubernetes or OpenShift cluster.
 . Ensure you have the necessary tools: 
@@ -109,19 +110,21 @@ In general, testing of OLM Operators involves the following general steps:
 
 *Deploy and Test with OLM*:
 
-* Create a custom CatalogSource object in your cluster that points to your index image. This makes your Operator visible to OLM.
-* Create a Subscription object to subscribe to your Operator from the CatalogSource. This triggers OLM to install the Operator.
-* Verify the Operator's installation status and ensure all expected resources (e.g., ClusterServiceVersion, CustomResourceDefinitions) are deployed and in a healthy state.
-** Create instances of your Operator's Custom Resources and verify that the Operator correctly reconciles them and manages the application lifecycle (for example, deploying pods and services).
-** Test upgrade scenarios by updating the Operator's version in the bundle and observing the OLM's upgrade process.
-** Test deletion scenarios by removing the Subscription and verifying that the OLM correctly uninstalls the Operator and cleans up associated resources.
+. Create a custom CatalogSource object in your cluster that points to your index image. This makes your Operator visible to OLM.
+. Create a Subscription object to subscribe to your Operator from the CatalogSource. This triggers OLM to install the Operator.
+. Verify the Operator's installation status and ensure all expected resources (e.g., ClusterServiceVersion, CustomResourceDefinitions) are deployed and in a healthy state.
+. Create instances of your Operator's Custom Resources and verify that the Operator correctly reconciles them and manages the application lifecycle (for example, deploying pods and services).
+. Test upgrade scenarios by updating the Operator's version in the bundle and observing the OLM's upgrade process.
+. Test deletion scenarios by removing the Subscription and verifying that the OLM correctly uninstalls the Operator and cleans up associated resources.
 
-.Procedure
+.*Procedure*
 
 . Use the Konflux interface to xref:testing:integration/adding.adoc[add a user-defined integration test scenario (ITS)] to the Konflux UI. 
 +
 
-The ITS you create should point to the pipeline that performs the following steps: 
+The ITS is created by defining the ITS yaml in the tenants-config repo. See link:https://gitlab.cee.redhat.com/releng/konflux-release-data/-/blob/main/tenants-config/cluster/stone-prd-rh01/tenants/konflux-samples-tenant/integration-test-scenarios.yaml[for an example ITS yaml].
+
+.. The ITS you create should point to the pipeline that performs the following steps: 
 
 * Cluster Setup: Provisioning a Kubernetes cluster using Kind or a dedicated test cluster.
 
@@ -131,11 +134,9 @@ The ITS you create should point to the pipeline that performs the following step
 
 * Operator Deployment Verification: Ensuring the Operator is successfully deployed and running.
 
-Be sure to configure the pipeline to trigger based on relevant events. See xref:testing:integration/choosing-contexts.adoc[choosing integration contexts].
+.. Be sure to configure the pipeline to trigger based on relevant events. See xref:testing:integration/choosing-contexts.adoc[choosing integration contexts].
 
-The ITS is created by defining the ITS yaml in the tenants-config repo. Once the yaml file is added to the repo, it is automatically added to the UI. 
-
-You can use link:https://gitlab.cee.redhat.com/releng/konflux-release-data/-/blob/main/tenants-config/cl[this example] as a model.
+After an ITS yaml is added to the repo it is automatically created in the Konflux UI.
 
 [start=2]
 . Configure the Enterprise Contract policy by xref:testing:integration/editing.adoc[editing the Enterprise Contract ITS] you just created.
@@ -191,17 +192,8 @@ This link:https://github.com/konflux-ci/tekton-integration-catalog/tree/main/pip
 
 Releasing an Operator Lifecycle Manager (OLM) operator with Konflux involves using Konflux's built-in CI/CD services to automate your release pipeline. This process leverages several Konflux Custom Resources (CRs) to manage the build, test, and delivery of your OLM bundle. The release process ensures that your OLM Operator conforms to the Enterprise Contract Policy defined in the Managed Namespace. The Enterprise Contract Policy defines the configuration for the enforcement of the Enterprise Contract by specifying the rules needed for a container image to be compliant with your organization’s software release policy requirements.
 
+=== Release procedures
 This section lists the steps for releasing an OLM operator with Konflux.
-
-TODO: Are the following instructions too generic as they apply to any container image? Should we just refer the users to the following: 
-
-To release an OLM Operator you relese the bundle (container image) and the FBC build for the the OLM bundle. This will make the OLM Operator available in a production-ready catalog. 
-
-link:https://github.com/konflux-ci/olm-operator-konflux-sample/blob/main/docs/konflux-onboarding.md[Release instructions for OLM Operators].
-
-TODO: Where do the Update Graph instrucitons go? They are at the end of this section now. 
-
-
 
 *Prerequisites*: 
 
@@ -209,23 +201,20 @@ Konflux requires that OLM Operators migrate to FBC before publishing bundles to 
 
 .Procedure
 
-TODO: is this a managed tenant namespace pipeline that is used here? 
-
-. In the ReleasePlan, set up the xref:releasing:tenant-release-pipelines.adoc[release pipeline] with CRs
-Konflux uses several CRs to define and manage the release workflow. 
+. In the ReleasePlan in the managed namespace, set up the xref:releasing:tenant-release-pipelines.adoc[release pipeline] with CRs. Konflux uses several CRs to define and manage the release workflow. 
 
 . xref:releasing:create-release-plan.adoc[Define a ReleasePlan].
 +
 
-Create this CR in your development namespace. It specifies the application you want to release and references a ReleasePlanAdmission CR that will be created by the managed environment team.[]
+Create this CR in your development namespace. It specifies the application you want to release and references a ReleasePlanAdmission CR that will be created by the managed environment team.
 +
 
-TODO: In the release plan or release pipeline set label?
+ 
 . Set the auto-release label to "true" to automate releases once tests pass, or "false" for manual approval.
 
 . xref:releasing:create-release-plan-admission.adoc[Define a ReleasePlanAdmission (RPA)]
 +
-This CR is typically managed by a different team (for example, the SRE or managed environment team) and specifies what happens in the managed namespace. It defines the pipeline that will be executed for the release. and enforces an EnterpriseContractPolicy (ECP) to ensure security and compliance before proceeding.
+This CR is typically managed by a different team (for example, the SRE or managed environment team) and specifies what happens in the managed namespace. It defines the pipeline that will be executed for the release, and enforces an EnterpriseContractPolicy (ECP) to ensure security and compliance before proceeding.
 
 .  Define a link:https://conforma.dev/docs/policy/release_policy.html[Release Policy].
 +
@@ -233,12 +222,12 @@ This CR is typically managed by a different team (for example, the SRE or manage
 Start from one of the premade rule collections, or use your own custom set of rules.
 
 [start=6]
-. Be sure you have created an xref:link:patterns:testing-releasing-single-component.adoc#updating-conforma-integration-test-scenarios[IntegrationTestScenario].
+. Be sure you have created an xref:patterns:testing-releasing-single-component.adoc#updating-conforma-integration-test-scenarios[IntegrationTestScenario].
 +
 
 This CR is used to run automated tests against your operator. Konflux will automatically trigger these tests for new Snapshots. The release won't proceed until these tests pass. 
  
-. Trigger the build and testing pipeline
+. Trigger the build and testing pipeline.
 +
 Push a commit to the branch specified in your Component CR to trigger the build and testing pipeline. Konflux then does the following:
  
@@ -250,48 +239,46 @@ Push a commit to the branch specified in your Component CR to trigger the build 
  
 . Initiate the release.
 +
-
-*For automated releases*:
+The creation of the Release CR kicks off the release pipeline run in the managed namespace. 
 +
 
-If you configured auto-release: "true" in your ReleasePlan, the process is automatic.
-Once the IntegrationTestScenario passes, the Integration Service automatically creates a Release CR in your development namespace.
-This Release CR triggers the release pipeline defined in the ReleasePlanAdmission.
-+
- 
-*For manual releases*:
+The Release Operator in the managed namespace recognizes the Release CR and its associated ReleasePlanAdmission and creates a Release PipelineRun using the details from the RPA. 
 +
 
-If you configured auto-release: "false", you will manually create a Release CR.
-+
-
-Create a Release CR in your development namespace.
-Point the spec.snapshot field to the Snapshot you want to release.
-Reference the ReleasePlan to use the correct release strategy.
-+
- 
-. Execute the release pipeline.
-+
-
-The creation of the Release CR kicks off the release pipeline run in the managed namespace. The Release Operator in the managed namespace recognizes the Release CR and its associated ReleasePlanAdmission and creates a Release PipelineRun using the details from the RPA.
 This pipeline handles tasks such as:
 
 * Pushing your validated OLM bundle to a production-ready catalog.
 * Performing final checks and security scans.
 * Updating external systems, such as JIRA tickets.
 
-. Trigger the Release:
+*For automated releases*:
+
+If you configured auto-release: "true" in your ReleasePlan, the process is automatic.
+Once the IntegrationTestScenario passes, the Integration Service automatically creates a Release CR in your development namespace. This Release CR triggers the release pipeline defined in the ReleasePlanAdmission.
+
+*For manual releases*:
+
+. If you configured auto-release: "false", manually create a Release CR.
+
+.. Create a Release CR in your development namespace.
+.. Point the spec.snapshot field to the Snapshot you want to release.
+.. Reference the ReleasePlan to use the correct release strategy.
++
+
+. Use one of the following methods to create a release object:
 +
 
 *CLI Method*: 
 Create a new release object (e.g., using a release.yaml file) and apply it using:
 +
 
-oc apply -f release.yaml in the tenant namespace.
+`oc apply -f release.yaml` in the tenant namespace.
 +
 
 *UI Method*: 
-Go to the Releases page, select the ReleasePlans tab, and click the "Trigger Release Plan" option in the kebab menu for the desired RP.
+[start=1]
+.. Go to the Releases page and select the ReleasePlans tab.
+.. Click the "Trigger Release Plan" option in the kebab menu for the desired RP.
 +
 
 A Release PipelineRun is created from the RPA. This pipeline handles tasks such as:
@@ -306,21 +293,24 @@ A Release PipelineRun is created from the RPA. This pipeline handles tasks such 
 * Updating external systems, such as JIRA tickets.
 +
 
-* Re-releasing: If a release pipeline fails, you cannot re-trigger the existing PipelineRun. You must recreate the release object. This involves finding the failed release using:
+* Re-releasing: If a release pipeline fails, you cannot re-trigger the existing PipelineRun. You must recreate the release object. 
+
+.. Find the failed release using:
 +
 
-oc get releases --sort-by .metadata.creationTimestamp
+`oc get releases --sort-by .metadata.creationTimestamp`
 +
 
-Then, make a local copy, delete the .status block and unnecessary .metadata fields (except name and namespace), and give  it a new unique name before reapplying it (oc apply -f release.yaml).
+.. Make a local copy.
+.. Delete the .status block and unnecessary .metadata fields (except name and namespace).
+.. Give the copy a new unique name before reapplying it (oc apply -f release.yaml).
++
 
 You can monitor the status of the release pipeline in the Konflux UI.
 
 *Example release pipeline*
 
 Modify this link:https://github.com/konflux-ci/release-service-catalog/tree/development/pipelines/managed/push-to-external-registry[example pipeline] to fit the needs of your environment. 
-
-// TODO Is this used for testing or releasing? How is it used? At the command line? Use the instructios in link:https://conforma.dev/docs/policy/packages/release_olm.html[Releasing OLM operators]/
 
 === Create the initial update graph
 
@@ -330,5 +320,4 @@ See link:https://olm.operatorframework.io/docs/concepts/olm-architecture/operato
 
 See the link:https://github.com/konflux-ci/release-service-catalog/tree/development/pipelines/managed/fbc-release[example file based catalog] which manages an update graph. Modify this example to fit your environment. 
 
-After the container images themselves have been pushed, release the file-based-catalog (FBC):
- link:releasing.adoc[release the file-based-catalog (FBC)].
+After the container images themselves have been pushed, release the file-based-catalog (FBC): xref:releasing.adoc[Release the file-based-catalog (FBC)].
