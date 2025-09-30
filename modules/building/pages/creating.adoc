@@ -77,6 +77,11 @@ include::partial$custom-resources/{context}-application.adoc[]
 include::partial$custom-resources/{context}-component.adoc[]
 
 +
+NOTE: Request annotation 'build.appstudio.openshift.io/request' can be set also to 'configure-pac-no-mr' and
+then during onboarding the onboarding PR won't be created and users will have to create pipeline run yaml
+files for the component manually.
+
++
 *Example `ImageRepository.yaml` object*
 +
 include::partial$custom-resources/{context}-imagerepository.adoc[]
