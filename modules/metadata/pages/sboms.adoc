@@ -35,7 +35,7 @@ The SBOM is unsigned so there is no way to verify whether it has been tampered w
 
 .Prerequisites
 
-* Install the link:https://docs.sigstore.dev/cosign/installation/[Cosign] CLI tool.
+* Install the link:https://docs.sigstore.dev/cosign/system_config/installation/[Cosign] CLI tool.
 
 * Install the link:https://stedolan.github.io/jq/download/[jq] CLI tool.
 
