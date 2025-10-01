@@ -122,7 +122,7 @@ In general, testing of OLM Operators involves the following general steps:
 . Use the Konflux interface to xref:testing:integration/adding.adoc[add a user-defined integration test scenario (ITS)] to the Konflux UI.
 + 
 
-NOTE: the ITS is associated with an application not with a component, since the ITS pipeline takes an application snapshot as the input.
+NOTE: The ITS is associated with an application not with a component, since the ITS pipeline takes an application snapshot as the input.
 +
 
 Optionally, create the ITS is by defining the ITS yaml in the tenants-config repo. See link:https://gitlab.cee.redhat.com/releng/konflux-release-data/-/blob/main/tenants-config/cluster/stone-prd-rh01/tenants/konflux-samples-tenant/integration-test-scenarios.yaml[for an example ITS yaml].
@@ -142,12 +142,12 @@ Optionally, create the ITS is by defining the ITS yaml in the tenants-config rep
 After an ITS yaml is added to the repo it is automatically created in the Konflux UI.
 
 [start=2]
-. xref:testing:integration/editing.adoc[Edit the Enterprise Contract (EC) ITS]. Note the difference between an ITS and an EC ITS: An ITS can run whatever pipeline you specify. However, an EC ITS is just an ITS that runs a particular pipeline, specifically the Enterprise Contract yaml. https://github.com/konflux-ci/build-definitions/blob/main/pipelines/enterprise-contract.yaml[Here] is an example. 
+. xref:testing:integration/editing.adoc[Edit the Enterprise Contract (EC) ITS]. 
 +
 
-See link:https://github.com/konflux-ci/build-definitions/blob/main/pipelines/enterprise-contract.yaml[for an example] you can modify for your deployment.
+Be aware of the difference between an ITS and an EC ITS: An ITS can run whatever pipeline you specify. However, an EC ITS is just an ITS that runs a particular pipeline, specifically the Enterprise Contract yaml. See link:https://github.com/konflux-ci/build-definitions/blob/main/pipelines/enterprise-contract.yaml[for an example EC ITS] you can modify for your deployment.
 
-. xref:patterns:testing-releasing-single-component.adoc#updating-conforma-integration-test-scenarios[Create an IntegrationTestScenario (ITS)]. 
+. xref:patterns:testing-releasing-single-component.adoc#updating-conforma-integration-test-scenarios[Update Conforma for the IntegrationTestScenario (ITS)]. 
 +
 
 Define this CR to run automated tests against your operator. Konflux will automatically trigger these tests for new Snapshots. The release won't proceed until these tests pass.
@@ -165,8 +165,6 @@ You can set the policy intention (for example, pipeline_intention of "production
  
 Conforma/OLM Checks: Specific compliance checks relevant to OLM, such as verify-conforma and ecosystem-cert-preflight-checks, are part of the integration test suite and run automatically. These checks are vital because any problems found during the EC check will also become release blockers. Conforma checks will also be run when the OLM Operator is released.
 +
-
-NOTE: You can configure Konflux to test a single component rather than the whole application.
 
 [start=4]
 . xref:building:customizing-the-build.adoc[Customize your build pipeline].
