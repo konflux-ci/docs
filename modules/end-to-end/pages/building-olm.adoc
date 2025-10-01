@@ -119,7 +119,10 @@ In general, testing of OLM Operators involves the following general steps:
 
 .*Procedure*
 
-. Use the Konflux interface to xref:testing:integration/adding.adoc[add a user-defined integration test scenario (ITS)] to the Konflux UI. 
+. Use the Konflux interface to xref:testing:integration/adding.adoc[add a user-defined integration test scenario (ITS)] to the Konflux UI.
++ 
+
+NOTE: the ITS is associated with an application not with a component, since the ITS pipeline takes an application snapshot as the input.
 +
 
 Optionally, create the ITS is by defining the ITS yaml in the tenants-config repo. See link:https://gitlab.cee.redhat.com/releng/konflux-release-data/-/blob/main/tenants-config/cluster/stone-prd-rh01/tenants/konflux-samples-tenant/integration-test-scenarios.yaml[for an example ITS yaml].
@@ -139,7 +142,7 @@ Optionally, create the ITS is by defining the ITS yaml in the tenants-config rep
 After an ITS yaml is added to the repo it is automatically created in the Konflux UI.
 
 [start=2]
-. Configure the ITS Enterprise Contract policy by xref:testing:integration/editing.adoc[editing the Enterprise Contract ITS].
+. xref:testing:integration/editing.adoc[Edit the Enterprise Contract (EC) ITS]. Note the difference between an ITS and an EC ITS: An ITS can run whatever pipeline you specify. However, an EC ITS is just an ITS that runs a particular pipeline, specifically the Enterprise Contract yaml. https://github.com/konflux-ci/build-definitions/blob/main/pipelines/enterprise-contract.yaml[Here] is an example. 
 +
 
 See link:https://github.com/konflux-ci/build-definitions/blob/main/pipelines/enterprise-contract.yaml[for an example] you can modify for your deployment.
@@ -151,20 +154,19 @@ Define this CR to run automated tests against your operator. Konflux will automa
 +
 
 Enterprise Contract checks run on Snapshots after the build pipeline. The standard workflow involves configuring an ITS to run an EC check. 
++
 
 You should configure your ITS to point to the same EC policy (ECP) that you intend to release against. The Integration Service can create the final release automatically if all ITSs pass and auto-release is configured.
 +
 
-Note:  If the EC check is failing, you can configure policy parameters on the Integration Test Scenario. This can be done via the Konflux UI under "Integration tests" -> "Edit integration test" -> "Parameters". For example, you can set the POLICY_CONFIGURATION parameter to whatever your EC release policy is.
+NOTE:  If the EC check is failing, you can configure policy parameters on the Integration Test Scenario. This can be done via the Konflux UI under "Integration tests" -> "Edit integration test" -> "Parameters". For example, you can set the POLICY_CONFIGURATION parameter to whatever your EC release policy is.
 You can set the policy intention (for example, pipeline_intention of "production" or "staging") to control which policy rules are enforced during the test.
 +
  
-Conforma/OLM Checks: Specific compliance checks relevant to OLM, such as verify-conforma and ecosystem-cert-preflight-checks, are part of the integration test suite and run automatically. These checks are vital because any problems found during the EC check will also become release blockers.
+Conforma/OLM Checks: Specific compliance checks relevant to OLM, such as verify-conforma and ecosystem-cert-preflight-checks, are part of the integration test suite and run automatically. These checks are vital because any problems found during the EC check will also become release blockers. Conforma checks will also be run when the OLM Operator is released.
 +
 
-Note: You can configure Konflux to test a single component rather than the whole application.
-
-TODO: Need to add the steps for this single-componenent test and perhaps move this topic. 
+NOTE: You can configure Konflux to test a single component rather than the whole application.
 
 [start=4]
 . xref:building:customizing-the-build.adoc[Customize your build pipeline].
@@ -180,8 +182,7 @@ This pipeline should include:
 . Execute and Monitor:
 +
 
-Trigger the Konflux pipeline (either manually or automatically through configured triggers).
-TODO: How exactly? 
+Trigger the Konflux pipeline (either manually or automatically through configured triggers). 
 
 [start=6]
 . Monitor the pipeline execution in the Konflux UI, observing the logs for each task to identify any issues during Operator deployment or test execution.
