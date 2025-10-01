@@ -1,9 +1,6 @@
 = Roles and Permissions for Konflux
 
-Konflux uses Kubernetes for managing user permissions and roles. Roles are mapped to specific permissions in the Kubernetes RBAC system, in terms of API groups, verbs, and resources.
-
-Leveraging the Kubernetes RBAC system enhances the
-testability of Konflux, including the ability to use the well-documented and widely-used Kubernetes APIs for testing and validation.
+Konflux uses Kubernetes for managing user roles and permissions. Leveraging the Kubernetes RBAC system enhances the testability of Konflux, including enabling the well-documented and widely-used Kubernetes APIs for testing and validation. User roles are mapped to specific permissions in the Kubernetes RBAC system in terms of API groups, verbs, and resources.
 
 The following are the Konflux user roles:
 
@@ -17,15 +14,15 @@ access to sensitive or destructive actions.
 
 * *Admin:* Members who have full access to the workspace including sensitive and potentially destruction actions.
 
-== Configuring Roles and Permissions for Konflux
-To configure roles and permissions in Konflux, you use two yaml files. 
 
+This section contains the following: 
 
-Model your yaml files according to xref:xxxxxxxx[these example files].
+* Table listing available roles and permissions
+* Procedures on how to configure Konflux's roles and permissions
 
-== Roles and Permissions Table
+== Roles and permissions table
 
-The following table lists:
+The roles and permissions table lists:
 
 * Roles
 * Permissions
@@ -60,109 +57,109 @@ snapshotenvironmentbindings, snapshots, environments
 |gitopsdeployments, gitopsdeploymentmanagedenvironments,
 gitopsdeploymentrepositorycredentials, gitopsdeploymentsyncruns
 
-|  |PipelineRun |tekton.dev |get, list, watch |pipelineruns
+| |PipelineRun |tekton.dev |get, list, watch |pipelineruns
 
-|  |Pipeline Results |results.tekton.dev |get, list |results, records,
+| |Pipeline Results |results.tekton.dev |get, list |results, records,
 logs
 
-|  |IntegrationTestScenario |appstudio.redhat.com |get, list, watch
+| |IntegrationTestScenario |appstudio.redhat.com |get, list, watch
 |integrationtestscenarios
 
-|  |Enterprise contract |appstudio.redhat.com |get, list, watch
+| |Enterprise contract |appstudio.redhat.com |get, list, watch
 |enterprisecontractpolicies
 
-|  |_Release Service_ |appstudio.redhat.com |get, list, watch |releases,
+| |_Release Service_ |appstudio.redhat.com |get, list, watch |releases,
 releaseplans, releaseplanadmissions
 
-|  |_JVM Build Service_ |jvmbuildservice.io |get, list, watch
+| |_JVM Build Service_ |jvmbuildservice.io |get, list, watch
 |jbsconfigs, artifactbuilds
 
-|  |_Service Access_ |appstudio.redhat.com |get, list, watch
+| |_Service Access_ |appstudio.redhat.com |get, list, watch
 |spiaccesstokenbindings, spiaccesschecks, spiaccesstokens,
 spifilecontentrequests
 
-|  |_Remote Secrets_ |appstudio.redhat.com |get, list, watch
+| |_Remote Secrets_ |appstudio.redhat.com |get, list, watch
 |remotesecrets
 
-|  |Build Service |appstudio.redhat.com |get, list, watch
+| |Build Service |appstudio.redhat.com |get, list, watch
 |buildpipelineselectors
 
-|  |Project Controller |projctl.konflux.dev |get, list, watch |projects,
+| |Project Controller |projctl.konflux.dev |get, list, watch |projects,
 projectdevelopmentstreams, projectdevelopmentstreamtemplates
 
-|  |_Configs_ |  |get, list, watch |configmaps
+| |_Configs_ ||get, list, watch |configmaps
 
-|  |_Secrets_ |  |  |secrets
+| |_Secrets_ | | |secrets
 
-|  |Add User |  |  | 
+| |Add User | | |
 
-|  |User group (with SSO) |  |  | 
+| |User group (with SSO) | | |
 
-|  |CronJob |batch |get, list, watch |cronjobs, jobs
+| |CronJob |batch |get, list, watch |cronjobs, jobs
 
-|Contributor |Workspace |Access to namespaces that backs workspace |  | 
+|Contributor |Workspace |Access to namespaces that backs workspace | |
 
-|  |Application |appstudio.redhat.com |get, list, watch |applications
+| |Application |appstudio.redhat.com |get, list, watch |applications
 
-|  |Component |appstudio.redhat.com |get, list, watch |components,
+| |Component |appstudio.redhat.com |get, list, watch |components,
 componentdetectionqueries
 
-|  |ImageRepository |appstudio.redhat.com |get, list, watch
+| |ImageRepository |appstudio.redhat.com |get, list, watch
 |imagerepositories
 
-|  |Environment |appstudio.redhat.com |get, list, watch |promotionruns,
+| |Environment |appstudio.redhat.com |get, list, watch |promotionruns,
 snapshotenvironmentbindings, snapshots, environments
 
-|  |DeploymentTarget |appstudio.redhat.com |get, list, watch
+| |DeploymentTarget |appstudio.redhat.com |get, list, watch
 |deploymenttargets
 
-|  |DeploymentTargetClaim |appstudio.redhat.com |get, list, watch
+| |DeploymentTargetClaim |appstudio.redhat.com |get, list, watch
 |deploymenttargetclaims
 
-|  |_GitOps_ |managed-gitops.redhat.com |get, list, watch
+| |_GitOps_ |managed-gitops.redhat.com |get, list, watch
 |gitopsdeployments, gitopsdeploymentmanagedenvironments,
 gitopsdeploymentrepositorycredentials, gitopsdeploymentsyncruns
 
-|  |PipelineRun |tekton.dev |get, list, watch |pipelineruns
+| |PipelineRun |tekton.dev |get, list, watch |pipelineruns
 
-|  |Pipeline Results |results.tekton.dev |get, list |results, records,
+| |Pipeline Results |results.tekton.dev |get, list |results, records,
 logs
 
-|  |IntegrationTestScenario |appstudio.redhat.com |get, list, watch
+| |IntegrationTestScenario |appstudio.redhat.com |get, list, watch
 |integrationtestscenarios
 
-|  |Enterprise contract |appstudio.redhat.com |get, list, watch
+| |Enterprise contract |appstudio.redhat.com |get, list, watch
 |enterprisecontractpolicies
 
-|  |_Release Service_ |appstudio.redhat.com |get, list, watch |releases,
+| |_Release Service_ |appstudio.redhat.com |get, list, watch |releases,
 releaseplans, releaseplanadmissions
 
-|  |_JVM Build Service_ |jvmbuildservice.io |get, list, watch
+| |_JVM Build Service_ |jvmbuildservice.io |get, list, watch
 |jbsconfigs, artifactbuilds
 
-|  |_Service Access_ |appstudio.redhat.com |get, list, watch
+| |_Service Access_ |appstudio.redhat.com |get, list, watch
 |spiaccesstokenbindings, spiaccesschecks, spiaccesstokens,
 spifilecontentrequests
 
-|  |_Remote Secrets_ |appstudio.redhat.com |get, list, watch
+| |_Remote Secrets_ |appstudio.redhat.com |get, list, watch
 |remotesecrets
 
-|  |Build Service |appstudio.redhat.com |get, list, watch
+| |Build Service |appstudio.redhat.com |get, list, watch
 |buildpipelineselectors
 
-|  |Project Controller |projctl.konflux.dev |get, list, watch |projects,
+| |Project Controller |projctl.konflux.dev |get, list, watch |projects,
 projectdevelopmentstreams, projectdevelopmentstreamtemplates
 
-|  |_Configs_ |  |get, list, watch |configmaps
+| |_Configs_ | |get, list, watch |configmaps
 
-|  |_Secrets_ |  |  |secrets
+| |_Secrets_ | | |secrets
 
-|  |Pulp Access Controller |pulp.konflux-ci.dev |get, list, watch
+| |Pulp Access Controller |pulp.konflux-ci.dev |get, list, watch
 |pulpaccessrequests
 
-|  |Add User |  |  | 
+| |Add User | | |
 
-|  |User group (with SSO) |  |  | 
+| |User group (with SSO) | | |
 
 |  |CronJob |batch |get, list, watch |cronjobs, jobs
 
@@ -326,27 +323,16 @@ patch, delete |rolebindings, roles
 |  |ServiceAccount |  |get, list, create, update, patch, delete
 |serviceaccounts
 
-|  |Token |  |create |serviceaccounts/token
+| |Token | |create |serviceaccounts/token
 |===
 
-=== Consequences
+== Configuring user roles and permissions for Konflux
+ 
+To configure roles and permissions in Konflux, you configure two yaml files using the information in the roles and permissions table.
 
-* This decision will allow us to easily integrate with the Kubernetes
-environment and take advantage of its robust and well-tested RBAC
-system.
+Model your yaml files according to these example yaml files:
 
+* link:https://github.com/konflux-ci/konflux-ci/blob/main/konflux-ci/rbac/core/kustomization.yaml[Kustomization]
 
-
-* It will also allow us to assign the appropriate level of permissions
-to each role, based on the responsibilities and privileges associated
-with each role in our project.
-
-
-
-* 
-* 
-
-Using the built-in Kubernetes RBAC system may require some initial
-configuration and setup. 
-
+* link:https://github.com/konflux-ci/konflux-ci/blob/main/konflux-ci/rbac/core/konflux-admin-user-actions.yaml[Admin]
 
