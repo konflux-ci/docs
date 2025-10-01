@@ -104,7 +104,7 @@ In general, testing of OLM Operators involves the following general steps:
 
 *Package the Operator*:
 
-. Build and push the Operator bundle image, which contains the Operator's manifests and metadata.
+. Build and push the Operator bundle image, which contains the Operator's manifests and metadata. OLM bundle link:https://conforma.dev/docs/policy/packages/release_olm.html[EC checks] are perfomed using Conforma. 
 . (Optional) Validate the Operator bundle package to ensure it adheres to OLM specifications.
 . Build and push an index image. The index image acts as a catalog for OLM to discover and install Operators.
 
@@ -122,7 +122,7 @@ In general, testing of OLM Operators involves the following general steps:
 . Use the Konflux interface to xref:testing:integration/adding.adoc[add a user-defined integration test scenario (ITS)] to the Konflux UI. 
 +
 
-The ITS is created by defining the ITS yaml in the tenants-config repo. See link:https://gitlab.cee.redhat.com/releng/konflux-release-data/-/blob/main/tenants-config/cluster/stone-prd-rh01/tenants/konflux-samples-tenant/integration-test-scenarios.yaml[for an example ITS yaml].
+Optionally, create the ITS is by defining the ITS yaml in the tenants-config repo. See link:https://gitlab.cee.redhat.com/releng/konflux-release-data/-/blob/main/tenants-config/cluster/stone-prd-rh01/tenants/konflux-samples-tenant/integration-test-scenarios.yaml[for an example ITS yaml].
 
 .. The ITS you create should point to the pipeline that performs the following steps: 
 
@@ -139,15 +139,20 @@ The ITS is created by defining the ITS yaml in the tenants-config repo. See link
 After an ITS yaml is added to the repo it is automatically created in the Konflux UI.
 
 [start=2]
-. Configure the Enterprise Contract policy by xref:testing:integration/editing.adoc[editing the Enterprise Contract ITS] you just created.
+. Configure the ITS Enterprise Contract policy by xref:testing:integration/editing.adoc[editing the Enterprise Contract ITS].
 +
 
-TODO: Do we need some clarification on Enterprise Contract Policy ITS and User-defined ITS?
+See link:https://github.com/konflux-ci/build-definitions/blob/main/pipelines/enterprise-contract.yaml[for an example] you can modify for your deployment.
 
 . xref:patterns:testing-releasing-single-component.adoc#updating-conforma-integration-test-scenarios[Create an IntegrationTestScenario (ITS)]. 
 +
 
-Define this CR to run automated tests against your operator. Konflux will automatically trigger these tests for new Snapshots. The release won't proceed until these tests pass. Enterprise Contract checks run on Snapshots after the build pipeline. The standard workflow involves configuring an ITS to run an EC check. You should configure your ITS to point to the same EC policy (ECP) that you intend to release against. The Integration Service can create the final release automatically if all ITSs pass and auto-release is configured.
+Define this CR to run automated tests against your operator. Konflux will automatically trigger these tests for new Snapshots. The release won't proceed until these tests pass.
++
+
+Enterprise Contract checks run on Snapshots after the build pipeline. The standard workflow involves configuring an ITS to run an EC check. 
+
+You should configure your ITS to point to the same EC policy (ECP) that you intend to release against. The Integration Service can create the final release automatically if all ITSs pass and auto-release is configured.
 +
 
 Note:  If the EC check is failing, you can configure policy parameters on the Integration Test Scenario. This can be done via the Konflux UI under "Integration tests" -> "Edit integration test" -> "Parameters". For example, you can set the POLICY_CONFIGURATION parameter to whatever your EC release policy is.
@@ -197,7 +202,7 @@ This section lists the steps for releasing an OLM operator with Konflux.
 
 *Prerequisites*: 
 
-Konflux requires that OLM Operators migrate to FBC before publishing bundles to the catalog.
+Konflux requires that OLM Operators migrate to FBC before publishing bundles to the catalog. See link:https://olm.operatorframework.io/docs/reference/file-based-catalogs/[for more information].
 
 .Procedure
 
@@ -314,9 +319,22 @@ Modify this link:https://github.com/konflux-ci/release-service-catalog/tree/deve
 
 === Create the initial update graph
 
-The last step in releasing an OLM operator is creating the first update graph. All update graphs are defined in file-based catalogs (FBCs) by means of olm.channel blobs. The FBC is a fully plain text based (JSON or YAML) file that enables catalog editing, composability, and extensibility. Each olm.channel defines the set of bundles present in the channel and the update graph edges between each entry in the channel. 
+The last step in releasing an OLM operator is creating the first update graph. All update graphs are defined in file-based catalogs (FBCs) by means of olm.channel blobs. 
 
-See link:https://olm.operatorframework.io/docs/concepts/olm-architecture/operator-catalog/creating-an-update-graph/[create your update graph].
+The FBC is a fully plain text based (JSON or YAML) file that enables catalog editing, composability, and extensibility. Each olm.channel defines the set of bundles present in the channel and the update graph edges between each entry in the channel. 
+
+.  Be sure that your file-based-catalog follows the structure of one of the following templates: 
+
+* link:https://olm.operatorframework.io/docs/reference/catalog-templates/#basic-template[basic template]: This schema enables you to have full control of the update graph by adding any valid FBC schema components while only specifying the bundle image references. Thisresults in a much more compact document.
+
+* link:https://olm.operatorframework.io/docs/reference/catalog-templates/#semver-template[semver template]: This schema enables the auto-generation of channels adhering to Semantic Versioning (semver) guidelines and is consistent with best practices on channel naming. This template is even simpler that the basic template, but is likely not possible to use if you are migrating to FBC from another catalog. If channel names and edges/nodes are misaligned from a previous catalog, it may be possible to make consumers stranded on the current version without an upgrade path.
+
+. If you need to build the file-based catalog from a template, you can use the link:https://github.com/konflux-ci/olm-operator-konflux-sample/blob/main/docs/konflux-building-catalog.md#building-a-file-based-catalog-from-catalog-template[`fbc-builder` pipeline] in Konflux. 
+
+. If needed, modify link:https://github.com/konflux-ci/olm-operator-konflux-sample/blob/main/docs/konflux-onboarding.md#create-the-fbc-in-the-git-repository[these example steps on how to create the FBC in a git repository]. 
+
+. link:https://olm.operatorframework.io/docs/concepts/olm-architecture/operator-catalog/creating-an-update-graph/[Create your update graph].
++
 
 See the link:https://github.com/konflux-ci/release-service-catalog/tree/development/pipelines/managed/fbc-release[example file based catalog] which manages an update graph. Modify this example to fit your environment. 
 
