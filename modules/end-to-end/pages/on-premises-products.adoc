@@ -6,8 +6,8 @@ You can deploy products into OpenShift containers using Konflux.
 In this guide, we will use Konflux to deploy PostgreSQL into an OpenShift container.
 
 This guide assumes you have installed Konflux using the README.md file in the Konflux GitHub repository (https://github.com/cdeyoung/konflux-ci/blob/main/README.md).
-If you performed a custom install, you must note all of the contexts, namespaces, and other resources you create.
-You will need this information to manage Konflux and OpenShift from the terminal.
+If you performed a custom installation, you must note all the contexts, namespaces, and other resources you created.
+You will need this information to manage Konflux and OpenShift from the command line.
 
 You will also need to have OpenShift installed.
 You can find instructions for installing OpenShift here: https://docs.redhat.com/en/documentation/openshift_container_platform/4.14/html/installation_overview/index.
@@ -18,7 +18,7 @@ Before you can use Konflux to deploy products to OpenShift, you must have the fo
 
 - Administrative access to your OpenShift cluster.
 - Administrative access to your Konflux web console.
-- Access to the `crc`, `oc`, and `kubectl` commandline tools.
+- Access to the `crc`, `oc`, and `kubectl` command line tools.
 - Network connectivity between {ProductName} and OpenShift.
 
 If OpenShift is installed but not running on your server, type the following command to start OpenShift:
@@ -53,7 +53,7 @@ If you performed a custom installation, your contexts, namespaces, and other res
 
 === Connecting to Konflux UI
 
-To connect to your Konflux UI on the same machine your Konflux instance is running on, open a browser and navigate to https://localhost:9443.
+To connect to your Konflux UI on the same machine where your Konflux instance is running, open a browser and navigate to https://localhost:9443.
 
 If you're running Konflux on a terminal-only server, you can connect to the Konflux UI using a remote browser.
 The easiest way to connect to the server remotely is to create an SSH tunnel.
@@ -81,29 +81,29 @@ ssh -L 8443:console-openshift-console.apps-crc.testing:443 <your-ssh-username>@<
 ----
 
 However, since OpenShift cannot use `localhost` and instead must use the `console-openshift-console.apps-crc.testing` domain, you'll end up having to manually edit the URL to add the port 8443 after every redirect.
-To get around this, you can switch from using local port forwarding (the -L switch) to using dynamic port forwarding (the -D switch).
+To overcome this, you can switch from using local port forwarding (the -L switch) to dynamic port forwarding (the -D switch).
 
 [source, bash]
 ----
 ssh -D 1080 -N <your-ssh-username>@<your-openshift-server>
 ----
 
-This will create a SOCKS proxy that tunnels all relevant traffic transparently.
-You will have to check your browser's documentation on how to configure a SOCKS proxy in your browser.
+This command will create a SOCKS proxy that tunnels all relevant traffic transparently.
+You will need to refer to your browser's documentation for instructions on configuring a SOCKS proxy in your browser.
 
 [NOTE]
 ====
-Firefox has build-in remote DNS support, but other browsers, like Chrome and Edge, don't, so you'll need to look for a plugin like "Proxy SwitchyOmega" or "FoxyProxy" to handle DNS resolution for you.
+Firefox has built-in remote DNS support, but other browsers, like Chrome and Edge, don't, so you'll need to look for a plugin like *Proxy SwitchyOmega* or *FoxyProxy* to handle DNS resolution for you.
 ====
 
 == Step 2: Create a GitHub Repository For Your Manifest Files
 
-Since there is already a PostgreSQL binary available, we'll use it instead of compiling PostgreSQL manually.
-To use one of the PostgreSQL binaries, you'll need to create GitHub repository to hold your Konflux manifest and Tekton pipeline files.
+Since a PostgreSQL binary is already available, we'll use it instead of compiling PostgreSQL manually.
+To use one of the PostgreSQL binaries, you'll need to create a GitHub repository to hold your Konflux manifest and Tekton pipeline files.
 
 Create a repository in your GitHub account with the following directory structure:
 
-image:directory-structure.png["Directory structure for the Konflux manifest repository"]
+image:directory-structure.png[Directory structure for the Konflux manifest repository]
 
 Add the following content to your `.tekton/pipeline.yaml` file:
 
@@ -280,29 +280,30 @@ When you've finished editing these files, commit and push them to your repositor
 
 == Step 3: Create a New Application
 
-In the Konflux UI, navigate to the Namespaces tab and click on the "user-ns2" namespace.
-This will automatically switch you to the "Applications" tab in the "user-ns2" namespace.
+In the Konflux UI, navigate to the Namespaces tab and click on the `user-ns2` namespace.
+Doing so will automatically switch you to the *Applications* tab in the `user-ns2` namespace.
 
-image:user-ns2-namespace.png["The Applications screen for the user-ns2 namespace"]
+image:user-ns2-namespace.png[The Applications screen for the user-ns2 namespace]
 
-Now, click the "Create application" button.
+Now, click the *Create application* button.
 
-image:create-application-button.png["Creating an application using Konflux UI"]
+image:create-application-button.png[Creating an application using Konflux UI]
 
 Provide a name for your applications, such as `postgresql-app`.
 
 == Step 4: Add a Component to Your Application
 
-From your application's screen, click on the Components tab and then click on "Add component."
-Fill in the "Create a Component" form with the following values:
+From your application's screen, click the Components tab and then select *Add component*.
+Fill in the *Create a Component* form with the following values:
 
 [cols="1,1"]
 |===
 |Application name
-|postgresql-app (this is automatically populated for you.)
+|postgresql-app (Konflux populates this field for you automatically.)
 
 |Git repository url
-|Enter the HTTP link to the GitHub repository you created in Step 2. It should end in `.git`.
+|Enter the HTTP link to the GitHub repository you created in Step 2.
+It should end in `.git`.
 
 |Git reference
 |main
@@ -317,7 +318,7 @@ Fill in the "Create a Component" form with the following values:
 |https://github.com
 
 |Docker file
-|Leave this at its default
+|Leave this at its default.
 
 |Component name
 |postgresql-component
@@ -326,19 +327,19 @@ Fill in the "Create a Component" form with the following values:
 |docker-build
 |===
 
-When you've finished, click the "Add component" button.
+When finished, click the *Add component* button.
 
 == Step 5: Configure a Release Plan
 
 To deploy your PostgreSQL application to your OpenShift cluster, you'll need to configure a Release Plan.
 
 First, click on your `postgresql-app` application in Konflux UI.
-On the "Overview" tab, you should see a section titled "Create a release plan."
-Click on the "Create a plan" button.
+On the *Overview* tab, you should see a section titled *Create a release plan*.
+Click the *Create a plan* button.
 
 image:release-plan.png[Create a release plan]
 
-This will bring up a page titled "Create release plan."
+Clicking this button will display a page titled *Create release plan*.
 Fill out the form with these values:
 
 [cols="1,2a"]
@@ -353,7 +354,7 @@ Fill out the form with these values:
 |In this namespace: user-ns2
 
 This field is the target tenant namespace.
-This namespace is where your release pipeline will execute and where your PostgreSQL database server will be deployed in OpenShift.
+This namespace is where your release pipeline will execute and where Konflux will deploy your PostgreSQL database server in OpenShift.
 
 |Git URL for the release pipeline
 |https://github.com/your-username/your-postgresql-repo.git
@@ -374,7 +375,7 @@ Disable this field if you want to control your deployments manually.
 
 |Standing attribution
 |This boolean value tracks the author of each release for auditing purposes.
-When enabled, the release plan's author is automatically attributed to all releases created from it.
+When enabled, Konflux will automatically attribute the release plan’s author to all releases created from it.
 
 |Labels
 |Labels are optional metadata tags for organizing and identifying your release plan.
@@ -406,7 +407,7 @@ If you're deploying a product that doesn't need persistent storage, you can skip
 
 To create the PVC in OpenShift, follow these steps:
 
-. Log into your OpenShift Console (not Konflux UI).
+. Log in to your OpenShift Console (not Konflux UI).
 
 . Navigate to *Storage* > *Pesistent Volume Claims*.
 
@@ -423,7 +424,7 @@ image:persistent-volume-claims.png[Persistent Volume Claims menu, 25%]
 
 - **Access Mode**: Select *ReadWriteOnce* (RWO) for PostgreSQL.
 
-- *Size*: Create a size appropriate for your needs.
+- *Size*: Select a size that suits your needs.
 For this tutorial, 10 GB should be sufficient.
 
 . Click the *Create* button.
@@ -484,7 +485,7 @@ Steps with a yellow circle next to them are still running.
 
 You can see detailed information about each task within the pipeline by clicking on the task's name.
 
-You can also see information like the timestamps when the system triggered each pipeline and the Git commit that triggered the build on this tab.
+You can also view information such as the timestamps when the system triggered each pipeline and the Git commit that triggered the build on this tab.
 
 == Step 9: Verify Deployment in Your OpenShift Cluster
 
@@ -526,10 +527,10 @@ If everything looks good, you have successfully deployed a PostgreSQL applicatio
 
 == Important Notes
 
-- *Service Integration*: Konflux uses the `konflux-integration` namespace to coordinate deployments in your OpenShift cluster.
+- *Service Integration*: Konflux utilizes the `konflux-integration` namespace to coordinate deployments within your OpenShift cluster.
 
 - *Pipeline as Code: You can view your Tekton pipelines in the `pipelines-as-code` namespace.
 
-- *GitOps*: We recommend you store your products' configurations in a Git repository and let Konflux manage them through GitOps.
+- *GitOps*: We recommend storing your products' configurations in a Git repository and letting Konflux manage them through GitOps.
 
-- *Security*: Konflux will run security scans through the `enterprise-contract-service` before deploying.
+- *Security*: Konflux will run security scans through the `enterprise-contract-service` before deployment.
