@@ -93,7 +93,7 @@ You will need to refer to your browser's documentation for instructions on confi
 
 [NOTE]
 ====
-Firefox has built-in remote DNS support, but other browsers, like Chrome and Edge, don't, so you'll need to look for a plugin like *Proxy SwitchyOmega* or *FoxyProxy* to handle DNS resolution for you.
+Mozilla Firefox has built-in remote DNS support, but other browsers, like Chrome and Edge, don't, so you'll need to look for a plugin like *Proxy SwitchyOmega* or *FoxyProxy* to handle DNS resolution for you.
 ====
 
 == Step 2: Create a GitHub Repository For Your Manifest Files
@@ -294,7 +294,7 @@ Provide a name for your applications, such as `postgresql-app`.
 == Step 4: Add a Component to Your Application
 
 From your application's screen, click the Components tab and then select *Add component*.
-Fill in the *Create a Component* form with the following values:
+Complete the *Create a Component* form with the following values:
 
 [cols="1,1"]
 |===
@@ -416,7 +416,7 @@ image:persistent-volume-claims.png[Persistent Volume Claims menu, 25%]
 
 . Ensure you're in the correct project and namespace (this is the same project and namespace you used in Konflux UI).
 
-. Fill in the details:
+. Enter the following details:
 
 - *Storage Class*: Select from the available options (ask your cluster administrator if you're unsure).
 
