@@ -64,3 +64,20 @@ $ kubectl apply -f ReleasePlan.yaml -n dev
 . In the {ProductName} UI, select the *Release services* > *Release plan* tab.
 . Review the Release plan object that you just added. Using the Release plan tab, you can update or delete the selected Release plan object.
 . When a ReleasePlan is correctly configured to be paired with a ReleasePlanAdmission, its *Status* will display as being `Matched`.
+
+== Auto-release logic
+
+The `release.appstudio.openshift.io/auto-release` label controls whether a Release should automatically be created once a push snapshot
+passes all required tests. The value of the label should be a https://cel.dev/[CEL expression]. This gives users fine-grained control over
+whether their snapshots are auto-released. Konflux also supports custom functions for common use-cases. There is a table of custom
+functions below. To request others, please reach out to the Konflux integration service team.
+
+[cols="1,1"]
+|===
+|Name
+|Description
+|UpdatedComponentIs(component)
+|Takes a component name as a parameter. Returns true if the snapshot is a component snapshot and the name of the updated component in the snapshot
+matches the named passed as an argument. Also returns true if the snapshot is a group snapshot and the argument matches the name of any of the
+updated components in the snapshot.
+|===  
