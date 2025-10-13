@@ -183,8 +183,9 @@ data:
   commitMessageSuffix: "custom namespace suffix message"
   fileMatch: ".*Dockerfile.*, .*.yaml, .*Containerfile.*"
   ignoreTests: "true"
-  platformAutomerge: "true"
   gitLabIgnoreApprovals: "true"
-  automergeSchedule: "* 22-23,0-4 * * *; * * * * 0,6"
+  platformAutomerge: "true"
+  # eventually set `platformAutomerge: "false"` and configure your own schedule
+  # automergeSchedule: "* 22-23,0-4 * * *; * * * * 0,6"
   labels: "customLabel1, customLabel2"
 --
