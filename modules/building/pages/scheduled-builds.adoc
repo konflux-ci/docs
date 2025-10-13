@@ -1,0 +1,154 @@
+= Scheduled builds with CronJobs
+
+The core principle is to create a `CronJob` that triggers a push pipeline using *the latest commit from the component's default branch*.
+
+== Procedure
+
+Setting up a scheduled build involves two main steps:
+
+1.  **Create RBAC Rules**
+2.  **Create the CronJob**
+
+---
+
+=== Create RBAC Rules
+
+[NOTE]
+====
+If you have already configured a `CronJob` for xref:testing:integration/periodic-integration-tests.adoc[periodic integration tests], you may be able to reuse its `ServiceAccount` and skip this step.
+====
+
+Before creating new RBAC rules, it is *recommended to check* if a `ServiceAccount` with the necessary permissions already exists in your namespace.
+
+==== Checking for an Existing ServiceAccount
+
+You can use the OpenShift Console to see if an existing `ServiceAccount` already has the required permissions.
+
+.Procedure
+. In the **Administrator** perspective of the OpenShift Console, ensure your project is selected.
+. Navigate to **User Management** > **RoleBindings**. Look for bindings assigned to `ServiceAccount` subjects.
+. Note the name of a promising `Role` from the list, then navigate to **User Management** > **Roles**.
+. Find that `Role` and click on it. Inspect its permissions in **Details** or **YAML** tab.
+. Verify if the `rules` section grants the `patch` verb on the `components` resource, like so:
++
+.Example of required permissions
+[source,yaml]
+----
+rules:
+- apiGroups:
+  - appstudio.redhat.com
+  resources:
+  - components
+  verbs:
+  - get
+  - list
+  - patch
+----
++
+If you find a `ServiceAccount` with these permissions, you can use its name and skip creating new RBAC rules.
+
+---
+
+If you need to create new permissions, the `ServiceAccount` used by your `CronJob` must have the authority to "patch" `Component` resources. The following `Role` and `RoleBinding` grant these specific permissions.
+
+[NOTE]
+====
+For detailed instructions, see the official Red Hat OpenShift documentation on link:https://docs.redhat.com/en/documentation/openshift_container_platform/4.19/html/authentication_and_authorization/understanding-and-creating-service-accounts#service-accounts-managing_understanding-service-accounts[creating service accounts].
+====
+
+.rbac-for-scheduled-builds.yaml
+[source,yaml]
+----
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: scheduled-build-role
+  namespace: <your-namespace>  # Replace with your NS
+rules:
+- apiGroups:
+    - appstudio.redhat.com
+  resources:
+    - components
+  verbs:
+    - patch
+    - get
+    - list
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: scheduled-build-binding
+  namespace: <your-namespace>  # Replace with your NS
+subjects:
+- kind: ServiceAccount
+  name: <your-service-account-name>  # Replace with your SA name  
+roleRef:
+  kind: Role
+  name: scheduled-build-role
+  apiGroup: rbac.authorization.k8s.io
+----
+
+=== Create the CronJob
+
+[IMPORTANT]
+====
+To prevent performance issues, avoid scheduling your job at a common time like midnight (0 0 * * *)
+====
+
+The following example creates a job that runs on a recurring schedule:
+
+.scheduled-build-cronjob.yaml
+[source,yaml]
+----
+kind: CronJob
+apiVersion: batch/v1
+metadata:
+  name: scheduled-component-build
+  namespace: <your-namespace> <1>
+spec:
+  schedule: '' <2>
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          containers:
+            - name: trigger-scheduled-build
+              image: 'quay.io/konflux-ci/appstudio-utils:latest'
+              command:
+                - /bin/bash
+                - '-c'
+              args:
+                - |
+                  #!/bin/bash
+                  set -euo pipefail
+                  
+                  <3>
+                  kubectl annotate components/<your-component-name> build.appstudio.openshift.io/request=trigger-pac-build --overwrite
+                  
+                  echo "[INFO] Annotation complete"
+          serviceAccountName: <your-SA-name> <4>
+          restartPolicy: OnFailure <5>
+----
+<1> The name of the tenant namespace where this `CronJob` resource will be created.
+<2> Use a tool like link:https://crontab.guru/[crontab.guru] to help generate a unique schedule for your needs.
+<3> The core command that triggers the build. It annotates the specified component, signaling Konflux to start a new build. You must replace `<your-component-name>`.
+<4> The name of the ServiceAccount the job uses to execute the `kubectl` command. This ServiceAccount must have the necessary RBAC permissions to annotate components.
+<5> Restart Policy can be "Never" or "OnFailure".
+
+---
+
+Deploy the `CronJob` manifest to your cluster. The most direct method is to save the YAML content to a file (e.g., `scheduled-build-cronjob.yaml`) and apply it using `kubectl`:
+
+[source,bash]
+----
+$ kubectl apply -f scheduled-build-cronjob.yaml
+----
+
+[NOTE]
+====
+Alternatively, if your organization uses a GitOps workflow, add the manifest to your Git repository.
+====
+
+=== Other Resources
+
+- You can learn more about xref:building:running.adoc#retriggering-a-post-merge-build-from-your-main-branch-from-the-api[retriggering a post-merge build from your main branch from the API].
