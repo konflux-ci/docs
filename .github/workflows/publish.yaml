@@ -48,7 +48,7 @@ jobs:
           key: docs-${{ hashFiles('package-lock.json') }}
           restore-keys: docs-
 
-      - uses: actions/setup-node@v5
+      - uses: actions/setup-node@v6
         with:
           node-version-file: 'package.json'
 
