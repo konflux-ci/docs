@@ -1,3 +1,452 @@
-= Openshift CI (Prow)
+= OpenShift CI
 
-In order to learn how to xref:testing:integration/adding.adoc[add a custom integration test] that would run a CI job in {ProductName}, please see link:https://github.com/openshift/konflux-tasks[github.com/openshift/konflux-tasks].
+The OpenShift CI platform provides two ways through which a {ProductName} pipeline can interact with it.
+
+== Run a ProwJob
+
+The most straightforward way is to run a test that has already been defined in OpenShift CI. 
+To learn how to xref:testing:integration/adding.adoc[add a custom integration test] that would run a CI job in {ProductName}, see link:https://github.com/openshift/konflux-tasks[github.com/openshift/konflux-tasks].
+
+== Provision an Ephemeral Cluster
+
+The provisioning task is designed to create an OpenShift cluster for running future {ProductName} tests on. You will need to have familiarity with how OpenShift CI platform works (see link:https://docs.ci.openshift.org/docs/[https://docs.ci.openshift.org]) since many components from that domain are involved: ProwJobs, `ci-operator`, release payloads and more. +
+This guide will try to give for granted as few concepts as possible and, when it exists, provides a link to the original documentation.
+
+TIP: Although it's not strictly mandatory, having past experience in how to setup and troubleshoot OpenShift CI jobs might be
+helpful to better understand these paragraphs.
+
+Provisioning a cluster (an ephemeral cluster) consists of executing two
+tasks in {ProductName}: `provision-ephemeral-cluster` and `deprovision-ephemeral-cluster`
+(see link:https://github.com/openshift/konflux-tasks/tree/main/tasks[https://github.com/openshift/konflux-tasks/tasks]).
+
+IMPORTANT: When a provision task is present in a test pipeline, a deprovision task MUST also be used. It is RECOMMENDED to have `deprovision-ephemeral-cluster` running within the `finally` stanza of a pipeline to ensure that it always runs.
+[source, yaml]
+----
+apiVersion: tekton.dev/v1
+kind: PipelineRun
+spec:
+  pipelineSpec:
+    tasks:
+    - name: provision-ephemeral-cluster
+      taskRef:
+        resolver: git
+        params:
+        - name: url
+          value: https://github.com/openshift/konflux-tasks
+        - name: revision
+          value: main
+        - name: pathInRepo
+          value: tasks/provision-ephemeral-cluster/0.1/provision-ephemeral-cluster.yaml
+
+    finally:
+    - name: deprovision-ephemeral-cluster
+      taskRef:
+        resolver: git
+        params:
+        - name: url
+          value: https://github.com/openshift/konflux-tasks
+        - name: revision
+          value: main
+        - name: pathInRepo
+          value: tasks/provision-ephemeral-cluster/0.1/deprovision-ephemeral-cluster.yaml
+----
+
+=== Task `provision-ephemeral-cluster`
+The ultimate goal of this task is to create a valid `ci-operator` configuration (see link:https://docs.ci.openshift.org/docs/architecture/ci-operator/[docs.ci.openshift.org/docs/architecture/ci-operator]) that contains all the information
+needed to spin up an ephemeral cluster, run it in a ProwJob and, finally, retrieve a kubeconfig.
+The task takes several parameters that maps directly to their `ci-operator` configuration counterparts. +
+What follow is a list of the most important ones (for a complete list see link:https://github.com/openshift/konflux-tasks/blob/main/tasks/provision-ephemeral-cluster/0.1/README.md[https://github.com/openshift/konflux-tasks/tasks/provision-ephemeral-cluster/0.1/README.md]):
+|===
+|Task Parameter|ci-operator stanza|Description|OpenShift CI Docs
+
+|`params[*].name.releases`|`releases`|Release payload(s) that are going to be used to install OpenShift on the cluster|link:https://docs.ci.openshift.org/docs/architecture/ci-operator/#testing-with-an-ephemeral-openshift-release[Testing with OCP releases]
+
+|`params[*].name.workflow`|`tests[0].steps[0].workflow`|The OpenShift CI workflow that prepares the cloud infrastructure and creates the ephemeral cluster|link:https://docs.ci.openshift.org/docs/architecture/step-registry/#workflow[What is a workflow] and link:https://steps.ci.openshift.org/#workflows[Workflows Catalog]
+
+|`params[*].name.clusterProfile`|`tests[0].steps[0].cluster_profile`|The cluster profile that holds what's needed (ex.: credentials) to access the cloud infrastructure in which we provision the ephemeral cluster|link:https://docs.ci.openshift.org/docs/architecture/step-registry/[Multi-Stage Tests and the Test Step Registry] and link:https://docs.ci.openshift.org/docs/how-tos/adding-a-cluster-profile/[How to add a new Cluster Profile]
+
+|`params[*].name.env`|`tests[0].steps[0].env`|Environment variables to pass to the workflow|link:https://docs.ci.openshift.org/docs/architecture/step-registry/[Multi-Stage Tests and the Test Step Registry]
+
+|`params[*].name.clusterClaim`|`tests[0].cluster_claim`|Claim a cluster from the Hosted Management cluster rather than provision a new one from scratch|link:https://docs.ci.openshift.org/docs/architecture/ci-operator/#testing-with-a-cluster-from-a-cluster-pool[Testing With a Cluster From a Cluster Pool]
+|===
+
+==== Provision an Ephemeral Cluster from a release payload
+We want to start an ephemeral cluster built from the bleeding edge CI integration stream:
+
+1. Choose an appropriate workflow from the link:https://steps.ci.openshift.org/#workflows[OpenShift CI step registry]
+
+2. Create a new cluster profile if you don't have one: link:https://docs.ci.openshift.org/docs/how-tos/adding-a-cluster-profile/[docs.ci.openshift.org/docs/how-tos/adding-a-cluster-profile]
+
+3. Use the `provision-ephemeral-cluster` task in your pipeline:
+[source, yaml]
+----
+tasks:
+- name: provision-ephemeral-cluster
+  params:
+  - name: ownerName
+    value: $(context.pipelineRun.name) # Internal usage only, use always this value here
+  - name: ownerUid
+    value: $(context.pipelineRun.uid) # Internal usage only, use always this value here
+  - name: prEventPayload
+    value: '{{ body }}' # Internal usage only, use always this value here
+  - name: prEventHeaders
+    value: '{{ headers }}' # Internal usage only, use always this value here
+  - name: workflow
+    value: ipi-aws
+  - name: clusterProfile
+    value: aws-3
+  - name: releases
+    value: |
+      {
+        "initial": {
+          "integration": {
+            "name": "4.21",
+            "namespace": "ocp"
+          }
+        },
+        "latest": {
+          "integration": {
+            "include_built_images": true,
+            "name": "4.21",
+            "namespace": "ocp"
+          }
+        }
+      }
+  taskRef:
+    resolver: git
+    params:
+    - name: url
+      value: https://github.com/openshift/konflux-tasks
+    - name: revision
+      value: main
+    - name: pathInRepo
+      value: tasks/provision-ephemeral-cluster/0.1/provision-ephemeral-cluster.yaml
+----
+
+The resulting `ci-operator` configuration is:
+[source, yaml]
+----
+build_root:
+  image_stream_tag:
+    name: release
+    namespace: openshift
+    tag: rhel-9-release-golang-1.24-openshift-4.20
+releases:
+  initial:
+    integration:
+      name: "4.21"
+      namespace: ocp
+  latest:
+    integration:
+      name: "4.21"
+      namespace: ocp
+resources:
+  '*':
+    limits:
+      memory: 400Mi
+    requests:
+      cpu: 200m
+tests:
+- as: cluster-provisioning
+  steps:
+    cluster_profile: aws-3
+    test:
+    - as: wait-test-complete
+      commands: |
+        # Omitted, internals that are unnecessary for this discussion
+      from: cli
+      resources:
+        limits:
+          memory: 100Mi
+        requests:
+          cpu: 10m
+    workflow: ipi-aws
+----
+
+NOTE: You don't have full control over the `tests[]` stanza. Regardless of what parameters we pass, there is always
+one test `as: cluster-provisioning` generated.
+
+As stated before, each parameter passed to the task maps to a `ci-operator` stanza, whereas others (see `resources` and `build_root`) are
+assigned to default values when not set.
+
+==== Claim an Ephemeral Cluster from Hypershift
+We want to claim a cluster from Hypershift (see link:https://docs.ci.openshift.org/docs/architecture/ci-operator/#testing-with-a-cluster-from-hypershift[Testing with a Cluster from Hypershift]):
+
+CAUTION: This is a pilot feature, the support from the infrastructure is limited.
+
+1. Choose `hypershift-hostedcluster-workflow` workflow from the link:https://steps.ci.openshift.org/#workflows[OpenShift CI step registry]
+
+2. Define and pass the `latest` release payload on the `releases` parameter.
+
+3. Use the `provision-ephemeral-cluster` task in your pipeline:
+
+[source, yaml]
+----
+tasks:
+- name: provision-ephemeral-cluster
+  params:
+  - name: ownerName
+    value: $(context.pipelineRun.name) # Internal usage only, use always this value here
+  - name: ownerUid
+    value: $(context.pipelineRun.uid) # Internal usage only, use always this value here
+  - name: prEventPayload
+    value: '{{ body }}' # Internal usage only, use always this value here
+  - name: prEventHeaders
+    value: '{{ headers }}' # Internal usage only, use always this value here
+  - name: workflow
+    value: hypershift-hostedcluster-workflow
+  - name: releases
+    value: |
+      {"latest":{"release":{"channel":"stable","version":"4.12","architecture":"multi"}}}
+  taskRef:
+    resolver: git
+    params:
+    - name: url
+      value: https://github.com/openshift/konflux-tasks
+    - name: revision
+      value: main
+    - name: pathInRepo
+      value: tasks/provision-ephemeral-cluster/0.1/provision-ephemeral-cluster.yaml
+----
+
+The resulting `ci-operator` configuration is:
+[source, yaml]
+----
+build_root:
+  image_stream_tag:
+    name: release
+    namespace: openshift
+    tag: rhel-9-release-golang-1.24-openshift-4.20
+base_images:
+  # This image is used internally and gets injected by default
+  cli:
+    name: "4.22"
+    namespace: ocp
+    tag: cli
+releases:
+  latest:
+    channel: stable
+    version: "4.12"
+    architecture: multi
+resources:
+  '*':
+    limits:
+      memory: 400Mi
+    requests:
+      cpu: 200m
+tests:
+- as: cluster-provisioning
+  steps:
+    test:
+    - as: wait-test-complete
+      commands: |
+        # Omitted, internals that are unnecessary for this discussion
+      from: cli
+      resources:
+        limits:
+          memory: 100Mi
+        requests:
+          cpu: 10m
+    workflow: hypershift-hostedcluster-workflow
+----
+
+==== Claim an Ephemeral Cluster from the Hosted Management cluster
+We want to claim a cluster from the Hosted Management cluster (see link:https://docs.ci.openshift.org/docs/architecture/ci-operator/#testing-with-a-cluster-from-a-cluster-pool[Testing with a Cluster from a Cluster Pool]):
+
+1. Choose `generic-claim` workflow from the link:https://steps.ci.openshift.org/#workflows[OpenShift CI step registry]
+
+2. Create a new cluster pool if you don't have one: link:https://docs.ci.openshift.org/docs/how-tos/cluster-claim/[docs.ci.openshift.org/docs/how-tos/cluster-claim/]
+
+3. Use the `provision-ephemeral-cluster` task in your pipeline:
+
+[source, yaml]
+----
+tasks:
+- name: provision-ephemeral-cluster
+  params:
+  - name: ownerName
+    value: $(context.pipelineRun.name) # Internal usage only, use always this value here
+  - name: ownerUid
+    value: $(context.pipelineRun.uid) # Internal usage only, use always this value here
+  - name: prEventPayload
+    value: '{{ body }}' # Internal usage only, use always this value here
+  - name: prEventHeaders
+    value: '{{ headers }}' # Internal usage only, use always this value here
+  - name: workflow
+    value: generic-claim
+  - name: clusterClaim
+    value: |
+      {
+        "architecture": "amd64",
+        "as": "unused",
+        "cloud": "aws",
+        "labels": {
+          "region": "us-east-1"
+        },
+        "owner": "openshift-ci",
+        "product": "ocp",
+        "timeout": "1h0m0s",
+        "version": "4.19"
+      }
+  taskRef:
+    resolver: git
+    params:
+    - name: url
+      value: https://github.com/openshift/konflux-tasks
+    - name: revision
+      value: main
+    - name: pathInRepo
+      value: tasks/provision-ephemeral-cluster/0.1/provision-ephemeral-cluster.yaml
+----
+
+The resulting `ci-operator` configuration is:
+[source, yaml]
+----
+build_root:
+  image_stream_tag:
+    name: release
+    namespace: openshift
+    tag: rhel-9-release-golang-1.24-openshift-4.20
+base_images:
+  # This image is used internally and gets injected by default
+  cli:
+    name: "4.22"
+    namespace: ocp
+    tag: cli
+resources:
+  '*':
+    limits:
+      memory: 400Mi
+    requests:
+      cpu: 200m
+tests:
+- as: cluster-provisioning
+  steps:
+    test:
+    - as: wait-test-complete
+      cluster_claim:
+        architecture: amd64
+        as: unused
+        cloud: aws
+        labels:
+          region: us-east-1
+        owner: openshift-ci
+        product: ocp
+        timeout: 1h0m0s
+        version: "4.22"
+      commands: |
+        # Omitted, internals that are unnecessary for this discussion
+      from: cli
+      resources:
+        limits:
+          memory: 100Mi
+        requests:
+          cpu: 10m
+    workflow: generic-claim
+----
+
+==== Consuming `tasks.provision-ephemeral-cluster.results`
+Upon completion, the provisioning task always provides a kubeconfig having admin privileges over the ephemeral cluster. +
+What follow is an example on how to use the aforementioned results:
+[source, yaml]
+----
+tasks:
+- name: run-test
+  runAfter:
+  - provision-ephemeral-cluster
+  params:
+  - name: clusterCredentialsSecretRef
+    value: $(tasks.provision-ephemeral-cluster.results.secretRef)
+  taskSpec:
+    params:
+    - name: clusterCredentialsSecretRef
+      type: string
+      description: "The secret that holds the cluster credentials"
+    steps:
+    - name: run-test
+      image: registry.redhat.io/openshift4/ose-cli:4.13@sha256:73df37794ffff7de1101016c23dc623e4990810390ebdabcbbfa065214352c7c
+      env:
+      - name: KUBECONFIG_VALUE
+        valueFrom:
+          secretKeyRef:
+            name: $(params.clusterCredentialsSecretRef)
+            key: kubeconfig
+      script: |
+        #!/usr/bin/env bash
+        set -eo pipefail
+
+        KUBECONFIG="$(mktemp kubeconfig.XXXXX)"
+        trap 'rm -f "$KUBECONFIG"' EXIT
+
+        echo "$KUBECONFIG_VALUE" >"$KUBECONFIG"
+        export KUBECONFIG
+        oc whoami
+----
+
+==== [[keep-track-provisioning]]How to keep track of the provisioning status
+While it is running, the task outputs, as soon as it becomes available, the ProwJob's status link through which a user can
+monitor the ongoing provisioning procedures. +
+This is how a ProwJob status link looks like:
+```
+https://prow.ci.openshift.org/view/gs/test-platform-results/logs/branch-ci-openshift-service-mesh-proxy-release-1.27-copy-artifacts-gcs/1972650688026513408
+```
+
+==== FAQ
+*Q:* The workflow `foobar` needs a specific image defined as a `base_images` on the `ci-operator` configuration. How can you add that? +
+ +
+*A:* The `provision-ephemeral-cluster` task accepts the `baseImages` parameter as well. +
+You could pass that parameter as follow:
+[source, yaml]
+----
+tasks:
+- name: provision-ephemeral-cluster
+  params:
+  - name: baseImages
+    value: |
+      {"base":{"name":"4.10","namespace":"ocp","tag":"base"}}
+  taskRef:
+    resolver: git
+    params:
+    - name: url
+      value: https://github.com/openshift/konflux-tasks
+    - name: revision
+      value: main
+    - name: pathInRepo
+      value: tasks/provision-ephemeral-cluster/0.1/provision-ephemeral-cluster.yaml
+----
+
+==== Examples
+link:https://github.com/openshift/konflux-tasks/blob/feed2bb08a32455ae1a996c201560201b6a6c35b/examples/ephemeral-cluster[Here] some examples of how to provision or claim an ephemeral cluster.
+
+=== Task `deprovision-ephemeral-cluster`
+The deprovisioning task must always be defined in a `finally` block to make sure it runs in any case after the provisioning task has run, either successfully or unsuccessfully. +
+The parameters it accepts are directly produced by the provisioning task's results (for a complete list see link:https://github.com/openshift/konflux-tasks/blob/e94be2a9e5932876b8b290bda868dd18cc9bed15/tasks/deprovision-ephemeral-cluster/0.1/README.md[https://github.com/openshift/konflux-tasks/tasks/deprovision-ephemeral-cluster/0.1/README.md]):
+
+IMPORTANT: deprovision-ephemeral-cluster has to run in any case. Make sure it is defined within the `finally` block.
+
+[source, yaml]
+----
+finally:
+- name: deprovision-ephemeral-cluster
+  taskRef:
+    resolver: git
+    params:
+    - name: url
+      value: https://github.com/openshift/konflux-tasks
+    - name: revision
+      value: main
+    - name: pathInRepo
+      value: tasks/deprovision-ephemeral-cluster/0.1/deprovision-ephemeral-cluster.yaml
+  params:
+  - name: testPlatformClusterClaimName
+    value: $(tasks.provision-ephemeral-cluster.results.testPlatformClusterClaimName)
+  - name: testPlatformClusterClaimNamespace
+    value: $(tasks.provision-ephemeral-cluster.results.testPlatformClusterClaimNamespace)
+----
+
+==== How to keep track of the deprovision status
+Refer to xref:#keep-track-provisioning[How to keep track of the provisioning status] since the ProwJob that
+provision and deprovision an ephemeral cluster is always the same.
+
+==== Examples
+link:https://github.com/openshift/konflux-tasks/blob/feed2bb08a32455ae1a996c201560201b6a6c35b/examples/ephemeral-cluster[Here] some examples of how to deprovision an ephemeral cluster.
