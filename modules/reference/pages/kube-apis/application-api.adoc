@@ -30,7 +30,7 @@ Package v1alpha1 contains API Schema definitions for the appstudio v1alpha1 API 
 
 
 
-Application is the Schema for the applications API.  For a detailed description with examples, refer to <a href="https://github.com/redhat-appstudio/book/blob/main/book/HAS/hybrid-application-service-api.md"> Hybrid Application Service Kube API </a>
+Application is the Schema for the applications API. For description, refer to xref:kube-apis/application-api.adoc[Application API Reference] Hybrid Application Service Kube API </a>
 
 
 
@@ -162,7 +162,7 @@ ApplicationStatus defines the observed state of Application
 
 
 
-Component is the Schema for the components API.    For a detailed description with examples, refer to <a href="https://github.com/redhat-appstudio/book/blob/main/book/HAS/hybrid-application-service-api.md"> Hybrid Application Service Kube API </a>
+Component is the Schema for the components API. For description, refer to xref:kube-apis/application-api.adoc[Application API Reference] Hybrid Application Service Kube API </a>
 
 
 
@@ -230,7 +230,7 @@ ComponentDetectionMap is a map containing all the components and their detected 
 
 
 
-ComponentDetectionQuery is the Schema for the componentdetectionqueries API.    For a detailed description with examples, refer to <a href="https://github.com/redhat-appstudio/book/blob/main/book/HAS/hybrid-application-service-api.md"> Hybrid Application Service Kube API </a>
+ComponentDetectionQuery is the Schema for the componentdetectionqueries API. For description, refer to xref:kube-apis/application-api.adoc[Application API Reference] Hybrid Application Service Kube API </a>
 
 
 

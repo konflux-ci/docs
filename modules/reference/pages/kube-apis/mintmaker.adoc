@@ -24,7 +24,7 @@ Package v1alpha1 contains API Schema definitions for the appstudio v1alpha1 API 
 
 
 
-
+ApplicationSpec scopes MintMaker to specific Components within a single Konflux Application.
 
 
 
@@ -36,7 +36,8 @@ Package v1alpha1 contains API Schema definitions for the appstudio v1alpha1 API 
 [cols="20a,50a,15a,15a", options="header"]
 |===
 | Field | Description | Default | Validation
-| *`application`* __string__ | Specifies the name of the application for which to run Mintmaker. +
+| *`application`* __string__ | Specifies the name of the Konflux application for which to run Mintmaker. +
+For more details see <a href="https://github.com/konflux-ci/architecture/blob/main/architecture/core/hybrid-application-service.md">Konflux Application Service</a>. +
 Required. + |  | Pattern: `^[a-z0-9]([-a-z0-9]*[a-z0-9])?$` +
 
 | *`components`* __xref:{anchor_prefix}-github-com-konflux-ci-mintmaker-api-v1alpha1-component[$$Component$$] array__ | Specifies the list of components of an application for which to run MintMaker. +
@@ -51,7 +52,7 @@ Pattern: `^[a-z0-9]([-a-z0-9]*[a-z0-9])?$` +
 
 _Underlying type:_ _string_
 
-
+Component represents a Component name within a Konflux Application.
 
 .Validation:
 - MaxLength: 63
@@ -69,7 +70,19 @@ _Underlying type:_ _string_
 
 
 
-DependencyUpdateCheck is the Schema for the dependencyupdatechecks API
+DependencyUpdateCheck is the root CRD that triggers mintmaker to Konflux Components for dependency updates.
+How the controller uses this CRD:
+- Only CRs created in the MintMaker namespace (see `MintMakerNamespaceName`) are processed.
+- When a CR is created, the controller discovers Konflux Components to scan:
+  - By default: all `appstudio.redhat.com/v1alpha1, Kind=Component` across the cluster
+  - Or: a filtered subset when `spec.namespaces` is provided
+  - For each unique repository+branch across those Components, the controller generates
+    one Tekton `PipelineRun` that scans the repository for dependency updates using Renovate.
+
+
+Annotations:
+  - `mintmaker.appstudio.redhat.com/processed`: set by the controller when the
+    DependencyUpdateCheck is processed, to avoid reprocessing the same CR.
 
 
 
@@ -117,7 +130,9 @@ DependencyUpdateCheckList contains a list of DependencyUpdateCheck
 
 
 
-DependencyUpdateCheckSpec defines the desired state of DependencyUpdateCheck
+DependencyUpdateCheckSpec filters which Konflux Components will be scanned.
+If `namespaces` is empty, MintMaker scans all Components discoverable to the controller.
+If provided, MintMaker only scans Components that match the namespace/application/component filters.
 
 
 
@@ -155,7 +170,7 @@ DependencyUpdateCheckStatus defines the observed state of DependencyUpdateCheck
 
 
 
-
+NamespaceSpec scopes MintMaker to specific Applications within a Kubernetes namespace.
 
 
 
@@ -167,10 +182,10 @@ DependencyUpdateCheckStatus defines the observed state of DependencyUpdateCheck
 [cols="20a,50a,15a,15a", options="header"]
 |===
 | Field | Description | Default | Validation
-| *`namespace`* __string__ | Specifies the name of the namespace for which to run Mintmaker. +
+| *`namespace`* __string__ | Specifies the name of the Kubernetes namespace for which to run Mintmaker. +
 Required. + |  | Pattern: `^[a-z0-9]([-a-z0-9]*[a-z0-9])?$` +
 
-| *`applications`* __xref:{anchor_prefix}-github-com-konflux-ci-mintmaker-api-v1alpha1-applicationspec[$$ApplicationSpec$$] array__ | Specifies the list of applications in a namespace for which to run MintMaker. +
+| *`applications`* __xref:{anchor_prefix}-github-com-konflux-ci-mintmaker-api-v1alpha1-applicationspec[$$ApplicationSpec$$] array__ | Specifies the list of Konflux applications in a namespace for which to run MintMaker. +
 If omitted, MintMaker will run for all namespace's applications. + |  | 
 |===
 

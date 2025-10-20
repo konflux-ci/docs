@@ -2,7 +2,7 @@
 :anchor_prefix: k8s-api
 
 [id="reference"]
-== Conforma (formerly Enterprise Contract) API Reference
+== Conforma API Reference
 
 .Packages
 - xref:{anchor_prefix}-appstudio-redhat-com-v1alpha1[$$appstudio.redhat.com/v1alpha1$$]
@@ -67,7 +67,7 @@ DEPRECATED: Use the config for a policy source instead.
 the success of the outcome. + |  | 
 | *`include`* __string array__ | Include set of policy inclusions that are added to the policy evaluation. +
 These override excluded rules. + |  | 
-| *`collections`* __string array__ | Collections set of predefined rules.  DEPRECATED: Collections can be listed in include +
+| *`collections`* __string array__ | Collections set of predefined rules. DEPRECATED: Collections can be listed in include +
 with the "@" prefix. + |  | 
 |===
 
@@ -243,12 +243,13 @@ VolatileCriteria includes or excludes a policy rule with effective dates as an o
 | *`effectiveUntil`* __string__ |  |  | Format: date-time +
 
 | *`imageRef`* __string__ | DEPRECATED: Use ImageDigest instead +
-ImageRef is used to specify an image by its digest. + |  | Pattern: `^sha256:[a-fA-F0-9]\{64\}$` +
+ImageRef is used to specify an image by its digest. + |  | Pattern: `^sha256:[a-fA-F0-9]64$` +
 
-| *`imageDigest`* __string__ | ImageDigest is used to specify an image by its digest. + |  | Pattern: `^sha256:[a-fA-F0-9]\{64\}$` +
+| *`imageDigest`* __string__ | ImageDigest is used to specify an image by its digest. + |  | Pattern: `^sha256:[a-fA-F0-9]64$` +
 
-| *`imageUrl`* __string__ | ImageUrl is used to specify an image by its URL without a tag. + |  | Pattern: `^(?:https:\/\/)?[a-z0-9.-]+\/[a-z0-9-]+\/[a-z0-9-]+$` +
+| *`imageUrl`* __string__ | ImageUrl is used to specify an image by its URL without a tag. + |  | Pattern: `^[a-z0-9][a-z0-9.-]\*[a-z0-9](?:\/[a-z0-9][a-z0-9-]*[a-z0-9]){2,}$` +
 
+| *`reference`* __string__ | Reference is used to include a link to related information such as a Jira issue URL. + |  | 
 |===
 
 

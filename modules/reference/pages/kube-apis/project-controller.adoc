@@ -28,7 +28,8 @@ Package v1beta1 contains API Schema definitions for the projctl v1beta1 API grou
 
 
 
-Project is the Schema for the projects API
+Project represents a Konflux project for organizing related development streams.
+No custom labels or annotations on Project alter controller behavior.
 
 
 
@@ -53,7 +54,8 @@ Project is the Schema for the projects API
 
 
 
-ProjectDevelopmentStream is the Schema for the projectdevelopmentstreams API
+ProjectDevelopmentStream represents an independent stream of development.
+No custom labels or annotations on the object alter controller behavior.
 
 
 
@@ -102,6 +104,7 @@ ProjectDevelopmentStreamList contains a list of ProjectDevelopmentStream
 
 
 ProjectDevelopmentStreamSpec defines the desired state of ProjectDevelopmentStream
+A development stream typically represents a version or environment branch.
 
 
 
@@ -126,6 +129,7 @@ ProjectDevelopmentStream + |  |
 
 ProjectDevelopmentStreamSpecTemplateRef defines which optional template is
 associated with this ProjectDevelopmentStream and how to apply it
+The template must exist in the same namespace as the stream.
 
 
 
@@ -149,6 +153,7 @@ associated with this ProjectDevelopmentStream and how to apply it
 
 Provide a value for a variable specified in an associated
 ProjectDevelopmentStreamTemplate
+Use values to customize generated resources per development stream.
 
 
 
@@ -171,6 +176,9 @@ ProjectDevelopmentStreamTemplate
 
 
 ProjectDevelopmentStreamStatus defines the observed state of ProjectDevelopmentStream
+Conditions include:
+- TemplateApplied (reasons: Success, TemplateNotFound, VariableError, ResourceError, ProcessingError)
+- TemplateGenerated (reasons: Success, TemplateError, VariableValidationFailed, ResourceValidationFailed)
 
 
 
@@ -192,7 +200,9 @@ Known .status.conditions.type are: "TemplateApplied", and "TemplateGenerated" + 
 
 
 
-ProjectDevelopmentStreamTemplate is the Schema for the projectdevelopmentstreamtemplates API
+ProjectDevelopmentStreamTemplate defines a reusable set of resources
+that a ProjectDevelopmentStream can instantiate using variable values.
+No custom labels or annotations on the object alter controller behavior.
 
 
 
@@ -241,6 +251,7 @@ ProjectDevelopmentStreamTemplateList contains a list of ProjectDevelopmentStream
 
 ProjectDevelopmentStreamTemplateSpec defines the resources to be generated
 using a ProjectDevelopmentStreamTemplate
+Resources can interpolate variables (e.g., {{.version}}) and functions like hyphenize.
 
 
 
@@ -268,6 +279,7 @@ variables using the Go-text/template syntax + |  |
 
 
 Settings for a variable to be used to customize the template results
+Variables are processed in order; later defaults can reference earlier variables.
 
 
 
@@ -314,7 +326,8 @@ ProjectList contains a list of Project
 
 
 
-ProjectSpec defines the desired state of Project
+ProjectSpec defines the desired state of a Project.
+A Project groups related development streams and provides metadata for display.
 
 
 
