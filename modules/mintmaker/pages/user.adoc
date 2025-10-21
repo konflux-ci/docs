@@ -384,6 +384,8 @@ Example:
 ----
 oc -n <namespace> annotate component/<component-name> mintmaker.appstudio.redhat.com/disabled=true
 ----
+NOTE: This annotation disables MintMaker at the component level (a specific repository and branch combination).
+When a repository or branch has multiple components, you must annotate each component individually to disable MintMaker for the entire branch or repository.
 
 === How to limit the number of PRs/MRs
 
