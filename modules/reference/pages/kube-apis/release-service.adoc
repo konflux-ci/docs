@@ -94,6 +94,7 @@ ServiceAccount to be used in the PipelineRun.
 |===
 | Field | Description | Default | Validation
 | *`items`* __xref:{anchor_prefix}-github-com-konflux-ci-release-service-api-v1alpha1-collectoritem[$$CollectorItem$$] array__ | Items is the list of Collectors to be executed as part of the release workflow + |  | 
+| *`secrets`* __string array__ | Secrets is the list of secrets to be used in the Collector's Pipeline + |  | 
 | *`serviceAccountName`* __string__ | ServiceAccountName is the ServiceAccount to use during the execution of the Collectors Pipeline + |  | Pattern: `^[a-z0-9]([-a-z0-9]*[a-z0-9])?$` +
 
 |===
@@ -185,7 +186,7 @@ MatchedReleasePlanAdmission defines the relevant information for a matched Relea
 |===
 | Field | Description | Default | Validation
 | *`name`* __string__ | Name contains the namespaced name of the releasePlanAdmission + |  | 
-| *`active`* __boolean__ | Active indicates whether the ReleasePlanAdmission is set to block-releases or not + |  | 
+| *`active`* __boolean__ | Active indicates whether the ReleasePlanAdmission is set to auto-release or not + |  | 
 |===
 
 
@@ -232,9 +233,8 @@ PipelineInfo defines the observed state of a release pipeline processing.
 | *`completionTime`* __link:https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.3/#time-v1-meta[$$Time$$]__ | CompletionTime is the time when the Release processing was completed + |  | 
 | *`pipelineRun`* __string__ | PipelineRun contains the namespaced name of the managed Release PipelineRun executed as part of this release + |  | Pattern: `^[a-z0-9]([-a-z0-9]\*[a-z0-9])?\/[a-z0-9]([-a-z0-9]*[a-z0-9])?$` +
 
-| *`roleBinding`* __string__ | RoleBinding contains the namespaced name of the roleBinding created for the managed Release PipelineRun +
-executed as part of this release + |  | Pattern: `^[a-z0-9]([-a-z0-9]\*[a-z0-9])?\/[a-z0-9]([-a-z0-9]*[a-z0-9])?$` +
-
+| *`roleBindings`* __xref:{anchor_prefix}-github-com-konflux-ci-release-service-api-v1alpha1-rolebindingtype[$$RoleBindingType$$]__ | RoleBindings defines the roleBindings for accessing resources during the Release +
+PipelineRun executed as part of this release. + |  | 
 | *`startTime`* __link:https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.3/#time-v1-meta[$$Time$$]__ | StartTime is the time when the Release processing started + |  | 
 |===
 
@@ -636,6 +636,32 @@ ReleaseStatus defines the observed state of Release.
 | *`completionTime`* __link:https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.3/#time-v1-meta[$$Time$$]__ | CompletionTime is the time when a Release was completed + |  | 
 | *`startTime`* __link:https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.3/#time-v1-meta[$$Time$$]__ | StartTime is the time when a Release started + |  | 
 | *`expirationTime`* __link:https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.3/#time-v1-meta[$$Time$$]__ | ExpirationTime is the time when a Release can be purged + |  | 
+|===
+
+
+[id="{anchor_prefix}-github-com-konflux-ci-release-service-api-v1alpha1-rolebindingtype"]
+==== RoleBindingType
+
+
+
+RoleBindingType defines the state of roleBindings for resource access within the Release pipelineRun.
+
+
+
+.Appears In:
+****
+- xref:{anchor_prefix}-github-com-konflux-ci-release-service-api-v1alpha1-pipelineinfo[$$PipelineInfo$$]
+****
+
+[cols="20a,50a,15a,15a", options="header"]
+|===
+| Field | Description | Default | Validation
+| *`tenantRoleBinding`* __string__ | TenantRoleBinding contains the namespaced name of the roleBinding created for accessing resources within the tenant namespace. + |  | Pattern: `^[a-z0-9]([-a-z0-9]\*[a-z0-9])?\/[a-z0-9]([-a-z0-9]*[a-z0-9])?$` +
+
+| *`managedRoleBinding`* __string__ | ManagedRoleBinding contains the namespaced name of the roleBinding created for accessing resources within the managed namespace. + |  | Pattern: `^[a-z0-9]([-a-z0-9]\*[a-z0-9])?\/[a-z0-9]([-a-z0-9]*[a-z0-9])?$` +
+
+| *`secretRoleBinding`* __string__ | SecretRoleBinding contains the namespaced name of the roleBinding created for accessing secrets within the namespace. + |  | Pattern: `^[a-z0-9]([-a-z0-9]\*[a-z0-9])?\/[a-z0-9]([-a-z0-9]*[a-z0-9])?$` +
+
 |===
 
 

@@ -60,7 +60,7 @@ Component/Application GitOps repository resources.
 [cols="20a,50a,15a,15a", options="header"]
 |===
 | Field | Description | Default | Validation
-| *`env`* __xref:{anchor_prefix}-github-com-konflux-ci-integration-service-api-v1alpha1-envvarpair[$$EnvVarPair$$] array__ | Env is an array of standard environment variables + |  | 
+| *`env`* __xref:{anchor_prefix}-github-com-konflux-ci-integration-service-api-v1alpha1-envvarpair[$$EnvVarPair$$] array__ | Environment is an array of standard environment variables + |  | 
 | *`target`* __xref:{anchor_prefix}-github-com-konflux-ci-integration-service-api-v1alpha1-environmenttarget[$$EnvironmentTarget$$]__ | Target is used to reference a DeploymentTargetClaim for a target Environment. +
 The Environment controller uses the referenced DeploymentTargetClaim to access its bounded +
 DeploymentTarget with cluster credential secret. + |  | 
@@ -342,7 +342,7 @@ Component/Application GitOps repository resources.
 [cols="20a,50a,15a,15a", options="header"]
 |===
 | Field | Description | Default | Validation
-| *`env`* __xref:{anchor_prefix}-github-com-konflux-ci-integration-service-api-v1beta1-envvarpair[$$EnvVarPair$$] array__ | Env is an array of standard environment variables + |  | 
+| *`env`* __xref:{anchor_prefix}-github-com-konflux-ci-integration-service-api-v1beta1-envvarpair[$$EnvVarPair$$] array__ | Environment is an array of standard environment variables + |  | 
 | *`target`* __xref:{anchor_prefix}-github-com-konflux-ci-integration-service-api-v1beta1-environmenttarget[$$EnvironmentTarget$$]__ | Target is used to reference a DeploymentTargetClaim for a target Environment. +
 The Environment controller uses the referenced DeploymentTargetClaim to access its bounded +
 DeploymentTarget with cluster credential secret. + |  | 
@@ -636,7 +636,8 @@ Package v1beta2 contains API Schema definitions for the appstudio v1beta2 API gr
 
 
 
-IntegrationTestScenario is the Schema for the integrationtestscenarios API
+IntegrationTestScenario is the Schema for the integrationtestscenarios API, holds a definiton for integration test with specified attributes like pipeline reference,
+application and environment. It is a test template triggered after successful creation of a snapshot.
 
 
 
@@ -662,7 +663,7 @@ IntegrationTestScenario is the Schema for the integrationtestscenarios API
 
 
 
-IntegrationTestScenarioList contains a list of IntegrationTestScenario
+IntegrationTestScenarioList contains a list of IntegrationTestScenarios
 
 
 
@@ -700,7 +701,8 @@ IntegrationTestScenarioSpec defines the desired state of IntegrationScenario
 
 | *`resolverRef`* __xref:{anchor_prefix}-github-com-konflux-ci-integration-service-api-v1beta2-resolverref[$$ResolverRef$$]__ | Tekton Resolver where to store the Tekton resolverRef trigger Tekton pipeline used to refer to a Pipeline or Task in a remote location like a git repo. + |  | 
 | *`params`* __xref:{anchor_prefix}-github-com-konflux-ci-integration-service-api-v1beta2-pipelineparameter[$$PipelineParameter$$] array__ | Params to pass to the pipeline + |  | 
-| *`contexts`* __xref:{anchor_prefix}-github-com-konflux-ci-integration-service-api-v1beta2-testcontext[$$TestContext$$] array__ | Contexts where this IntegrationTestScenario can be applied + |  | 
+| *`contexts`* __xref:{anchor_prefix}-github-com-konflux-ci-integration-service-api-v1beta2-testcontext[$$TestContext$$] array__ | Contexts where this IntegrationTestScenario can be applied, for specific component for example + |  | 
+| *`dependents`* __string array__ | List of IntegrationTestScenario which are blocked by the successful completion of this IntegrationTestScenario + |  | 
 |===
 
 
@@ -709,7 +711,7 @@ IntegrationTestScenarioSpec defines the desired state of IntegrationScenario
 
 
 
-IntegrationTestScenarioStatus defines the observed state of IntegrationTestScenario
+IntegrationTestScenarioStatus defines the observed state of IntegrationTestScenario described by conditions
 
 
 
@@ -730,7 +732,7 @@ IntegrationTestScenarioStatus defines the observed state of IntegrationTestScena
 
 
 
-PipelineParameter contains the name and values of a Tekton Pipeline parameter
+PipelineParameter contains the name and values of a Tekton Pipeline parameter, used by IntegrationTestScenarioSpec Params
 
 
 
@@ -792,6 +794,9 @@ Tekton Resolver where to store the Tekton resolverRef trigger Tekton pipeline us
 referenced Tekton resource. Example entries might include +
 "repo" or "path" but the set of params ultimately depends on +
 the chosen resolver. + |  | 
+| *`resourceKind`* __string__ | ResourceKind defines the kind of resource being resolved. It can either +
+be "pipeline" or "pipelinerun" but defaults to "pipeline" if no value is +
+set + |  | 
 |===
 
 
@@ -800,7 +805,7 @@ the chosen resolver. + |  |
 
 
 
-TestContext contains the name and values of a Test context
+TestContext contains the name and values of a Test context, used by IntegrationTestScenarioSpec Contexts
 
 
 
