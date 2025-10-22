@@ -209,14 +209,14 @@ enabled managers is available below.
 `kotlin-script`, `leiningen`, `maven`, `maven-wrapper`, `sbt`,
 `scalafmt`+++</del>+++
 
-|*JavaScript* |+++<del>+++`bun`, `meteor`, `nodenv`, `npm`, `nvm`+++</del>+++
+|*JavaScript* |`bun`, `meteor`, `nodenv`, `npm`, `nvm`
 
 |*Kubernetes* |`argocd`, `crossplane`, `fleet`, `flux`, `glasskube`,
 `helm-requirements`, `helm-values`, `helmfile`, `helmsman`, `helmv3`,
 `jsonnet-bundler`, `kubernetes`, `kustomize`,
 +++<del>+++`glasskube`+++</del>+++
 
-|*Node.js* |+++<del>+++`nodenv`, `nvm`+++</del>+++
+|*Node.js* |`nodenv`, `nvm`
 
 |*Perl* |+++<del>+++`cpanfile`+++</del>+++
 
@@ -228,7 +228,7 @@ enabled managers is available below.
 
 |*RPM* |`rpm-lockfile`
 
-|*Ruby* |+++<del>+++`bundler`, `puppet`, `ruby-version`+++</del>+++
+|*Ruby* |`bundler`, `puppet`, `ruby-version`
 
 |*Rust* |`cargo`
 
