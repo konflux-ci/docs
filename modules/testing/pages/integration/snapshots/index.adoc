@@ -93,7 +93,7 @@ It's possible to encounter a situation where new Snapshots cannot be created bec
 
 **Mitigation**: The primary way to prevent this is to manage the lifecycle of your Release CRs.
 
-**Configure the Grace Period**: Ensure the releaseGracePeriodDays field in your ReleasePlan is set to a reasonable value that reflects your team's release cadence. A shorter grace period ensures Release CRs expire more quickly, freeing up their associated Snapshots for garbage collection.
+**Configure the Grace Period**: Ensure the gracePeriodDays field for your Releases is set to a reasonable value that reflects your team's release cadence. This can be configured in your ReleasePlan and will be applied to created Release CRs. If gracePeriodDays is not set in your Release, KubeArchive will delete it when it is 5 days old. KubeArchive will also delete any Release more than 30 days old, regardless of the gracePeriodDays value. A shorter grace period ensures Release CRs are deleted more quickly, freeing up their associated Snapshots for garbage collection.
 
 **Manual Deletion**: In an urgent situation, you can manually delete old or unnecessary Release CRs to immediately make their Snapshots eligible for GC. 
 ====
@@ -101,9 +101,12 @@ It's possible to encounter a situation where new Snapshots cannot be created bec
 === Relationship with Releases
 
 * When you create a `Release` CR from a Snapshot, that Snapshot is protected from the count-based garbage collection described above *if the Release exists*.
-* `Release` CRs have their own time-based expiration, defined by the `releaseGracePeriodDays` field in the associated xref:releasing:create-release-plan.adoc[`ReleasePlan`] (default: **7 days**). This *is* configurable per `ReleasePlan`.
-* When a `Release` CR expires, it is automatically deleted.
-* Once the `Release` is deleted, its associated `Snapshot` CR is no longer protected and becomes eligible for count-based garbage collection if the retention limits are exceeded.
+* `Release` CRs have their own time-based expiration and automatic cleanup:
+** The retention period is defined by the `gracePeriodDays` field in the Release spec. This can be configured in the xref:releasing:create-release-plan.adoc[`ReleasePlan`] and will be applied to created Releases.
+** If `gracePeriodDays` is not set in your Release, KubeArchive will delete it when it is 5 days old.
+** KubeArchive will also delete any Release more than 30 days old, regardless of the `gracePeriodDays` value.
+** Deleted Releases are archived and remain accessible via the KubeArchive API for historical access and auditing.
+* When a Release CR is automatically deleted by KubeArchive, its associated Snapshot CR is no longer protected and becomes eligible for count-based garbage collection if the retention limits are exceeded.
 
 [NOTE]
 ====
