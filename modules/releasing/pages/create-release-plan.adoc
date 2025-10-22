@@ -48,7 +48,7 @@ spec:
 <.> Optional: An unstructured key used for providing data for the managed Pipeline.
 <.> Optional: Reference to the Pipeline to be executed by the release service.
 <.> Optional: The name of the service account to use in the Pipeline to gain elevated privileges. It's used only if you have defined the `pipelineRef` value.
-<.> Optional: The number of days a Release should be kept before being garbage collected. (default is 7 days)
+<.> Optional: The number of days a Release CR should be kept in the cluster before being automatically deleted by KubeArchive. If not specified, KubeArchive will delete the Release after 5 days. KubeArchive will also delete any Release more than 30 days old, regardless of this value. Deleted Releases are archived and remain accessible via the KubeArchive API. This affects Snapshot GC; Snapshots are protected while their Release exists.
 <.> The tenant namespace to which the system deploys the application. This tenant namespace is created by the Managed environment team (for example, your organization's SRE team)
 
 . In the development tenant namespace, apply the `ReleasePlan.yaml` file and add the resource to your cluster by running the following command:
@@ -58,6 +58,28 @@ spec:
 ----
 $ kubectl apply -f ReleasePlan.yaml -n dev
 ----
+
+== Release Retention and Lifecycle
+
+The `releaseGracePeriodDays` field in your ReleasePlan controls how long Release CRs remain in the cluster before automatic deletion.
+
+=== How it works
+
+* *Default:* If `releaseGracePeriodDays` is unspecified, Releases are deleted 5 days after creation
+* *Custom retention:* Set `releaseGracePeriodDays` to any value between 1-30 days
+* *Maximum cap:* Values higher than 30 are automatically capped at 30 days
+* *Deletion timing:* KubeArchive deletes Releases based on their creation timestamp
+* *Archive access:* Access deleted Releases through the KubeArchive API for historical access and auditing
+
+=== Impact on Snapshot garbage collection
+
+Release retention directly affects Snapshot lifecycle:
+
+* *Protected Snapshots:* Snapshots referenced by active Releases are protected from garbage collection
+* *Freed Snapshots:* When a Release is deleted, its Snapshot becomes eligible for count-based garbage collection
+* *Quota management:* Shorter retention periods help prevent Snapshot quota limits by allowing faster garbage collection
+
+See xref:testing:integration/snapshots/index.adoc#quotas-and-garbage-collection[Snapshot quotas and garbage collection details] for more information.
 
 .*Verification*
 
