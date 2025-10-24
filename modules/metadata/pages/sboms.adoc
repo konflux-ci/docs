@@ -6,7 +6,7 @@ You can use an SBOM to better understand the composition of your software. In pa
 
 == Types of SBOMs produced by {ProductName}
 
-{ProductName} produces *build-time* and *release-time* SBOMs. *Build-time* SBOMs are created directly during the build phase of the component. *Release-time* SBOMs are augmented with additional information which is known only during the release phase of the component. This includes information about the repository to which the component will be released.
+{ProductName} produces *build-time* and *release-time* SBOMs. *Build-time* SBOMs are created directly during the build phase of the component. *Release-time* SBOMs are augmented with additional information which is known only during the release phase of the component. This includes information about the repository to the component was released to.
 
 Both of these formats correspond to the link:https://www.cisa.gov/sites/default/files/2023-04/sbom-types-document-508c.pdf[build SBOM specification by CISA] (only information about deployment-independent parameters is present in SBOMs created).
 Release-time SBOMs are only available for products released to `registry.redhat.io`.
