@@ -9,6 +9,7 @@ You can use an SBOM to better understand the composition of your software. In pa
 {ProductName} produces *build-time* and *release-time* SBOMs. *Build-time* SBOMs are created directly during the build phase of the component. *Release-time* SBOMs are augmented with additional information which is known only during the release phase of the component. This includes information about the repository to which the component will be released.
 
 Both of these formats correspond to the link:https://www.cisa.gov/sites/default/files/2023-04/sbom-types-document-508c.pdf[build SBOM specification by CISA] (only information about deployment-independent parameters is present in SBOMs created).
+Release-time SBOMs are only available for products released to `registry.redhat.io`.
 
 == Managing SBOMs with Mobster
 
@@ -75,6 +76,11 @@ $ cosign download sbom --platform linux/amd64 $IMAGE > sbom.txt
 == Downloading release-time SBOMs in the CLI
 
 {ProductName} also supports release-time SBOMs that are attached to the image registry as in-toto attestations. These SBOMs can be downloaded and verified using `cosign verify-attestation` with the appropriate type and a public key.
+
+[NOTE]
+====
+Release-time SBOMs are only available for products released to `registry.redhat.io`.
+====
 
 .Prerequisites
 
