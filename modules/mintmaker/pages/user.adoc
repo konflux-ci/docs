@@ -243,7 +243,7 @@ enabled managers is available below.
 |===
 
 Managers with a strikethrough are supported by Renovate, but not currently enabled or
-officially supported in MintMaker. You can enable them customizing your `renovate.json`. However, the MintMaker team cannot guarantee any level of functionality and will not provide support for these managers.
+officially supported in MintMaker. You can enable them customizing your `renovate.json`. However, the MintMaker team cannot guarantee any level of functionality and will not provide support for these managers. You can request additional manager support through the https://redhat.enterprise.slack.com/archives/C04PZ7H0VA8[#konflux-users] support channel on Slack.
 
 NOTE: Detailed compatibility/support matrix for certain managers can be found
 xref:mintmaker:support.adoc[here].
