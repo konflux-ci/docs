@@ -90,7 +90,7 @@ Release-time SBOMs are only available for products released to `registry.redhat.
 
 * You have the reference to the released component in the format `<repository url>@sha256:<digest>`.
 
-* (Optional) You have the public key for verification of the signatures created by the signing key referenced in the field `.sign.cosignSecretName` in the xref:releasing:create-release-plan-admission.adoc[ReleasePlanAdmission] saved to `public-key.pub`. If this prerequisite is not met, you can switch to using `cosign download attestation` instead of `cosign verify-attestation`. Remember that the argument `--type` changes to `--predicate-type` with `cosign download attestation`.
+include::partial${context}-sbom-public-key.adoc[]
 
 .Procedure
 

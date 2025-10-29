@@ -26,6 +26,7 @@
 
 # SBOMs
 /modules/metadata/pages/sboms.adoc  			@konflux-ci/the-collective
+/modules/metadata/partials/sbom*.adoc  			@konflux-ci/the-collective
 
 # find a team to own these
 
