@@ -23,6 +23,8 @@ site:
   title: Konflux Documentation
   url: https://konflux-ci.dev/docs
   robots: allow
+  keys:
+    google_analytics: 'G-381LYFWTP4'
 content:
   sources:
     - url: .
