@@ -394,7 +394,7 @@ options available to limit the number of open requests or the rate at which they
 Below are the available options that you can set per repository in your `renovate.json`.
 
 https://docs.renovatebot.com/configuration-options/#prconcurrentlimit[`prConcurrentLimit`]: This option sets a limit on the number of open PRs/MRs that Renovate will
-create concurrently. The default is 10.
+create concurrently. The default is 20.
 
 https://docs.renovatebot.com/configuration-options/#branchconcurrentlimit[`branchConcurrentLimit`]: This option sets a limit on the maximum number of branches that can be
 created concurrently by Renovate. This option will reduce the time taken to rebase every update from Renovate. The default is unlimited.
