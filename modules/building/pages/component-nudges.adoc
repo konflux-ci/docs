@@ -137,6 +137,17 @@ In such case both image references will be nudged:
 - `quay.io/user-tenant/user-image`
 - `quay.io/some-org/released-image`
 
+When a component has multiple components in `spec.build-nudges-ref`, it nudges all of them.
+A nudging pull request is created by default in a branch named
+`konflux/component-updates/NUDGED_COMPONENT-component-update-NUDGING_COMPONENT`.
+
+If you nudge multiple components that are in the same repository and branch,
+multiple pull requests are created with identical changes. To prevent this,
+add the `build.appstudio.openshift.io/build-nudge-simple-branch: 'true'` annotation
+to all affected components. This changes the branch name for the nudging pull request
+to `konflux/component-updates/component-update-NUDGING_COMPONENT`, resulting in a single
+pull request because Renovate can only create one branch with that name.
+
 == Customizing nudging PRs
 Nudging feature is using renovate `https://docs.renovatebot.com/` to actually do the job,
 for which you can customize some options specified in ConfigMap in your namespace.
