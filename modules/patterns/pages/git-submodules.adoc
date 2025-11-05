@@ -60,6 +60,8 @@ include::partial${context}-submodules-renovate.adoc[]
 
 NOTE: See the link:https://git-scm.com/docs/gitsubmodules[Git documentation] for more details on configuring git submodules.
 
+NOTE: For monorepos (multiple components within the same repo), refer to xref:patterns:managing-monorepo-applications.adoc#git-submodules-monorepo[Git submodules in monorepo applications] page.
+
 ==== Create a Containerfile
 
 In the Containerfile you can specify the git submodule directories and add any necessary edits that differ from the upstream repository. Here is a basic example:

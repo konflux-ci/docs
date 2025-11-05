@@ -11,6 +11,29 @@ This pattern, while valid, requires some further considerations in order to prev
 Depending on the structure of your repository, you may not want to build all components that are located in that repository for every Pull Request or commit that is pushed to it.
 Since the default {ProductName} configuration might rebuild monorepo components too often, you can change this behavior by editing the `on-cel-expression` annotation. See more information about this in the xref:building:redundant-rebuilds.adoc[preventing redundant rebuilds] section.
 
+[#git-submodules-monorepo]
+=== Git submodules in monorepo applications
+
+If your application does not require cloning all submodules to build every component, specify which submodules to clone by using the `submodulePaths` parameter in the `git-clone` Tekton task and its related variants.
+This parameter accepts a comma-separated list of the exact paths you would normally pass to the `git submodule update --init <path1> .. <pathN>` command.
+
+NOTE: Each path specified in `submodulePaths` matches all of its subdirectories.
+
+Use this parameter to significantly reduce cloning time and ensure you only pull the sources you absolutely need.
+
+Example of use:
+[source,yaml]
+----
+  tasks:
+  - name: clone-repository
+    params:
+    - name: submodules  # must be enabled to make submodulePaths applicable
+      value: 'true'  # true is the default value
+    - name: submodulePaths
+      value: path1,path2
+----
+
+
 == Pull request testing considerations for monorepo applications
 
 When a Pull Request is opened against a monorepo which contains multiple components, separate build pipelines will trigger for each component. This will in turn create individual xref:testing:integration/snapshots/working-with-snapshots.adoc[Snapshots of the Application] for each of those builds containing not only the component that was built as part of that particular pipeline but also all the other non-updated components. Any integration tests that run for that Snapshot will test the entire application + the single updated component.
