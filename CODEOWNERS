@@ -28,6 +28,9 @@
 /modules/metadata/pages/sboms.adoc  			@konflux-ci/the-collective
 /modules/metadata/partials/sbom*.adoc  			@konflux-ci/the-collective
 
+# Vanguard
+/modules/patterns/pages/managing-multiple-versions.adoc			@konflux-ci/vanguard
+
 # find a team to own these
 
 /modules/metadata/	@ralphbean @arewm
