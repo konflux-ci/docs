@@ -645,3 +645,16 @@ to enable this option, however alternative options exist.
 
 You can enable the option to *Automatically delete head branches* as described
 in https://docs.github.com/en/repositories/configuring-branches-and-merges-in-your-repository/configuring-pull-request-merges/managing-the-automatic-deletion-of-branches[this GitHub documentation page].
+
+=== Caching
+
+By default Renovate is set up to cache most of the requests for fetching dependency updates.
+The cache TTL is set to 4 hours to mirror the xref:mintmaker:user.adoc#scheduling[MintMaker schedule].
+
+This means that if a dependency is updated upstream, you might not get the latest
+update immediately, but with a delay of up to 8 hours (worst case).
+
+Another caveat is if you update a dependency manually, you might later receive
+a PR that will try to downgrade the dependency, because the version value is still
+cached. In this case it is recommended either not to update dependencies manually,
+or to wait for another MintMaker cycle when the cache should be refreshed.
