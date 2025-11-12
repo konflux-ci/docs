@@ -18,11 +18,18 @@ You will need to create one or more secrets in your Konflux namespace (one per a
 Both the `+buildah+` and `+prefetch-dependencies+` tasks accept an activation key with a default name of `+activation-key+`. If you use this name for your secret, all of the builds in your tenant namespace will automatically use the activation key.
 
 === Adding subscription entitlement for a specific component build
-Sometimes, you only want certain builds to have the activation key, particularly when you need to have more than one key with different repository configurations in the same tenant namespace. To do this, choose a different name for your activation key secret (not `+activation-key+`). Then, add a parameter to your component's pipeline yaml:
+Sometimes, you only want certain builds to have the activation key, particularly when you need to have more than one key with different repository configurations in the same tenant namespace. To do this, choose a different name for your activation key secret (not `+activation-key+`). Then, add a parameter to the build task in your component's pipeline run yaml:
 
 ----
-- name: ACTIVATION_KEY
-  value: my-secret-name
+kind: PipelineRun
+spec:
+  pipelineSpec:
+    tasks:
+      # ...
+      - name: build-container
+        params:
+        - name: ACTIVATION_KEY
+          value: my-secret-name
 ----
 
 [IMPORTANT]
@@ -155,7 +162,19 @@ subscription-manager refresh
 
 ==== Explicit registration
 
-If you include a `+subscription-manager register+`  command in your Containerfile, automatic registration will be disabled. You can control subscription-manager directly using the normal commands.
+If you include a `+subscription-manager register+`  command in your Containerfile, the buildah task
+will disable automatic subscription service registration.
+You can control subscription-manager directly using the normal commands.
+
+[IMPORTANT]
+====
+The activation key secret is mounted into the build container. Use the following command to register with `subscription-manager`:
+[source,bash]
+----
+subscription-manager register --org "$(cat /activation-key/org)" --activationkey "$(cat /activation-key/activationkey)"
+----
+The secret will always be mounted in the same directory `/activation-key`, even when custom secret name is used.
+====
 
 === Hermetic (network isolated) builds:
 
