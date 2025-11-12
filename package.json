@@ -2,7 +2,7 @@
   "name": "konflux-ci-docs",
   "devDependencies": {
     "@antora/collector-extension": "^1.0.2",
-    "@antora/lunr-extension": "^1.0.0-alpha.10",
+    "@antora/lunr-extension": "^1.0.0-alpha.12",
     "antora": "^3.1.14"
   },
   "overrides": {
