@@ -137,7 +137,7 @@ The following kinds of resources are currently supported. Please do not attempt 
 
 Here are specific examples for how to clean up and use the YAML for certain resource kinds:
 
-* For any kind of resource specified in the ProjectDevelopmentStreamTemplate, the `namespace`, `creationTimestamp`, `generation`, `resourceVersion`, `uid`, `ownerReferences`, and `finalizers` metadata fields should be removed as well as the `status` section.
+* For any kind of resource specified in the ProjectDevelopmentStreamTemplate, the `creationTimestamp`, `generation`, `resourceVersion`, `uid`, `ownerReferences`, and `finalizers` metadata fields should be removed as well as the `status` section.
 * For *Application* resources the `metadata.name` and `spec.displayName` fields should contain variable references.
 * For *Component* resources:
 ** The following deprecated annotations should be removed:
