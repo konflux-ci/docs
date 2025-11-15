@@ -1,5 +1,5 @@
 = Dependency Management
-== Introduction
+= Introduction
 
 MintMaker is a service built on top of https://docs.renovatebot.com/[Renovate]. It includes the xref:mintmaker:rpm-lockfile.adoc[RPM lockfile extension] and integration with https://konflux-ci.dev/[Konflux CI].
 
