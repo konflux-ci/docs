@@ -205,9 +205,9 @@ enabled managers is available below.
 |*Infrastructure as Code* |+++<del>+++`ansible`, `ansible-galaxy`,
 `bicep`, `crossplane`, `puppet`+++</del>+++, `terraform`, `terragrunt`
 
-|*Java* |+++<del>+++`deps-edn`, `gradle`, `gradle-wrapper`,
+|*Java* |`deps-edn`, `gradle`, `gradle-wrapper`,
 `kotlin-script`, `leiningen`, `maven`, `maven-wrapper`, `sbt`,
-`scalafmt`+++</del>+++
+`scalafmt`
 
 |*JavaScript* |`bun`, `meteor`, `nodenv`, `npm`, `nvm`
 
