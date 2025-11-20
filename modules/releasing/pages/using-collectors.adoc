@@ -8,6 +8,31 @@ To address this limitation, {ProductName} includes a feature called *collectors*
 
 A _collector_ is essentially a Python script executed as part of the _tenant_ and _managed collectors pipelines_. It generates information that is embedded into the `Release` status. These pipelines are integrated into the release workflow and run at the very beginning, immediately after the validation step. As a result, the collected data becomes available to both the _tenant_ and _managed_ pipelines.
 
+== Understanding release and previous release parameters
+
+The collectors pipelines has two important parameters that are used by the collectors.
+
+ * `release`: The release object that is currently being processed.
+ * `previousRelease`: The release object that was processed before the current release.
+
+These values are resolved by the {ProductName} controller when the collectors PipelineRun
+is created.
+
+To keep collector results consistent and avoid losing release history, {ProductName}
+uses the following strategy when resolving `previousRelease`:
+
+* Only a _successful_ `Release` is considered as a candidate.
+* The previous `Release` must reference a _different snapshot_ than the current.
+* If there is no suitable candidate (for example, the very first successful `Release`),
+  `previousRelease` is left empty and no previous `Release` object is provided to collectors.
+
+This behaviour is especially important when a `Release` is _re-run_:
+
+* When a `Release` fails and is re-run with the _same snapshot_, the failed `Release` is
+  _ignored_ when choosing `previousRelease`.
+* The `previousRelease` parameter continues to point to the last _successful_ `Release`
+  with a _different snapshot_, rather than to the failed or re-run `Release`.
+
 == Using a collector in a {ProductName} release
 
 To use a collector, the first step is to select one from the available options in https://github.com/konflux-ci/release-service-collectors[the official repository]. The structure of this repository may evolve over time, but the https://github.com/konflux-ci/release-service-collectors/blob/main/README.md[README.md] file provides useful details about the available collectors and the data they produce. The key piece of information needed is the collector's name, which will be referenced in one of the release resources.
