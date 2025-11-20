@@ -124,9 +124,10 @@ MintMaker presets, you can also explore options from the https://docs.renovatebo
 |cve-automerge-critical* | Automerge CVE fixes with Critical severity
 |cve-automerge-high* | Automerge CVE fixes with High severity or higher
 |cve-automerge-moderate* | Automerge CVE fixes with Moderate severity or higher
-|update-fedora-to-stable | Suggest only stable Fedora releases (based on https://endoflife.date/fedora[endoflife.date])
+|disable-minor-updates | Disables major and minor semantic version updates
 |group-python-requirements | Group `requirement.txt` updates into a single PR
 |group-python-poetry | Group Poetry updates into a single PR
+|update-fedora-to-stable | Suggest only stable Fedora releases (based on https://endoflife.date/fedora[endoflife.date])
 |===
 
 CAUTION: *These presets will not enable automerge for RPM security updates. The instructions for enabling automerge for RPMs can be found xref:mintmaker:rpm-lockfile.adoc#how-to-enable-automerge-for-rpm-security-updates[here]
