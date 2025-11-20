@@ -658,3 +658,48 @@ Another caveat is if you update a dependency manually, you might later receive
 a PR that will try to downgrade the dependency, because the version value is still
 cached. In this case it is recommended either not to update dependencies manually,
 or to wait for another MintMaker cycle when the cache should be refreshed.
+
+=== Potential issues with baseBranchPatterns configuration
+
+Renovate has a configuration option named https://docs.renovatebot.com/configuration-options/#basebranchpatterns[`baseBranchPatterns`]
+(formerly known as `baseBranches`), which allows you to specify which branches Renovate should process.
+
+In Konflux, a component represents a specific repository and branch combination. MintMaker
+creates a separate Renovate job for each component. If duplicate repository+branch combinations
+exist, MintMaker will randomly select one component to process that combination. By default,
+each Renovate job processes only the branch associated with its component.
+
+However, when a repository has a `baseBranchPatterns` configuration, this setting takes effect
+and can cause conflicts. For example, if a repository has two branches (`main` and `release-2.0`)
+that both have components in Konflux, and the `renovate.json` contains:
+
+[source,json]
+----
+{
+  "baseBranchPatterns": ["main", "release-2.0"]
+}
+----
+
+When MintMaker creates a Renovate job to process the `main` branch, it will actually process
+both `main` and `release-2.0` branches. Similarly, the separate Renovate job created for the
+`release-2.0` branch will also process both branches. If these two jobs run simultaneously,
+conflicts can occur leading to unexpected behavior.
+
+There are two workarounds for this issue:
+
+1. *Remove baseBranchPatterns*: If all the branches you need to process have corresponding
+components in Konflux, and there are no special requirements, remove the `baseBranchPatterns`
+configuration.
+
+2. *Disable MintMaker for overlapping components*: If you need to keep the `baseBranchPatterns`
+configuration, note that `baseBranchPatterns` restricts Renovate to process only the branches
+listed in it. If all the branches you want processed are covered by `baseBranchPatterns`,
+xref:mintmaker:user.adoc#offboarding-a-repository[disable MintMaker] for all but one component
+for this repository (since Renovate reads configuration from the default branch, only one active
+component is needed to process all branches listed in `baseBranchPatterns`). However, if you have
+components with branches that are not covered by `baseBranchPatterns` and you still want them
+to be processed, you should try removing `baseBranchPatterns` instead.
+
+NOTE: `baseBranchPatterns` is not a prerequisite for using https://docs.renovatebot.com/configuration-options/#matchbasebranches[`matchBaseBranches`]
+in packageRules. You can use `matchBaseBranches` to apply different rules to different branches
+without configuring `baseBranchPatterns`.
