@@ -129,6 +129,19 @@ MintMaker presets, you can also explore options from the https://docs.renovatebo
 |group-python-poetry | Group Poetry updates into a single PR
 |===
 
+Below is an example `renovate.json` that disables major version updates and groups python
+`requirements.txt` updates into a single pull/merge request:
+
+[source,json]
+----
+{
+  "extends": [
+    ":disableMajorUpdates", 
+    "github>konflux-ci/mintmaker-presets:group-python-requirements"
+  ]
+}
+----
+
 CAUTION: *These presets will not enable automerge for RPM security updates. The instructions for enabling automerge for RPMs can be found xref:mintmaker:rpm-lockfile.adoc#how-to-enable-automerge-for-rpm-security-updates[here]
 
 === Overriding manager specific configuration
