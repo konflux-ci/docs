@@ -31,7 +31,7 @@ jobs:
     steps:
       # Step 1: Check out your repository code so netlify.toml is found
       - name: Checkout repository
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
 
       # Step 2: Download the built website files from the previous job
       - name: Download pull request artifact
