@@ -121,7 +121,7 @@ for old_ref in ${OLD_REFS}; do
     [[ $new_ref == $old_ref ]] && continue
     echo "New digest found! $new_ref"
     for file in $FILES; do
-        sed -i -e "s!${old_ref}!${new_ref}!g" $file
+        pmt migrate --new-bundle "$new_ref" --pipeline-file "$file" <1>
     done
 done
 EOF
@@ -130,5 +130,7 @@ chmod +x update-tekton-task-bundles.sh
 
 ./update-tekton-task-bundles.sh .tekton/*.yaml
 ----
+
+<1> Install the link:https://github.com/konflux-ci/pipeline-migration-tool[pipeline-migration-tool].
 
 include::partial${context}-builds.adoc[]
