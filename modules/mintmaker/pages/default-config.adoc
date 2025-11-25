@@ -19,6 +19,10 @@ proceed to xref:mintmaker:support.adoc[].
 MintMaker is set up to not require any additional onboarding (only in Konflux)
 or configuration files - it works even without the `renovate.json` file present.
 
+== Configuration validation
+
+In case `renovate.json` file was added to a repository it can be validated with this https://github.com/konflux-ci/renovate-config-validator-action[GitHub Action].
+
 == Scheduling
 
 Please refer to the main guide on scheduling xref:mintmaker:user.adoc#scheduling[here].
