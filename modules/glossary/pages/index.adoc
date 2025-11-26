@@ -24,7 +24,7 @@
 
 [[its]]IntegrationTestScenario (ITS):: A Kubernetes resource that contains metadata for running an integration test including a reference to the Tekton pipeline. The integration service uses the ITS to trigger tests on an application with a new or updated component
 
-[[managed-tenant-namespace]]managed tenant namespace:: A {ProductName} tenant namespace whose primary purpose is to restrict access to release pipelines and the secrets required to run them. Access to these release pipelines are defined by the creation of Releases, their ReleasePlan, and the matching ReleasePlanAdmission. Manages tenant namespaces are generally not used for running build pipelines.
+[[managed-tenant-namespace]]managed tenant namespace:: A {ProductName} tenant namespace whose primary purpose is to restrict access to release pipelines and the secrets required to run them. Access to these release pipelines are defined by the creation of Releases, their ReleasePlan, and the matching ReleasePlanAdmission. Managed tenant namespaces are generally not used for running build pipelines.
 
 [[pac]]pipelines as code:: A practice that defines pipelines by using source code in Git. Pipelines as Code is also the name of link:https://pipelinesascode.com[a subsystem] that executes those pipelines.
 
@@ -42,7 +42,7 @@
 
 [[release]]Release:: A Kubernetes resource indicating an intention to operate on a specific application snapshot according to the process defined in the indicated ReleasePlan.
 
-[[rp]]ReleasePlan (RP):: A Kubernetes resource defining the process to release a specific application snapshot to a target managed tenant namespaces. The RP is created for a specific application and is matched with a specific ReleasePlanAdmission.
+[[rp]]ReleasePlan (RP):: A Kubernetes resource defining the process to release a specific application snapshot to a target managed tenant namespace. The RP is created for a specific application and is matched with a specific ReleasePlanAdmission.
 
 [[rpa]]ReleasePlanAdmission (RPA):: A Kubernetes resource defining the specific release pipeline to run as well as which Enterprise Contact Policy must pass. The RPA exists within a managed tenant namespace.
 
@@ -60,7 +60,7 @@
     {ProductName} creates TaskRuns as part of a PipelineRun (runs each Task in the Pipeline).
     See https://tekton.dev/docs/pipelines/taskruns/ for more details.
 
-[[tekton]]Tekton:: A Knative-based framework for CI/CD pipelines. Tekton is decoupled which means that you can use one pipeline to deploy to any Kubernetes cluster in multiple hybrid cloud providers. Tekton stores everything that is related to a pipeline in the cluster.
+[[tekton]]Tekton:: A Knative-based framework for CI/CD pipelines. Tekton is decoupled, which means that you can use one pipeline to deploy to any Kubernetes cluster in multiple hybrid cloud providers. Tekton stores everything that is related to a pipeline in the cluster.
 
 [[tekton-chains]]Tekton chains:: A mechanism to secure the software supply chain by recording events in a user-defined pipeline.
 
