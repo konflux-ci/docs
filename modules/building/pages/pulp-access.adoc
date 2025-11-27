@@ -1,23 +1,23 @@
 = Getting Access to Pulp Storage
 
-Pulp is our artifact storage system for everything that's not a container image. Think RPMs, Python wheels, Go modules, generic files - basically any build artifact that doesn't belong in an OCI registry. While container images go to Quay, everything else should land in Pulp.
+Pulp is the artifact storage system for non-container artifacts, including RPMs, Python wheels, Go modules, and generic files. Container images are stored in Quay, while all other build artifacts are stored in Pulp.
 
-If you're building RPMs or publishing Python packages, you'll want to set up Pulp access in your namespace. It's pretty straightforward.
+To build RPMs or publish Python packages, configure Pulp access in your namespace.
 
 == What you get
 
-When you create a `PulpAccessRequest`, the controller sets up:
+When you create a `PulpAccessRequest`, the pulp-access-controller sets up:
 
 * A secret called `pulp-access` with pre-configured CLI settings
 * A dedicated Pulp domain (named `konflux-<your-namespace>`)
 * mTLS authentication using your certificates
-* Optionally, Quay.io as an OCI storage backend if you need it
+* Optionally, Quay.io as an OCI storage backend
 
-The secret includes everything your builds need to push artifacts to Pulp. No manual configuration required.
+The secret includes all required configuration for builds to push artifacts to Pulp. No manual configuration is required.
 
 == Basic setup
 
-First, you need a TLS certificate and key. Create a secret with them:
+First, create a secret with your TLS certificate and key:
 
 [source,yaml]
 ----
@@ -55,16 +55,16 @@ The controller will create a domain called `konflux-my-namespace` in Pulp and ge
 
 == Certificate naming
 
-The controller is flexible about how you name things in your credentials secret. You can use either:
+The controller accepts either of the following naming conventions in your credentials secret:
 
 * `cert` and `key` (shown above)
-* `tls.crt` and `tls.key` (if you're copying from a TLS secret)
+* `tls.crt` and `tls.key` (if copying from a TLS secret)
 
-Both work the same way.
+Both conventions are functionally equivalent.
 
 == Using it in builds
 
-Once the secret is created, you can mount it in your build pods. Here's an example of using it in an RPM build pipeline:
+After the secret is created, mount it in your build pods. The following example demonstrates using it in an RPM build pipeline:
 
 [source,yaml]
 ----
@@ -94,11 +94,11 @@ volumes:
     secretName: pulp-access
 ----
 
-The secret includes a `cli.toml` file that's already configured with your domain and mTLS settings, so you don't need to write any config yourself.
+The secret includes a `cli.toml` file pre-configured with the domain and mTLS settings. No additional configuration is required.
 
 == Python packages example
 
-For Python packages, it's similar:
+The process for Python packages is similar:
 
 [source,bash]
 ----
@@ -116,7 +116,7 @@ pulp python content upload dist/*.whl
 
 == With Quay backend (advanced)
 
-If you want Pulp to store container images using Quay as the backend, add `use_quay_backend: true`:
+To configure Pulp to store container images using Quay as the backend, add `use_quay_backend: true`:
 
 [source,yaml]
 ----
@@ -130,18 +130,18 @@ spec:
   use_quay_backend: true
 ----
 
-This creates an ImageRepository and wires up Quay for OCI storage. Most people won't need this - it's mainly useful if you're doing something custom with container image workflows through Pulp.
+This creates an ImageRepository and configures Quay for OCI storage. This option is primarily useful for custom container image workflows through Pulp.
 
-== Checking if it worked
+== Verifying the setup
 
-After creating the PulpAccessRequest, check if it's ready:
+After creating the PulpAccessRequest, verify that it is ready:
 
 [source,bash]
 ----
 kubectl get pulpaccessrequest my-pulp-access -o yaml
 ----
 
-Look for the status section. If `conditions` shows `Ready: True`, you're good to go. The status also tells you:
+Look for the status section. If `conditions` shows `Ready: True`, the setup is complete. The status also includes:
 
 * `domain`: The Pulp domain that was created
 * `domainCreated`: Whether the domain creation succeeded
@@ -154,26 +154,26 @@ Quick check:
 kubectl get pulpaccessrequest my-pulp-access -o jsonpath='{.status.conditions[?(@.type=="Ready")].status}'
 ----
 
-If it prints `True`, everything's set up.
+If the output is `True`, the configuration is complete.
 
-== Common gotchas
+== Common issues
 
-**Secret not found**: Make sure your credentials secret exists in the same namespace before creating the PulpAccessRequest.
+**Secret not found**: Verify that the credentials secret exists in the same namespace before creating the PulpAccessRequest.
 
-**Domain creation fails**: Your TLS certificate needs proper permissions for the Pulp API. Check with your platform team if you're not sure.
+**Domain creation fails**: The TLS certificate requires proper permissions for the Pulp API. Contact your platform team for assistance.
 
-**Can't find the pulp-access secret**: It's created in the same namespace as your PulpAccessRequest. If you're looking in a different namespace, you won't see it.
+**Cannot find the pulp-access secret**: The secret is created in the same namespace as the PulpAccessRequest. Verify that you are looking in the correct namespace.
 
-**Build can't authenticate**: Double-check that you're mounting the secret correctly and setting the environment variables (`PULP_CLI_CONFIG`, `PULP_CERT`, `PULP_KEY`).
+**Pulp cannot authenticate**: Verify that the secret is mounted correctly and that the environment variables (`PULP_CLI_CONFIG`, `PULP_CERT`, `PULP_KEY`) are set properly.
 
 == Why use Pulp?
 
-If you're wondering why we're pushing non-container artifacts to Pulp instead of keeping them local or using random file storage:
+Using Pulp provides the following benefits:
 
-* **Centralized storage**: All your artifacts in one place, easy to track and manage
+* **Centralized storage**: All artifacts in one place for easy tracking and management
 * **Versioning**: Pulp keeps track of different versions of your artifacts
 * **Access control**: Proper authentication and domain isolation
 * **Distribution**: Built-in content delivery for your artifacts
 * **Multi-format support**: RPMs, Python wheels, generic files, and more
 
-For anything that's not a container image, Pulp should be your default choice.
+For non-container artifacts, Pulp is the recommended storage solution.
