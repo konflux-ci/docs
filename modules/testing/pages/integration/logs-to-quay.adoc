@@ -1,0 +1,125 @@
+= Exporting Pipeline Logs to Quay
+
+The export-pipeline-logs Task is responsible for gathering all execution logs from a completed Tekton PipelineRun and packaging them into a compressed tar.gz artifact. 
+
+It waits for all other TaskRuns in the PipelineRun to complete, excluding itself, and then iterates through each underlying Pod to retrieve and collect the complete log stream. 
+
+This archived log data is then pushed as a secure OCI Artifact to the same registry location as the build image, SBOM, and source code artifacts.
+
+Users can download and extract this log data artifact using the oras command-line tool.
+
+It is intended to be called in the finally section of the PipelineRun. 
+
+== Sample Task
+
+[source,yaml]
+----
+apiVersion: tekton.dev/v1
+kind: Task
+metadata:
+  name: export-pipeline-logs
+  labels:
+    app.kubernetes.io/managed-by: tekton
+spec:
+  description: |
+    Gathers all logs from a completed Tekton PipelineRun, packages them into a simple
+    OCI artifact (tar.gz blob), and pushes it to a specified Quay repository using direct
+    OCI push commands.
+  params:
+    - name: quay-repo
+      type: string
+      description: The base OCI repository path (e.g., quay.io/org/repo).
+    - name: pipeline-run-name
+      type: string
+      description: The name of the PipelineRun whose logs should be collected.
+    - name: namespace
+      type: string
+      description: The namespace where the PipelineRun was executed.
+      default: "$(context.pipelineRun.namespace)"
+    - name: artifact-credentials-secret
+      type: string
+      description: Name of the secret containing registry credentials.
+  results:
+    - name: LOG_ARTIFACT_TAG
+      description: The specific tag generated for the log artifact.
+  workspaces:
+    - name: shared-data
+      description: Workspace for log archiving and OCI artifact creation files. 
+  volumes:
+    - name: credentials-volume
+      secret:
+        secretName: $(params.artifact-credentials-secret)
+  steps:
+    - name: fetch-and-prepare-logs
+      image: quay.io/konflux-ci/tekton-integration-catalog/utils:latest
+      workingDir: $(workspaces.shared-data.path)
+      env:
+        - name: PR_NAME
+          value: "$(params.pipeline-run-name)"
+        - name: PR_NAMESPACE
+          value: "$(params.namespace)"
+        - name: OCI_REPO_WITH_TAG
+          value: "$(params.quay-repo)"
+      script: |
+        #!/bin/bash
+        set -euo pipefail
+        
+        LOG_FILENAME="all-logs.txt"
+        ARCHIVE_FILENAME="logs.tar.gz"
+        
+        REPO_NAME_ONLY="${OCI_REPO_WITH_TAG%:*}"
+        IMAGE_TAG="${PR_NAME}-$(date +%Y%m%d%H%M%S)-logs"
+        
+        CMD="kubectl"
+        
+        # Fetch logs by TaskRun and get the Pod name
+        ${CMD} get pr "${PR_NAME}" -o json -n "${PR_NAMESPACE}" | jq -r '.status.childReferences[].name' | while read taskrun; do
+            POD_NAME=$(${CMD} get tr "${taskrun}" -o json -n "${PR_NAMESPACE}" | jq -r '.status.podName // empty')
+
+            if [ -n "$POD_NAME" ]; then
+                echo "--- LOGS FOR ${taskrun} (Pod: ${POD_NAME}) ---" >> "${LOG_FILENAME}" 2>&1
+                ${CMD} logs --namespace "${PR_NAMESPACE}" pod/"${POD_NAME}" >> "${LOG_FILENAME}" 2>&1 || true
+            fi
+        done
+        
+        # Archive and set result if logs exist
+        if [ -s "${LOG_FILENAME}" ]; then
+            tar -czf "${ARCHIVE_FILENAME}" "${LOG_FILENAME}"
+            echo -n "${IMAGE_TAG}" > $(results.LOG_ARTIFACT_TAG.path)
+        else
+            exit 0
+        fi
+
+    - name: secure-push-oci-direct
+      image: quay.io/konflux-ci/tekton-integration-catalog/utils:latest
+      workingDir: $(workspaces.shared-data.path)
+      env:
+        - name: OCI_REFERENCE_BASE
+          value: $(params.quay-repo)
+      script: |
+        #!/bin/bash
+        set -euo pipefail
+        
+        IMAGE_TAG=$(cat $(results.LOG_ARTIFACT_TAG.path))
+        
+        REPO_NAME_ONLY="${OCI_REFERENCE_BASE%:*}"
+        FULL_OCI_REF="${REPO_NAME_ONLY}:${IMAGE_TAG}"
+        
+        # Setup authentication
+        AUTH_DIR="/tekton/volumes/credentials-volume"
+        AUTH_PATH="$AUTH_DIR/.dockerconfigjson"
+        
+        if [ -f "$AUTH_PATH" ]; then
+          TEMP_DOCKER_CONFIG="$(mktemp -d)"
+          cp "$AUTH_PATH" "$TEMP_DOCKER_CONFIG/config.json"
+          export DOCKER_CONFIG="$TEMP_DOCKER_CONFIG"
+        fi
+        
+        # Execute push
+        oras push --no-tty \
+          --artifact-type "application/vnd.logs.tar+gzip" \
+          "${FULL_OCI_REF}" \
+          "logs.tar.gz:application/vnd.logs.tar+gzip"
+        
+        echo "Successfully pushed log artifact to ${FULL_OCI_REF}"
+----
