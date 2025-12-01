@@ -1,14 +1,14 @@
-= Exporting Pipeline Logs to Quay
+= Export Pipeline Logs to Quay
 
-The export-pipeline-logs Task is responsible for gathering all execution logs from a completed Tekton PipelineRun and packaging them into a compressed tar.gz artifact. 
+Use the `export-pipeline-logs` task to gather all execution logs from a completed Tekton PipelineRun and package them into a compressed `tar.gz` artifact.
 
-It waits for all other TaskRuns in the PipelineRun to complete, excluding itself, and then iterates through each underlying Pod to retrieve and collect the complete log stream. 
+The task waits for all other TaskRuns in the PipelineRun to complete, excluding itself. It then iterates through each underlying Pod to retrieve and collect the complete log stream.
 
-This archived log data is then pushed as a secure OCI Artifact to the same registry location as the build image, SBOM, and source code artifacts.
+Push the archived log data as a secure OCI artifact to the same registry location as the build image, SBOM, and source code artifacts.
 
-Users can download and extract this log data artifact using the oras command-line tool.
+Download and extract this log data artifact by using the `oras` command-line tool.
 
-It is intended to be called in the finally section of the PipelineRun. 
+Call this task in the `finally` section of the PipelineRun.
 
 == Sample Task
 
@@ -22,23 +22,21 @@ metadata:
     app.kubernetes.io/managed-by: tekton
 spec:
   description: |
-    Gathers all logs from a completed Tekton PipelineRun, packages them into a simple
-    OCI artifact (tar.gz blob), and pushes it to a specified Quay repository using direct
-    OCI push commands.
+    Gather all logs from a completed Tekton PipelineRun, package them into a single compressed OCI artifact (tar.gz blob), and push the artifact to a specified Quay repository using direct OCI push commands.
   params:
     - name: quay-repo
       type: string
-      description: The base OCI repository path (e.g., quay.io/org/repo).
+      description: Specify the base OCI repository path
     - name: pipeline-run-name
       type: string
-      description: The name of the PipelineRun whose logs should be collected.
+      description: Specify the name of the PipelineRun whose logs should be collected.
     - name: namespace
       type: string
-      description: The namespace where the PipelineRun was executed.
+      description: Specify the namespace where the PipelineRun was executed.
       default: "$(context.pipelineRun.namespace)"
     - name: artifact-credentials-secret
       type: string
-      description: Name of the secret containing registry credentials.
+      description: Specify the name of the secret containing registry credentials.
   results:
     - name: LOG_ARTIFACT_TAG
       description: The specific tag generated for the log artifact.
