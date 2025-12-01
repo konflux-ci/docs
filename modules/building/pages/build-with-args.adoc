@@ -4,7 +4,7 @@ It is possible to link:https://github.com/containers/buildah/blob/main/docs/buil
 
 == Using an arguments file
 
-The {ProductName} buildah tasks accept link:https://github.com/konflux-ci/build-definitions/blob/main/task/buildah/0.2/buildah.yaml#L78[`BUILD_ARGS` parameter] that allows passing build arguments to the underlying `buildah` command through `--build-arg-file` flag. To enable this, make the following changes to the PipelineRuns under the `.tekton/` directory:
+The {ProductName} buildah tasks accept a `BUILD_ARGS_FILE` parameter that allows passing build arguments to the underlying `buildah` command through the `--build-arg-file` flag. For details, see the link:https://github.com/konflux-ci/build-definitions/tree/main/task/buildah/[buildah task documentation]. To enable this, make the following changes to the PipelineRuns under the `.tekton/` directory:
 
 . Create a build args file in your repository. This should contain lines of build arguments in the form of *arg=value*.
 . Define a `build-args-file` Pipeline parameter (if not already present) in `.spec.pipelineSpec.params` to accept the passed-in build arguments.
@@ -53,7 +53,7 @@ spec:
 
 == Setting arguments in the pipeline parameters
 
-The {ProductName} buildah tasks accept link:https://github.com/konflux-ci/build-definitions/blob/main/task/buildah/0.2/buildah.yaml#L74[`BUILD_ARGS` parameter] that allows passing build arguments to the underlying `buildah` command through `--build-arg` flag. To enable this, make the following changes to the PipelineRuns under the `.tekton/` directory:
+The {ProductName} buildah tasks accept a `BUILD_ARGS` parameter that allows passing build arguments to the underlying `buildah` command through the `--build-arg` flag. For details, see the link:https://github.com/konflux-ci/build-definitions/tree/main/task/buildah/[buildah task documentation]. To enable this, make the following changes to the PipelineRuns under the `.tekton/` directory:
 
 . Define a `build-args` Pipeline parameter (if not already present) in `.spec.pipelineSpec.params` to accept the passed-in build arguments.
 
