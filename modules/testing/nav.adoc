@@ -12,7 +12,7 @@
 **** xref:integration/accessing-private-repositories.adoc[Accessing Private Repositories]
 **** xref:integration/periodic-integration-tests.adoc[Triggering Periodic Integration Tests]
 **** xref:integration/standardized-outputs.adoc[Standardized outputs]
-**** xref:integration/logs-to-quay.adoc[Exporting Logs to Quay]
+**** xref:integration/logs-to-quay.adoc[Export Pipeline Logs to Quay]
 **** xref:integration/snapshots/index.adoc[Snapshots]
 ***** xref:integration/snapshots/working-with-snapshots.adoc[Working with Snapshots]
 ***** xref:integration/snapshots/override-snapshots.adoc[Creating an override snapshot]
