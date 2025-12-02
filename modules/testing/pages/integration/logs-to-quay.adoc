@@ -1,0 +1,13 @@
+= Export Pipeline Logs to Quay
+
+Use the `export-pipeline-logs` task to gather all execution logs from a completed Tekton PipelineRun and package them into a compressed `tar.gz` artifact.
+
+The task waits for all other TaskRuns in the PipelineRun to complete, excluding itself. It then iterates through each underlying Pod to retrieve and collect the complete log stream.
+
+Push the archived log data as a secure OCI artifact to the same registry location as the build image, SBOM, and source code artifacts.
+
+Download and extract this log data artifact by using the `oras` command-line tool.
+
+Call this task in the `finally` section of the PipelineRun.
+
+https://github.com/konflux-ci/tekton-integration-catalog/tree/main/tasks/export-logs/0.1[View Export Logs Task^]
