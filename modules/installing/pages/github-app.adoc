@@ -21,3 +21,5 @@ A GitHub App is installed on a specific repository or an entire organization. Us
 
 NOTE: Install the App only into git repositories that are onboarded to Konflux.
 Do not install the App organization-wide unless _all_ repositories are onboarded to Konflux.
+
+NOTE: When migrating Componentes between Konflux clusters, don't forget to uninstall the App which corresponds to the old cluster.
