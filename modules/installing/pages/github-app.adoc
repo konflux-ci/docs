@@ -18,3 +18,6 @@ The App provides several key functionalities to enhance your development workflo
 
 == Where is the App installed? [[where-is-the-app-installed]]
 A GitHub App is installed on a specific repository or an entire organization. Users can manage and configure the app's settings through the repository or organization's settings page under `Installed GitHub Apps`.
+
+NOTE: Install the App only into git repositories that are onboarded to Konflux.
+Do not install the App organization-wide unless _all_ repositories are onboarded to Konflux.
