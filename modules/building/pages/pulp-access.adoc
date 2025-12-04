@@ -64,55 +64,9 @@ Both conventions are functionally equivalent.
 
 == Using it in builds
 
-After the secret is created, mount it in your build pods. The following example demonstrates using it in an RPM build pipeline:
+After the secret is created, mount it in your build pods.
 
-[source,yaml]
-----
-- name: rpmbuild-and-push
-  image: quay.io/fedora/fedora:latest
-  script: |
-    #!/bin/bash
-    set -e
-    
-    # Build your RPM
-    rpmbuild -ba mypackage.spec
-    
-    # Configure pulp-cli from the mounted secret
-    export PULP_CLI_CONFIG=/workspace/pulp-config/cli.toml
-    export PULP_CERT=/workspace/pulp-config/tls.crt
-    export PULP_KEY=/workspace/pulp-config/tls.key
-    
-    # Upload to Pulp
-    pulp rpm upload ~/rpmbuild/RPMS/x86_64/*.rpm
-  volumeMounts:
-  - name: pulp-config
-    mountPath: /workspace/pulp-config
-    readOnly: true
-volumes:
-- name: pulp-config
-  secret:
-    secretName: pulp-access
-----
-
-The secret includes a `cli.toml` file pre-configured with the domain and mTLS settings. No additional configuration is required.
-
-== Python packages example
-
-The process for Python packages is similar:
-
-[source,bash]
-----
-# Build your wheel
-python -m build
-
-# Configure pulp-cli
-export PULP_CLI_CONFIG=/workspace/pulp-config/cli.toml
-export PULP_CERT=/workspace/pulp-config/tls.crt
-export PULP_KEY=/workspace/pulp-config/tls.key
-
-# Upload to Pulp
-pulp python content upload dist/*.whl
-----
+The secret includes a `cli.toml` file pre-configured with the domain and mTLS settings. No additional configuration for pulp-cli is required. 
 
 == With Quay backend (advanced)
 
