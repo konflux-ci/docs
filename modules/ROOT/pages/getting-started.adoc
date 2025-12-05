@@ -40,31 +40,6 @@ This initiative contains an link:https://github.com/opencontainers/image-spec[im
 
 Konflux pushes artifacts that you build in your tenant namespace to an OCI registry along with their supporting metadata (including xref:metadata:index.adoc[SLSA provenance attestations and SBOMs]).
 
-=== Custom Resources
-In Kubernetes, a link:https://kubernetes.io/docs/concepts/extend-kubernetes/api-extension/custom-resources/[Custom Resource (CR)] is an extension of the Kubernetes API.
-
-All Konflux APIs are Kubernetes CRs.
-If you're familiar with common Kubernetes resources such as Pods and Deployments, you'll find that Konflux resources appear on the cluster in the same way:
-
-- Applications
-- Components
-- Snapshots
-- PipelineRuns
-
-This setup enables commonplace Kubernetes client tools, such as link:https://kubernetes.io/docs/reference/kubectl/[kubectl], to understand and interact with {ProductName} APIs.
-
-=== Component
-A *Component CR* describes the properties of an OCI artifact.
-These properties include the following:
-
-- The Git repository from which the artifact originates.
-- The latest built commit.
-- Initial build configuration parameters.
-- Relationships to other components.
-
-The CR also contains a reference to the single application that owns it.
-Component names are unique in a namespace, even when you use the components in different applications.
-
 === Build Pipeline
 When you create a component in {ProductName}, the system pushes a build pipeline to the Git repository in the `.tekton` directory and installs a webhook.
 
@@ -88,49 +63,66 @@ The test process includes Tekton Tasks such as:
 {ProductName} inherits the pattern of defining Tekton build pipelines in Git from its use of https://pipelinesascode.com/[Pipelines as Code (PaC)].
 PaC enables you to use a Tekton PipelineDefinition within your Git repository, and for the system to trigger that pipeline whenever a team member submits a new commit or pull request to the repository.
 
-=== Application
-An *Application CR* owns multiple components.
-It helps to logically group components in the UI.
+=== Custom Resources
+In Kubernetes, a link:https://kubernetes.io/docs/concepts/extend-kubernetes/api-extension/custom-resources/[Custom Resource (CR)] is an extension of the Kubernetes API.
+
+All Konflux APIs are Kubernetes CRs. This setup enables commonplace Kubernetes client tools, such as link:https://kubernetes.io/docs/reference/kubectl/[kubectl], to understand and interact with {ProductName} APIs. If you're familiar with common Kubernetes resources such as Pods and Deployments, you'll find that Konflux resources appear on the cluster in the same way:
+
+==== Component
+A xref:reference:kube-apis/application-api.adoc#k8s-api-github-com-konflux-ci-application-api-api-v1alpha1-component[Component CR] describes the properties of an OCI artifact.
+These properties include the following:
+
+- The Git repository from which the artifact originates.
+- The latest built commit.
+- Initial build configuration parameters.
+- Relationships to other components.
+
+The CR also contains a reference to the single application that owns it.
+Component names are unique in a namespace, even when you use the components in different applications.
+
+==== Application
+An xref:reference:kube-apis/application-api.adoc#k8s-api-github-com-konflux-ci-application-api-api-v1alpha1-application[Application CR] owns multiple components. It helps to logically group components in the UI.
 
 When a new component's build pipeline is complete, the Integration Service, which contains the latest Git and OCI references, creates a new snapshot from each of the Component CRs, as well as the just-produced component artifact.
 The IntegrationTestScenarios use this output to run.
 
-=== Snapshot
-A *Snapshot CR* is an immutable set of component references.
+==== Snapshot
+A xref:reference:kube-apis/application-api.adoc#k8s-api-github-com-konflux-ci-application-api-api-v1alpha1-snapshot[Snapshot CR] is an immutable set of component references.
 It can be created from push or pull request events.
 A snapshot defines a set of components, which are either tested or released together.
 
 Over time, as you produce more builds, your tenant namespace will contain many snapshots.
 Understand that at any point in time, a given snapshot _might not necessarily_ represent the latest built artifacts for all components in your tenant namespace.
 
-=== IntegrationTestScenario
-An *IntegrationTestScenario (ITS) CR* is a Tekton Pipeline that defines a test to run against an entire snapshot.
+==== IntegrationTestScenario
+An xref:reference:kube-apis/integration-service.adoc#k8s-api-github-com-konflux-ci-integration-service-api-v1alpha1-integrationtestscenario[IntegrationTestScenario (ITS) CR] is a Tekton Pipeline that defines a test to run against an entire snapshot.
 The Integration Service runs all configured ITSs for the snapshot's application.
 The system also creates a default ITS for every new application to enable EnterpriseContractPolicy checks on all components.
 
 You can configure each ITS as optional for release. All non-optional tests must pass before the new component build is "promoted" to update the references on the component CR.
 
-=== EnterpriseContractPolicy
+==== EnterpriseContractPolicy
 Building in {ProductName} follows a "build once, release multiple times" mentality, where each release can have separate requirements on the builds before allowing the action.
-You codify these build requirements in an EnterpriseContractPolicy (ECP).
+You codify these build requirements in an xref:reference:kube-apis/enterprise-contract.adoc#k8s-api-github-com-conforma-crds-api-v1alpha1-enterprisecontractpolicy[EnterpriseContractPolicy CR].
 
 When {ProductName} evaluates an ECP against a snapshot, it returns a single result based on the highest violation.
 For example, if all components pass the policy requirements, the policy evaluation is true.
 If a single component in a snapshot fails the policy, however, the overall result is a failure even if all of the rest have clean passes.
 
-=== ReleasePlan
-A *ReleasePlan (RP) CR* maps an Application you want to release with a release action.
+==== ReleasePlan
+A xref:reference:kube-apis/release-service.adoc#k8s-api-github-com-konflux-ci-release-service-api-v1alpha1-releaseplan[ReleasePlan (RP) CR] maps an Application you want to release to a release action.
 It defines the process to release future Snapshots of your Application in the managed namespace.
 It also determines whether automatic releases are enabled and whether you want to provide additional data to each future release pipeline.
 
-=== ReleasePlanAdmission
-You also need to create a *ReleasePlanAdmission (RPA) CR* in the managed namespace.
+==== ReleasePlanAdmission
+You also need to create a xref:reference:kube-apis/release-service.adoc#k8s-api-github-com-konflux-ci-release-service-api-v1alpha1-releaseplanadmission[ReleasePlanAdmission (RPA) CR] in the managed namespace.
 It defines the specific pipeline to run and a given ECP, which must pass for each snapshot before that pipeline can proceed.
 It also establishes essential details about the delivery of your content that we want to exercise some control over.
+
 For example, if your release pipeline uses an link:https://Github.com/konflux-ci/release-service-catalog/blob/production/tasks/managed/apply-mapping/apply-mapping.yaml[apply-mapping] task, the `.spec.data.mapping.components` section of this resource will define which destination repositories to push your content to.
 
-=== Release
-Every time you want to release newly built artifacts, you will create a Release CR in *your* tenant namespace.
+==== Release
+Every time you want to release newly built artifacts, you will create a xref:reference:kube-apis/release-service.adoc#k8s-api-github-com-konflux-ci-release-service-api-v1alpha1-release[Release CR] in *your* tenant namespace.
 The Release CR represents your intent to release some content to customers.
 It is an active resource that, when present, will initiate the push of content.
 
