@@ -23,7 +23,7 @@ To create a Service Account token at the Organization level, you must have the *
 
 .. Select the correct **Group** and then select the **Organization** that you want to work with from the left navigation panel.
 .. Verify your required access level by clicking the **Members** button on the left.
-.. Click **Settings** on the left-hand side bottom, and then select **Service accounts** from the menu next to it.
+.. Click **Settings** and then select **Service accounts** from the menu next to it.
 .. In the *Create a new service account* section, give the service account a meaningful **Name** and select the appropriate **Role** from the drop-down menu (e.g., *Org Collaborator*).
 .. Click the **Create** button.
 .. Copy the generated **API Token**. This token is visible only once; secure it before clicking **Close and hide**.
