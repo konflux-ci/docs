@@ -6,26 +6,37 @@ The `sast-snyk-check` task uses the Snyk Code tool to perform static application
 Specifically, the Snyk check scans an application's source code for potential security vulnerabilities, 
 including SQL injection, cross-site scripting (XSS), and code injection attack vulnerabilities.
 
-NOTE: You can run a Snyk task only if you have a Snyk token configured in a namespace secret. Ensure that the name of your secret is included in the *snyk-secret* pipeline parameter.
+[NOTE]
+====
+You can run a Snyk task only if you have a Snyk token configured in a namespace secret. Ensure that the name of your secret is included in the *snyk-secret* pipeline parameter.
+====
 
 .Procedure
 
 . Register for a Snyk account or log in at https://app.snyk.io/.
 . Get a Snyk token.
++
+__Red Hat Product Security__ recommends using an Organization-level Service Account token for automation purposes, which is often referred to as an API Token. For the complete, recommended procedure on creating this token, use the following internal Red Hat documentation:
++
+* link:https://spaces.redhat.com/spaces/PRODSEC/pages/416123894/How+to+create+and+use+a+Snyk+token+via+a+Service+account[How to create and use a Snyk token via a Service account]
++
+If you are unable to create a Service Account, you can use your individual user's API Token by completing the following steps:
 
 .. In the lower left of the home page, click your name, then select *Account settings*.
-
-.. From the Account Settings page, select *General*, which is the default, then *Auth Token*.
-
-.. Under the *Auth Token* section, click *Click to View* to see the *KEY* value of the automatically generated token.
+.. From the Account Settings page, select *General*, which is the default, then scroll down to the *API Token* section. 
+.. Under the *API Token* section, click *Click to View* to see the *KEY* value of the automatically generated token.
 
 . Enable Snyk Code.
++
+Snyk Code must be enabled within your Organization settings for the SAST scan to function. Due to UI variations, use one of the following methods:
 
+* **Recommended (via Import flow):**
+.. Click the *Home* icon under your Organization, then select *Import projects*.
+.. In the third section, *Configure automation settings & authenticate*, ensure the *Snyk Code* checkbox is checked.
+* **Alternative (via Settings):**
 .. From the left panel, go to *Settings* > *Snyk Code*, then scroll to the *Enable Snyk Code* section.
-
 .. Toggle *Disabled* to *Enabled*.
-
-.. Click *Save* changes.
+.. Click *Save changes*.
 
 . Add your new secret to your tenant namespace.
 
@@ -46,13 +57,14 @@ NOTE: You can run a Snyk task only if you have a Snyk token configured in a name
 ... Paste your Snyk token into the *Upload the file with value for your key or paste its contents* field.
 ... Click *Add secret* to save it.
 
-You've enabled the Snyk task for your build pipeline.
+You have now enabled the Snyk task for your build pipeline.
 
-In case multiple components are maintained in a single git repository, Snyk Code is unable to distinguish which directories contain the source code for which component. Consequently, Snyk Code reports duplicated findings because it always scans the whole git repository rather than scanning each component separately. As a workaround for this limitation of Snyk Code, one can use the `IGNORE_FILE_PATHS` parameter of the sast-snyk-check task to specify which directories should be ignored while scanning a specific component. Namely, one can use the parameter to make Snyk Code ignore directories that are used for build of other components maintained in the same git repository.
+In case multiple components are maintained in a single git repository, Snyk Code is unable to distinguish which directories contain the source code for which component. Consequently, Snyk Code reports duplicated findings because it always scans the whole git repository rather than scanning each component separately. As a workaround for this limitation of Snyk Code, use the `IGNORE_FILE_PATHS` parameter of the sast-snyk-check task to specify which directories should be ignored while scanning a specific component. Namely, use the parameter to make Snyk Code ignore directories that are used for build of other components maintained in the same git repository.
 
 This parameter takes a list of comma-separated file paths (directories and files) to be ignored.
 
-Example:
+.Example: IGNORE_FILE_PATHS parameter
+[source,yaml]
 ----
  - name: IGNORE_FILE_PATHS
    value: "tests/,Dockerfile,README.md"
@@ -63,4 +75,5 @@ This action will make use of the `snyk ignore` command.
 [role="_additional-resources"]
 == Additional resources
 
-For more information about Snyk, see link:https://snyk.io/product/snyk-code/[the Snyk website].
+* link:https://spaces.redhat.com/spaces/PRODSEC/pages/553454167/Integrating+Snyk+Code+Token+with+Konflux+Pipeline[Integrating Snyk Code Token with Konflux Pipeline]
+* For more information about Snyk, see link:https://snyk.io/product/snyk-code/[the Snyk website].
