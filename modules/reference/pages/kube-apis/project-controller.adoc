@@ -177,8 +177,7 @@ Use values to customize generated resources per development stream.
 
 ProjectDevelopmentStreamStatus defines the observed state of ProjectDevelopmentStream
 Conditions include:
-- TemplateApplied (reasons: Success, TemplateNotFound, VariableError, ResourceError, ProcessingError)
-- TemplateGenerated (reasons: Success, TemplateError, VariableValidationFailed, ResourceValidationFailed)
+- Ready (reasons: Reconciling, UpdatingOwnerRef, NoTemplate, TemplateFetchFailed, TemplateGenerationFailed, ResourcesApplied, ApplyingResources)
 
 
 
@@ -191,7 +190,7 @@ Conditions include:
 |===
 | Field | Description | Default | Validation
 | *`conditions`* __link:https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.3/#condition-v1-meta[$$Condition$$] array__ | Represents the observations of a ProjectDevelopmentStream's current state. +
-Known .status.conditions.type are: "TemplateApplied", and "TemplateGenerated" + |  | 
+Known .status.conditions.type are: "Ready" + |  | 
 |===
 
 

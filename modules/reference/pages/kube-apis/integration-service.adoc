@@ -60,7 +60,7 @@ Component/Application GitOps repository resources.
 [cols="20a,50a,15a,15a", options="header"]
 |===
 | Field | Description | Default | Validation
-| *`env`* __xref:{anchor_prefix}-github-com-konflux-ci-integration-service-api-v1alpha1-envvarpair[$$EnvVarPair$$] array__ | Environment is an array of standard environment variables + |  | 
+| *`env`* __xref:{anchor_prefix}-github-com-konflux-ci-integration-service-api-v1alpha1-envvarpair[$$EnvVarPair$$] array__ | An array of standard environment variables + |  | 
 | *`target`* __xref:{anchor_prefix}-github-com-konflux-ci-integration-service-api-v1alpha1-environmenttarget[$$EnvironmentTarget$$]__ | Target is used to reference a DeploymentTargetClaim for a target Environment. +
 The Environment controller uses the referenced DeploymentTargetClaim to access its bounded +
 DeploymentTarget with cluster credential secret. + |  | 
@@ -342,7 +342,7 @@ Component/Application GitOps repository resources.
 [cols="20a,50a,15a,15a", options="header"]
 |===
 | Field | Description | Default | Validation
-| *`env`* __xref:{anchor_prefix}-github-com-konflux-ci-integration-service-api-v1beta1-envvarpair[$$EnvVarPair$$] array__ | Environment is an array of standard environment variables + |  | 
+| *`env`* __xref:{anchor_prefix}-github-com-konflux-ci-integration-service-api-v1beta1-envvarpair[$$EnvVarPair$$] array__ | An array of standard environment variables + |  | 
 | *`target`* __xref:{anchor_prefix}-github-com-konflux-ci-integration-service-api-v1beta1-environmenttarget[$$EnvironmentTarget$$]__ | Target is used to reference a DeploymentTargetClaim for a target Environment. +
 The Environment controller uses the referenced DeploymentTargetClaim to access its bounded +
 DeploymentTarget with cluster credential secret. + |  | 
@@ -626,9 +626,166 @@ TestEnvironment contains the name and values of a Test environment
 Package v1beta2 contains API Schema definitions for the appstudio v1beta2 API group
 
 .Resource Types
+- xref:{anchor_prefix}-github-com-konflux-ci-integration-service-api-v1beta2-componentgroup[$$ComponentGroup$$]
+- xref:{anchor_prefix}-github-com-konflux-ci-integration-service-api-v1beta2-componentgrouplist[$$ComponentGroupList$$]
 - xref:{anchor_prefix}-github-com-konflux-ci-integration-service-api-v1beta2-integrationtestscenario[$$IntegrationTestScenario$$]
 - xref:{anchor_prefix}-github-com-konflux-ci-integration-service-api-v1beta2-integrationtestscenariolist[$$IntegrationTestScenarioList$$]
 
+
+
+[id="{anchor_prefix}-github-com-konflux-ci-integration-service-api-v1beta2-componentbranchreference"]
+==== ComponentBranchReference
+
+
+
+ComponentBranchReference contains information about a Component's branch and its latest promoted image
+
+
+
+.Appears In:
+****
+- xref:{anchor_prefix}-github-com-konflux-ci-integration-service-api-v1beta2-componentreference[$$ComponentReference$$]
+****
+
+[cols="20a,50a,15a,15a", options="header"]
+|===
+| Field | Description | Default | Validation
+| *`name`* __string__ | Name is the name of the ComponentBranch (typically the branch name like "main", "v1", etc.) +
+This will reference the ComponentBranch CRD once it's implemented. + |  | 
+| *`lastPromotedImage`* __string__ | LastPromotedImage is the latest "good" container image for this ComponentBranch. +
+This is part of the Global Candidate List (GCL) tracking. +
+Example: quay.io/sampleorg/first-component@sha256:1b29... + |  | 
+| *`lastPromotedCommit`* __string__ | LastPromotedCommit is the git commit SHA of the last promoted image. +
+Example: 6a7c81802e785aa869f82301afe61f4e9775772b + |  | 
+| *`lastBuildTime`* __link:https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.3/#time-v1-meta[$$Time$$]__ | LastBuildTime is the timestamp when the last build was completed. +
+Format: RFC3339 (e.g., "2025-08-13T12:00:00Z") + |  | 
+|===
+
+
+[id="{anchor_prefix}-github-com-konflux-ci-integration-service-api-v1beta2-componentgroup"]
+==== ComponentGroup
+
+
+
+ComponentGroup is the Schema for the componentgroups API.
+ComponentGroup serves as the replacement for the Application CR in the new application/component model.
+It groups Components together for testing and releasing, supports test serialization,
+ComponentGroup dependencies, and tracks the Global Candidate List (GCL) for each Component.
+
+
+
+.Appears In:
+****
+- xref:{anchor_prefix}-github-com-konflux-ci-integration-service-api-v1beta2-componentgrouplist[$$ComponentGroupList$$]
+****
+
+[cols="20a,50a,15a,15a", options="header"]
+|===
+| Field | Description | Default | Validation
+| *`apiVersion`* __string__ | `appstudio.redhat.com/v1beta2` | |
+| *`kind`* __string__ | `ComponentGroup` | |
+| *`metadata`* __link:https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.3/#objectmeta-v1-meta[$$ObjectMeta$$]__ | Refer to Kubernetes API documentation for fields of `metadata`.
+ |  | 
+| *`spec`* __xref:{anchor_prefix}-github-com-konflux-ci-integration-service-api-v1beta2-componentgroupspec[$$ComponentGroupSpec$$]__ |  |  | 
+| *`status`* __xref:{anchor_prefix}-github-com-konflux-ci-integration-service-api-v1beta2-componentgroupstatus[$$ComponentGroupStatus$$]__ |  |  | 
+|===
+
+
+[id="{anchor_prefix}-github-com-konflux-ci-integration-service-api-v1beta2-componentgrouplist"]
+==== ComponentGroupList
+
+
+
+ComponentGroupList contains a list of ComponentGroups
+
+
+
+
+
+[cols="20a,50a,15a,15a", options="header"]
+|===
+| Field | Description | Default | Validation
+| *`apiVersion`* __string__ | `appstudio.redhat.com/v1beta2` | |
+| *`kind`* __string__ | `ComponentGroupList` | |
+| *`metadata`* __link:https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.3/#listmeta-v1-meta[$$ListMeta$$]__ | Refer to Kubernetes API documentation for fields of `metadata`.
+ |  | 
+| *`items`* __xref:{anchor_prefix}-github-com-konflux-ci-integration-service-api-v1beta2-componentgroup[$$ComponentGroup$$] array__ |  |  | 
+|===
+
+
+[id="{anchor_prefix}-github-com-konflux-ci-integration-service-api-v1beta2-componentgroupspec"]
+==== ComponentGroupSpec
+
+
+
+ComponentGroupSpec defines the desired state of ComponentGroup
+
+
+
+.Appears In:
+****
+- xref:{anchor_prefix}-github-com-konflux-ci-integration-service-api-v1beta2-componentgroup[$$ComponentGroup$$]
+****
+
+[cols="20a,50a,15a,15a", options="header"]
+|===
+| Field | Description | Default | Validation
+| *`components`* __xref:{anchor_prefix}-github-com-konflux-ci-integration-service-api-v1beta2-componentreference[$$ComponentReference$$] array__ | Components is a list of Components (name and branch) that belong to the ComponentGroup. +
+This is the source of truth for logical groupings of versioned Components. + |  | 
+| *`dependents`* __string array__ | Dependents is a list of ComponentGroup names that are dependent on this ComponentGroup. +
+When a snapshot is created for this ComponentGroup, snapshots will also be created for all dependents. + |  | 
+| *`testGraph`* __object (keys:string, values:xref:{anchor_prefix}-github-com-konflux-ci-integration-service-api-v1beta2-testgraphnode[$$TestGraphNode$$])__ | TestGraph describes the desired order in which tests associated with the ComponentGroup should be executed. +
+If not specified, all tests will run in parallel. +
+The map key is the test scenario name, and the value is a list of parent test scenarios it depends on. + |  | 
+| *`snapshotCreator`* __xref:{anchor_prefix}-github-com-konflux-ci-integration-service-api-v1beta2-snapshotcreatorspec[$$SnapshotCreatorSpec$$]__ | SnapshotCreator is an optional field that allows custom logic for Snapshot creation. +
+This field is reserved for future implementation and should not be used yet. + |  | 
+|===
+
+
+[id="{anchor_prefix}-github-com-konflux-ci-integration-service-api-v1beta2-componentgroupstatus"]
+==== ComponentGroupStatus
+
+
+
+ComponentGroupStatus defines the observed state of ComponentGroup
+
+
+
+.Appears In:
+****
+- xref:{anchor_prefix}-github-com-konflux-ci-integration-service-api-v1beta2-componentgroup[$$ComponentGroup$$]
+****
+
+[cols="20a,50a,15a,15a", options="header"]
+|===
+| Field | Description | Default | Validation
+| *`conditions`* __link:https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.3/#condition-v1-meta[$$Condition$$] array__ | Conditions is an array of the ComponentGroup's status conditions + |  | 
+|===
+
+
+[id="{anchor_prefix}-github-com-konflux-ci-integration-service-api-v1beta2-componentreference"]
+==== ComponentReference
+
+
+
+ComponentReference references a Component and its specific branch/version
+
+
+
+.Appears In:
+****
+- xref:{anchor_prefix}-github-com-konflux-ci-integration-service-api-v1beta2-componentgroupspec[$$ComponentGroupSpec$$]
+****
+
+[cols="20a,50a,15a,15a", options="header"]
+|===
+| Field | Description | Default | Validation
+| *`name`* __string__ | Name is the name of the Component + |  | Pattern: `^[a-z0-9]([-a-z0-9]*[a-z0-9])?$` +
+
+| *`componentBranch`* __xref:{anchor_prefix}-github-com-konflux-ci-integration-service-api-v1beta2-componentbranchreference[$$ComponentBranchReference$$]__ | ComponentBranch references the ComponentBranch for this Component. +
+The ComponentBranch CRD will be implemented by the build team as part of STONEBLD-3604. +
+For now, this contains the branch name and GCL (Global Candidate List) information. + |  | 
+|===
 
 
 [id="{anchor_prefix}-github-com-konflux-ci-integration-service-api-v1beta2-integrationtestscenario"]
@@ -762,6 +919,7 @@ ResolverParameter contains the name and values used to identify the referenced T
 .Appears In:
 ****
 - xref:{anchor_prefix}-github-com-konflux-ci-integration-service-api-v1beta2-resolverref[$$ResolverRef$$]
+- xref:{anchor_prefix}-github-com-konflux-ci-integration-service-api-v1beta2-taskref[$$TaskRef$$]
 ****
 
 [cols="20a,50a,15a,15a", options="header"]
@@ -800,6 +958,51 @@ set + |  |
 |===
 
 
+[id="{anchor_prefix}-github-com-konflux-ci-integration-service-api-v1beta2-snapshotcreatorspec"]
+==== SnapshotCreatorSpec
+
+
+
+SnapshotCreatorSpec defines custom logic for creating snapshots.
+This is reserved for future implementation and should not be used yet.
+
+
+
+.Appears In:
+****
+- xref:{anchor_prefix}-github-com-konflux-ci-integration-service-api-v1beta2-componentgroupspec[$$ComponentGroupSpec$$]
+****
+
+[cols="20a,50a,15a,15a", options="header"]
+|===
+| Field | Description | Default | Validation
+| *`taskRef`* __xref:{anchor_prefix}-github-com-konflux-ci-integration-service-api-v1beta2-taskref[$$TaskRef$$]__ | TaskRef references a Tekton Task that will create the Snapshot CR. +
+This field is reserved for future use. + |  | 
+|===
+
+
+[id="{anchor_prefix}-github-com-konflux-ci-integration-service-api-v1beta2-taskref"]
+==== TaskRef
+
+
+
+TaskRef references a Tekton Task using a resolver
+
+
+
+.Appears In:
+****
+- xref:{anchor_prefix}-github-com-konflux-ci-integration-service-api-v1beta2-snapshotcreatorspec[$$SnapshotCreatorSpec$$]
+****
+
+[cols="20a,50a,15a,15a", options="header"]
+|===
+| Field | Description | Default | Validation
+| *`resolver`* __string__ | Resolver is the name of the resolver (e.g., "git", "bundle") + |  | 
+| *`params`* __xref:{anchor_prefix}-github-com-konflux-ci-integration-service-api-v1beta2-resolverparameter[$$ResolverParameter$$] array__ | Params contains the parameters used to identify the referenced Task + |  | 
+|===
+
+
 [id="{anchor_prefix}-github-com-konflux-ci-integration-service-api-v1beta2-testcontext"]
 ==== TestContext
 
@@ -819,6 +1022,30 @@ TestContext contains the name and values of a Test context, used by IntegrationT
 | Field | Description | Default | Validation
 | *`name`* __string__ |  |  | 
 | *`description`* __string__ |  |  | 
+|===
+
+
+[id="{anchor_prefix}-github-com-konflux-ci-integration-service-api-v1beta2-testgraphnode"]
+==== TestGraphNode
+
+
+
+TestGraphNode represents a node in the test serialization graph
+
+
+
+.Appears In:
+****
+- xref:{anchor_prefix}-github-com-konflux-ci-integration-service-api-v1beta2-componentgroupspec[$$ComponentGroupSpec$$]
+****
+
+[cols="20a,50a,15a,15a", options="header"]
+|===
+| Field | Description | Default | Validation
+| *`name`* __string__ | Name is the name of the IntegrationTestScenario + |  | 
+| *`onFail`* __string__ | OnFail defines how to behave if this IntegrationTestScenario fails. +
+Options: "run" (default) - continue running dependent tests, "skip" - skip dependent tests + | run | Enum: [run skip] +
+
 |===
 
 
