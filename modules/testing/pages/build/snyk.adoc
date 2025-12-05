@@ -20,20 +20,20 @@ __Red Hat Product Security__ recommends using an Organization-level Service Acco
 +
 * link:https://spaces.redhat.com/spaces/PRODSEC/pages/416123894/How+to+create+and+use+a+Snyk+token+via+a+Service+account[How to create and use a Snyk token via a Service account]
 +
-If you are unable to create a Service Account, you can use your individual user's API Token by completing the following steps:
+If you are unable to create a Service Account, use your individual user's API Token by completing the following steps:
 
 .. In the lower left of the home page, click your name, then select *Account settings*.
-.. From the Account Settings page, select *General*, which is the default, then scroll down to the *API Token* section. 
+.. From the Account Settings page, select *General*, which is the default, then scroll down to the *API Token* section.
 .. Under the *API Token* section, click *Click to View* to see the *KEY* value of the automatically generated token.
 
 . Enable Snyk Code.
 +
 Snyk Code must be enabled within your Organization settings for the SAST scan to function. Due to UI variations, use one of the following methods:
 
-* **Recommended (via Import flow):**
+* __Recommended (via Import flow):__
 .. Click the *Home* icon under your Organization, then select *Import projects*.
 .. In the third section, *Configure automation settings & authenticate*, ensure the *Snyk Code* checkbox is checked.
-* **Alternative (via Settings):**
+* __Alternative (via Settings):__
 .. From the left panel, go to *Settings* > *Snyk Code*, then scroll to the *Enable Snyk Code* section.
 .. Toggle *Disabled* to *Enabled*.
 .. Click *Save changes*.
@@ -76,4 +76,4 @@ This action will make use of the `snyk ignore` command.
 == Additional resources
 
 * link:https://spaces.redhat.com/spaces/PRODSEC/pages/553454167/Integrating+Snyk+Code+Token+with+Konflux+Pipeline[Integrating Snyk Code Token with Konflux Pipeline]
-* For more information about Snyk, see link:https://snyk.io/product/snyk-code/[the Snyk website].
+* link:https://snyk.io/product/snyk-code/[Snyk Code product information]
