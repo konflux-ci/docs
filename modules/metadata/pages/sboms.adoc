@@ -48,7 +48,7 @@ The SBOM is unsigned so there is no way to verify whether it has been tampered w
 
 * xref:ROOT:getting-started.adoc#getting-started-with-the-cli[Login] to {ProductName}.
 
-* You have found the image for a xref:building:creating.adoc#finding-the-built-image[recently completed build pipeline] and exported the value to the `IMAGE` environment variable.
+* You have found the image for a xref:building:applications-components/creating.adoc#finding-the-built-image[recently completed build pipeline] and exported the value to the `IMAGE` environment variable.
 
 .Procedure
 

@@ -4,7 +4,7 @@ This guide provides guidelines on how to build binaries within {ProductName}.
 
 == Theory
 
-The fundamental process involves creating a Containerfile to encapsulate your binary build process, similar to the production of container images. This allows you to define applications and components in {ProductName} as you xref:creating.adoc[normally would].
+The fundamental process involves creating a Containerfile to encapsulate your binary build process, similar to the production of container images. This allows you to define applications and components in {ProductName} as you xref:applications-components/creating.adoc[normally would].
 
 If you're unfamiliar with Containerfiles, consult the official link:https://docs.docker.com/reference/dockerfile/[Dockerfile documentation].
 

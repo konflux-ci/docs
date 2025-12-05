@@ -23,7 +23,7 @@ We recommend that you not share namespaces with many teams.
 
 You will use your tenant namespaces to do the following:
 
-- xref:building:creating.adoc[Create components and applications].
+- xref:building:applications-components/creating.adoc[Create components and applications].
 - Run the xref:building:index.adoc[Tekton PipelineRuns] defined in your Git repositories.
 - View and iterate on the xref:testing:index.adoc[results of your IntegrationTestScenarios].
 - xref:releasing:index.adoc[Create releases] for specific snapshots according to your ReleasePlans.

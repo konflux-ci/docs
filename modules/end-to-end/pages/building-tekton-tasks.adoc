@@ -42,7 +42,7 @@ The onboarding of tasks to {ProductName} is similar to onboarding other applicat
 
 Tekton tasks are built as standard OCI artifacts in {ProductName}.
 
-The xref:building:/creating.adoc[Creating applications and components] page can be referenced for more information on how to create an Application for all tasks and a Component for each task within this Application, as well as an ImageRepository resource.
+The xref:building:applications-components/creating.adoc[Creating applications and components] page can be referenced for more information on how to create an Application for all tasks and a Component for each task within this Application, as well as an ImageRepository resource.
 
 
 [NOTE] 

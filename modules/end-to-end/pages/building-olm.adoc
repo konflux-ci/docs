@@ -25,8 +25,8 @@ This procedure assumes that the source code for your Operator and bundle, includ
 
 .Procedure
 
-. In the {ProductName} UI,  xref:building:/creating.adoc[create a new application] for your OLM Operator in {ProductName}.
-. In your new application, xref:building:/creating.adoc[add a new component] for your Operator. Be sure to specify the correct path to the Operator's Dockerfile within its git repository.
+. In the {ProductName} UI,  xref:building:applications-components/creating.adoc[create a new application] for your OLM Operator in {ProductName}.
+. In your new application, xref:building:applications-components/creating.adoc[add a new component] for your Operator. Be sure to specify the correct path to the Operator's Dockerfile within its git repository.
 . Add another component for your bundle. Enter the same URL that you used for the Operator, but enter the path to the bundle's Dockerfile.
 . (Optional) If you are using a file-based Catalog (FBC) for your OLM Operator, you must build the FBC as another component in its own separate application in {ProductName}.
 . (Optional) You may want to configure {ProductName} to xref:building:/redundant-rebuilds.adoc[prevent redundant rebuilds] for this application. For example, you can configure {ProductName} to rebuild your bundle image only if a commit is made to its Dockerfile or the `/bundle` directory, instead of rebuilding it whenever any commit is made to your OLM Operator's git repository.
@@ -39,7 +39,7 @@ In order to enable your operator to be installed in disconnected environments, i
 
 . In the {ProductName} UI, in your OLM Operator's application, go to the *Components* tab and copy the URL for the Operator's container image. The URL should include `sha256:`.
 . Using your preferred text editor, in the git repo for your OLM Operator, open the CSV file for your bundle. In that file, update the image reference to the Operator to be the URL you just copied. Commit this change.
-. In the {ProductName} UI, follow the instructions in xref:building:/component-nudges.adoc[this document] to define the relationship between the Operator and the bundle. The Operator nudges the bundle.
+. In the {ProductName} UI, follow the instructions in xref:building:applications-components/component-nudges.adoc[this document] to define the relationship between the Operator and the bundle. The Operator nudges the bundle.
 . (Optional) For any Operands with image references in your bundle's CSV, you can repeat this same basic process:
 .. Add the Operands as components in {ProductName}.
 .. Wait for the first build of those components to finish.
@@ -52,8 +52,8 @@ NOTE: If you want to update the references in your CSV to match where the operan
 
 .Procedure
 
-. In the {ProductName} UI,  xref:building:/creating.adoc[create a new application] for your file-based catalog (FBC) in {ProductName}.
-. In your new application, xref:building:/creating.adoc[add a new component] for your FBC. Be sure to select the file-based catalog pipeline and to specify the correct path to the catalog's Containerfile within its git repository.
+. In the {ProductName} UI,  xref:building:applications-components/creating.adoc[create a new application] for your file-based catalog (FBC) in {ProductName}.
+. In your new application, xref:building:applications-components/creating.adoc[add a new component] for your FBC. Be sure to select the file-based catalog pipeline and to specify the correct path to the catalog's Containerfile within its git repository.
 
 +
 NOTE: If the Containerfile populates the cache, the image produced with a FBC fragment can be used as a link:https://olm.operatorframework.io/docs/concepts/crds/catalogsource/[CatalogSource]. You can use *opm* to generate the cache in the final stage of your Containerfile.

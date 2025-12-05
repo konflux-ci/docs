@@ -97,7 +97,7 @@ include::partial${context}-submodules-example-downstream-containerfile.adoc[]
 
 === Onboard the component onto {ProductName}
 
-After creating the downstream repository you can onboard the component. See xref:building:creating.adoc[Creating applications and components] for more details.
+After creating the downstream repository you can onboard the component. See xref:building:applications-components/creating.adoc[Creating applications and components] for more details.
 
 === Alternative: Use an args file
 
