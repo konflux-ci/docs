@@ -14,17 +14,19 @@ You can run a Snyk task only if you have a Snyk token configured in a namespace 
 .Procedure
 
 . Register for a Snyk account or log in at https://app.snyk.io/.
-. Get a Snyk token.
+. Create a Snyk token using a Service Account.
 +
-__Red Hat Product Security__ recommends using an Organization-level Service Account token for automation purposes, which is often referred to as an API Token. For the complete, recommended procedure on creating this token, use the following internal Red Hat documentation:
-+
-* link:https://spaces.redhat.com/spaces/PRODSEC/pages/416123894/How+to+create+and+use+a+Snyk+token+via+a+Service+account[How to create and use a Snyk token via a Service account]
-+
-If you are unable to create a Service Account, use your individual user's API Token by completing the following steps:
+[NOTE]
+====
+To create a Service Account token at the Organization level, you must have the **Org Admin** role in Snyk. If you do not have the required permissions, use your individual API token instead.
+====
 
-.. In the lower left of the home page, click your name, then select *Account settings*.
-.. From the Account Settings page, select *General*, which is the default, then scroll down to the *API Token* section.
-.. Under the *API Token* section, click *Click to View* to see the *KEY* value of the automatically generated token.
+.. Select the correct **Group** and then select the **Organization** that you want to work with from the left navigation panel.
+.. Verify your required access level by clicking the **Members** button on the left.
+.. Click **Settings** on the left-hand side bottom, and then select **Service accounts** from the menu next to it.
+.. In the *Create a new service account* section, give the service account a meaningful **Name** and select the appropriate **Role** from the drop-down menu (e.g., *Org Collaborator*).
+.. Click the **Create** button.
+.. Copy the generated **API Token**. This token is visible only once; secure it before clicking **Close and hide**.
 
 . Enable Snyk Code.
 +
@@ -32,7 +34,7 @@ Snyk Code must be enabled within your Organization settings for the SAST scan to
 
 * __Recommended (via Import flow):__
 .. Click the *Home* icon under your Organization, then select *Import projects*.
-.. In the third section, *Configure automation settings & authenticate*, ensure the *Snyk Code* checkbox is checked.
+.. In the third section, *Configure automation settings & authenticate*, ensure the **Snyk Code** checkbox is checked.
 * __Alternative (via Settings):__
 .. From the left panel, go to *Settings* > *Snyk Code*, then scroll to the *Enable Snyk Code* section.
 .. Toggle *Disabled* to *Enabled*.
@@ -75,5 +77,4 @@ This action will make use of the `snyk ignore` command.
 [role="_additional-resources"]
 == Additional resources
 
-* link:https://spaces.redhat.com/spaces/PRODSEC/pages/553454167/Integrating+Snyk+Code+Token+with+Konflux+Pipeline[Integrating Snyk Code Token with Konflux Pipeline]
 * link:https://snyk.io/product/snyk-code/[Snyk Code product information]
