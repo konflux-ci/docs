@@ -120,5 +120,5 @@ To achieve this, configure and extend MintMaker properly, so that it will be abl
 * MintMaker will read the default configuration from "https://docs.renovatebot.com/renovate-schema.json" and will extend it using the subsequent custom settings.
 ====
 
-. xref:building:creating.adoc[Create a {ProductName} Application and a {ProductName} Component] to reference the repository and branch name.
+. xref:building:applications-components/creating.adoc[Create a {ProductName} Application and a {ProductName} Component] to reference the repository and branch name.
 
