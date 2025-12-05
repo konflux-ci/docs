@@ -1,0 +1,8 @@
+= Applications & Components
+
+This section covers how to create, configure, and manage applications and components in {ProductName}:
+
+* xref:building:applications-components/creating.adoc[Creating applications and components] - Onboard your source repositories to {ProductName}
+* xref:building:applications-components/deleting.adoc[Deleting applications and components] - Remove applications or components when no longer needed
+* xref:building:applications-components/configuration-as-code.adoc[Configuration as code] - Manage your {ProductName} configuration declaratively
+* xref:building:applications-components/component-nudges.adoc[Defining component relationships] - Configure build ordering between components
