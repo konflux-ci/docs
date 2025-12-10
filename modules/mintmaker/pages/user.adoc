@@ -686,8 +686,12 @@ exist, MintMaker will randomly select one component to process that combination.
 each Renovate job processes only the branch associated with its component.
 
 However, when a repository has a `baseBranchPatterns` configuration, this setting takes effect
-and can cause conflicts. For example, if a repository has two branches (`main` and `release-2.0`)
-that both have components in Konflux, and the `renovate.json` contains:
+and can cause the following issues:
+
+==== Concurrent job conflicts
+
+If a repository has two branches (`main` and `release-2.0`) that both have components in Konflux,
+and the `renovate.json` contains:
 
 [source,json]
 ----
@@ -715,6 +719,24 @@ for this repository (since Renovate reads configuration from the default branch,
 component is needed to process all branches listed in `baseBranchPatterns`). However, if you have
 components with branches that are not covered by `baseBranchPatterns` and you still want them
 to be processed, you should try removing `baseBranchPatterns` instead.
+
+==== Stale branches not being cleaned up
+
+MintMaker sets `additionalBranchPrefix` to `pass:[{{baseBranch}}/]` by default, which includes
+the base branch name in the PR/MR source branch. This prevents conflicts when processing multiple
+branches, as each branch gets its own unique prefix (e.g., `konflux/mintmaker/main/some-package-1.x`).
+
+When you add `baseBranchPatterns` to your configuration, Renovate automatically adds another
+instance of the base branch name to the branch prefix. This results in duplicate base branch
+names in the source branch:
+
+* *Before baseBranchPatterns*: `konflux/mintmaker/main/some-package-1.x`
+* *After baseBranchPatterns*: `konflux/mintmaker/main-main/some-package-1.x`
+
+This change in naming convention means that any existing PRs/MRs and branches created before
+adding `baseBranchPatterns` will not be automatically closed or cleaned up by MintMaker. The old
+branches with a single base branch name are no longer recognized as belonging to the current
+base branch. You will need to manually close these old PRs/MRs and delete the stale branches.
 
 NOTE: `baseBranchPatterns` is not a prerequisite for using https://docs.renovatebot.com/configuration-options/#matchbasebranches[`matchBaseBranches`]
 in packageRules. You can use `matchBaseBranches` to apply different rules to different branches
