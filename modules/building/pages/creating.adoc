@@ -95,9 +95,9 @@ $ kubectl apply -f Application.yaml -f Component.yaml -f ImageRepository.yaml
 ----
 
 +
-NOTE: You can create additional components and applications with the same file locally by adding additional custom resource configurations. 
+NOTE: You can create additional components and applications with the same file locally by adding additional custom resource configurations.
 
-. Now, you can trigger your application’s first build pipeline. In the git repository for your application, using your preferred text editor, open a pull request against the `/.tekton/pull-request.yaml` file. 
+. Now, you can trigger your application’s first build pipeline. In the git repository for your application, using your preferred text editor, open a pull request against the `/.tekton/pull-request.yaml` file.
 .. Specifically, replace any existing value for the `git-url` field with the git URL for your application’s repository. (This is the URL you would use to clone the repository locally; it ends with `.git`.)
 
 +
