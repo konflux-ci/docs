@@ -5,7 +5,7 @@ While you can inspect your scan results in the logs of your taskruns, it may be 
 == Pre-requisites
 
 * Get a local copy of the `oras` command line tool. You can extract it from the link:https://quay.io/konflux-ci/oras[quay.io/konflux-ci/oras:latest] image built by the konflux project, or download the binary from an link:https://github.com/oras-project/oras/releases[upstream release].
-* To see the scan results, you need to find the image for a xref:building:creating.adoc#finding-the-built-image[recently completed build pipeline] and export that value to the IMAGE environment variable, like `IMAGE=quay.io/konflux-fedora/ralph-tenant/nethack:ee7464add193e84aa75e32b253415f1fe01f627e`
+* To see the scan results, you need to find the image for a xref:building:applications-components/creating.adoc#finding-the-built-image[recently completed build pipeline] and export that value to the IMAGE environment variable, like `IMAGE=quay.io/konflux-fedora/ralph-tenant/nethack:ee7464add193e84aa75e32b253415f1fe01f627e`
 
 Note, other tools are gaining support for working with non-image OCI artifacts, including link:https://docs.podman.io/en/latest/markdown/podman-artifact.1.html[podman].
 
