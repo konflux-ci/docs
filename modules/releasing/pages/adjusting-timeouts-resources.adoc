@@ -34,9 +34,125 @@ IMPORTANT: Tekton enforces a restriction on the pipeline timeout—it must be gr
 
 == Adjust resources
 
-As can be seen in the section above, there's no way to specify timeouts for individual tasks. However, another field can be used to increase the resources an specific task can use during its execution.
+Release Pipelines are configured with default CPU and memory values for each Task and Step. These defaults are based on testing with typical workloads and are
+refined over time using user feedback. However, some Releases contain a larger than average number of Components, which can cause certain Tasks or
+Steps to exceed the default resources and fail, often due to `OOMKilled` errors.
 
-*Giving additional recourses to the verify-enterprise-contract task*
+Increasing resources globally for every user would waste cluster resources, so {ProductName} 
+supports per Release resource overrides using `taskRunSpecs`.
+
+NOTE: {ProductName} is exploring future improvements to make resource allocation more dynamic,
+for example by tuning defaults based on the number of Components.
+
+== Understand taskRunSpecs
+
+`taskRunSpecs` allow you to override compute resources *at runtime* for a specific Task or Step without 
+modifying the underlying Pipeline or Task definitions. They are defined in the `pipeline` section of 
+a `ReleasePlanAdmission` and apply to any Release execution that uses the `ReleasePlanAdmission`.
+
+Use `taskRunSpecs` when:
+
+* A Task fails with `OOMKilled` errors
+* The Release has an unusually large number of Components
+
+== Task-level vs Step-level overrides
+
+There are two override mechanisms available:
+
+=== Task-level override
+
+* Applies the same compute resources to *all Steps* in a Task
+* Overrides any defaults defined in the Task
+* Can waste cluster resources if the Task has many steps and only
+one Step is resource-heavy
+
+=== Step-level override (recommended)
+
+* Applies compute resources to *one specific step* only
+* Other steps keep their default compute resources
+* Minimizes cluster resource usage to the failing Step only
+
+== Find the Pipeline, Task, and Step names
+
+To adjust resources for a Task or Step, you need to identify the following names:
+
+* `pipelineTaskName` - The Task name as defined in the Pipeline
+* `stepName` - The Step name inside the Task (required for step-level overrides only)
+
+=== Identify the Pipeline
+
+Inspect the `pipeline` object in your `ReleasePlanAdmission`:
+
+[source,yaml]
+----
+pipeline:
+  pipelineRef:
+    resolver: git
+    params:
+      - name: url <.>
+        value: "<url-to-repo>.git"
+      - name: revision <.>
+        value: <revision>
+      - name: pathInRepo <.>
+        value: "<path-to-your-pipeline>"
+----
+
+<.> The URL to the repository containing the Pipeline.
+<.> The branch of the repository containing the Pipeline.
+<.> The path to the Pipeline within the repository.
+
+NOTE: Using the `pathInRepo` value, you can locate the Pipeline definition in the repository. All managed
+Releases use pipelines stored in the https://github.com/konflux-ci/release-service-catalog/tree/production/pipelines/managed[release-service-catalog] repository.
+
+=== Find the `pipelineTaskName`
+
+Open the Pipeline definition in the repository on the specified branch at the 
+`pathInRepo` location and inspect the `tasks` section.
+
+[source,yaml]
+----
+tasks:
+  - name: <task-name> <.>
+    taskRef:
+      resolver: "git"
+      params:
+        - name: url
+          value: "<url-to-repo>.git"
+        - name: revision
+          value: <revision>
+        - name: pathInRepo
+          value: "<path-to-your-task>"
+----
+
+<.> The name of the Task as defined in the Pipeline. This value is the `pipelineTaskName` you'll use in `taskRunSpecs`.
+
+=== Find the `stepName` (for step-level overrides)
+
+Open the Task definition in the repository on the specified branch using the `pathInRepo` value in the `taskRef`
+from the Pipeline definition.
+
+[source,yaml]
+----
+steps:
+  - name: use-trusted-artifact <.>
+    image: <image-name>
+  - name: create-release-from-binaries
+    image: <image-name>
+  - name: create-trusted-artifact
+    image: <image-name>
+----
+
+<.> This value is the `stepName` you'll use in `stepSpecs`.
+
+NOTE: The task definition is typically stored in the same repository as the Pipeline,
+but it can also be stored in a different repository.
+
+== Configure resource overrides
+
+=== Task-level override example
+
+The following example shows a `ReleasePlanAdmission` with a task-level resource override.
+All Steps in the `verify-conforma` Task will receive these resources.
 
 [source,yaml]
 ----
@@ -45,8 +161,8 @@ kind: ReleasePlanAdmission
 metadata:
   labels:
     release.appstudio.openshift.io/block-releases: 'false'
-  name: sre-production
-  namespace: managed-tenant-namespace
+  name: release-production
+  namespace: <managed-tenant-namespace>
 spec:
   applications:
     - demo-app
@@ -59,21 +175,70 @@ spec:
         - name: url
           value: "<url-to-repo>.git"
         - name: revision
-          value: main
+          value: <revision>
         - name: pathInRepo
           value: "<path-to-your-pipeline>"
     serviceAccountName: release-service-account
     taskRunSpecs:
-      - pipelineTaskName: verify-enterprise-contract <.>
+      - pipelineTaskName: verify-conforma <.>
         computeResources: <.>
           limits:
-            cpu: "600m"
-            memory: "540Mi"
+            cpu: "500m"
+            memory: "3Gi"
           requests:
             cpu: "250m"
-            memory: "256Mi"
+            memory: "2Gi"
   policy: <policy>
 ----
 
-<.> Name of the Task we want to modify.
-<.> Compute resources we want to assign to the task.
+<.> The name of the Task as defined in the Pipeline.
+<.> Compute resources applied to all Steps in this Task.
+
+=== Step-level override example (recommended)
+
+The following example shows a `ReleasePlanAdmission` with a step-level
+resource override. Only the `validate` Step in the `verify-conforma` Task will 
+receive the override resources. Other Steps will keep their default compute resources.
+
+[source,yaml]
+----
+apiVersion: appstudio.redhat.com/v1alpha1
+kind: ReleasePlanAdmission
+metadata:
+  labels:
+    release.appstudio.openshift.io/block-releases: 'false'
+  name: release-production
+  namespace: <managed-tenant-namespace>
+spec:
+  applications:
+    - demo-app
+  data: <key>
+  origin: <dev-tenant-namespace>
+  pipeline:
+    pipelineRef:
+      resolver: git
+      params:
+        - name: url
+          value: "<url-to-repo>.git"
+        - name: revision
+          value: <revision>
+        - name: pathInRepo
+          value: "<path-to-your-pipeline>"
+    serviceAccountName: release-service-account
+    taskRunSpecs:
+      - pipelineTaskName: verify-conforma <.>
+        stepSpecs:
+          - name: validate <.>
+            computeResources: <.>
+              limits:
+                cpu: "500m"
+                memory: "3Gi"
+              requests:
+                cpu: "250m"
+                memory: "2Gi"
+  policy: <policy>
+----
+
+<.> The name of the Task as defined in the Pipeline.
+<.> The name of the Step as defined in the Task.
+<.> The compute resources to apply to this specific Step.
