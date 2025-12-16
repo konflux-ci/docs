@@ -79,7 +79,6 @@ How the controller uses this CRD:
   - For each unique repository+branch across those Components, the controller generates
     one Tekton `PipelineRun` that scans the repository for dependency updates using Renovate.
 
-
 Annotations:
   - `mintmaker.appstudio.redhat.com/processed`: set by the controller when the
     DependencyUpdateCheck is processed, to avoid reprocessing the same CR.
