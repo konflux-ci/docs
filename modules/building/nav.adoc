@@ -8,6 +8,7 @@
 *** xref:configuration-as-code.adoc[Configuration as code]
 *** xref:using-trusted-artifacts.adoc[Using trusted artifacts]
 *** xref:hermetic-builds.adoc[Enabling hermetic builds]
+*** xref:caching-proxy.adoc[Enabling caching proxy]
 *** xref:prefetching-dependencies.adoc[Prefetching package manager dependencies]
 *** xref:component-nudges.adoc[Defining component relationships]
 *** xref:running.adoc[Running build pipelines]
