@@ -3,6 +3,7 @@
 *** xref:deleting.adoc[Deleting applications and components]
 *** xref:build-binaries.adoc[Building binaries]
 *** xref:imagerepository.adoc[Customizing ImageRepository]
+*** xref:accessing-private-images.adoc[Accessing private image repositories]
 *** xref:customizing-the-build.adoc[Customizing the build pipeline]
 *** xref:creating-secrets.adoc[Creating secrets for your builds]
 *** xref:configuration-as-code.adoc[Configuration as code]

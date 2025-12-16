@@ -1,8 +1,10 @@
 = Customizing ImageRepository
 
 == Changing repository visibility
-In the ImageRepository change `spec.image.visibility` to `public`(default) or `private` according what you want,
+In the ImageRepository change `spec.image.visibility` to `private`(default) or `public` according what you want,
 only those two options are valid.
+
+NOTE: For information on how to pull images from private repositories, see xref:building:accessing-private-images.adoc[Accessing private image repositories].
 
 == Rotating credentials for repository
 In the ImageRepository add new section `spec.credentials.regenerate-token` with value `true`, repository credentials
