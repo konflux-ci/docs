@@ -1,0 +1,119 @@
+= Enabling caching proxy for builds
+
+{ProductName} supports HTTP proxy caching to improve build performance. When enabled, container build operations can use a Squid HTTP proxy to cache layers, reducing build times for subsequent builds.
+
+== Prerequisites
+
+The caching proxy requires Squid to be installed on the cluster. Cluster administrators can install Squid using the Helm chart from the link:https://github.com/konflux-ci/caching[caching repository].
+
+== How it works
+
+The caching proxy feature uses two levels of configuration:
+
+* **Pipeline level**: The `enable-cache-proxy` parameter controls whether a specific pipeline uses the caching proxy.
+* **Cluster level**: A `cluster-config` ConfigMap in the `konflux-info` namespace provides the proxy configuration and can disable proxy usage cluster-wide.
+
+The pipeline's `init` task reads the configuration and emits `HTTP_PROXY` and `NO_PROXY` values to be used by the `buildah` task.
+
+== Enabling the caching proxy
+
+The caching proxy is disabled by default. To enable the caching proxy for a component's build pipeline, set the `enable-cache-proxy` pipeline parameter to `true`.
+
+.Procedure
+
+. In the PipelineRun YAML files in the `.tekton` directory, set the `enable-cache-proxy` parameter to `true` in the `spec.params` section:
++
+[source,yaml]
+----
+spec:
+  params:
+  - name: enable-cache-proxy
+    value: "true"
+----
+
+. Commit your changes to the repository of the component.
+
+== Cluster-level configuration
+
+The caching proxy behavior can be configured at the cluster level using a ConfigMap named `cluster-config` in the `konflux-info` namespace. This ConfigMap is globally readable from all namespaces in the cluster, but writable only by the infrastructure team.
+
+The ConfigMap supports the following keys:
+
+`allow-cache-proxy`::
+When set to `false`, disables the caching proxy for all pipelines in the cluster, regardless of individual pipeline settings. When set to `true` or unset, pipelines can use the proxy if they have `enable-cache-proxy` set to `true`.
++
+[source,yaml]
+----
+data:
+  allow-cache-proxy: "true"
+----
+
+`http-proxy`::
+The HTTP proxy URL to use for builds. If not set, defaults to `squid.caching.svc.cluster.local:3128`.
++
+[source,yaml]
+----
+data:
+  http-proxy: "squid.caching.svc.cluster.local:3128"
+----
+
+`no-proxy`::
+A comma-separated list of hosts that should bypass the proxy. If not set, the init task uses a default list of common container registries.
++
+[source,yaml]
+----
+data:
+  no-proxy: "quay.io,registry.redhat.io,docker.io"
+----
+
+.Example cluster-config ConfigMap
+[source,yaml]
+----
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: cluster-config
+  namespace: konflux-info
+data:
+  allow-cache-proxy: "true"
+  http-proxy: "squid.caching.svc.cluster.local:3128"
+  no-proxy: "quay.io,registry.redhat.io,docker.io"
+----
+
+== Configuration precedence
+
+The caching proxy is enabled only when both of the following conditions are met:
+
+. The pipeline parameter `enable-cache-proxy` is set to `true`.
+. The cluster-level `allow-cache-proxy` is either set to `true` or is unset.
+
+If `allow-cache-proxy` is explicitly set to `false` at the cluster level, the proxy is disabled for all pipelines, even if individual pipelines have `enable-cache-proxy` set to `true`.
+
+== Logging
+
+The `init` task logs the proxy configuration applied to the pipeline run and the reasoning for the applied settings. You can view these logs in the pipeline run's `init` task output.
+
+.Example log output when cache proxy is enabled
+[source]
+----
+Fetching cluster-config from konflux-info namespace...
+Cache proxy enabled (cluster-enabled: true, task-enable: true)
+Setting HTTP_PROXY to squid.caching.svc.cluster.local:3128
+Setting NO_PROXY to quay.io,registry.redhat.io,docker.io
+----
+
+.Example log output when cache proxy is disabled
+[source]
+----
+Fetching cluster-config from konflux-info namespace...
+Cache proxy disabled (cluster-enabled: true, task-enable: false)
+Setting HTTP_PROXY to 
+Setting NO_PROXY to 
+----
+
+If the `cluster-config` ConfigMap is not found, the init task logs a warning and proceeds with default values:
+
+[source]
+----
+Warning: Failed to fetch cluster-config ConfigMap. Proceeding with defaults.
+----
