@@ -2,7 +2,7 @@
 
 As a tenant admin, you may want to give visibility on your project to the Konflux users outside your team.
 
-For this purpose, Konflux allows you to bind the `system:authenticated` group to the link:https://konflux-ci.dev/architecture/ADR/0011-roles-and-permissions.html[konflux-viewer-user-actions Role].
+For this purpose, Konflux allows you to bind the `system:authenticated` group to the xref:reference:permissions.adoc[konflux-viewer-user-actions Role].
 As a result, each authenticated user in Konflux will be allowed to view your Tenant namespace and its resources from CLI and UI.
 
 include::partial${context}-share-community-first-paragraph.adoc[]
