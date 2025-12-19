@@ -1,0 +1,103 @@
+= Accessing private image repositories
+
+When the image repository visibility is set to `private` (the default), you need to authenticate before you can pull images. Konflux provides an RBAC image proxy that controls access based on your permissions.
+
+== Who can pull images and access scope
+
+Access to pull images is controlled at the *tenant level* through Kubernetes RBAC:
+
+* Users or service accounts who have permission to `get`, `list`, or `watch` `ImageRepository` resources in a tenant can pull images from *all components* in that tenant
+* Image path format: `proxy_host/redhat-user-workloads(-stage)/tenant/component:tag`
+* Without the required RBAC permissions, image pulls will fail
+
+Tenant maintainers should manage `Role` and `RoleBinding` resources to grant users or service accounts the permission to read `ImageRepository` resources for pulling images.
+
+== Token types and scope
+
+* *User tokens*:
+** Any Konflux user can obtain a user token through the proxy authentication flow
+** Issued by the proxy's Dex (not SSO), so they can ONLY be used for pulling images through the proxy
+** Cannot be used for OpenShift API authentication
+** Expire after 24 hours
+** Best for local development and manual testing
+
+* *Service account tokens*:
+** Any Konflux user who has permission to create secrets in a namespace can create a service account token in that namespace
+** Can authenticate against both the proxy AND the OpenShift API (works like a regular OpenShift service account)
+** Do not expire (valid until the secret is deleted)
+** Best for automated systems and CI/CD pipelines
+
+== Getting registry login credentials via UI
+
+To access private images locally:
+
+. Navigate to the *Component details* page for your component
+. In the *Registry login information* section, copy and run the `podman login` command in your terminal:
++
+[source,bash]
+----
+podman login -u unused image-rbac-proxy.apps.example.com
+----
+. Click the OAuth URL link to get your authentication token
+. Paste the token when prompted for password
+. Copy the private image path from the UI and pull the image:
++
+[source,bash]
+----
+podman pull image-rbac-proxy.apps.example.com/redhat-user-workloads/my-tenant/my-app:b153d64
+----
++
+NOTE: The image path includes the proxy host (e.g., `image-rbac-proxy.apps.example.com`) which enforces access control. You must use this proxy URL, not a direct registry URL.
+
+== Using service accounts for external systems
+
+For automated access in external systems like Testing Farm or CI/CD pipelines:
+
+. Create a service account:
++
+[source,yaml]
+----
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: external-puller
+  namespace: <your-namespace>
+----
+
+. Create a service account token secret:
++
+[source,yaml]
+----
+apiVersion: v1
+kind: Secret
+metadata:
+  name: external-puller-token
+  namespace: <your-namespace>
+  annotations:
+    kubernetes.io/service-account.name: external-puller
+type: kubernetes.io/service-account-token
+----
+
+. Get the service account token from the secret:
++
+[source,bash]
+----
+kubectl get secret external-puller-token -n <your-namespace> -o jsonpath='{.data.token}' | base64 -d
+----
+
+. Use the token to authenticate to the registry in your external system:
++
+[source,bash]
+----
+podman login -u external-puller image-rbac-proxy.apps.example.com
+# When prompted for password, paste the service account token
+----
++
+Then pull images:
++
+[source,bash]
+----
+podman pull image-rbac-proxy.apps.example.com/redhat-user-workloads/my-tenant/my-app:b153d64
+----
+
+NOTE: If a token is compromised, delete the secret to revoke the token, then create a new one. The username must match the service account name.
