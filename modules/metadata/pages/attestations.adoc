@@ -2,7 +2,7 @@
 
 Generally speaking, link:https://github.com/in-toto/attestation/blob/main/spec/README.md#in-toto-attestation-framework-spec[attestations] are authenticated metadata about software artifacts. An identity (and their private cryptographic key) are required to create an attestation for a software artifact. The primary attestation that {ProductName} generates is the SLSA provenance which is produced by link:https://tekton.dev/docs/concepts/supply-chain-security/[Tekton Chains]. This provenance contains information from the PipelineRun that generated the attested artifact including input parameters for the Tasks as well as Task results.
 
-To see the attestations, you need to find the image for a xref:building:creating.adoc#finding-the-built-image[recently completed build pipeline] and export that value to the IMAGE environment variable. Then you can start exploring the information stored in the attestations.
+To see the attestations, you need to find the image for a xref:building:applications-components/creating.adoc#finding-the-built-image[recently completed build pipeline] and export that value to the IMAGE environment variable. Then you can start exploring the information stored in the attestations.
 
 == Exploring the provenance
 

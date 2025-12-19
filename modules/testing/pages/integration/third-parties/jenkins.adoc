@@ -4,7 +4,7 @@ In this guide, you'll learn how to xref:testing:integration/adding.adoc[add a cu
 
 .Prerequisites
 
-. You have xref:building:creating.adoc[created an application] in {ProductName}
+. You have xref:building:applications-components/creating.adoc[created an application] in {ProductName}
 
 . You have the **url** of the jenkins instance and the **name** of the job you want to trigger.
 
