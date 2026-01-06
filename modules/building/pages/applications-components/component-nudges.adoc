@@ -17,7 +17,7 @@ If image digests are pointing to an architecture-specific link:https://github.co
 
 [NOTE]
 ====
-By default, {ProductName} only looks for image digest references in Dockerfiles, Containerfiles, and YAML files. However, you can xref:./customizing-the-build.adoc[customize your build pipeline] to adjust that list of files with an annotation on the push PipelineRun definition. This annotation supports a comma-separated list of link:https://docs.renovatebot.com/string-pattern-matching/[regex or glob patterns]. The following annotation would replicate the default behavior.
+By default, {ProductName} only looks for image digest references in Dockerfiles, Containerfiles, and YAML files. However, you can xref:customizing-the-build.adoc[customize your build pipeline] to adjust that list of files with an annotation on the push PipelineRun definition. This annotation supports a comma-separated list of link:https://docs.renovatebot.com/string-pattern-matching/[regex or glob patterns]. The following annotation would replicate the default behavior.
 ====
 
 [source,yaml]

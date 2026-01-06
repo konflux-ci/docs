@@ -8,7 +8,7 @@ NOTE: RapiDAST scans are intended for testing environments and should not be use
 
 .Prerequisites
 
-- An xref:building:creating.adoc[application] created in {ProductName}
+- An xref:building:applications-components/creating.adoc[application] created in {ProductName}
 - A RapiDAST configuration for testing this application. For more information, see the link:https://redhatproductsecurity.github.io/rapidast/#/USER-GUIDE?id=configuration[RapiDAST documentation]
 
 It is recommended to first create a RapiDAST config file for the target application by manual testing outside of Konflux, as this is usually faster than repeated runs of integration tests.
