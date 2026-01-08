@@ -17,7 +17,7 @@ The pipeline's `init` task reads the configuration and emits `HTTP_PROXY` and `N
 
 == Enabling the caching proxy
 
-The caching proxy is disabled by default. To enable the caching proxy for a component's build pipeline, set the `enable-cache-proxy` pipeline parameter to `true`.
+The caching proxy is disabled by default. To enable the caching proxy for a component's build pipeline, set the `enable-cache-proxy` pipeline parameter to `true` and pass it to the `init` task.
 
 .Procedure
 
@@ -29,6 +29,21 @@ spec:
   params:
   - name: enable-cache-proxy
     value: "true"
+----
+
+. Pass the `enable-cache-proxy` parameter to the `init` task in the `tasks` section:
++
+[source,yaml]
+----
+tasks:
+  - name: init
+    params:
+      - name: image-url
+        value: $(params.output-image)
+      - name: enable-cache-proxy
+        value: $(params.enable-cache-proxy)
+    taskRef:
+      # ... rest of taskRef configuration
 ----
 
 . Commit your changes to the repository of the component.
