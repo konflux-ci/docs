@@ -3,7 +3,7 @@
 In {ProductName}, you can add integration tests to verify that the individual components of your application integrate correctly, forming a complete and functional application. {ProductName} runs these integration tests on the container images of components before their release.
 
 +
-NOTE: Starting an integration test is dependant on the results of a successful build pipeline providing some required information about an image, details on these requirements can be found link:https://github.com/konflux-ci/architecture/blob/main/architecture/integration-service.md#image-extraction-details[here]. In the case of multi-arch builds, an OCI index that maps to the relevant artifacts is used.
+NOTE: Starting an integration test is dependant on the results of a successful build pipeline providing some required information about an image, details on these requirements can be found link:https://github.com/konflux-ci/architecture/blob/main/architecture/core/integration-service.md#image-extraction-details[here]. In the case of multi-arch builds, an OCI index that maps to the relevant artifacts is used.
 
 .Prerequisites
 
