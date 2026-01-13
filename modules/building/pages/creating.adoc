@@ -128,8 +128,9 @@ $ kubectl apply -f Component.yaml -f ImageRepository.yaml
 +
 NOTE: You can create additional components by adding their custom resource configurations to the YAML files.
 
-. Trigger your component's first build pipeline. In the git repository for your component, using your preferred text editor, open a pull request against the `/.tekton/pull-request.yaml` file.
-.. Specifically, replace any existing value for the `git-url` field with the git URL for your component's repository. (This is the URL you would use to clone the repository locally; it ends with `.git`.)
+. Configure the build pipeline for your component:
+.. If the annotation `build.appstudio.openshift.io/request: configure-pac` is set on the component, {ProductName} automatically creates a pull request or merge request in your repository with the Tekton pipeline definitions. Review and merge this pull request to complete the setup.
+.. If the annotation is not set or is set to `configure-pac-no-mr`, manually create or update the Tekton pipeline files in your repository.
 
 +
 NOTE: The PipelineRun will run only for submitters who have permission to run PipelineRuns or who receive an `/ok-to-test` comment from an authorized user. +
