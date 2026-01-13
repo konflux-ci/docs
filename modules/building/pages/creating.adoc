@@ -1,29 +1,76 @@
 = Creating applications and components
 
-== Onboarding components to {ProductName}
+Create applications and components using the {ProductName} UI or `kubectl`.
 
-{ProductName} supports two methods for creating applications and components.
+== Creating an application
 
-Before being able to onboard a component to {ProductName}, you will need to ensure that the instance has appropriate access to the git repository. This means either installing your organization’s {ProductName} GitHub App on the source code repository or xref:building:creating-secrets.adoc#creating-source-control-secrets[create a secret] to enable access to a GitLab repository.
-
-NOTE: Component names must be unique in a namespace, even when components are used in different application.
-
-CAUTION: {ProductName} pushes directly to branches in your onboarded repositories. In order to properly onboard, you need to ensure
-that no rules prevent pushes to the branch patterns *`konflux-*`* and *`konflux/mintmaker/*`*.
+An application is a logical grouping of components that are developed and deployed together.
 
 === With the UI
+
 .Prerequisites:
 
 * xref:installing:enabling-builds.adoc[Enabled] build pipelines for your instance of {ProductName}.
 * xref:installing:enabling-builds.adoc#enable-image-controller[Enabled] image controller for your instance of {ProductName}.
 
-==== Create initial Application and Component
 .*Procedures*
 
 . In the {ProductName} UI, go to the *Applications* page.
 . Click the *Create application* button.
-. Enter a name for the application
-. Click the *Add a component* button.
+. Enter a name for the application.
+. Click *Create application*.
+
+=== With the CLI
+
+.Prerequisites:
+
+* xref:installing:enabling-builds.adoc[Enabled] build pipelines for your instance of {ProductName}.
+* link:https://kubernetes.io/docs/tasks/tools/[kubectl] CLI tool
+* Completed the steps listed in the xref:ROOT:getting-started.adoc#getting-started-with-the-cli[Getting started with the CLI] page.
+
+.*Procedures*
+
+. Create an `Application.yaml` file locally.
+
++
+.Example `Application.yaml` object
+include::partial$custom-resources/{context}-application.adoc[]
+
+. Apply the resource to your namespace by running the following command:
+
++
+[source,shell]
+----
+$ kubectl apply -f Application.yaml
+----
+
++
+NOTE: You can create additional applications by adding their custom resource configurations to the `Application.yaml` file.
+
+== Creating components
+
+A component is an individual part of an application that contains source code and a build configuration.
+
+Before onboarding a component to {ProductName}, ensure that the instance has appropriate access to the git repository. This means either installing your organization's {ProductName} GitHub App on the source code repository or xref:building:creating-secrets.adoc#creating-source-control-secrets[creating a secret] to enable access to a GitLab repository.
+
+NOTE: Component names must be unique in a namespace, even when components are used in different applications.
+
+CAUTION: {ProductName} pushes directly to branches in your onboarded repositories. In order to properly onboard, ensure
+that no rules prevent pushes to the branch patterns *`konflux-*`* and *`konflux/mintmaker/*`*.
+
+=== With the UI
+
+.Prerequisites:
+
+* xref:installing:enabling-builds.adoc[Enabled] build pipelines for your instance of {ProductName}.
+* xref:installing:enabling-builds.adoc#enable-image-controller[Enabled] image controller for your instance of {ProductName}.
+* An existing application in your namespace.
+
+.*Procedures*
+
+. In the {ProductName} UI, go to the *Applications* page.
+. Click on the name of the application that you want to add a component to.
+. Click on *Actions* and *Add component*.
 +
 NOTE: For *Gitlab* provider, make sure to xref:building:creating-secrets.adoc#creating-source-control-secrets[create a source control secret] before creating the component.
   . Enter the URL for the git repository.
@@ -34,7 +81,7 @@ NOTE: For *Gitlab* provider, make sure to xref:building:creating-secrets.adoc#cr
   . (Optional) Change the component name if desired.
   . (Optional) Click on the *Pipeline* drop down box and select the desired pipeline to configure your component with.
   . (Optional) Click on *Add secret* to add a secret which will be needed for the component build. See xref:building:creating-secrets.adoc[creating secrets] for more information.
-. Click *Create application*.
+. Click *Add component*.
 
 +
 NOTE: GitHub and GitLab are supported source control providers. GitLab support requires the configuration of xref:building:creating-secrets.adoc#creating-source-control-secrets[source control secrets].
@@ -44,36 +91,21 @@ wasn't yet assigned to the Component and when trying to create Component again w
 complain with error that ImageRepository already exists, solution is to remove manually ImageRepository
 from OCP.
 
-==== Create additional Components in an Application
-
-.*Procedures*
-
-. In the {ProductName} UI, go to the *Applications* page.
-. Click on the name of the application that you want to add a component to.
-. Click on *Actions* and *Add component*.
-. Follow the procedure above for specifying the component.
-. Click *Add component*.
-
 === With the CLI
 
 .Prerequisites:
 
 * xref:installing:enabling-builds.adoc[Enabled] build pipelines for your instance of {ProductName}.
 * link:https://kubernetes.io/docs/tasks/tools/[kubectl] CLI tool
-* You have completed the steps listed in the xref:ROOT:getting-started.adoc#getting-started-with-the-cli[Getting started in the CLI] page.
+* You have completed the steps listed in the xref:ROOT:getting-started.adoc#getting-started-with-the-cli[Getting started with the CLI] page.
+* An existing application in your namespace.
 
 .*Procedures*
 
-. Create an `Application.yaml`, `Component.yaml`, and `ImageRepository.yaml` files locally.
+. Create a `Component.yaml` and `ImageRepository.yaml` file locally.
 
 +
-*Example `Application.yaml` object*
-+
-include::partial$custom-resources/{context}-application.adoc[]
-
-+
-*Example `Component.yaml` object*
-+
+.Example `Component.yaml` object
 include::partial$custom-resources/{context}-component.adoc[]
 
 +
@@ -82,29 +114,28 @@ then during onboarding the onboarding PR won't be created and users will have to
 files for the component manually.
 
 +
-*Example `ImageRepository.yaml` object*
-+
+.Example `ImageRepository.yaml` object
 include::partial$custom-resources/{context}-imagerepository.adoc[]
 
-. In your tenant namespace, save the `Application.yaml`, `Component.yaml`, and `ImageRepository.yaml` files and add the resource to your cluster by running the following command:
+. Apply the resources to your namespace by running the following command:
 
 +
 [source,shell]
 ----
-$ kubectl apply -f Application.yaml -f Component.yaml -f ImageRepository.yaml
+$ kubectl apply -f Component.yaml -f ImageRepository.yaml
 ----
 
 +
-NOTE: You can create additional components and applications with the same file locally by adding additional custom resource configurations. 
+NOTE: You can create additional components by adding their custom resource configurations to the YAML files.
 
-. Now, you can trigger your application’s first build pipeline. In the git repository for your application, using your preferred text editor, open a pull request against the `/.tekton/pull-request.yaml` file. 
-.. Specifically, replace any existing value for the `git-url` field with the git URL for your application’s repository. (This is the URL you would use to clone the repository locally; it ends with `.git`.)
+. Trigger your component's first build pipeline. In the git repository for your component, using your preferred text editor, open a pull request against the `/.tekton/pull-request.yaml` file.
+.. Specifically, replace any existing value for the `git-url` field with the git URL for your component's repository. (This is the URL you would use to clone the repository locally; it ends with `.git`.)
 
 +
 NOTE: The PipelineRun will run only for submitters who have permission to run PipelineRuns or who receive an `/ok-to-test` comment from an authorized user. +
 For further details on PipelineRun permissions, please refer to the https://pipelinesascode.com/docs/guide/running/[PipelinesAsCode documentation].
 
-. Once the PR is made, a build pipeline should start. You can track its progress in the {ProductName} UI or you can see the final status in GitHub after the pipeline completes. If the pipeline is successful, you can merge the PR.
+. Once the PR is made, a build pipeline should start. Track its progress in the {ProductName} UI or see the final status in GitHub after the pipeline completes. If the pipeline is successful, merge the PR.
 
 == Using different from default image repository
 
