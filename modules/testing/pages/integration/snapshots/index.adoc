@@ -78,7 +78,8 @@ Snapshot CRs themselves consume resources. To manage this and stay within quota,
 
 * **Mechanism:** GC is based on **retention counts**, not age. {ProductName} keeps a specific number of the most recent Snapshots and deletes the oldest ones beyond that limit.
 * **Eligibility:** GC only deletes Snapshots that are **not** referenced by an active `Release` CR.
-** Default retention counts:
+* **Per-Component Preservation:** To handle applications where components have different build, test, or release cadences, the garbage collector preserves the latest **5** push snapshots per component that are not associated with a `Release` CR. This ensures that snapshots for less frequently built components remain available for manual release, even if other components build more frequently.
+* ** Default retention counts:**
 *** **~=640** non-PR (push event) snapshots. This includes both Snapshots that are referenced by a `Release` CR and those that are not.
 *** **70** PR event snapshots.
 * **Exception:** Snapshots annotated with `test.appstudio.openshift.io/keep-snapshot=true` will not be garbage collected, but they still count towards the retention count.
