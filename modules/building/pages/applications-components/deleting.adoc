@@ -42,4 +42,4 @@ kubectl delete application/<the-application-name>
 ----
 
 == Additional resources
-* To create your first application, refer to xref:building:creating.adoc[Creating applications and components].
+* To create your first application, refer to xref:building:applications-components/creating.adoc[Creating applications and components].

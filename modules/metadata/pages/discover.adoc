@@ -12,7 +12,7 @@
 
 In the CLI, complete the following steps to discover the associated metadata for a component:
 
-. Find the image for a xref:building:creating.adoc#finding-the-built-image[recently completed build pipeline] and export the value to the `IMAGE` environment variable
+. Find the image for a xref:building:applications-components/creating.adoc#finding-the-built-image[recently completed build pipeline] and export the value to the `IMAGE` environment variable
 +
 Example:
 +
