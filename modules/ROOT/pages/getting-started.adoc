@@ -103,7 +103,7 @@ You can configure each ITS as optional for release. All non-optional tests must 
 
 ==== EnterpriseContractPolicy
 Building in {ProductName} follows a "build once, release multiple times" mentality, where each release can have separate requirements on the builds before allowing the action.
-You codify these build requirements in an xref:reference:kube-apis/enterprise-contract.adoc#k8s-api-github-com-conforma-crds-api-v1alpha1-enterprisecontractpolicy[EnterpriseContractPolicy CR].
+You codify these build requirements in an xref:reference:kube-apis/conforma.adoc#k8s-api-github-com-conforma-crds-api-v1alpha1-enterprisecontractpolicy[EnterpriseContractPolicy CR].
 
 When {ProductName} evaluates an ECP against a snapshot, it returns a single result based on the highest violation.
 For example, if all components pass the policy requirements, the policy evaluation is true.
