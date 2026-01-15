@@ -113,3 +113,56 @@ When the script is the tool generating the `Containerfile`, you need to modify `
 ==== ansible-builder to build Ansible Execution Environments
 
 A link:https://github.com/Zokormazo/konflux-execution-environment-example/pull/2/files[sample repository] has been prepared to show how to use this task to build Ansible Execution Environments.
+
+=== Example script of adding run-script to pipelines
+
+Use this script with link:https://github.com/konflux-ci/pipeline-migration-tool/[pipeline-migration-tool] to add `run-script` task and all the related changes to pipelines.
+
+`yq` is a prerequisite to run this script.
+
+[source,bash]
+----
+pipeline_files=(.tekton/pull-request.yaml) <1>
+build_task=build-container <2>
+for pipeline_file in ${pipeline_files[@]}
+do
+    pmt add-task \
+    --run-after prefetch-dependencies \
+    --bundle-ref quay.io/konflux-ci/tekton-catalog/task-run-script-oci-ta:0.1@sha256:c0f627069353ebd6d1ed03c8657e281eaf11be63706ea38cc53caf16cf4ffd65 \
+    --param 'ociStorage=$(params.output-image).script' \
+    --param 'ociArtifactExpiresAfter=$(params.image-expires-after)' \
+    --param 'SCRIPT_RUNNER_IMAGE=quay.io/my-script-runner-image:latest@sha256:digest' \
+    --param 'SCRIPT=my-script' \
+    --param 'HERMETIC=$(params.hermetic)' \
+    --param 'SOURCE_ARTIFACT=$(tasks.prefetch-dependencies.results.SOURCE_ARTIFACT)' \
+    run-script \
+    "$pipeline_file"
+
+    pmt modify -f "$pipeline_file" task "$build_task" remove-param SOURCE_ARTIFACT
+    pmt modify -f "$pipeline_file" task "$build_task" add-param \
+        SOURCE_ARTIFACT \
+        "\$(tasks.run-script.results.SCRIPT_ARTIFACT)"
+
+    pmt modify -f "$pipeline_file" task "$build_task" add-param \
+        --type array \
+        ADDITIONAL_BASE_IMAGES \
+        "\$(tasks.run-script.results.SCRIPT_RUNNER_IMAGE_REFERENCE)"
+
+    yaml_path=$(yq "
+        .spec.pipelineSpec.tasks[]
+        | select(.name == \"${build_task}\")
+        | .runAfter[] | select(. == \"prefetch-dependencies\")
+        | path
+    " "$pipeline_file")
+    pmt modify -f "$pipeline_file" generic replace "$yaml_path" run-script
+
+    pmt modify -f "$pipeline_file" task push-dockerfile remove-param SOURCE_ARTIFACT
+    pmt modify -f "$pipeline_file" task push-dockerfile add-param \
+        SOURCE_ARTIFACT \
+        "\$(tasks.run-script.results.SCRIPT_ARTIFACT)"
+done
+----
+
+<1> Replace with your Pipeline/PipelineRun YAML files.
+
+<2> Choose the appropriate task name `build-images` or `build-container`, as described previously.
