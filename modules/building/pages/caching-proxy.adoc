@@ -117,3 +117,26 @@ If the `cluster-config` ConfigMap is not found, the init task logs a warning and
 ----
 Warning: Failed to fetch cluster-config ConfigMap. Proceeding with defaults.
 ----
+
+== Troubleshooting
+
+If the caching proxy is not working after setting `enable-cache-proxy` to `true`, the `init` task in your pipeline may not be configured to receive the parameter. This configuration is applied automatically by MintMaker through task migrations.
+
+.Procedure
+
+. Check your repository for any unmerged MintMaker pull requests that update the pipeline configuration.
+
+. If you find an unmerged MintMaker PR that adds the `enable-cache-proxy` parameter to the `init` task, merge it.
+
+. If no MintMaker PR exists, you can manually pass the parameter to the `init` task. In your pipeline definition, add the `enable-cache-proxy` parameter to the `init` task in the `tasks` section:
++
+[source,yaml]
+----
+tasks:
+- name: init
+  params:
+  - name: enable-cache-proxy
+    value: $(params.enable-cache-proxy)
+----
+
+. Verify the caching proxy is working by checking the `init` task logs for the proxy configuration messages.
