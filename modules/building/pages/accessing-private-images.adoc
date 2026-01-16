@@ -10,7 +10,39 @@ Access to pull images is controlled at the *tenant level* through Kubernetes RBA
 * Image path format: `proxy_host/redhat-user-workloads(-stage)/tenant/component:tag`
 * Without the required RBAC permissions, image pulls will fail
 
-Tenant maintainers should manage `Role` and `RoleBinding` resources to grant users or service accounts the permission to read `ImageRepository` resources for pulling images.
+Tenant maintainers should manage `Role` and `RoleBinding` resources to grant users, groups or service accounts the permission to read `ImageRepository` resources for pulling images.
+
+[source,yaml]
+----
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: repo-viewer
+  namespace: <your-namespace>
+rules:
+  - apiGroups:
+      - appstudio.redhat.com
+    resources:
+      - imagerepositories
+    verbs:
+      - get
+      - watch
+      - list
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: repo-viewer
+  namespace: <your-namespace>
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: repo-viewer
+subjects:
+  - apiGroup: rbac.authorization.k8s.io
+    kind: Group
+    name: <your-group>
+----
 
 == Token types and scope
 
