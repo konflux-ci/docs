@@ -183,6 +183,95 @@ Component is the Schema for the components API. For description, refer to xref:k
 |===
 
 
+[id="{anchor_prefix}-github-com-konflux-ci-application-api-api-v1alpha1-componentactions"]
+==== ComponentActions
+
+
+
+
+
+
+
+.Appears In:
+****
+- xref:{anchor_prefix}-github-com-konflux-ci-application-api-api-v1alpha1-componentspec[$$ComponentSpec$$]
+****
+
+[cols="20a,50a,15a,15a", options="header"]
+|===
+| Field | Description | Default | Validation
+| *`create-pipeline-configuration-pr`* __xref:{anchor_prefix}-github-com-konflux-ci-application-api-api-v1alpha1-componentcreatepipelineconfiguration[$$ComponentCreatePipelineConfiguration$$]__ | Send a PR with build pipeline configuration proposal for Component version(s). +
+If not set, version onboarding will be done without pipeline configuration PR. +
+Use after onboarding to create or renew the build pipeline definition. +
+Optional. + |  | 
+| *`trigger-push-build`* __string__ | Specify name of component version to restart the push build for. +
+Can be specified together with 'trigger-push-builds' and any duplicates will be removed. +
+Optional. + |  | 
+| *`trigger-push-builds`* __string array__ | Specify names of component versions to restart the push build for. +
+Can be specified together with 'trigger-push-build' and any duplicates will be removed. +
+Optional. + |  | 
+|===
+
+
+[id="{anchor_prefix}-github-com-konflux-ci-application-api-api-v1alpha1-componentbuildpipeline"]
+==== ComponentBuildPipeline
+
+
+
+
+
+
+
+.Appears In:
+****
+- xref:{anchor_prefix}-github-com-konflux-ci-application-api-api-v1alpha1-componentspec[$$ComponentSpec$$]
+- xref:{anchor_prefix}-github-com-konflux-ci-application-api-api-v1alpha1-componentversion[$$ComponentVersion$$]
+****
+
+[cols="20a,50a,15a,15a", options="header"]
+|===
+| Field | Description | Default | Validation
+| *`pull-and-push`* __xref:{anchor_prefix}-github-com-konflux-ci-application-api-api-v1alpha1-pipelinedefinition[$$PipelineDefinition$$]__ | Pipeline used for pull and push pipeline runs. +
+Can specify just one of: pipelinespec-from-bundle, pipelineref-by-name, pipelineref-by-git-resolver. +
+Optional. + |  | 
+| *`pull`* __xref:{anchor_prefix}-github-com-konflux-ci-application-api-api-v1alpha1-pipelinedefinition[$$PipelineDefinition$$]__ | Pipeline used for pull pipeline run. +
+Can specify just one of: pipelinespec-from-bundle, pipelineref-by-name, pipelineref-by-git-resolver. +
+Optional. + |  | 
+| *`push`* __xref:{anchor_prefix}-github-com-konflux-ci-application-api-api-v1alpha1-pipelinedefinition[$$PipelineDefinition$$]__ | Pipeline used for push pipeline run. +
+Can specify just one of: pipelinespec-from-bundle, pipelineref-by-name, pipelineref-by-git-resolver. +
+Optional. + |  | 
+|===
+
+
+[id="{anchor_prefix}-github-com-konflux-ci-application-api-api-v1alpha1-componentcreatepipelineconfiguration"]
+==== ComponentCreatePipelineConfiguration
+
+
+
+
+
+
+
+.Appears In:
+****
+- xref:{anchor_prefix}-github-com-konflux-ci-application-api-api-v1alpha1-componentactions[$$ComponentActions$$]
+****
+
+[cols="20a,50a,15a,15a", options="header"]
+|===
+| Field | Description | Default | Validation
+| *`all-versions`* __boolean__ | When specified it will send a PR with build pipeline configuration proposal for all Component versions. +
+Has precedence over 'version' and 'versions'. +
+Optional. + |  | 
+| *`version`* __string__ | When specified it will send a PR with build pipeline configuration proposal for the Component version. +
+Can be specified together with 'versions' and any duplicates will be removed. +
+Optional. + |  | 
+| *`versions`* __string array__ | When specified it will send a PR with build pipeline configuration proposal for Component versions. +
+Can be specified together with 'version' and any duplicates will be removed. +
+Optional. + |  | 
+|===
+
+
 [id="{anchor_prefix}-github-com-konflux-ci-application-api-api-v1alpha1-componentdetectiondescription"]
 ==== ComponentDetectionDescription
 
@@ -204,7 +293,7 @@ ComponentDetectionDescription holds all the information about the component bein
 | *`language`* __string__ | Language specifies the language of the component detected +
 Example: JavaScript + |  | 
 | *`projectType`* __string__ | ProjectType specifies the type of project for the component detected +
-Example Node.JS + |  | 
+Example Node.js + |  | 
 | *`componentStub`* __xref:{anchor_prefix}-github-com-konflux-ci-application-api-api-v1alpha1-componentspec[$$ComponentSpec$$]__ | ComponentStub is a stub of the component detected with all the info gathered from the devfile or service detection + |  | 
 |===
 
@@ -364,7 +453,18 @@ ComponentSource describes the Component source
 |===
 | Field | Description | Default | Validation
 | *`git`* __xref:{anchor_prefix}-github-com-konflux-ci-application-api-api-v1alpha1-gitsource[$$GitSource$$]__ | Git Source for a Component. +
+Optional. +
+NOTE: This field is deprecated and will be removed in a future version. + |  | 
+| *`url`* __string__ | Git repository URL for the component. +
+Optional. +
+NOTE: This field will be required in a future version + |  | 
+| *`dockerfileUri`* __string__ | Dockerfile path for all versions, unless explicitly specified for a version. +
+Used only when sending a PR with build pipeline configuration was requested via 'spec.actions.create-pipeline-configuration-pr'. +
+Default: "Dockerfile" +
 Optional. + |  | 
+| *`versions`* __xref:{anchor_prefix}-github-com-konflux-ci-application-api-api-v1alpha1-componentversion[$$ComponentVersion$$] array__ | List of all versions for this component. +
+Optional. +
+NOTE: This field will be required in a future version + |  | 
 |===
 
 
@@ -386,7 +486,18 @@ Optional. + |  |
 |===
 | Field | Description | Default | Validation
 | *`git`* __xref:{anchor_prefix}-github-com-konflux-ci-application-api-api-v1alpha1-gitsource[$$GitSource$$]__ | Git Source for a Component. +
+Optional. +
+!!! Will be removed when we remove old model + |  | 
+| *`url`* __string__ | Git repository URL for the component. +
+Optional. +
+!!! Will be required when we remove old model + |  | 
+| *`dockerfileUri`* __string__ | Dockerfile path for all versions, unless explicitly specified for a version. +
+Used only when sending a PR with build pipeline configuration was requested via 'spec.actions.create-pipeline-configuration-pr'. +
+Default: "Dockerfile" +
 Optional. + |  | 
+| *`versions`* __xref:{anchor_prefix}-github-com-konflux-ci-application-api-api-v1alpha1-componentversion[$$ComponentVersion$$] array__ | List of all versions for this component. +
+Optional. +
+!!! Will be required when we remove old model + |  | 
 |===
 
 
@@ -409,38 +520,58 @@ ComponentSpec defines the desired state of Component
 |===
 | Field | Description | Default | Validation
 | *`componentName`* __string__ | ComponentName is name of the component to be added to the Application. The name must adhere to DNS-1123 validation. +
-Required. + |  | MaxLength: 63 +
+Optional. +
+!!! Will be removed when we remove old model + |  | MaxLength: 63 +
 Pattern: `^[a-z0-9]([-a-z0-9]*[a-z0-9])?$` +
 
 | *`application`* __string__ | Application is the name of the application resource that the component belongs to. +
-Required. + |  | Pattern: `^[a-z0-9]([-a-z0-9]*[a-z0-9])?$` +
+Optional. +
+!!! Will be removed when we remove old model + |  | Pattern: `^[a-z0-9]([-a-z0-9]*[a-z0-9])?$` +
 
 | *`secret`* __string__ | Secret describes the name of a Kubernetes secret containing either: +
-1. A Personal Access Token to access the Component's git repostiory (if using a Git-source component) or +
+1. A Personal Access Token to access the Component's git repository (if using a Git-source component) or +
 2. An Image Pull Secret to access the Component's container image (if using an Image-source component). +
-Optional. + |  | 
+Optional. +
+!!! Will be removed when we remove old model + |  | 
 | *`source`* __xref:{anchor_prefix}-github-com-konflux-ci-application-api-api-v1alpha1-componentsource[$$ComponentSource$$]__ | Source describes the Component source. +
-Optional. + |  | 
+Required. + |  | 
 | *`resources`* __link:https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.3/#resourcerequirements-v1-core[$$ResourceRequirements$$]__ | Compute Resources required by this component. +
 Optional. + |  | 
 | *`replicas`* __integer__ | The number of replicas to deploy the component with. +
-Optional. + |  | 
+Optional. +
+!!! Will be removed when we remove old model + |  | 
 | *`targetPort`* __integer__ | The port to expose the component over. +
-Optional. + |  | 
+Optional. +
+!!! Will be removed when we remove old model + |  | 
 | *`route`* __string__ | The route to expose the component with. +
-Optional. + |  | 
+Optional. +
+!!! Will be removed when we remove old model + |  | 
 | *`env`* __link:https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.3/#envvar-v1-core[$$EnvVar$$] array__ | An array of environment variables to add to the component (ValueFrom not currently supported) +
 Optional + |  | 
-| *`containerImage`* __string__ | The container image to build or create the component from +
-Example: quay.io/someorg/somerepository:latest. +
+| *`containerImage`* __string__ | The container image repository to use for this component (without tag). +
+Either will be set by Image Repository, or explicitly specified with custom repo. +
+All versions of this component will use this single image repository. +
+Example: quay.io/org/tenant/component +
 Optional. + |  | 
 | *`skipGitOpsResourceGeneration`* __boolean__ | Whether or not to bypass the generation of GitOps resources for the Component. Defaults to false. +
-Optional. + |  | 
+Optional. +
+!!! Will be removed when we remove old model + |  | 
 | *`build-nudges-ref`* __string array__ | The list of components to be nudged by this components build upon a successful result. +
+Optional. +
+!!! Will be removed when we remove old model + |  | 
+| *`actions`* __xref:{anchor_prefix}-github-com-konflux-ci-application-api-api-v1alpha1-componentactions[$$ComponentActions$$]__ | Specific actions that will be processed by the controller and then removed from 'spec.actions'. +
+Used for triggering builds or creating pipeline configuration PRs. +
+Optional. + |  | 
+| *`skip-offboarding-pr`* __boolean__ | When 'true', during offboarding a cleaning PR won't be created. +
+Default: false. +
+Optional. + |  | 
+| *`repository-settings`* __xref:{anchor_prefix}-github-com-konflux-ci-application-api-api-v1alpha1-repositorysettings[$$RepositorySettings$$]__ | Used for setting additional settings for the Repository CR. +
+Optional. + |  | 
+| *`default-build-pipeline`* __xref:{anchor_prefix}-github-com-konflux-ci-application-api-api-v1alpha1-componentbuildpipeline[$$ComponentBuildPipeline$$]__ | Used only when sending a PR with build pipeline configuration was requested via 'spec.actions.create-pipeline-configuration-pr'. +
+Pipeline used for all versions, unless explicitly specified for a specific version. +
+When omitted it has to be specified in all versions. +
 Optional. + |  | 
 |===
-
-
 
 
 [id="{anchor_prefix}-github-com-konflux-ci-application-api-api-v1alpha1-componentstatus"]
@@ -461,15 +592,99 @@ ComponentStatus defines the observed state of Component
 |===
 | Field | Description | Default | Validation
 | *`conditions`* __link:https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.3/#condition-v1-meta[$$Condition$$] array__ | Conditions is an array of the Component's status conditions + |  | 
-| *`webhook`* __string__ | Webhook URL generated by Builds + |  | 
+| *`webhook`* __string__ | Webhook URL generated by Builds +
+!!! Will be removed when we remove old model + |  | 
 | *`containerImage`* __string__ | ContainerImage stores the associated built container image for the component + |  | 
-| *`devfile`* __string__ | The devfile model for the Component CR + |  | 
-| *`gitops`* __xref:{anchor_prefix}-github-com-konflux-ci-application-api-api-v1alpha1-gitopsstatus[$$GitOpsStatus$$]__ | GitOps specific status for the Component CR + |  | 
+| *`devfile`* __string__ | The devfile model for the Component CR +
+!!! Will be removed when we remove old model + |  | 
+| *`gitops`* __xref:{anchor_prefix}-github-com-konflux-ci-application-api-api-v1alpha1-gitopsstatus[$$GitOpsStatus$$]__ | GitOps specific status for the Component CR +
+!!! Will be removed when we remove old model + |  | 
 | *`lastBuiltCommit`* __string__ | The last built commit id (SHA-1 checksum) from the latest component build. +
-Example: 41fbdb124775323f58fd5ce93c70bb7d79c20650. + |  | 
+Example: 41fbdb124775323f58fd5ce93c70bb7d79c20650. +
+NOTE: This field is deprecated and will be moved to a version-specific section in a future version. + |  | 
 | *`lastPromotedImage`* __string__ | The last digest image component promoted with. +
-Example: quay.io/someorg/somerepository@sha256:5ca85b7f7b9da18a9c4101e81ee1d9bac35ac2b0b0221908ff7389204660a262. + |  | 
-| *`build-nudged-by`* __string array__ | The list of names of Components whose builds nudge this resource (their spec.build-nudges-ref[] references this component) + |  | 
+Example: quay.io/someorg/somerepository@sha256:5ca85b7f7b9da18a9c4101e81ee1d9bac35ac2b0b0221908ff7389204660a262. +
+!!! Will be removed when we remove old model SHOULD this be in version specific section?? + |  | 
+| *`build-nudged-by`* __string array__ | The list of names of Components whose builds nudge this resource (their spec.build-nudges-ref[] references this component) +
+!!! Will be removed when we remove old model + |  | 
+| *`repository-settings`* __xref:{anchor_prefix}-github-com-konflux-ci-application-api-api-v1alpha1-repositorysettings[$$RepositorySettings$$]__ | Identifies which additional settings are used for the Repository CR. + |  | 
+| *`message`* __string__ | General error message, not specific to any version (version-specific errors are in versions[].message). +
+Example: "spec.containerImage is not set" or "GitHub App is not installed". + |  | 
+| *`pac-repository`* __string__ | Name of Repository CR for the component. + |  | 
+| *`versions`* __xref:{anchor_prefix}-github-com-konflux-ci-application-api-api-v1alpha1-componentversionstatus[$$ComponentVersionStatus$$] array__ | All versions which were processed by onboarding. +
+When version is removed from the spec, offboarding will remove it from the status. + |  | 
+|===
+
+
+[id="{anchor_prefix}-github-com-konflux-ci-application-api-api-v1alpha1-componentversion"]
+==== ComponentVersion
+
+
+
+
+
+
+
+.Appears In:
+****
+- xref:{anchor_prefix}-github-com-konflux-ci-application-api-api-v1alpha1-componentsource[$$ComponentSource$$]
+- xref:{anchor_prefix}-github-com-konflux-ci-application-api-api-v1alpha1-componentsourceunion[$$ComponentSourceUnion$$]
+****
+
+[cols="20a,50a,15a,15a", options="header"]
+|===
+| Field | Description | Default | Validation
+| *`build-pipeline`* __xref:{anchor_prefix}-github-com-konflux-ci-application-api-api-v1alpha1-componentbuildpipeline[$$ComponentBuildPipeline$$]__ | Used only when sending a PR with build pipeline configuration was requested via 'spec.actions.create-pipeline-configuration-pr'. +
+Pipeline used for the version; when omitted, the default pipeline will be used from 'spec.default-build-pipeline'. +
+Optional. + |  | 
+| *`context`* __string__ | Context directory for the version. +
+Used only when sending a PR with build pipeline configuration was requested via 'spec.actions.create-pipeline-configuration-pr'. +
+Default: "" (empty string, root of repository). +
+Optional. + |  | 
+| *`dockerfileUri`* __string__ | Dockerfile path for the version. +
+Used only when sending a PR with build pipeline configuration was requested via 'spec.actions.create-pipeline-configuration-pr'. +
+Default: "Dockerfile". +
+Optional. + |  | 
+| *`name`* __string__ | User defined name for the version. +
+After sanitization (lower case, removing spaces, etc) all version names must be unique. +
+Required. + |  | 
+| *`revision`* __string__ | Git branch to use for the version. +
+Required. + |  | 
+| *`skip-builds`* __boolean__ | When 'true' it will disable builds for a revision in the version. +
+Default: false. +
+Optional. + |  | 
+|===
+
+
+[id="{anchor_prefix}-github-com-konflux-ci-application-api-api-v1alpha1-componentversionstatus"]
+==== ComponentVersionStatus
+
+
+
+
+
+
+
+.Appears In:
+****
+- xref:{anchor_prefix}-github-com-konflux-ci-application-api-api-v1alpha1-componentstatus[$$ComponentStatus$$]
+****
+
+[cols="20a,50a,15a,15a", options="header"]
+|===
+| Field | Description | Default | Validation
+| *`configuration-merge-url`* __string__ | Link with onboarding PR if requested by 'spec.actions.create-pipeline-configuration-pr'. +
+Only present if onboarding was successful. +
+Example: https://github.com/user/repo/pull/1 + |  | 
+| *`message`* __string__ | Version specific error message. +
+Example: "pipeline for this version doesn't exist" + |  | 
+| *`name`* __string__ | Name for the version. + |  | 
+| *`onboarding-status`* __string__ | Onboarding status will be either 'succeeded' or 'failed' ('disabled' won't be there because we will just remove specific version section). + |  | 
+| *`onboarding-time`* __string__ | Timestamp for when onboarding happened. +
+Only present if onboarding was successful. +
+Example: "29 May 2024 15:11:16 UTC" + |  | 
+| *`revision`* __string__ | Git revision (branch) for the version. + |  | 
+| *`skip-builds`* __boolean__ | Identifies that builds for the revision in the version are disabled. + |  | 
 |===
 
 
@@ -479,6 +694,7 @@ Example: quay.io/someorg/somerepository@sha256:5ca85b7f7b9da18a9c4101e81ee1d9bac
 
 
 GitOpsStatus contains GitOps repository-specific status for the component
+!!! Will be removed when we remove old model
 
 
 
@@ -503,7 +719,7 @@ GitOpsStatus contains GitOps repository-specific status for the component
 
 
 
-
+!!! Will be removed when we remove old model
 
 
 
@@ -528,6 +744,117 @@ Optional. + |  |
 Example: https://raw.githubusercontent.com/devfile-samples/devfile-sample-java-springboot-basic/main/devfile.yaml. +
 Optional. + |  | 
 | *`dockerfileUrl`* __string__ | If specified, the dockerfile at the URI will be used for the component. Can be a local path inside the repository, or an external URL. +
+Optional. + |  | 
+|===
+
+
+[id="{anchor_prefix}-github-com-konflux-ci-application-api-api-v1alpha1-pipelinedefinition"]
+==== PipelineDefinition
+
+
+
+
+
+
+
+.Appears In:
+****
+- xref:{anchor_prefix}-github-com-konflux-ci-application-api-api-v1alpha1-componentbuildpipeline[$$ComponentBuildPipeline$$]
+****
+
+[cols="20a,50a,15a,15a", options="header"]
+|===
+| Field | Description | Default | Validation
+| *`pipelineref-by-git-resolver`* __xref:{anchor_prefix}-github-com-konflux-ci-application-api-api-v1alpha1-pipelinerefgit[$$PipelineRefGit$$]__ | Will be used to fill out PipelineRef in pipeline runs to user specific pipeline via git resolver, +
+specifying repository with a pipeline definition. +
+Optional. + |  | 
+| *`pipelineref-by-name`* __string__ | Will be used to fill out PipelineRef in pipeline runs to user specific pipeline. +
+Such pipeline definition has to be in .tekton. +
+Optional. + |  | 
+| *`pipelinespec-from-bundle`* __xref:{anchor_prefix}-github-com-konflux-ci-application-api-api-v1alpha1-pipelinespecfrombundle[$$PipelineSpecFromBundle$$]__ | Will be used to fetch bundle and fill out PipelineSpec in pipeline runs. +
+Pipeline name is based on build-pipeline-config CM in build-service NS. +
+When 'latest' bundle is specified, bundle image will be used from CM. +
+When bundle is specified to specific image bundle, then that one will be used +
+and pipeline name will be used to fetch pipeline from that bundle. +
+Optional. + |  | 
+|===
+
+
+[id="{anchor_prefix}-github-com-konflux-ci-application-api-api-v1alpha1-pipelinerefgit"]
+==== PipelineRefGit
+
+
+
+
+
+
+
+.Appears In:
+****
+- xref:{anchor_prefix}-github-com-konflux-ci-application-api-api-v1alpha1-pipelinedefinition[$$PipelineDefinition$$]
+****
+
+[cols="20a,50a,15a,15a", options="header"]
+|===
+| Field | Description | Default | Validation
+| *`pathInRepo`* __string__ | Path to the pipeline definition file within the repository. +
+Example: pipeline/push.yaml +
+Required. + |  | 
+| *`revision`* __string__ | Git revision (branch, tag, or commit) to use. +
+Example: main +
+Required. + |  | 
+| *`url`* __string__ | Git repository URL containing the pipeline definition. +
+Example: https://github.com/custom-pipelines/pipelines.git +
+Required. + |  | 
+|===
+
+
+[id="{anchor_prefix}-github-com-konflux-ci-application-api-api-v1alpha1-pipelinespecfrombundle"]
+==== PipelineSpecFromBundle
+
+
+
+
+
+
+
+.Appears In:
+****
+- xref:{anchor_prefix}-github-com-konflux-ci-application-api-api-v1alpha1-pipelinedefinition[$$PipelineDefinition$$]
+****
+
+[cols="20a,50a,15a,15a", options="header"]
+|===
+| Field | Description | Default | Validation
+| *`bundle`* __string__ | Bundle image reference. Use 'latest' to get bundle from build-pipeline-config CM, +
+or specify a specific bundle image. +
+Required. + |  | 
+| *`name`* __string__ | Pipeline name to fetch from the bundle, or from build-pipeline-config CM. +
+Required. + |  | 
+|===
+
+
+[id="{anchor_prefix}-github-com-konflux-ci-application-api-api-v1alpha1-repositorysettings"]
+==== RepositorySettings
+
+
+
+
+
+
+
+.Appears In:
+****
+- xref:{anchor_prefix}-github-com-konflux-ci-application-api-api-v1alpha1-componentspec[$$ComponentSpec$$]
+- xref:{anchor_prefix}-github-com-konflux-ci-application-api-api-v1alpha1-componentstatus[$$ComponentStatus$$]
+****
+
+[cols="20a,50a,15a,15a", options="header"]
+|===
+| Field | Description | Default | Validation
+| *`comment-strategy`* __string__ | When specified, will set value of `comment_strategy` in the Repository CR +
+Optional. + |  | 
+| *`github-app-token-scope-repos`* __string array__ | When specified, will add values to `github_app_token_scope_repos` in the Repository CR +
 Optional. + |  | 
 |===
 
@@ -564,7 +891,6 @@ Snapshot is the Schema for the snapshots API
 
 
 SnapshotArtifacts is a placeholder section for 'artifact links' we want to maintain to other AppStudio resources.
-
 
 For example: here I'm imagining we might want to keep track of container image <=> (source code repo, commit sha) links,
 Which might be useful to present to the user within the UI.
