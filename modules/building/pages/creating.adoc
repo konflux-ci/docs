@@ -60,6 +60,25 @@ A component is an individual part of an application that contains source code an
 
 Before onboarding a component to {ProductName}, ensure that the instance has appropriate access to the git repository. This means either installing your organization's {ProductName} GitHub App on the source code repository or xref:building:creating-secrets.adoc#creating-source-control-secrets[creating a secret] to enable access to a GitLab repository.
 
+=== Supported source control providers
+
+{ProductName} supports onboarding components from the following source control providers:
+
+[cols="1,2,3",options="header"]
+|===
+|Provider
+|Authentication Method
+|Requirements
+
+|GitHub
+|GitHub App installation
+|Install the {ProductName} GitHub App on your organization or repository
+
+|GitLab
+|Source control secret
+|xref:building:creating-gitlab.adoc#creating-a-gitlab-source-control-secret[Create a source control secret] before onboarding
+|===
+
 NOTE: Component names must be unique in a namespace, even when components are used in different applications.
 
 CAUTION: {ProductName} pushes directly to branches in your onboarded repositories. In order to properly onboard, ensure
@@ -91,8 +110,6 @@ NOTE: For *Gitlab* provider, make sure to xref:building:creating-secrets.adoc#cr
 . Click *Add component*.
 
 +
-NOTE: GitHub and GitLab are supported source control providers. GitLab support requires the configuration of xref:building:creating-secrets.adoc#creating-source-control-secrets[source control secrets].
-
 NOTE: When Component is immediately removed after creation it might result with orphaned ImageRepository which ownership
 wasn't yet assigned to the Component and when trying to create Component again with the same name UI will
 complain with error that ImageRepository already exists, solution is to remove manually ImageRepository
