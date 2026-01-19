@@ -3,7 +3,7 @@
 // Optional: Define context for cross-references if needed within the module structure
 // :context: snapshots
 
-A {ProductName} **Snapshot** represents a specific, immutable collection of container images for the Components within an Application at a particular point in time. They capture the exact versions of all relevant component artifacts that were built and intended to be used together including their Git commits. Once created, the list of Components with their images is immutable. 
+A {ProductName} **Snapshot** represents a specific, immutable collection of container images for the Components within an Application at a particular point in time. They capture the exact versions of all relevant component artifacts that were built and intended to be used together including their Git commits. Once created, the list of Components with their images is immutable.
 
 Snapshots are fundamental for ensuring consistency during testing and release processes. They provide a stable target for:
 
@@ -96,7 +96,7 @@ It's possible to encounter a situation where new unreferenced Snapshots are gett
 
 **Configure the Grace Period**: Ensure the gracePeriodDays field for your Releases is set to a reasonable value that reflects your team's release cadence. This can be configured in your ReleasePlan and will be applied to created Release CRs. If gracePeriodDays is not set in your Release, KubeArchive will delete it when it is 5 days old. KubeArchive will also delete any Release more than 30 days old, regardless of the gracePeriodDays value. A shorter grace period ensures Release CRs are deleted more quickly, freeing up their associated Snapshots for garbage collection.
 
-**Manual Deletion**: In an urgent situation, you can manually delete old or unnecessary Release CRs to immediately make their Snapshots eligible for GC. 
+**Manual Deletion**: In an urgent situation, you can manually delete old or unnecessary Release CRs to immediately make their Snapshots eligible for GC.
 ====
 
 === Relationship with Releases
