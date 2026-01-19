@@ -45,7 +45,14 @@ $ kubectl apply -f Application.yaml
 ----
 
 +
-NOTE: You can create additional applications by adding their custom resource configurations to the `Application.yaml` file.
+NOTE: You can create additional applications by adding their custom resource configurations to the `Application.yaml` file. Separate multiple resources with `---`:
++
+[source,yaml]
+----
+# Application A
+---
+# Application B
+----
 
 == Creating components
 
@@ -126,7 +133,14 @@ $ kubectl apply -f Component.yaml -f ImageRepository.yaml
 ----
 
 +
-NOTE: You can create additional components by adding their custom resource configurations to the YAML files.
+NOTE: You can create additional components by adding their custom resource configurations to the YAML files. Separate multiple resources with `---`:
++
+[source,yaml]
+----
+# Component A
+---
+# Component B
+----
 
 . Configure the build pipeline for your component:
 .. If the annotation `build.appstudio.openshift.io/request: configure-pac` is set on the component, {ProductName} automatically creates a pull request or merge request in your repository with the Tekton pipeline definitions. Review and merge this pull request to complete the setup.
