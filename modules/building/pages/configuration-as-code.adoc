@@ -72,7 +72,7 @@ If you are creating more than one component, it is likely that your components w
 
 Define this base in `base/component.yaml`. It typically follows a pattern similar to the following:
 
-include::partial$custom-resources/{context}-component.adoc[]
+include::partial$custom-resources/{context}-component-github.adoc[]
 
 === Creating Your Base Kustomization
 
@@ -103,7 +103,7 @@ And its Kustomization file at `overlay/application-a/application-a-base/kustomiz
 ----
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
-  
+
 resources:
   - application.yaml
 ----
@@ -140,7 +140,7 @@ Define these components as folders in `overlay/application-a/base`. Each folder 
 ----
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
-  
+
 resources:
   - ../../../../base # Path to base component
 

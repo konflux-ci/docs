@@ -100,57 +100,19 @@ from OCP.
 
 === With the CLI
 
-.Prerequisites:
+{ProductName} supports onboarding components from multiple source control providers using the CLI. Choose the guide for your provider:
 
-* xref:installing:enabling-builds.adoc[Enabled] build pipelines for your instance of {ProductName}.
-* link:https://kubernetes.io/docs/tasks/tools/[kubectl] CLI tool
-* You have completed the steps listed in the xref:ROOT:getting-started.adoc#getting-started-with-the-cli[Getting started with the CLI] page.
-* An existing application in your namespace.
+[cols="1,3",options="header"]
+|===
+|Provider
+|Guide
 
-.*Procedures*
+|GitHub
+|xref:building:creating-github.adoc[Onboarding a component from GitHub with the CLI]
 
-. Create a `Component.yaml` and `ImageRepository.yaml` file locally.
-
-+
-.Example `Component.yaml` object
-include::partial$custom-resources/{context}-component.adoc[]
-
-+
-NOTE: Request annotation 'build.appstudio.openshift.io/request' can be set also to 'configure-pac-no-mr' and
-then during onboarding the onboarding PR won't be created and users will have to create pipeline run yaml
-files for the component manually.
-
-+
-.Example `ImageRepository.yaml` object
-include::partial$custom-resources/{context}-imagerepository.adoc[]
-
-. Apply the resources to your namespace by running the following command:
-
-+
-[source,shell]
-----
-$ kubectl apply -f Component.yaml -f ImageRepository.yaml
-----
-
-+
-NOTE: You can create additional components by adding their custom resource configurations to the YAML files. Separate multiple resources with `---`:
-+
-[source,yaml]
-----
-# Component A
----
-# Component B
-----
-
-. Configure the build pipeline for your component:
-.. If the annotation `build.appstudio.openshift.io/request: configure-pac` is set on the component, {ProductName} automatically creates a pull request or merge request in your repository with the Tekton pipeline definitions. Review and merge this pull request to complete the setup.
-.. If the annotation is not set or is set to `configure-pac-no-mr`, manually create or update the Tekton pipeline files in your repository.
-
-+
-NOTE: The PipelineRun will run only for submitters who have permission to run PipelineRuns or who receive an `/ok-to-test` comment from an authorized user. +
-For further details on PipelineRun permissions, please refer to the https://pipelinesascode.com/docs/guide/running/[PipelinesAsCode documentation].
-
-. Once the PR is made, a build pipeline should start. Track its progress in the {ProductName} UI or see the final status in GitHub after the pipeline completes. If the pipeline is successful, merge the PR.
+|GitLab
+|xref:building:creating-gitlab.adoc[Onboarding a component from GitLab with the CLI] (requires xref:building:creating-secrets.adoc#creating-source-control-secrets[source control secrets])
+|===
 
 == Using different from default image repository
 
