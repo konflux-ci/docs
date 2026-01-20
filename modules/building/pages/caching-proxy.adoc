@@ -134,23 +134,96 @@ Warning: Failed to fetch cluster-config ConfigMap. Proceeding with defaults.
 
 == Troubleshooting
 
-If the caching proxy is not working after setting `enable-cache-proxy` to `true`, the `init` task in your pipeline may not be configured to receive the parameter. This configuration is applied automatically by MintMaker through task migrations.
+If the caching proxy is not working after setting `enable-cache-proxy` to `true`, your pipeline YAML may be missing required configuration. The proxy feature requires a complete chain of parameter passing:
+
+. The `enable-cache-proxy` pipeline parameter must be defined in the pipeline's `params` section.
+. The `init` task must receive the `enable-cache-proxy` parameter.
+. The `init` task outputs `http-proxy` and `no-proxy` results.
+. The `buildah` task (or variant) must receive `HTTP_PROXY` and `NO_PROXY` parameters that reference the `init` task results.
+
+If any part of this chain is missing, the proxy will not work. MintMaker automatically applies these configurations through task migrations.
+
+=== Checking for missing configuration
 
 .Procedure
 
 . Check your repository for any unmerged MintMaker pull requests that update the pipeline configuration.
 
-. If you find an unmerged MintMaker PR that adds the `enable-cache-proxy` parameter to the `init` task, merge it.
+. Merge any unmerged MintMaker PRs. The migration adds all required parameters automatically.
 
-. If no MintMaker PR exists, you can manually pass the parameter to the `init` task. In your pipeline definition, add the `enable-cache-proxy` parameter to the `init` task in the `tasks` section:
+. If no MintMaker PR exists, manually add the missing configuration to your pipeline YAML:
+
+.. Add the pipeline parameter `enable-cache-proxy`:
++
+[source,yaml]
+----
+spec:
+  pipelineSpec:
+    params:
+      - name: enable-cache-proxy
+        default: "false"
+        description: Enable cache proxy configuration
+        type: string
+----
+
+.. Add the `enable-cache-proxy` parameter to the `init` task:
 +
 [source,yaml]
 ----
 tasks:
-- name: init
-  params:
-  - name: enable-cache-proxy
-    value: $(params.enable-cache-proxy)
+  - name: init
+    params:
+      - name: enable-cache-proxy
+        value: $(params.enable-cache-proxy)
+    taskRef:
+      name: init
+      version: "0.2"
 ----
 
-. Verify the caching proxy is working by checking the `init` task logs for the proxy configuration messages.
+.. Add the `HTTP_PROXY` and `NO_PROXY` parameters to the `buildah` task (or variant like `buildah-remote`, `buildah-oci-ta`) to receive proxy values from the `init` task results:
++
+[source,yaml]
+----
+- name: build-container
+  params:
+    - name: HTTP_PROXY
+      value: $(tasks.init.results.http-proxy)
+    - name: NO_PROXY
+      value: $(tasks.init.results.no-proxy)
+    # ... other params
+  taskRef:
+    name: buildah
+----
+
+. Verify that the caching proxy is working by checking the `init` and `buildah` task logs for the proxy configuration messages.
+
+=== Verifying proxy configuration in logs
+
+After enabling the caching proxy, check the task logs to confirm the configuration is applied correctly.
+
+.Example `init` task log output when cache proxy is enabled
+[source]
+----
+Fetching cluster-config from konflux-info namespace...
+Cache proxy enabled (cluster-enabled: true, task-enable: true)
+Setting HTTP_PROXY to squid.caching.svc.cluster.local:3128
+Setting NO_PROXY to quay.io,registry.redhat.io,docker.io
+----
+
+.Example `buildah` task log output when cache proxy is enabled
+[source]
+----
+[2026-01-27T10:15:30.123456789+00:00] Setting proxy to squid.caching.svc.cluster.local:3128
+[2026-01-27T10:15:30.123456789+00:00] Bypassing proxy for quay.io,registry.redhat.io,docker.io
+----
+
+.Example `init` task log output when cache proxy is disabled
+[source]
+----
+Fetching cluster-config from konflux-info namespace...
+Cache proxy disabled (cluster-enabled: true, task-enable: false)
+Setting HTTP_PROXY to 
+Setting NO_PROXY to 
+----
+
+If you see only "Unsetting proxy" messages without the preceding "Setting proxy" messages in the `buildah` task logs, the `HTTP_PROXY` and `NO_PROXY` parameters may not be correctly wired from the `init` task results.
