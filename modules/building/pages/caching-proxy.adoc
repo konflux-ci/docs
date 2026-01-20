@@ -89,6 +89,20 @@ The caching proxy is enabled only when both of the following conditions are met:
 
 If `allow-cache-proxy` is explicitly set to `false` at the cluster level, the proxy is disabled for all pipelines, even if individual pipelines have `enable-cache-proxy` set to `true`.
 
+== Supported registries
+
+The caching proxy supports the following container image registries:
+
+* `quay.io` and other registry proxies that use it as a backend (for example, `registry.access.redhat.com` and `registry.redhat.io`)
+* `docker.io`
+* `nvcr.io`
+* `registry.fedoraproject.org`
+
+The following registry hosts are not supported at this time:
+
+* `gcr.io`
+* `*.pkg.dev`
+
 == Logging
 
 The `init` task logs the proxy configuration applied to the pipeline run and the reasoning for the applied settings. You can view these logs in the pipeline run's `init` task output.
