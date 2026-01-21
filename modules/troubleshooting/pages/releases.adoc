@@ -11,3 +11,4 @@
   pipeline/task bundles.
 
 include::partial${context}-releases.adoc[]
+include::partial${context}-pipelinerun-pending.adoc[]
