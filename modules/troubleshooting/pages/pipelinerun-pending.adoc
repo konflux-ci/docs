@@ -1,14 +1,22 @@
-== PipelineRuns are left in Pending
+== PipelineRuns stuck in a Pending state
 
-Pipeline runs might be stuck in "pending" status because a requested resource is not available.
+A PipelineRun might get stuck in a 'Pending' status because a requested resource is not available.
 
-- Check the status of the workload's Pipeline (should have the same name as the PipelineRun) and look for a message similar to "not found resource".
+To diagnose this issue, check the status of the workload's Pipeline, which should have the same name as the PipelineRun. Look for a message similar to `not found resource`.
 
-For example, when using a not available VM-flavor for certain cluster (or non-existent or invalid format[1]) like linux-c2xlarge/arm64, you would find a message similar to this:
-"resource linux-c2xlarge/arm64 is not found"
+For example, using an unavailable, non-existent, or invalid format[1] VM flavor for a cluster, such as `linux-c2xlarge/arm64`, results in a message similar to this:
 
-The available VM flavors can be found listed in https://konflux.pages.redhat.com/docs/users/getting-started/multi-platform-builds.html.
-As some of those VM flavors might not been defined in every cluster, you can confirm in https://github.com/redhat-appstudio/infra-deployments/tree/main/components/multi-platform-controller, navigating to the folder of the cluster you using and then checking the host-values.yaml file that the VM flavor is in the dynamicConfigs section
-In any case you could request to Konflux Infrastructure adding a certain flavor to a Cluster
+....
+resource linux-c2xlarge/arm64 is not found
+....
 
-[1] If the platform "flavor" name/string contains invalid characters like not alphanumeric characters, - or _ along other combinations considered invalid, the PipelineRun will end with "resource key validation failed"
+.Procedure: Verifying available VM flavors
+. For a list of available VM flavors, see the link:https://konflux.pages.redhat.com/docs/users/getting-started/multi-platform-builds.html[multi-platform builds documentation].
+. Because some of these VM flavors might not be defined in every cluster, you can confirm their availability:
+.. Navigate to the link:https://github.com/redhat-appstudio/infra-deployments/tree/main/components/multi-platform-controller[`infra-deployments` repository].
+.. Go to the folder for your cluster.
+.. In the `host-values.yaml` file, check that the VM flavor is in the `dynamicConfigs` section.
+
+If a flavor is not available, you can request that the Konflux Infrastructure team add it to a cluster.
+
+[1] If the platform `flavor` name contains invalid characters (any characters other than alphanumeric, `-`, or `_`), the PipelineRun fails with a `resource key validation failed` error.
