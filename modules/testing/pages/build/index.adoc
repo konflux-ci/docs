@@ -31,6 +31,8 @@ The table below outlines the default build-time tests:
 |clamav-scan |Scans the content of container images for viruses, malware, and other malicious content using ClamAV antivirus scanner. | A malware has been found.
 
 |sast-snyk-check |Scans and analyze source code or compiled versions of code to help find security flaws using Snyk Code. | For details, review Tekton task log.
+
+|roxctl-scan | Scans container images, bundles, operator images for vulnerabilities using roxctl binary, comparing container image against ACS vulnerability database. | Found packages with critical vulnerabilities associated with RHSA fixes. Only for internal usage, not for community builds.
 |===
 
 You can disable the default build-time tests by setting the `skip-checks` parameter to `true`
