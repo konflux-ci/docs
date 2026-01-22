@@ -1,0 +1,49 @@
+= Scanning images for vulnerabilities
+
+{ProductName} uses image scanning tools in order to get vulnerabilities. All of those tests play informative role so user is advised about CVEs on their product(image).
+
+{ProductName} currently provides two types of vulnerability scanning:
+
+* clair-scan
+* roxctl-scan
+
+== Similarities
+
+Both scans provide information about found patched and unpatched vulnerabilities.
+
+* Patched vulnerability
+A vulnerability that has an RHSA advisory, which means a fix is available from Red Hat. This type of vulnerability can be addressed by the user.
+
+* Unpatched vulnerability
+A vulnerability with no RHSA advisory, so a fix is not provided.
+Both scans are non-gating checks. This means that if vulnerabilities are found, you can still proceed with releasing your product.
+
+== Differences
+
+Each scan has its own vulnerability database, so the outcomes of the scans can differ; therefore, comparing their results is unnecessary.
+
+*Roxctl-scan*
+
+* For internal usage only. The ACS instance that contains the vulnerability database is reachable only from the internal network. This means that community builds cannot reach ACS, so the scan will not run.
+* Discrepancies - in case that CVE is detected in more that one source, cve Info is then checked for Red Hat origin, in case there is no Red Hat origin, CVE is then considered as discrepancy.
+
+*Clair-scan*
+
+* Can be used both internally and externally(community builds)
+
+=== Roxctl-scan
+
+Internal scanning tool made by RedHat Advanced Cluster Security. When the scan is executed, roxctl binary looks up for a connection to the ACS instance,
+once it is established, exchanges teamporary token(1h) with a service account under users tenant, then runs the scan. Integration-service is the maintainer and owner of the ACS instance.
+
+* Worker image: https://catalog.redhat.com/en/software/containers/advanced-cluster-security/rhacs-roxctl-rhel8/610bfc32dd1aaa9129b0d4bc
+* Task location: https://github.com/konflux-ci/konflux-test-tasks/tree/main/task/roxctl-scan/
+* Documentation: https://docs.google.com/document/d/1O3wZVljvUPUjvKYD8z_BVh0Fhw4ycFKoaN6rTP-jmqY/edit?tab=t.0
+
+=== Clair-scan
+
+Based on clair-action binary that was developed by RedHat. Requires database file during the scan, that is being contained within worker image.
+
+* Worker image: https://quay.io/repository/konflux-ci/clair-in-ci
+* Task location: https://github.com/konflux-ci/konflux-test-tasks/tree/main/task/clair-scan
+* Documentation: https://docs.google.com/document/d/12UpuNnm3jr5-gaDERZXdz16DDVOtEs5ZncXqWXxrLXE/edit?tab=t.0

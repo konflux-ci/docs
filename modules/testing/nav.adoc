@@ -1,6 +1,7 @@
 ** xref:index.adoc[Testing]
 *** xref:build/index.adoc[Build-time tests]
 **** xref:build/snyk.adoc[Enabling Snyk]
+*** xref:vulns/index.adoc[Vulnerability scanning]
 *** xref:integration/index.adoc[Integration tests]
 **** xref:integration/adding.adoc[Adding an integration test]
 **** xref:integration/creating.adoc[Creating a custom integration test]
