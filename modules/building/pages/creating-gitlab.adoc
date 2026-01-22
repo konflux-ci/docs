@@ -18,7 +18,7 @@ Before onboarding a component from GitLab, you must create a source control secr
 
 . In GitLab click on Settings -> Access Tokens on the left menu of your repository.
 +
-NOTE: if you don't see this option, you need someone with permissions to do so.
+NOTE: If you do not see this option, ask a user with repository maintainer permissions to create the token.
 
 . Click on `Add new token`.
 
@@ -34,7 +34,7 @@ NOTE: if you don't see this option, you need someone with permissions to do so.
 ====
 * This Project Access Token is scoped to a project, so you cannot use it to access resources from other projects. For more information regarding Project Access Tokens, see the GitLab https://docs.gitlab.com/ee/user/project/settings/project_access_tokens.html[documentation].
 
-* If your GitLab project uses restrictive link:https://docs.gitlab.com/ee/user/project/repository/push_rules.html[push rules] to verify users, Konflux may fail to push commits to your repository.
+* If your GitLab project uses restrictive link:https://docs.gitlab.com/ee/user/project/repository/push_rules.html[push rules] to verify users, {ProductName} may fail to push commits to your repository.
 ====
 
 == Creating a component
