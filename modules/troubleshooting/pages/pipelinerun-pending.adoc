@@ -20,16 +20,8 @@ status:
       <VM_TYPE>: "1"
       tekton.dev/pipelineruns: "1"
 
-
-For example, using an unavailable, non-existent, or invalid format[1] VM flavor for a cluster, such as `linux-c2xlarge/arm64`, results in a message similar to this:
 ....
 
-.Procedure: Verifying available VM flavors
-. For a list of available VM flavors, see the link:https://konflux.pages.redhat.com/docs/users/getting-started/multi-platform-builds.html[multi-platform builds documentation].
-. Because some of these VM flavors might not be defined in every cluster, you can confirm their availability:
-.. Navigate to the link:https://github.com/redhat-appstudio/infra-deployments/tree/main/components/multi-platform-controller[`infra-deployments` repository].
-.. Go to the folder for your cluster.
-.. In the `host-values.yaml` file, check that the VM flavor is in the `dynamicConfigs` section.
 
 If a flavor is not available, you can request that the Konflux Infrastructure team adding it to a cluster.
 
