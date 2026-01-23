@@ -1,0 +1,35 @@
+= Disabling Integration Test Comments on GitLab Merge Requests
+
+In {ProductName}, when a Merge Request (MR) is committed and integration test are triggered, if the GitLab source control secret has api, read_repository and write_repository scopes, the Integration service creates a commitStatus for the commit on the MR. The integration test status includes information about whether the tests are pending, triggered, passed or failed for each component involved in the MR.
+
+By default, the service also posts one comment on the MR with the status of the integration tests for each component. However, there may be cases where you want to disable the comment for a specific component.
+
+To disable integration test comments on an MR for a specific component, annotate the component.
+
+== Configuration
+
+To disable integration test comments for specific component, annotate the component with `test.appstudio.openshift.io/comment_strategy:disable_all`
+
+[source,bash]
+----
+$ kubectl annotate component <component-name> test.appstudio.openshift.io/comment_strategy=disable_all
+----
+
+Replace `<component-name>` with the name of your component.
+
+== Verification
+
+To verify that the comments have been disabled, you can trigger integration tests on a merge request and check the MR discussion for the component.
+
+If the configuration is set up correctly, there should be no comments for integration tests of the component in the MR discussion.
+
+== Disabling comments at the repository level
+
+Alternatively, an administrator can disable comments for all components within a `Pipelines as Code` repository by setting the `comment_strategy` in the repository's spec.
+
+To apply this setting, patch the `Repository` custom resource:
+
+[source,bash]
+----
+$ kubectl patch repository <repository-name> -n <namespace> --type merge -p '{"spec":{"settings":{"gitlab":{"comment_strategy":"disable_all"}}}}'
+----
