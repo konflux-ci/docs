@@ -1,0 +1,85 @@
+= Onboarding a component from GitLab with the CLI
+
+Create components from GitLab repositories using `kubectl`.
+
+== Prerequisites
+
+* xref:installing:enabling-builds.adoc[Enabled] build pipelines for your instance of {ProductName}.
+* link:https://kubernetes.io/docs/tasks/tools/[kubectl] CLI tool
+* You have completed the steps listed in the xref:ROOT:getting-started.adoc#getting-started-with-the-cli[Getting started with the CLI] page.
+* An existing application in your namespace.
+
+[[creating-a-gitlab-access-token-and-secret]]
+== Creating a GitLab access token and secret
+
+Before onboarding a component from GitLab, you must create a source control secret to enable {ProductName} to access your GitLab repository.
+
+.Procedure
+
+. In GitLab click on Settings -> Access Tokens on the left menu of your repository.
++
+NOTE: If you do not see this option, ask a user with repository maintainer permissions to create the token.
+
+. Click on `Add new token`.
+
+. If your GitLab instance supports setting token roles, set the role to `Maintainer`.
+
+. Select the following scopes: `api`, `read_repository`, and `write_repository`.
+
+. Click **Create project access token** and copy the generated token.
+
+. Create a secret in your {ProductName} tenant namespace. See xref:building:creating-scm-secrets.adoc[Creating source control management secrets] for detailed instructions on creating the secret with the token.
+
+[IMPORTANT]
+====
+* This Project Access Token is scoped to a project, so you cannot use it to access resources from other projects. For more information regarding Project Access Tokens, see the GitLab https://docs.gitlab.com/ee/user/project/settings/project_access_tokens.html[documentation].
+
+* If your GitLab project uses restrictive link:https://docs.gitlab.com/ee/user/project/repository/push_rules.html[push rules] to verify users, {ProductName} may fail to push commits to your repository.
+====
+
+== Creating a component
+
+. Create a `Component.yaml` file locally.
+
++
+.Example `Component.yaml` object
+include::partial$custom-resources/{context}-component-gitlab.adoc[]
+
++
+NOTE: Request annotation 'build.appstudio.openshift.io/request' can be set also to 'configure-pac-no-mr' and
+then during onboarding the onboarding MR won't be created and users will have to create pipeline run yaml
+files for the component manually.
+
+. Create an `ImageRepository.yaml` file locally.
++
+.Example `ImageRepository.yaml` object
+include::partial$custom-resources/{context}-imagerepository.adoc[]
+
+. Apply the resource to your namespace by running the following command:
+
++
+[source,shell]
+----
+$ kubectl apply -f Component.yaml ImageRepository.yaml
+----
+
++
+NOTE: You can create additional components by adding their custom resource configurations to the `Component.yaml` file. Separate multiple resources with `---`:
++
+[source,yaml]
+----
+# Component A
+---
+# Component B
+----
+
+. Configure the build pipeline for your component:
+.. If the annotation `build.appstudio.openshift.io/request: configure-pac` is set on the component, {ProductName} automatically creates a merge request in your repository with the Tekton pipeline definitions. Review and merge this merge request to complete the setup.
+.. If the annotation is not set or is set to `configure-pac-no-mr`, manually create or update the Tekton pipeline files in your repository.
+
++
+NOTE: The PipelineRun will run only for submitters who have permission to run PipelineRuns or who receive an `/ok-to-test` comment from an authorized user. +
+For further details on PipelineRun permissions, please refer to the https://pipelinesascode.com/docs/guide/running/[PipelinesAsCode documentation].
+
+. Once the merge request is made, a build pipeline should start. Track its progress in the {ProductName} UI or see the final status in GitLab after the pipeline completes. If the pipeline is successful, merge the merge request.
+

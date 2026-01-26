@@ -8,8 +8,8 @@ metadata:
   annotations:
     build.appstudio.openshift.io/request: configure-pac
     build.appstudio.openshift.io/pipeline: '{"name":"<name-of-the-pipeline-to-use>","bundle":"latest"}' <.>
-    git-provider: gitlab <.>
-    git-provider-url: https://gitlab.com <.>
+    git-provider: github <.>
+    git-provider-url: https://github.com <.>
 spec:
   application: <owning-application-name> <.>
   componentName: <component-name>
@@ -19,12 +19,12 @@ spec:
       revision: main <.>
       context: ./ <.>
       dockerfileUrl: Containerfile <.>
-  containerImage: <oci-repository-to-push-image-to> <.> 
+  containerImage: <oci-repository-to-push-image-to> <.>
 ----
 <.> A component is required to map to a git repository to build.
 <.> Optional: If used, it should point to a xref:installing:enabling-builds.adoc#customize-pipelines[configured pipeline]. If not specified, the default configured pipeline will be used.
-<.> Optional: Use if you are building a component from GitLab.
-<.> Optional: Configure with the provider URL if you are building a component from GitLab.
+<.> Optional: GitHub provider is default.
+<.> Optional: https://github.com is default.
 <.> Each component belongs to _one_ application. That application should be defined in the same file if it does not already exist.
 <.> URL for the source repository. This MUST use the `https://[...]` format for cloning a repository.
 <.> Optional: Branch to build in the repository. If not specified, the default branch will be used.
