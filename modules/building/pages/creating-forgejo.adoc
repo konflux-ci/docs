@@ -54,9 +54,9 @@ Before onboarding a component from Forgejo, you must create a source control sec
 include::partial$custom-resources/{context}-component-forgejo.adoc[]
 
 +
-NOTE: Request annotation 'build.appstudio.openshift.io/request' can be set also to 'configure-pac-no-mr' and
-then during onboarding the onboarding PR won't be created and users will have to create pipeline run yaml
-files for the component manually.
+NOTE: You can also set the 'build.appstudio.openshift.io/request' annotation to 'configure-pac-no-mr'.
+If you use this value, a pull request is not created during onboarding,
+and you must create the pipeline run YAML files for the component manually.
 
 . Create an `ImageRepository.yaml` file locally.
 +
@@ -87,6 +87,6 @@ NOTE: You can create additional components by adding their custom resource confi
 
 +
 NOTE: The PipelineRun will run only for submitters who have permission to run PipelineRuns or who receive an `/ok-to-test` comment from an authorized user. +
-For further details on PipelineRun permissions, please refer to the https://pipelinesascode.com/docs/guide/running/[PipelinesAsCode documentation].
+For further details on PipelineRun permissions, see the https://pipelinesascode.com/docs/guide/running/[PipelinesAsCode documentation].
 
-. Once the pull request is made, a build pipeline should start. Track its progress in the {ProductName} UI or see the final status in Forgejo after the pipeline completes. If the pipeline is successful, merge the pull request.
+. After the pull request is created, a build pipeline starts. Track its progress in the {ProductName} UI or see the final status in Forgejo after the pipeline completes. If the pipeline is successful, merge the pull request.
