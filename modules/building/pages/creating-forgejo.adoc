@@ -2,6 +2,11 @@
 
 Create components from Forgejo repositories using `kubectl`.
 
+[WARNING]
+====
+Forgejo support is currently in technical preview and under active development. Use this feature for testing purposes only, not in production environments.
+====
+
 == Prerequisites
 
 * xref:installing:enabling-builds.adoc[Enabled] build pipelines for your instance of {ProductName}.
