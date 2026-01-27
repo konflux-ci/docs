@@ -2,6 +2,7 @@
 *** xref:creating.adoc[Creating applications and components]
 **** xref:creating-github.adoc[Onboarding a component from GitHub with the CLI]
 **** xref:creating-gitlab.adoc[Onboarding a component from GitLab with the CLI]
+**** xref:creating-forgejo.adoc[Onboarding a component from Forgejo with the CLI]
 *** xref:deleting.adoc[Deleting applications and components]
 *** xref:build-binaries.adoc[Building binaries]
 *** xref:imagerepository.adoc[Customizing ImageRepository]
