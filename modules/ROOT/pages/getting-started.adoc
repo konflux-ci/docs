@@ -12,7 +12,7 @@ provide a foundational mechanism for isolating groups of resources within a sing
 {ProductName} scopes all the resources and APIs you interact with to namespaces, including your components, applications, snapshots, secrets, and the Tekton PipelineRuns that perform builds, tests, and releases.
 
 === Tenant namespace
-Tenant namespaces are where Tekton Pipelines produce artifacts that more than one individual can access according to their roles and the permissions defined by link:https://konflux-ci.dev/architecture/ADR/0011-roles-and-permissions.html[those roles].
+Tenant namespaces are where Tekton Pipelines produce artifacts that more than one individual can access according to their roles and the permissions defined by xref:reference:permissions.adoc[those roles].
 The tenant namespaces can be either for an individual or a team.
 
 //TODO: Document the process for getting access to/creating new namespaces (We should store this information in a seperate file and link to it. It doesn't need to be in this document).
