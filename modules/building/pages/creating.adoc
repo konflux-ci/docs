@@ -58,7 +58,7 @@ NOTE: You can create additional applications by adding their custom resource con
 
 A component is an individual part of an application that contains source code and a build configuration.
 
-Before onboarding a component to {ProductName}, ensure that the instance has appropriate access to the git repository. This means either installing your organization's {ProductName} GitHub App on the source code repository or xref:building:creating-scm-secrets.adoc[creating a secret] to enable access to a GitLab repository.
+Before onboarding a component to {ProductName}, ensure that the instance has appropriate access to the git repository. This means either installing your organization's {ProductName} GitHub App on the source code repository or xref:building:creating-scm-secrets.adoc[creating a secret] to enable access to a GitLab or Forgejo repository.
 
 === Supported source control providers
 
@@ -77,6 +77,10 @@ Before onboarding a component to {ProductName}, ensure that the instance has app
 |GitLab
 |Source control secret
 |xref:building:creating-gitlab.adoc#creating-a-gitlab-access-token-and-secret[Create a source control secret] before onboarding
+
+|Forgejo
+|Source control secret
+|xref:building:creating-forgejo.adoc#creating-a-forgejo-access-token-and-secret[Create a source control secret] before onboarding
 |===
 
 NOTE: Component names must be unique in a namespace, even when components are used in different applications.
@@ -98,7 +102,7 @@ that no rules prevent pushes to the branch patterns *`konflux-*`* and *`konflux/
 . Click on the name of the application that you want to add a component to.
 . Click on *Actions* and *Add component*.
 +
-NOTE: For *Gitlab* provider, make sure to xref:building:creating-gitlab.adoc#creating-a-gitlab-access-token-and-secret[create a source control secret] before creating the component.
+NOTE: For *GitLab* and *Forgejo* providers, create a source control secret before creating the component. See xref:building:creating-gitlab.adoc#creating-a-gitlab-access-token-and-secret[GitLab] or xref:building:creating-forgejo.adoc#creating-a-forgejo-access-token-and-secret[Forgejo] access token guides.
   . Enter the URL for the git repository.
   . (Optional) After clicking out of the repository URL, expand the *Show advanced Git options*.
     . Enter the branch name to the *Git reference* dialogue.
@@ -129,6 +133,9 @@ from OCP.
 
 |GitLab
 |xref:building:creating-gitlab.adoc[Onboarding a component from GitLab with the CLI] (requires xref:building:creating-scm-secrets.adoc[source control secrets])
+
+|Forgejo
+|xref:building:creating-forgejo.adoc[Onboarding a component from Forgejo with the CLI] (requires xref:building:creating-scm-secrets.adoc[source control secrets])
 |===
 
 == Using different from default image repository

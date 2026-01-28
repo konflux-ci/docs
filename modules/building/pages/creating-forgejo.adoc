@@ -1,6 +1,11 @@
-= Onboarding a component from GitLab with the CLI
+= Onboarding a component from Forgejo with the CLI
 
-Create components from GitLab repositories using `kubectl`.
+Create components from Forgejo repositories using `kubectl`.
+
+[WARNING]
+====
+Forgejo support is currently in technical preview and under active development. Use this feature for testing purposes only, not in production environments.
+====
 
 == Prerequisites
 
@@ -9,32 +14,35 @@ Create components from GitLab repositories using `kubectl`.
 * You have completed the steps listed in the xref:ROOT:getting-started.adoc#getting-started-with-the-cli[Getting started with the CLI] page.
 * An existing application in your namespace.
 
-[[creating-a-gitlab-access-token-and-secret]]
-== Creating a GitLab access token and secret
+[[creating-a-forgejo-access-token-and-secret]]
+== Creating a Forgejo access token and secret
 
-Before onboarding a component from GitLab, you must create a source control secret to enable {ProductName} to access your GitLab repository.
+Before onboarding a component from Forgejo, you must create a source control secret to enable {ProductName} to access your Forgejo repository.
 
 .Procedure
 
-. In GitLab click on Settings -> Access Tokens on the left menu of your repository.
+. In Forgejo, navigate to User Settings.
+
+. Click on *Applications* in the left menu.
+
+. In the *Generate new token* section, name the new token as desired.
+
+. In **Select permissions**, configure the following permissions:
 +
-NOTE: If you do not see this option, ask a user with repository maintainer permissions to create the token.
+* *issue*: Read and write
+* *repository*: Read and write
 
-. Click on `Add new token`.
+. Click *Generate token*.
 
-. If your GitLab instance supports setting token roles, set the role to `Maintainer`.
-
-. Select the following scopes: `api`, `read_repository`, and `write_repository`.
-
-. Click **Create project access token** and copy the generated token.
+. Copy the generated token immediately, as it will be shown only once at the top of the screen.
 
 . Create a secret in your {ProductName} tenant namespace. See xref:building:creating-scm-secrets.adoc[Creating source control management secrets] for detailed instructions on creating the secret with the token.
 
 [IMPORTANT]
 ====
-* This Project Access Token is scoped to a project, so you cannot use it to access resources from other projects. For more information regarding Project Access Tokens, see the GitLab https://docs.gitlab.com/ee/user/project/settings/project_access_tokens.html[documentation].
+* Store the token securely after copying it, as you will not be able to view it again in Forgejo.
 
-* If your GitLab project uses restrictive link:https://docs.gitlab.com/ee/user/project/repository/push_rules.html[push rules] to verify users, {ProductName} may fail to push commits to your repository.
+* The access token is scoped to the permissions you selected, so ensure you have granted sufficient permissions for {ProductName} to interact with your repository.
 ====
 
 == Creating a component
@@ -43,11 +51,11 @@ NOTE: If you do not see this option, ask a user with repository maintainer permi
 
 +
 .Example `Component.yaml` object
-include::partial$custom-resources/{context}-component-gitlab.adoc[]
+include::partial$custom-resources/{context}-component-forgejo.adoc[]
 
 +
 NOTE: You can also set the 'build.appstudio.openshift.io/request' annotation to 'configure-pac-no-mr'.
-If you use this value, a merge request is not created during onboarding,
+If you use this value, a pull request is not created during onboarding,
 and you must create the pipeline run YAML files for the component manually.
 
 . Create an `ImageRepository.yaml` file locally.
@@ -74,12 +82,11 @@ NOTE: You can create additional components by adding their custom resource confi
 ----
 
 . Configure the build pipeline for your component:
-.. If the annotation `build.appstudio.openshift.io/request: configure-pac` is set on the component, {ProductName} automatically creates a merge request in your repository with the Tekton pipeline definitions. Review and merge this merge request to complete the setup.
+.. If the annotation `build.appstudio.openshift.io/request: configure-pac` is set on the component, {ProductName} automatically creates a pull request in your repository with the Tekton pipeline definitions. Review and merge this pull request to complete the setup.
 .. If the annotation is not set or is set to `configure-pac-no-mr`, manually create or update the Tekton pipeline files in your repository.
 
 +
 NOTE: The PipelineRun will run only for submitters who have permission to run PipelineRuns or who receive an `/ok-to-test` comment from an authorized user. +
 For further details on PipelineRun permissions, see the https://pipelinesascode.com/docs/guide/running/[PipelinesAsCode documentation].
 
-. After the pull request is created, a build pipeline starts. Track its progress in the {ProductName} UI or see the final status in GitLab after the pipeline completes. If the pipeline is successful, merge the merge request.
-
+. After the pull request is created, a build pipeline starts. Track its progress in the {ProductName} UI or see the final status in Forgejo after the pipeline completes. If the pipeline is successful, merge the pull request.
