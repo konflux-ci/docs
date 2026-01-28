@@ -26,11 +26,13 @@ pipeline:
     finally: "1h0m0s" <.>
 ----
 
-<.> specifies the timeout for the entire PipelineRun. Defaults to the global configurable default timeout of 60 minutes.
-<.> specifies the timeout for the cumulative time taken by non-finally Tasks specified in the Pipeline.
+<.> specifies the timeout for the entire PipelineRun. Defaults to the global configurable default timeout of 75 minutes.
+<.> specifies the timeout for the cumulative time taken by non-finally Tasks specified in the Pipeline. Defaults to the global configurable default timeout of 65 minutes.
 <.> timeout for the cumulative time taken by finally Tasks.
 
 IMPORTANT: Tekton enforces a restriction on the pipeline timeout—it must be greater than or equal to the sum of the timeouts for tasks and finally.
+
+WARNING: Set the `tasks` timeout to a value lower than the `pipeline` timeout. This ensures there is time for the `finally` tasks to run before the pipeline times out.
 
 == Adjust resources
 
