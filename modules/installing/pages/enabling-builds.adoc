@@ -49,6 +49,7 @@ build-image-index
 build-source-image
 deprecated-base-image-check
 clair-scan
+roxctl-scan
 ecosystem-cert-preflight-checks
 sast-snyk-check
 clamav-scan

@@ -10,7 +10,7 @@ Each tekton task in build pipelinerun provides TEST_OUTPUT result [json] that su
 
 This result type can be also used in integration test pipelines and tasks where it can be parsed by the integration service when deciding the outcome of the integration test. This means you can use it to fail individual test tasks by emitting this result instead of failing the task and stopping the entire pipeline. With this approach it is possible to run multiple tests within the same pipeline and pass or fail them individually.
 
-== SCAN_OUTPUT
+== SCAN_OUTPUT Clair
 
 This one is located within build definition task clair scan. SCAN_OUTPUT result[json] is displayed in different manner than TEST_OUTPUT, but it serves the same purpose.
 It additionaly displays found vulnerabilities, patched(RHSA fix) and unpatched ones. Should be used in addition to TEST_OUTPUT.
@@ -18,6 +18,15 @@ It additionaly displays found vulnerabilities, patched(RHSA fix) and unpatched o
 image::vulnerabilities.png[role="border" alt="Vulnerabilities"]
 
 NOTE: Scan results within Konflux will only report vulnerabilities associated with RHSAs as fixable. This can lead to inconsistencies with Clair scan results found in Quay or elsewhere.
+
+== SCAN_OUTPUT Roxctl
+
+This one is located within build definition task roxctl scan. SCAN_OUTPUT result[json] is displayed in different manner than TEST_OUTPUT, but it serves the same purpose.
+It additionaly displays found vulnerabilities, patched(RHSA fix) and unpatched ones. Should be used in addition to TEST_OUTPUT.
+
+image::vulnerabilities.png[role="border" alt="Vulnerabilities"]
+
+NOTE: Scan results within Konflux will only report vulnerabilities associated with RHSAs as fixable. This can lead to inconsistencies with Roxctl scan results found in Quay or Clair or elsewhere.
 
 == IMAGES_PROCESSED
 

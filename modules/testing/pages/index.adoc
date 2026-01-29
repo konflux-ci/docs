@@ -17,6 +17,7 @@ The build-time tests used in {ProductName} are executed in the form of Tekton xr
 Build-time tests include the following security-focused tests:
 
 * Vulnerability scanning via Clair
+* Vulnerability scanning via Rox
 * Anti-virus scanning via ClamAV
 * Code scanning via SAST tools
 +

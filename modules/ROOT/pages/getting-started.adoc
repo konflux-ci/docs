@@ -58,6 +58,7 @@ The test process includes Tekton Tasks such as:
 
 - Running Snyk scans.
 - Checking for CVEs with `clair-in-ci`.
+- Checking for CVEs with `roxctl`.
 - Running an antivirus scan on the artifact.
 
 {ProductName} inherits the pattern of defining Tekton build pipelines in Git from its use of https://pipelinesascode.com/[Pipelines as Code (PaC)].
