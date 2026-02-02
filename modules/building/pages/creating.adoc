@@ -164,7 +164,7 @@ when you click on *Kubernetes Secret* you can download secret yml file (we will 
 Now we will have to create secret with repository credentials.
 
 === Creating Secret via {ProductName} UI
-You can now xref:building:secrets/index.adoc#example-of-creating-a-quay-io-secret[create a secret]
+You can now xref:building:secrets/creating-registry-pull-secrets.adoc#example-of-creating-a-quay-io-secret[create a secret]
 with the credentials above.
 Make sure to use the most narrowly valid scope for the `registry server address` field
 when adding the secret.
