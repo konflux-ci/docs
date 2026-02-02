@@ -35,15 +35,26 @@ metadata:
   namespace: dev-tenant-namespace <.>
 spec:
   application: <application-name> <.>
-  data:
+  data: <.>
     mapping:
       components: <.>
         - name: demo-component-1
-          repository: registry/destination-image-repository-1
-          tags: [latest]
+          repositories:
+          - url: registry/destination-image-repository-1
+            tags:
+            - "some-tag"
+          - url: registry/destination-image-repository-2
+            tags:
+            - "some-other-tag"
+          componentTags:
+          - "latest"
         - name: demo-component-2
-          repository: registry/destination-image-repository-2
-          tags: [latest]
+          repositories:
+          - url: registry/destination-image-repository-2
+            tags:
+            - "some-tag"
+          componentTags:
+          - "latest"
   target: managed-tenant-namespace
   tenantPipeline:
     params: <.>
@@ -58,6 +69,7 @@ spec:
           value: main
         - name: pathInRepo
           value: "<path-to-your-pipeline>"
+      useEmptyDir: true <.>
     serviceAccountName: build-pipeline-$COMPONENT_NAME <.>
 ----
 
@@ -65,9 +77,11 @@ spec:
 <.> Optional: Control if Releases should be created automatically for this ReleasePlan when tests pass. Defaults to true.
 <.> The development team's tenant namespace.
 <.> The name of the application that you want to release via a pipeline in the development tenant namespace.
-<.> A list containing the destination repository for each component
+<.> Optional: Pass custom data to the release. Primarily used with managed pipelines.
+<.> A list of components with their destination repositories.
 <.> The parameters to pass to your pipeline. Note: the release-operator will automatically pass parameters `taskGitRevision` and `taskGitUrl` with the same values as the `pipelineRef` `revision` and `pipelineRef` `url` parameters respectively. So, you should not pass your own values for these two parameters in this section. If you do, tekton validation webhooks will block the pipelineRun creation.
 <.> Reference to the tenant pipeline to be executed in the development tenant namespace.
+<.> Optional: Use `emptyDir` workspace instead of PVC. See xref:workspace-configuration[Workspace configuration].
 <.> The name of the service account used to execute the tenant pipeline.
 
 . In case you want to avoid the execution of a managed pipeline, remove the `target` field from your `ReleasePlan.yaml` file.
@@ -202,12 +216,59 @@ spec:
           value: main
         - name: pathInRepo
           value: "<path-to-your-pipeline>"
+      useEmptyDir: true <.>
     serviceAccountName: build-pipeline-$COMPONENT_NAME <.>
 ----
 <.> Reference to the tenant pipeline to be executed in the development tenant namespace.
+<.> Optional: Use `emptyDir` workspace instead of PVC.
 <.> The name of the service account used to execute the tenant pipeline.
 
 Both tenant and final pipelines receive the same parameters (i.e. release, releasePlan, and snapshot), allowing them to be used interchangeably. The key difference is that the final pipeline runs at the end of the release workflow, meaning the release status will contain the final outcome and all generated artifacts.
+
+[#workspace-configuration]
+== Understand workspace configuration
+
+When a tenant or final PipelineRun is created, {ProductName} creates a workspace. There are two workspace types available, configured via the `useEmptyDir` parameter in your `pipelineRef`, which defaults to `false`.
+
+=== emptyDir
+
+Set `useEmptyDir: true` in your `pipelineRef`.
+
+{ProductName} provisions a separate `emptyDir` volume for each TaskRun. The volume exists only for the lifetime of the TaskRun and is cleaned up afterwards. Steps within the same Task can share the workspace, but each Task receives its own volume, so artifacts created are not available to other Tasks in the Pipeline.
+
+*Advantages:*
+
+* Faster PipelineRun startup with no PVC provisioning delay.
+* No impact on namespace PVC storage quotas.
+
+*Use this when:*
+
+* Your Pipeline has a single Task with multiple Steps that share data.
+* Your Tasks run independently and do not share data across the Pipeline.
+* Your namespace has limited PVC quotas.
+
+=== volumeClaimTemplate (default)
+
+Set `useEmptyDir: false` or omit the field.
+
+{ProductName} provisions a `PersistentVolumeClaim` from a volume template when the PipelineRun starts. The PVC is mounted into each Task that declares the workspace. This allows artifacts to be shared across Tasks in the Pipeline, and is cleaned up when the PipelineRun completes. However, this increases PipelineRun startup time and counts against your namespace’s PVC quota.
+
+*Advantages:*
+
+* Tasks can share artifacts across the Pipeline.
+* A downstream Task can read artifacts written by an upstream Task.
+
+*Use this when:*
+
+* Your Pipeline has multiple Tasks that share artifacts.
+* A downstream Task must read artifacts written by an upstream Task.
+
+== Workspace defaults
+
+{ProductName} configures the workspace name and size for both options. These values are not configurable per tenant.
+
+* `DEFAULT_RELEASE_WORKSPACE_NAME`: `release-workspace`
+* `DEFAULT_RELEASE_WORKSPACE_SIZE`: `1Gi`
 
 == Next steps ==
 
