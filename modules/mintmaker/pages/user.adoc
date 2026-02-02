@@ -49,7 +49,7 @@ For projects: `project_<project ID>_bot_<32 hex characters>@noreply.gitlab.com`
 For groups: `group_<group ID>_bot_<32 hex characters>@noreply.gitlab.com`
 
 The project ID or group ID must come from your project or group when
-xref:building:secrets/index.adoc#gitlab-source-secret[setting up the secrets].
+xref:building:secrets/creating-scm-secrets.adoc[setting up the secrets].
 
 NOTE: When updating the GitLab Access Token used by Renovate, the bot's auto-generated user email will change. If any previous Merge Requests (MRs) from the old bot email were not successfully merged, Renovate may incorrectly assume a human is working on that branch and will skip future updates. To prevent this, ensure all existing Renovate Merge Requests are merged or delete any branches created by Renovate where the MR was not successfully merged.
 

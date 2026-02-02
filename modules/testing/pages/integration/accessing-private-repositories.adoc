@@ -12,7 +12,7 @@ If your integration pipeline needs to use special credentials to registries othe
 
 == Accessing Pipelines and Tasks in Private Git Repositories
 
-Integration Test Scenarios point to their corresponding pipeline with a link:https://tekton.dev/docs/pipelines/git-resolver/[Git Resolver]. The Git Resolver schema is inherited from Tekton and functions in the same way. Users should create an access token for their repository in link:https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/managing-your-personal-access-tokens[Github] or link:https://docs.gitlab.com/ee/user/profile/personal_access_tokens.html[Gitlab] then xref:building:secrets/index.adoc#scm-secrets[store that token in a secret] in their namespace.
+Integration Test Scenarios point to their corresponding pipeline with a link:https://tekton.dev/docs/pipelines/git-resolver/[Git Resolver]. The Git Resolver schema is inherited from Tekton and functions in the same way. Users should create an access token for their repository in link:https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/managing-your-personal-access-tokens[Github] or link:https://docs.gitlab.com/ee/user/profile/personal_access_tokens.html[Gitlab] then xref:building:secrets/creating-scm-secrets.adoc[store that token in a secret] in their namespace.
 
 Once this is done, the Resolver should be updated with the fields `token` and `tokenKey`, which provide the name of the secret and the key within the `data` section of that secret in which the access token is stored.
 
