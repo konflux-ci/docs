@@ -77,7 +77,7 @@ spec:
 <.> Omitted for brevity.
 <.> Specify a branch to target.
 <.> Repository path to the pipeline definition YAML file.
-<.> Name of the Secret. Read xref:building:creating-secrets.adoc[how to create secrets for your builds] section for more information on how to create this.
+<.> Name of the Secret. Read xref:building:secrets/index.adoc[how to create secrets for your builds] section for more information on how to create this.
 <.> Name of the attribute within your Secret, that stores the password/token.
 
 == Benefits of this guideline

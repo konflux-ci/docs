@@ -28,7 +28,7 @@ NOTE: If you do not see this option, ask a user with repository maintainer permi
 
 . Click **Create project access token** and copy the generated token.
 
-. Create a secret in your {ProductName} tenant namespace. See xref:building:creating-scm-secrets.adoc[Creating source control management secrets] for detailed instructions on creating the secret with the token.
+. Create a secret in your {ProductName} tenant namespace. See xref:building:secrets/creating-scm-secrets.adoc[Creating source control management secrets] for detailed instructions on creating the secret with the token.
 
 [IMPORTANT]
 ====

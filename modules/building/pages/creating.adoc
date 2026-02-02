@@ -58,7 +58,7 @@ NOTE: You can create additional applications by adding their custom resource con
 
 A component is an individual part of an application that contains source code and a build configuration.
 
-Before onboarding a component to {ProductName}, ensure that the instance has appropriate access to the git repository. This means either installing your organization's {ProductName} GitHub App on the source code repository or xref:building:creating-scm-secrets.adoc[creating a secret] to enable access to a GitLab or Forgejo repository.
+Before onboarding a component to {ProductName}, ensure that the instance has appropriate access to the git repository. This means either installing your organization's {ProductName} GitHub App on the source code repository or xref:building:secrets/creating-scm-secrets.adoc[creating a secret] to enable access to a GitLab or Forgejo repository.
 
 === Supported source control providers
 
@@ -110,7 +110,7 @@ NOTE: For *GitLab* and *Forgejo* providers, create a source control secret befor
   . Enter the path to the Dockerfile within the git repository. This will be the path within the context directory.
   . (Optional) Change the component name if desired.
   . (Optional) Click on the *Pipeline* drop down box and select the desired pipeline to configure your component with.
-  . (Optional) Click on *Add secret* to add a secret which will be needed for the component build. See xref:building:creating-secrets.adoc[creating secrets] for more information.
+  . (Optional) Click on *Add secret* to add a secret which will be needed for the component build. See xref:building:secrets/index.adoc[creating secrets] for more information.
 . Click *Add component*.
 
 +
@@ -132,10 +132,10 @@ from OCP.
 |xref:building:creating-github.adoc[Onboarding a component from GitHub with the CLI]
 
 |GitLab
-|xref:building:creating-gitlab.adoc[Onboarding a component from GitLab with the CLI] (requires xref:building:creating-scm-secrets.adoc[source control secrets])
+|xref:building:creating-gitlab.adoc[Onboarding a component from GitLab with the CLI] (requires xref:building:secrets/creating-scm-secrets.adoc[source control secrets])
 
 |Forgejo
-|xref:building:creating-forgejo.adoc[Onboarding a component from Forgejo with the CLI] (requires xref:building:creating-scm-secrets.adoc[source control secrets])
+|xref:building:creating-forgejo.adoc[Onboarding a component from Forgejo with the CLI] (requires xref:building:secrets/creating-scm-secrets.adoc[source control secrets])
 |===
 
 == Using different from default image repository
@@ -164,7 +164,7 @@ when you click on *Kubernetes Secret* you can download secret yml file (we will 
 Now we will have to create secret with repository credentials.
 
 === Creating Secret via {ProductName} UI
-You can now xref:building:creating-secrets.adoc#example-of-creating-a-quay-io-secret[create a secret]
+You can now xref:building:secrets/index.adoc#example-of-creating-a-quay-io-secret[create a secret]
 with the credentials above.
 Make sure to use the most narrowly valid scope for the `registry server address` field
 when adding the secret.

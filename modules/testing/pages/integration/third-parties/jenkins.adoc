@@ -64,7 +64,7 @@ spec:
 
 .Procedure - Upload your Jenkins API key
 
-Follow the instructions in the xref:building:creating-secrets.adoc[creating secrets] guide, with the following details:
+Follow the instructions in the xref:building:secrets/index.adoc[creating secrets] guide, with the following details:
 
 . For **Secret name**, enter `my-jenkins-credentials`.
 
