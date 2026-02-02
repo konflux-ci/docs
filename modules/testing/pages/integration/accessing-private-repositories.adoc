@@ -7,7 +7,7 @@ Tekton automatically mounts all secrets which are linked to that service account
 
 If your integration pipeline needs to use special credentials to registries other than ones for your component images (e.g. the ones for the registry.redhat.io or similar), you will need to manually link the secret containing them to the `konflux-integration-runner` service account.
 
-1. Create the registry pull secret in your tenant namespace - consult the  xref:building:secrets/index.adoc#creating-registry-pull-secrets[guide for pull secret creation].
+1. Create the registry pull secret in your tenant namespace - consult the  xref:building:secrets/creating-registry-pull-secrets.adoc[guide for pull secret creation].
 2. Manually link the new secret to the `konflux-integration-runner` service account - consult the xref:troubleshooting:registries.adoc#check-if-the-secret-is-linked-to-the-service-account[guide for linking secrets to service account].
 
 == Accessing Pipelines and Tasks in Private Git Repositories

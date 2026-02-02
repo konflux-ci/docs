@@ -59,7 +59,7 @@ Renovate requires registry credentials to update container images from private r
 
 NOTE: If you have already provided registry credentials for building, MintMaker will automatically reuse them.
 
-If you aren't receiving updates for an image from an authenticated registry, ensure that a secret with the registry credentials has been created and linked to the appropriate component-specific service account. You can find instructions for creating and linking these secrets xref:ROOT:building:secrets/index.adoc#creating-registry-pull-secrets[here].
+If you aren't receiving updates for an image from an authenticated registry, ensure that a secret with the registry credentials has been created and linked to the appropriate component-specific service account. You can find instructions for creating and linking these secrets xref:ROOT:building:secrets/creating-registry-pull-secrets.adoc[here].
 
 IMPORTANT: The secret type must be `kubernetes.io/dockerconfigjson`. MintMaker will ignore any other secret types.
 
