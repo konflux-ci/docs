@@ -9,6 +9,7 @@
 *** xref:accessing-private-images.adoc[Accessing private image repositories]
 *** xref:customizing-the-build.adoc[Customizing the build pipeline]
 *** xref:secrets/index.adoc[Creating secrets for your builds]
+**** xref:secrets/creating-task-input-secrets.adoc[Creating task input secrets]
 **** xref:secrets/creating-scm-secrets.adoc[Creating source control management secrets]
 *** xref:configuration-as-code.adoc[Configuration as code]
 *** xref:using-trusted-artifacts.adoc[Using trusted artifacts]
