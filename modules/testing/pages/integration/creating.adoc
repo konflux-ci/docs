@@ -214,6 +214,25 @@ spec:
         value: pipelineruns/integration_pipelinerun_pass.yaml
 ---
 
+== Passing snapshot parameters by name
+
+The parameter value of a Tekton task has a size limit. If a snapshot contains a large list of `snapshotComponents`, a Tekton task that uses the `Snapshot` parameter might fail with an `argument list too long` error.
+
+To support a long list of `snapshotComponents` in a snapshot, you can pass the name of the snapshot as the value of the `Snapshot` parameter to the integration PipelineRun by annotating the `IntegrationTestScenario`.
+
+[source,bash]
+----
+$ kubectl annotate integrationTestScenario <its-name> test.appstudio.openshift.io/snapshot-param-as-name=true
+----
+
+You can then get the `.spec` of the snapshot in your Tekton task by using the following command:
+
+[source,bash]
+----
+$ kubectl get snapshot <snapshot-name> -n <namespace> -o json | jq -c '.spec'
+{"application":"application-sample","artifacts":{},"components":[{"containerImage":"quay.io/redhat-user-workloads/test-namespace/<application-example>>/<component-sample>>@sha256:0db0a473a6abf5c15c424ab07cfbd5c40c06622fe648d4fe6a6b6abc224a0d0c","name":"component-sample","source":{"git":{"revision":"4242510959e20b2422e71f71b886aef6c40a5ead","url":"https://github.com/sample-org/sample-repo"}}}]}
+----
+
 == Data injected into the PipelineRun of the integration test
 
 When you create a custom integration test, {ProductName} automatically adds certain parameters and labels to the PipelineRun of the integration test. This section explains what those parameters and labels are, and how they can help you.
