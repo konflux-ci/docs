@@ -23,6 +23,5 @@ status:
 ....
 
 
-If a flavor is not available, you can request that the Konflux Infrastructure team adding it to a cluster.
 
 [1] If the platform `flavor` name contains invalid characters (any characters other than alphanumeric, `-`, or `_`), the PipelineRun fails with a `resource key validation failed` error.
