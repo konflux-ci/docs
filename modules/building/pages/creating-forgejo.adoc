@@ -36,7 +36,7 @@ Before onboarding a component from Forgejo, you must create a source control sec
 
 . Copy the generated token immediately, as it will be shown only once at the top of the screen.
 
-. Create a secret in your {ProductName} tenant namespace. See xref:building:creating-scm-secrets.adoc[Creating source control management secrets] for detailed instructions on creating the secret with the token.
+. Create a secret in your {ProductName} tenant namespace. See xref:building:secrets/creating-scm-secrets.adoc[Creating source control management secrets] for detailed instructions on creating the secret with the token.
 
 [IMPORTANT]
 ====

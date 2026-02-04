@@ -7,12 +7,12 @@ Tekton automatically mounts all secrets which are linked to that service account
 
 If your integration pipeline needs to use special credentials to registries other than ones for your component images (e.g. the ones for the registry.redhat.io or similar), you will need to manually link the secret containing them to the `konflux-integration-runner` service account.
 
-1. Create the registry pull secret in your tenant namespace - consult the  xref:building:creating-secrets.adoc#creating-registry-pull-secrets[guide for pull secret creation].
+1. Create the registry pull secret in your tenant namespace - consult the  xref:building:secrets/creating-registry-pull-secrets.adoc[guide for pull secret creation].
 2. Manually link the new secret to the `konflux-integration-runner` service account - consult the xref:troubleshooting:registries.adoc#check-if-the-secret-is-linked-to-the-service-account[guide for linking secrets to service account].
 
 == Accessing Pipelines and Tasks in Private Git Repositories
 
-Integration Test Scenarios point to their corresponding pipeline with a link:https://tekton.dev/docs/pipelines/git-resolver/[Git Resolver]. The Git Resolver schema is inherited from Tekton and functions in the same way. Users should create an access token for their repository in link:https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/managing-your-personal-access-tokens[Github] or link:https://docs.gitlab.com/ee/user/profile/personal_access_tokens.html[Gitlab] then link:../building/creating-secrets.adoc#creating-source-control-secrets[store that token in a secret] in their namespace.
+Integration Test Scenarios point to their corresponding pipeline with a link:https://tekton.dev/docs/pipelines/git-resolver/[Git Resolver]. The Git Resolver schema is inherited from Tekton and functions in the same way. Users should create an access token for their repository in link:https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/managing-your-personal-access-tokens[Github] or link:https://docs.gitlab.com/ee/user/profile/personal_access_tokens.html[Gitlab] then xref:building:secrets/creating-scm-secrets.adoc[store that token in a secret] in their namespace.
 
 Once this is done, the Resolver should be updated with the fields `token` and `tokenKey`, which provide the name of the secret and the key within the `data` section of that secret in which the access token is stored.
 

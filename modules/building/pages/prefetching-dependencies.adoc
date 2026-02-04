@@ -384,7 +384,7 @@ For example, it is useful for:
 To create a netrc Secret for use in your pipelines:
 
 . Create the `.netrc` file locally. See the link:https://everything.curl.dev/usingcurl/netrc.html[.netrc] docs for more details on the file format.
-. Create a key/value secret (see xref:building:creating-secrets.adoc[creating secrets for your builds]).
+. Create a key/value secret (see xref:building:secrets/index.adoc[creating secrets for your builds]).
   Set `.netrc` as the key. Upload the content of your `.netrc` file as the value.
 . In your `.tekton/` PipelineRun files, add the newly created secret to the `.spec.workspaces` section:
 

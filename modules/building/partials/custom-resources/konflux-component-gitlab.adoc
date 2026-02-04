@@ -30,4 +30,4 @@ spec:
 <.> Optional: Branch to build in the repository. If not specified, the default branch will be used.
 <.> Optional: The context to build within the git repository. If not specified, the default defined in the configured pipeline will be used.
 <.> Optional: Path to the Containerfile within the context. If not specified, the default value of "Dockerfile" will be used.
-<.> Optional: If the xref:installing:enabling-builds.adoc#enable-image-controller[image controller] is not deployed, this is required. You must create a xref:building:creating-secrets.adoc#creating-registry-pull-secrets[registry secret] that has permissions to push and pull for the specified path. If an ImageRepository is created, this should be omitted.
+<.> Optional: If the xref:installing:enabling-builds.adoc#enable-image-controller[image controller] is not deployed, this is required. You must create a xref:building:secrets/creating-registry-pull-secrets.adoc[registry secret] that has permissions to push and pull for the specified path. If an ImageRepository is created, this should be omitted.

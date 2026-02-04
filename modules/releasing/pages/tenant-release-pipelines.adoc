@@ -93,7 +93,7 @@ spec:
 kubectl apply -f ReleasePlan.yaml -n dev
 ----
 
-. Provision any secrets needed by the particular release pipeline you chose and xref:building:creating-secrets.adoc[upload them to the Development tenant namespace].
+. Provision any secrets needed by the particular release pipeline you chose and xref:building:secrets/index.adoc[upload them to the Development tenant namespace].
 . Create an `rbac.yaml` file locally. Note: This is optional, as your tenant pipeline doesn't necessarily need to get any Releases, Snapshots, or ReleasePlans. However, the operator does pass references to these CRs to the tenant release pipeline and it is a common use case to use details from them in your pipeline.
 
 +

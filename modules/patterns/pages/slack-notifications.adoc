@@ -37,7 +37,7 @@ finally:
 
 [NOTE]
 ====
-* To use `slack-webhook-notification` task, you need to xref:building:creating-secrets.adoc[create a secret] in your namespace with at least one key where the value is the webhook URL. For example, to create a secret for Slack, run `kubectl create secret generic my-secret --from-literal dev-team=https://hooks.slack.com/services/XXX/XXXXXX`
+* To use `slack-webhook-notification` task, you need to xref:building:secrets/index.adoc[create a secret] in your namespace with at least one key where the value is the webhook URL. For example, to create a secret for Slack, run `kubectl create secret generic my-secret --from-literal dev-team=https://hooks.slack.com/services/XXX/XXXXXX`
 
 * If your build pipeline fans out to anything broader than a straight line (i.e. if you have multiple concurrent tasks), you'll need to add this task under a `finally` clause so that it can aggregate the status of all prior tasks.
 
