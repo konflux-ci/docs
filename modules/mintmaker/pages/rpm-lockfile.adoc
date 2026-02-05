@@ -31,7 +31,7 @@ MintMaker searches the repository for files named `rpms.in.yaml`/`rpms.in.yml` a
 
 == How to enable automerge for RPM security updates
 
-It's possible to configure RPM security updates to automerge based on the severity of the fixed CVEs. To enable this functionality, add the following setting to your renovate configuration:
+It's possible to configure RPM security updates to automerge based on the severity of the fixed CVEs. To enable this functionality, add the following top-level setting to your renovate configuration:
 
 [source,json]
 ----
