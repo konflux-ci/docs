@@ -54,6 +54,8 @@ Snapshots can be generated in several ways:
 ** Pull request Snapshots are subject to more aggressive garbage collection policies (see below).
 ** They are primarily intended for pre-merge testing and usually not used for formal releases.
 
+* **Automatic (Component Deletion):** When a component is deleted from an application, the integration service automatically creates a new Snapshot containing only the remaining components. This Snapshot has the `release.appstudio.openshift.io/auto-release` label set to `false`, so it will not be automatically released even if your ReleasePlan is configured for auto-release. This ensures that component deletions do not trigger unexpected releases.
+
 * **Manual:** You can xref:testing:integration/snapshots/working-with-snapshots.adoc#manual-snapshots[manually create] a Snapshot custom resource (CR) if needed. This allows you to define a specific combination of existing component container images (e.g., previously built images stored in `quay.io`) for testing or release purposes. This is useful for scenarios like promoting a specific known-good set of images to production when automatic releases are disabled.
 
 == Quotas and Garbage Collection
