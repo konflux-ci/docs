@@ -94,6 +94,11 @@ passes all required tests. The value of the label should be a https://cel.dev/[C
 whether their snapshots are auto-released. Konflux also supports custom functions for common use-cases. There is a table of custom
 functions below. To request others, please reach out to the Konflux integration service team.
 
+=== Snapshots created upon component deletion
+
+When a component is deleted from an application, the integration service automatically creates a new Snapshot containing only the remaining components. These Snapshots have the `release.appstudio.openshift.io/auto-release` label set to `false` to prevent automatic releases, ensuring that component deletions do not trigger unexpected releases.
+
+
 [cols="1,1"]
 |===
 |Name
