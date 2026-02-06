@@ -31,6 +31,11 @@
 # Vanguard
 /modules/patterns/pages/managing-multiple-versions.adoc			@konflux-ci/vanguard
 
+
+# Here, make the CODEOWNERS here match the same CODEOWNERS line in
+# build-definitions as for task/run-script-oci-ta
+/modules/patterns/pages/running-user-scripts-on-the-build-pipeline.adoc	@Zokormazo @arewm @konflux-ci/build-maintainers
+
 # find a team to own these
 
 /modules/metadata/	@ralphbean @arewm
