@@ -7,4 +7,5 @@
 * Do NOT mix markdown and AsciiDoc syntax
 * Maintain proper table structures with matching |=== opening and closing
 * Keep all cross-references (xref) intact and properly formatted
+* Includes from partials must contain {context} template variable
 
