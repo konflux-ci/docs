@@ -30,7 +30,9 @@ Before onboarding a component from Forgejo, you must create a source control sec
 . In **Select permissions**, configure the following permissions:
 +
 * *issue*: Read and write
+* *organization*: Read
 * *repository*: Read and write
+* *user*: Read
 
 . Click *Generate token*.
 
