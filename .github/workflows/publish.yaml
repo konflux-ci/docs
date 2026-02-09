@@ -34,6 +34,8 @@ jobs:
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
+    env:
+      GITHUB_PAGES: true
     steps:
       - name: Checkout code
         uses: actions/checkout@v6
@@ -56,6 +58,10 @@ jobs:
         uses: actions/setup-go@v6
         with:
           go-version: '1.19'
+
+      - name: Enable GitHub Pages analytics
+        if: env.GITHUB_PAGES == 'true'
+        run: "sed -i '/^site:/a\  github_pages: true' antora-playbook.yml"
 
       - name: Generate website
         run: npm ci && npm run build
