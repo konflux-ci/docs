@@ -31,6 +31,7 @@
 **** xref:accessing-private-images.adoc[Accessing private image repositories]
 **** xref:custom-tags.adoc[Using custom tags]
 **** xref:build-binaries.adoc[Building binaries]
+**** xref:pulp-access.adoc[Getting access to Pulp storage]
 *** Advanced
 **** xref:component-nudges.adoc[Defining component relationships]
 **** xref:scheduled-builds.adoc[Scheduled builds with CronJobs]
