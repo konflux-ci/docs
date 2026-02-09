@@ -1,4 +1,4 @@
-= Generic guidelines for {ProductName} integrated repositories
+= How-to guides for {ProductName} integrated repositories
 
 Depending on your use case, there are several guidelines you can use for repositories that are integrated with {ProductName}:
 
