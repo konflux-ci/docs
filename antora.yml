@@ -4,7 +4,6 @@ title: Konflux-CI
 version: ~
 nav:
 - modules/ROOT/nav.adoc
-- modules/end-to-end/nav.adoc
 - modules/building/nav.adoc
 - modules/testing/nav.adoc
 - modules/metadata/nav.adoc
@@ -12,6 +11,7 @@ nav:
 - modules/releasing/nav.adoc
 - modules/mintmaker/nav.adoc
 - modules/patterns/nav.adoc
+- modules/end-to-end/nav.adoc
 - modules/installing/nav.adoc
 - modules/troubleshooting/nav.adoc
 - modules/glossary/nav.adoc
@@ -54,4 +54,4 @@ asciidoc:
     Placeholder: ''
     Placeholder2: ''
     Placeholder3: ''
-    
+

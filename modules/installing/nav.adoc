@@ -1,4 +1,4 @@
-** Installation
-*** xref:index.adoc[Installing {ProductName}]
-*** xref:enabling-builds.adoc[Enabling build pipelines]
-*** xref:github-app.adoc[GitHub App]
+* Installation
+** xref:index.adoc[Installing {ProductName}]
+** xref:enabling-builds.adoc[Enabling build pipelines]
+** xref:github-app.adoc[GitHub App]
