@@ -1,0 +1,23 @@
+== PipelineRuns stuck in a Pending state
+
+A PipelineRun might get stuck in a 'Pending' status because a requested resource is not available.
+
+To diagnose this issue, check the status of the Workload owned by the PipelineRun, which should have the same name as the PipelineRun. Look for a message similar to `resource <VM_TYPE> unavailable in ClusterQueue` like this:
+
+....
+status:
+  conditions:
+  - lastTransitionTime: "2026-01-21T17:25:41Z"
+    message: 'couldn''t assign flavors to pod set pod-set-1: resource <VM_TYPE>
+      unavailable in ClusterQueue'
+    observedGeneration: 1
+    reason: Pending
+    status: "False"
+    type: QuotaReserved
+  resourceRequests:
+  - name: pod-set-1
+    resources:
+      <VM_TYPE>: "1"
+      tekton.dev/pipelineruns: "1"
+
+....
