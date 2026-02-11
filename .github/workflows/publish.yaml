@@ -61,7 +61,7 @@ jobs:
 
       - name: Enable GitHub Pages analytics
         if: env.GITHUB_PAGES == 'true'
-        run: "sed -i '/^site:/a\  github_pages: true' antora-playbook.yml"
+        run: "yq -i '.site.github_pages = true' antora-playbook.yml"
 
       - name: Generate website
         run: npm ci && npm run build
