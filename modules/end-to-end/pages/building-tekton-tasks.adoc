@@ -152,11 +152,12 @@ spec:
   data:
     releaseNotes:
       product_name: My-Tasks
-      product_version: "0.1"      
+      product_version: "0.1"
     mapping:
-      registrySecret: <Secret to your registry organization>
+      registrySecret: <Secret to your registry organization> <1>
       defaults:
         public: true
+        pushSourceContainer: false <2>
       components:
         - name: echo
           repository: "quay.io/konflux-ci/my-team-tasks/task-echo"
@@ -181,6 +182,10 @@ spec:
       pipeline: "4h0m0s"
       tasks: 4h0m0s
 ----
+
+<1> Use `registrySecret` to provide a secret for the release pipeline to make image repositories public. To skip this operation, assign an empty string `""`.
+
+<2> Set `pushSourceContainer` to `false` to prevent releasing source container images. The source image build is irrelevant to a Tekton bundle build.
 
 [NOTE]
 ====
