@@ -33,11 +33,11 @@ spec:
  applications:
   - demo-app <.>
  data: <key> <.>
- environment: <sre-production> <.>
  origin: <dev-tenant-namespace> <.>
- pipelineRef: <pipeline_ref> <.>
+ pipeline:
+   pipelineRef: <pipeline_ref> <.>
+   serviceAccountName: <service-account> <.>
  policy: <policy> <.>
- serviceAccount: <service-account> <.>
 
 ----
 
@@ -47,11 +47,10 @@ spec:
 <.> The Managed environment team's tenant namespace.
 <.> A list of applications that you want to enable to be deployed in the managed tenant namespace.
 <.> Optional: An unstructured key used for providing data for the managed Pipeline.
-<.> Optional: The environment from which the application updates are allowed to be received in the Managed tenant namespace. This environment is created by the Development team.
 <.> The development team tenant namespace where the application is defined.
 <.> Reference to the Pipeline to be executed by the release service.
-<.> The enterprise contract policy against which the system validates an application before releasing it to production.
 <.> Optional: The name of the service account to use in the Pipeline to gain elevated privileges. It's used only if you have defined the `pipelineRef` value.
+<.> The enterprise contract policy against which the system validates an application before releasing it to production.
 
 +
 NOTE: The  ReleasePlanAdmission.yaml represents the reciprocal link to the ReleasePlan.yaml objects created by the development team.
