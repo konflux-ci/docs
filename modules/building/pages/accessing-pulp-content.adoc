@@ -1,0 +1,76 @@
+= Accessing Pulp content
+
+When your namespace has a Pulp controller configured (via a xref:building:pulp-access.adoc[PulpAccessRequest]), access to uploaded content requires the credentials and configuration that the controller provides.
+
+== Who can access Pulp content and scope
+
+Access to Pulp content is controlled by credentials and by Pulp domain isolation:
+
+* The `pulp-access` secret in your namespace contains the CLI configuration and mTLS certificate and key for the domain `konflux-<your-namespace>`.
+* Users or service accounts that can read the `pulp-access` secret in a namespace can use those credentials to list, download, or upload content in that namespace's Pulp domain.
+* Without valid credentials, requests to the Pulp API fail.
+
+Tenant maintainers should manage `Role` and `RoleBinding` resources to grant users, groups, or service accounts permission to read the `pulp-access` secret (or the namespace) when they need access to Pulp content.
+
+[source,yaml]
+----
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: pulp-content-viewer
+  namespace: <your-namespace>
+rules:
+  - apiGroups:
+      - ""
+    resources:
+      - secrets
+    resourceNames:
+      - pulp-access
+    verbs:
+      - get
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: pulp-content-viewer
+  namespace: <your-namespace>
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: pulp-content-viewer
+subjects:
+  - apiGroup: rbac.authorization.k8s.io
+    kind: Group
+    name: <your-group>
+----
+
+== Credential types and scope
+
+* *Namespace `pulp-access` secret*:
+** Created automatically by the pulp-access-controller when a `PulpAccessRequest` is ready
+** Contains `cli.toml`, `tls.crt`, and `tls.key` for the domain `konflux-<namespace>`
+** Use for listing and downloading artifacts in your namespace's Pulp domain, and for uploading via the Pulp CLI or pulp-tool
+** Best for local use and scripts that run inside the cluster with access to the namespace
+
+== Downloading and installing the Pulp CLI
+
+For information on downloading and installing the Pulp CLI, see the https://docs.pulpproject.org/pulp_cli/[Pulp CLI documentation]. After installing, use the credentials from the `pulp-access` secret as described in the following section.
+
+== Getting Pulp credentials for local use
+
+To access Pulp content from your machine (for example with the Pulp CLI or pulp-tool):
+
+. Ensure you have permission to read the `pulp-access` secret in the target namespace.
+. Extract the secret so you have the config and certs on disk:
++
+[source,bash]
+----
+oc extract secret/pulp-access -n <your-namespace> --to=./pulp-config --confirm
+----
+
+. Use the extracted files with the Pulp CLI or https://github.com/konflux-ci/pulp-tool[pulp-tool]. Point the config option at `cli.toml` in the extraction directory:
++
+[source,bash]
+----
+pulp --config ./pulp-config/cli.toml file content list
+----
