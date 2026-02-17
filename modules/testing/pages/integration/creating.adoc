@@ -233,6 +233,8 @@ $ kubectl get snapshot <snapshot-name> -n <namespace> -o json | jq -c '.spec'
 {"application":"application-sample","artifacts":{},"components":[{"containerImage":"quay.io/redhat-user-workloads/test-namespace/<application-example>>/<component-sample>>@sha256:0db0a473a6abf5c15c424ab07cfbd5c40c06622fe648d4fe6a6b6abc224a0d0c","name":"component-sample","source":{"git":{"revision":"4242510959e20b2422e71f71b886aef6c40a5ead","url":"https://github.com/sample-org/sample-repo"}}}]}
 ----
 
+Alternatively, use the https://github.com/konflux-ci/tekton-integration-catalog/tree/main/stepactions/get-snapshot-json/0.1[get-snapshot-json step action] within your task to create a file containing the snapshot spec..
+
 == Data injected into the PipelineRun of the integration test
 
 When you create a custom integration test, {ProductName} automatically adds certain parameters and labels to the PipelineRun of the integration test. This section explains what those parameters and labels are, and how they can help you.
