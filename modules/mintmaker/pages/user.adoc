@@ -567,6 +567,54 @@ configure Renovate to automatically add approval labels by using the following c
 
 You can also combine https://docs.renovatebot.com/configuration-options/#addlabels[`addLabels`] with any https://docs.renovatebot.com/configuration-options/#packagerules[`packageRules`] combination.
 
+==== Automerge for RPM lockfile updates
+
+Enabling automerge for RPM updates involves specific configurations, which are covered in this section. MintMaker can create two types of RPM updates: regular and xref:ROOT:mintmaker:security-updates.adoc[security].
+
+To enable automerge exclusively for RPM security updates based on the severity of the fixed CVEs, add the `rpmVulnerabilityAutomerge` top-level setting to your Renovate configuration:
+
+[source,json]
+----
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "rpmVulnerabilityAutomerge": "ALL" | "MEDIUM" | "HIGH" | "CRITICAL"
+}
+----
+
+This setting accepts one of four values. Security updates are automerged if the severity of *all* fixed CVEs meets or exceeds the configured threshold. Setting this to `"ALL"` automerges every RPM security update, regardless of severity.
+
+NOTE: You can also use one of MintMaker's https://github.com/konflux-ci/mintmaker-presets[prepared presets]. These presets automatically add the `rpmVulnerabilityAutomerge` setting to your config while also enabling automerge for other vulnerability updates.
+
+If you want to automerge all RPM updates (both regular and security), you must ensure that your config file enables automerge for either the `rpm-lockfile` manager specifically, or for all lockfile refresh operations.
+
+To enable automerge exclusively for the `rpm-lockfile` manager, you can use the manager-specific directive:
+
+[source,json]
+----
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "rpm-lockfile": {
+    "automerge": true
+  }
+}
+----
+
+Alternatively, you can enable automerge for all lockfile refreshes by configuring the `lockFileMaintenance` directive:
+
+[source,json]
+----
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "lockFileMaintenance": {
+    "automerge": true
+  }
+}
+----
+
+IMPORTANT: Package rules using the https://docs.renovatebot.com/configuration-options/#matchpackagenames[`matchPackageNames`] matcher do not apply to lockfile refreshes. If you want to enable automerge for RPM updates using https://docs.renovatebot.com/configuration-options/#packagerules[`packageRules`], you must create a rule that uses a different matcher (e.g., https://docs.renovatebot.com/configuration-options/#matchmanagers[`matchManagers`] or https://docs.renovatebot.com/configuration-options/#matchupdatetypes[`matchUpdateTypes`]).
+
+NOTE: If you enable general automerge for all RPM updates (by configuring `rpm-lockfile` or `lockFileMaintenance`), the `rpmVulnerabilityAutomerge` setting will be ignored.
+
 === Inherited config
 
 Renovate supports the use of an https://docs.renovatebot.com/config-overview/#inherited-config[Inherited config].
