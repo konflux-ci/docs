@@ -29,17 +29,9 @@ Please find how to generate RPM lockfile in xref:ROOT:building:prefetching-depen
 
 MintMaker searches the repository for files named `rpms.in.yaml`/`rpms.in.yml` and assumes that a lockfile named `rpms.lock.yaml`/`rpms.lock.yml` exists in that same directory. MintMaker supports multiple lockfiles in a repository, but they must be placed in different directories.
 
-== How to enable automerge for RPM security updates
+== Enable automerge for RPM security updates
 
-It's possible to configure RPM security updates to automerge based on the severity of the fixed CVEs. To enable this functionality, add the following top-level setting to your renovate configuration:
-
-[source,json]
-----
-{
-  "rpmVulnerabilityAutomerge": "ALL" | "MEDIUM" | "HIGH" | "CRITICAL"
-}
-----
-The setting can be set to one of these four values, and the security updates will be automerged if the severity of the fixed CVEs will be at least as high as the configured value. `ALL` will automerge every RPM security update. If this configuration option is not set, automerge is implicitly disabled.
+It's possible to configure RPM security updates to automerge based on the severity of the fixed CVEs. For details on how to enable this feature, see xref:ROOT:mintmaker:user.adoc#automerge-for-rpm-lockfile-updates[Automerge for RPM lockfile updates].
 
 == RPM lockfile with RPMs that require subscription
 
