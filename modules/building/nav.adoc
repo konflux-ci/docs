@@ -32,6 +32,7 @@
 *** xref:custom-tags.adoc[Using custom tags]
 *** xref:build-binaries.adoc[Building binaries]
 *** xref:pulp-access.adoc[Getting access to Pulp storage]
+*** xref:accessing-pulp-content.adoc[Accessing Pulp content]
 ** Advanced
 *** xref:component-nudges.adoc[Defining component relationships]
 *** xref:scheduled-builds.adoc[Scheduled builds with CronJobs]
