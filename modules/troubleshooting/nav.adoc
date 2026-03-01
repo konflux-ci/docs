@@ -2,3 +2,4 @@
 ** xref:builds.adoc[Builds]
 ** xref:releases.adoc[Releases]
 ** xref:registries.adoc[Registry Issues]
+** xref:service-accounts.adoc[Service Account Authentication]
