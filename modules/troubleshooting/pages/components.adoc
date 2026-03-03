@@ -1,0 +1,248 @@
+= Troubleshooting Components
+
+== Component Stuck in Provisioning
+
+=== Symptom
+
+Component shows `build.appstudio.openshift.io/request: configure-pac` annotation but never completes provisioning.
+
+=== Possible Causes
+
+* **Container image not set** - The `.spec.containerImage` field is not populated
+* **GitHub App not installed** - GitHub App is not installed in the repository
+* **Invalid repository credentials** - Git credentials are missing or incorrect
+* **Webhook creation failed** - Unable to create webhook in the repository
+
+=== Debugging Steps
+
+. Check the component status:
+
++
+[source,bash]
+----
+kubectl get component <component-name> -o yaml | grep -A10 "annotations:"
+----
+
++
+Look for the `build.appstudio.openshift.io/status` annotation to see error details.
+
+. Check if Image Controller created the ImageRepository:
+
++
+[source,bash]
+----
+kubectl get imagerepository <component-name> -o yaml
+----
+
++
+Verify that `.spec.containerImage` is set on the Component:
+
++
+[source,bash]
+----
+kubectl get component <component-name> -o jsonpath='{.spec.containerImage}'
+----
+
+=== Solutions
+
+. **Set the Component ContainerImage**
+
++
+Wait for Image Controller to create the ImageRepository and populate the field, or set it manually:
+
++
+[source,bash]
+----
+kubectl patch component <component-name> --type=merge -p '{"spec":{"containerImage":"quay.io/your-org/your-repo"}}'
+----
+
++
+[NOTE]
+You must provide image registry credentials if you are manually setting the component's container image.
+
+
+. **Configure Webhook Events**
+
++
+Ensure that your Konflux instance has properly configured webhook events from your source code repository.
+
+== PipelineRun Not Created After Push Event
+
+=== Symptom
+
+You push code to your repository, but no PipelineRun is created.
+
+=== Possible Causes
+
+* **Webhook not configured** - Webhook is not set up in the repository
+* **GitHub App not processing events** - GitHub App is not installed or configured correctly
+* **PaC Repository CR missing** - Pipelines as Code Repository resource doesn't exist
+* **PipelineRun definitions not in repository** - The `.tekton/` directory is missing or empty
+
+=== Debugging Steps
+
+. Check if PaC Repository CR exists:
+
++
+[source,bash]
+----
+kubectl get repository -n <namespace>
+----
+
+. Check the Repository CR status:
+
++
+[source,bash]
+----
+kubectl get repository <repository-name> -o yaml
+----
+
+. Verify PipelineRun definitions exist in your repository:
+
++
+[source,bash]
+----
+ls .tekton/
+----
+
++
+You should see YAML files like `<component-name>-on-push.yaml` and `<component-name>-on-pull-request.yaml`.
+
+=== Solutions
+
+. **Check Component Status:**
+
++
+The Component may not have completed the `Repository` object provisioning. Check component status:
+
++
+[source,bash]
+----
+kubectl get component <component-name> -o yaml | grep "build.appstudio.openshift.io/status"
+----
+
+. **PipelineRun Pull Request Missing:**
+
++
+Re-trigger the `PipelineRun` pull request by adding the annotation to the `Component`:
+
++
+[source,bash]
+----
+kubectl annotate component <component-name> build.appstudio.openshift.io/request=configure-pac
+----
+
+. **Check Repository Credentials:**
+
++
+For repositories not using the GitHub App, ensure git credentials are configured and re-provision the component.
+
++
+See xref:building:creating-gitlab.adoc[Onboarding from GitLab] or xref:building:creating-forgejo.adoc[Onboarding from Forgejo] for more information.
+
+== Component Cannot Be Deleted
+
+=== Symptom
+
+You try to delete a Component, but it remains in `Terminating` state.
+
+=== Possible Causes
+
+* **Finalizers not removed** - Component has finalizers that prevent deletion
+* **Dependent resources exist** - Resources owned by the Component still exist
+* **Controller not running** - Build Service controller is not processing the deletion
+
+=== Debugging Steps
+
+. Check component finalizers:
+
++
+[source,bash]
+----
+kubectl get component <component-name> -o jsonpath='{.metadata.finalizers}'
+----
+
++
+Common finalizers:
+
++
+* `pac.component.appstudio.openshift.io/finalizer` - Set by Build Service during PaC provisioning
+* `component.appstudio.redhat.com/finalizer` - Set by Hybrid Application Service
+
+
+. Check for owned resources:
+
++
+[source,bash]
+----
+kubectl get pipelinerun -n <namespace> -l appstudio.openshift.io/component=<component-name>
+kubectl get repository -n <namespace> | grep <component-name>
+kubectl get imagerepository <component-name> -n <namespace>
+----
+
+=== Solutions
+
+. **Wait for Finalizers to Process**
+
++
+Wait for the Build Service controller to process the deletion. If the controller is not running, the finalizers won't be removed automatically.
+
+. **Remove Component Finalizers**
+
++
+[source,bash]
+----
+kubectl patch component <component-name> -p '{"metadata":{"finalizers":[]}}' --type=merge
+----
+
++
+[CAUTION]
+====
+Forcing deletion by removing finalizers can leave orphaned resources in your cluster. Only do this if you understand the implications and have verified that related controllers are not running.
+====
+
+
+. **Remove Component PipelineRuns**
+
++
+Manually delete PipelineRuns and other resources:
+
++
+[source,bash]
+----
+kubectl delete pipelinerun -n <namespace> -l appstudio.openshift.io/component=<component-name>
+----
+
+== Component Image Repository Issues
+
+=== Symptom
+
+Component is created but `.spec.containerImage` is never populated, or ImageRepository creation fails.
+
+=== Possible Causes
+
+* **Image Controller not running** - Image Controller deployment is not healthy
+* **Quay credentials missing** - Registry credentials are not configured
+* **Invalid repository name** - Component or namespace name contains invalid characters
+* **Quota exceeded** - Registry quota limits reached
+
+=== Debugging Steps
+
+Check ImageRepository status:
+
+[source,bash]
+----
+kubectl get imagerepository <component-name> -o yaml
+----
+
+=== Solutions
+
+. **Check Image Name**
+
++
+Ensure component and namespace names follow Kubernetes naming conventions (lowercase alphanumeric characters, hyphens, and dots only).
+
+. **Increase Registry Quota**
+
++
+Contact your registry administrator to increase quota limits, or delete unused image repositories.

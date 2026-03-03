@@ -200,3 +200,64 @@ data:
   # automergeSchedule: "* 22-23,0-4 * * *; * * * * 0,6"
   labels: "customLabel1, customLabel2"
 --
+
+== Troubleshooting Nudging Issues
+
+=== Nudging Not Working
+
+==== Symptom
+
+Builds complete successfully, but dependent components are not being updated with new image references.
+
+==== Possible Causes
+
+. **build-nudges-ref not configured** - The `spec.build-nudges-ref` field is not set on the Component
+. **Git credentials not configured** - Cannot access target repositories to create PRs
+. **Target repository access denied** - Insufficient permissions to create PRs in dependent repositories
+. **Existing references are incorrect** - The image digest references in the nudged component's repository don't match the expected format
+
+==== Debugging Steps
+
+Check if build-nudges-ref is configured:
+
+[source,bash]
+----
+kubectl get component <component-name> -o jsonpath='{.spec.build-nudges-ref}'
+----
+
+Check if the nudging finalizer was added to the PipelineRun:
+
+[source,bash]
+----
+kubectl get pipelinerun <pipelinerun-name> -o yaml | grep finalizer
+----
+
+Look for `build.appstudio.openshift.io/build-nudge-finalizer`.
+
+Verify the output image from the nudging component's PipelineRun:
+
+[source,bash]
+----
+kubectl get pipelinerun <pipelinerun-name> -o jsonpath='{.spec.params[?(@.name=="output-image")].value}'
+----
+
+==== Solutions
+
+**Configure Component Nudges:**
+
+Add the dependent component names to the Component spec:
+
+[source,bash]
+----
+kubectl patch component <component-name> --type=merge -p '{"spec":{"build-nudges-ref":["dependent-component-1","dependent-component-2"]}}'
+----
+
+**Set Git Credentials for Private Repositories**
+
+Create git credentials for the dependent repositories. See xref:secrets/creating-scm-secrets.adoc[Creating source control management secrets].
+
+**Correct Mismatched Image References**
+
+Ensure that the existing image digest references in your nudged component's repository are correct and in the expected format. Nudging only updates existing digest references (e.g., `quay.io/org/image@sha256:...`), not tag references (e.g., `quay.io/org/image:latest`).
+
+Check that the files containing image references match the patterns specified in the `build.appstudio.openshift.io/build-nudge-files` annotation.
