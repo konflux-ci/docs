@@ -8,9 +8,6 @@ Component shows `build.appstudio.openshift.io/request: configure-pac` annotation
 
 === Possible Causes
 
-* **Container image not set** - The `.spec.containerImage` field is not populated
-* **GitHub App not installed** - GitHub App is not installed in the repository
-* **Invalid repository credentials** - Git credentials are missing or incorrect
 * **Webhook creation failed** - Unable to create webhook in the repository
 
 === Debugging Steps
@@ -26,7 +23,7 @@ kubectl get component <component-name> -o yaml | grep -A10 "annotations:"
 +
 Look for the `build.appstudio.openshift.io/status` annotation to see error details.
 
-. Check if Image Controller created the ImageRepository:
+. Check if the `ImageRepository` exists:
 
 +
 [source,bash]
@@ -48,7 +45,7 @@ kubectl get component <component-name> -o jsonpath='{.spec.containerImage}'
 . **Set the Component ContainerImage**
 
 +
-Wait for Image Controller to create the ImageRepository and populate the field, or set it manually:
+Set the container image for the `Component` if your Konflux instances does not have the xref:installing:enabling-builds.adoc#enable-image-controller[image controller] enabled:
 
 +
 [source,bash]
@@ -74,10 +71,11 @@ You push code to your repository, but no PipelineRun is created.
 
 === Possible Causes
 
-* **Webhook not configured** - Webhook is not set up in the repository
-* **GitHub App not processing events** - GitHub App is not installed or configured correctly
-* **PaC Repository CR missing** - Pipelines as Code Repository resource doesn't exist
-* **PipelineRun definitions not in repository** - The `.tekton/` directory is missing or empty
+* **Invalid PipelineRun YAML** - Broken YAML syntax or validation errors in PipelineRun definitions
+* **Duplicate PipelineRun names** - Multiple PipelineRuns with the same name
+* **Rate limits** - Git provider API rate limits exceeded
+* **Component not onboarded** - Webhook not configured, GitHub App not installed, or PaC Repository CR missing
+* **Webhook or GitHub App removed** - Previously configured webhook was removed or GitHub App was uninstalled
 
 === Debugging Steps
 
@@ -89,14 +87,6 @@ You push code to your repository, but no PipelineRun is created.
 kubectl get repository -n <namespace>
 ----
 
-. Check the Repository CR status:
-
-+
-[source,bash]
-----
-kubectl get repository <repository-name> -o yaml
-----
-
 . Verify PipelineRun definitions exist in your repository:
 
 +
@@ -106,7 +96,7 @@ ls .tekton/
 ----
 
 +
-You should see YAML files like `<component-name>-on-push.yaml` and `<component-name>-on-pull-request.yaml`.
+You should see YAML files containing PipelineRun definitions. During onboarding, these are typically named `<component-name>-on-push.yaml` and `<component-name>-on-pull-request.yaml`, but any valid filename can be used.
 
 === Solutions
 
