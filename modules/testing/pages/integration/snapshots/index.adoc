@@ -84,7 +84,22 @@ Snapshot CRs themselves consume resources. To manage this and stay within quota,
 * ** Default retention counts:**
 *** **~=640** non-PR (push event) snapshots. This includes both Snapshots that are referenced by a `Release` CR and those that are not.
 *** **70** PR event snapshots.
-* **Exception:** Snapshots annotated with `test.appstudio.openshift.io/keep-snapshot=true` will not be garbage collected, but they still count towards the retention count.
+
+[IMPORTANT]
+====
+**Protect Snapshots from Garbage Collection**
+
+**test.appstudio.openshift.io/keep-snapshot**
+
+The annotation supports two formats:
+
+**true**: Snapshots annotated with `test.appstudio.openshift.io/keep-snapshot=true` will **not** be garbage collected, regardless of retention counts. This annotation acts as a safety mechanism to protect critical Snapshots from deletion. Apply this annotation to Snapshots that you need to preserve for extended periods
+
+**TTL Format Duration strings**: Protects the Snapshot for a specific duration using Go duration format (e.g., ` 2h9m13s`). The Snapshot will be automatically deleted after the TTL expires, calculated from the Snapshot's creation timestamp. 
+
+**Important Notes:** If the duration format is invalid or cannot be parsed, the Snapshot will be treated as unprotected and may be garbage collected. Protected Snapshots still count towards the retention count quota, so use this annotation judiciously.
+
+====
 
 IMPORTANT: These retention counts are **not user-configurable**.
 
