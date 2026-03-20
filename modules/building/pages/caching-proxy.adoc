@@ -1,6 +1,8 @@
 = Enabling caching proxy for builds
 
-{ProductName} supports HTTP proxy caching to improve build performance. When enabled, container build operations can use a Squid HTTP proxy to cache layers, reducing build times for subsequent builds.
+{ProductName} supports HTTP proxy caching to improve build performance. When enabled, container build operations can use a Squid HTTP proxy to cache container image layers, reducing build times for subsequent builds.
+
+NOTE: The caching proxy caches only container image layers. It does not cache build dependencies such as RPM, pip, npm, or Maven packages.
 
 == Prerequisites
 
