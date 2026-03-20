@@ -38,7 +38,7 @@ See also xref:testing:integration/rerunning.adoc[Retriggering integration tests]
 
 +
 NOTE: There are rules that govern who can execute the `/ok-to-test` comment. Please see
-link:https://pipelinesascode.com/docs/guide/running/[Running the PipelineRun] for more information.
+link:https://pipelinesascode.com/docs/guides/running-pipelines/[Running the PipelineRun] for more information.
 
 === Retriggering a pre-merge build on a pull request
 
@@ -54,11 +54,11 @@ link:https://pipelinesascode.com/docs/guide/running/[Running the PipelineRun] fo
 The pipeline run should start executing in the *Activity* > *Pipeline runs* tab and in the pull request.
 
 +
-NOTE: There are rules that govern who can execute the `/retest` comment. They follow the same requirements as determining whether a submitter is allowed to run the PipelineRun. Please see link:https://pipelinesascode.com/docs/guide/running/[Running the PipelineRun].
+NOTE: There are rules that govern who can execute the `/retest` comment. They follow the same requirements as determining whether a submitter is allowed to run the PipelineRun. Please see link:https://pipelinesascode.com/docs/guides/running-pipelines/[Running the PipelineRun].
 
 
 +
-NOTE: For additional options, refer to the link:https://pipelinesascode.com/docs/guide/gitops_commands/[Pipelines as Code documentation].
+NOTE: For additional options, refer to the link:https://pipelinesascode.com/docs/guides/gitops-commands/[Pipelines as Code documentation].
 
 
 == Running Builds Post-Merge 
@@ -86,7 +86,7 @@ metadata:
       pipelinesascode.tekton.dev/on-event: "[push]"
 ---
 
-See link:https://pipelinesascode.com/docs/guide/matchingevents/[Matching Events with Pipelines as Code]
+See link:https://pipelinesascode.com/docs/guides/event-matching/[Matching Events with Pipelines as Code]
 for more information.
 
 
@@ -111,13 +111,13 @@ IMPORTANT: Triggering build this way won't trigger nudging PR
 NOTE: This procedure only works to retrigger the build pipeline for the latest commit on the branch.
 
 +
-NOTE: For instructions on how to retrigger only individual build pipelines, not all, see link:https://pipelinesascode.com/docs/guide/gitops_commands/[pipelinesascode documentation].
+NOTE: For instructions on how to retrigger only individual build pipelines, not all, see link:https://pipelinesascode.com/docs/guides/gitops-commands/[pipelinesascode documentation].
 
 +
 NOTE: If you only want to retrigger the integration tests, see xref:testing:integration/rerunning.adoc[retriggering integration tests].
 
 +
-NOTE: There are rules that govern who can execute the `/retest` comment. They follow the same requirements as determining whether a submitter is allowed to run the PipelineRun. Please see link:https://pipelinesascode.com/docs/guide/running/[Running the PipelineRun].
+NOTE: There are rules that govern who can execute the `/retest` comment. They follow the same requirements as determining whether a submitter is allowed to run the PipelineRun. Please see link:https://pipelinesascode.com/docs/guides/running-pipelines/[Running the PipelineRun].
 
 === Retriggering a post-merge build from your main branch from the UI
 
