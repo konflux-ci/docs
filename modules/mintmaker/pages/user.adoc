@@ -102,6 +102,12 @@ When customizing your configs, use the following base template to build on:
 }
 ----
 
+=== Configuration validation
+
+The customized `renovate.json` file can be validated with this https://github.com/konflux-ci/renovate-config-validator-action[GitHub Action]. Note that the validator only checks
+syntax validity and adherence to the configuration schema and it cannot verify
+that, for example, a file matching pattern will actually match any files in your repository.
+
 === Configuration presets
 
 Before diving deeper into all the possible configuarion options, consider using
