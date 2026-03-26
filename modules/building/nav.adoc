@@ -1,9 +1,9 @@
 * xref:index.adoc[Building]
 ** Getting started
 *** xref:creating.adoc[Creating applications and components]
-**** xref:creating-github.adoc[Onboarding a component from GitHub with the CLI]
-**** xref:creating-gitlab.adoc[Onboarding a component from GitLab with the CLI]
-**** xref:creating-forgejo.adoc[Onboarding a component from Forgejo with the CLI]
+**** xref:creating-github.adoc[Onboarding a component from GitHub]
+**** xref:creating-gitlab.adoc[Onboarding a component from GitLab]
+**** xref:creating-forgejo.adoc[Onboarding a component from Forgejo]
 *** xref:deleting.adoc[Deleting applications and components]
 *** xref:running.adoc[Running build pipelines]
 ** Build configuration

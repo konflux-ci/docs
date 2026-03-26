@@ -1,15 +1,48 @@
-= Onboarding a component from GitHub with the CLI
+= Onboarding a component from GitHub
 
-Create components from GitHub repositories using `kubectl`.
+Create components from GitHub repositories using the {ProductName} UI or `kubectl`.
 
-== Prerequisites
+NOTE: Before onboarding a component from GitHub, install the {ProductName} GitHub App on your organization or repository. The GitHub App name is provided by your {ProductName} administrators.
+
+[[creating-a-component-with-the-ui]]
+== Creating a component with the UI
+
+.Prerequisites:
+
+* xref:installing:enabling-builds.adoc[Enabled] build pipelines for your instance of {ProductName}.
+* xref:installing:enabling-builds.adoc#enable-image-controller[Enabled] image controller for your instance of {ProductName}.
+* An existing application in your namespace.
+* The {ProductName} GitHub App installed on your organization or repository.
+
+.Procedure
+
+. In the {ProductName} UI, go to the *Applications* page.
+. Click on the name of the application that you want to add a component to.
+. Click on *Actions* and *Add component*.
+. Enter the URL for the git repository.
+. (Optional) After clicking out of the repository URL, expand the *Show advanced Git options*.
+  .. Enter the branch name to the *Git reference* dialog.
+  .. Enter the path to the context directory if the build context is contained somewhere other than the repository root.
+. Enter the path to the Dockerfile within the git repository. This will be the path within the context directory.
+. (Optional) Change the component name if desired.
+. (Optional) Click on the *Pipeline* drop down box and select the desired pipeline to configure your component with.
+. (Optional) Click on *Add secret* to add any additional secrets needed for the component build. See xref:building:secrets/index.adoc[creating secrets] for more information.
+. Click *Add component*.
+
++
+NOTE: When a component is immediately removed after creation, it might result in an orphaned ImageRepository whose ownership was not yet assigned to the component. When trying to create a component again with the same name, the UI will report an error that the ImageRepository already exists. To resolve this, remove the ImageRepository manually from OCP.
+
+== Creating a component with the CLI
+
+.Prerequisites:
 
 * xref:installing:enabling-builds.adoc[Enabled] build pipelines for your instance of {ProductName}.
 * link:https://kubernetes.io/docs/tasks/tools/[kubectl] CLI tool
 * You have completed the steps listed in the xref:ROOT:getting-started.adoc#getting-started-with-the-cli[Getting started with the CLI] page.
 * An existing application in your namespace.
+* The {ProductName} GitHub App installed on your organization or repository.
 
-== Procedures
+.Procedure
 
 . Create a `Component.yaml` file locally.
 

@@ -1,6 +1,6 @@
-= Onboarding a component from Forgejo with the CLI
+= Onboarding a component from Forgejo
 
-Create components from Forgejo repositories using `kubectl`.
+Create components from Forgejo repositories using the {ProductName} UI or `kubectl`.
 
 [WARNING]
 ====
@@ -47,7 +47,45 @@ Before onboarding a component from Forgejo, you must create a source control sec
 * The access token is scoped to the permissions you selected, so ensure you have granted sufficient permissions for {ProductName} to interact with your repository.
 ====
 
-== Creating a component
+[[creating-a-component-with-the-ui]]
+== Creating a component with the UI
+
+.Prerequisites:
+
+* xref:installing:enabling-builds.adoc[Enabled] build pipelines for your instance of {ProductName}.
+* xref:installing:enabling-builds.adoc#enable-image-controller[Enabled] image controller for your instance of {ProductName}.
+* An existing application in your namespace.
+
+.Procedure
+
+. In the {ProductName} UI, go to the *Applications* page.
+. Click on the name of the application that you want to add a component to.
+. Click on *Actions* and *Add component*.
+. If a source control secret does not already exist for the repository or the host, click *Add secret* in the *Build time secret* section at the bottom of the page and complete the following fields:
+  .. Set *Secret type* to `Source secret`.
+  .. Enter a unique name for the secret (for example, `pac-forgejo`).
+  .. Set *Authentication type* to `Basic authentication`.
+  .. Enter the hostname of your Forgejo instance in the *Host* field (for example, `codeberg.org`).
+  .. (Optional) Enter the repository path in the *Repository* field to scope the secret to a specific repository (for example, `org/project`). Leave empty to apply the secret to all repositories on the host.
+  .. Leave the *Username* field empty.
+  .. Enter your access token in the *Password* field. See <<creating-a-forgejo-access-token-and-secret>> for instructions on how to acquire an access token.
+  .. Click *Create*.
+. Enter the URL for the git repository.
+. (Optional) After clicking out of the repository URL, expand the *Show advanced Git options*.
+  .. Enter the branch name to the *Git reference* dialog.
+  .. Enter the path to the context directory if the build context is contained somewhere other than the repository root.
+  .. Select `forgejo` from the *Git provider annotation* drop-down menu.
+  .. Enter the base URL of your Forgejo instance in the *Git url annotation* field (for example, `https://codeberg.org`).
+. Enter the path to the Dockerfile within the git repository. This will be the path within the context directory.
+. (Optional) Change the component name if desired.
+. (Optional) Click on the *Pipeline* drop down box and select the desired pipeline to configure your component with.
+. (Optional) Click on *Add secret* to add any additional secrets needed for the component build. See xref:building:secrets/index.adoc[creating secrets] for more information.
+. Click *Add component*.
+
++
+NOTE: When a component is immediately removed after creation, it might result in an orphaned ImageRepository whose ownership was not yet assigned to the component. When trying to create a component again with the same name, the UI will report an error that the ImageRepository already exists. To resolve this, remove the ImageRepository manually from OCP.
+
+== Creating a component with the CLI
 
 . Create a `Component.yaml` file locally.
 
