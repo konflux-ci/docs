@@ -135,6 +135,7 @@ MintMaker presets, you can also explore options from the https://docs.renovatebo
 |disable-minor-updates | Disable major and minor semantic version updates
 |group-python-requirements | Group `requirement.txt` updates into a single PR
 |group-python-poetry | Group Poetry updates into a single PR
+|refresh-rpm-lockfiles | Refresh RPM lockfiles after base container image updates
 |update-fedora-to-stable | Suggest only stable Fedora releases (based on https://endoflife.date/fedora[endoflife.date])
 |===
 
@@ -152,6 +153,9 @@ Below is an example `renovate.json` that disables major version updates and grou
 ----
 
 CAUTION: *These presets will not enable automerge for RPM security updates. The instructions for enabling automerge for RPMs can be found xref:mintmaker:rpm-lockfile.adoc#how-to-enable-automerge-for-rpm-security-updates[here]
+
+CAUTION: By enabling the `refresh-rpm-lockfiles` preset, displaying CVE
+information in RPM lockfile updates is *disabled*.
 
 === Overriding manager specific configuration
 
