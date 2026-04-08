@@ -1,0 +1,2 @@
+// This partial is referenced by building/pages/prefetching-dependencies.adoc
+// Add below sections to explain the use of experimental Hermeto package managers.
