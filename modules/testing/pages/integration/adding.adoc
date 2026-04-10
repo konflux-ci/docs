@@ -48,4 +48,6 @@ When the new build is finished:
 
 . xref:./editing.adoc[Edit the integration test] if it is not properly configured.
 
-The test results will also be available from the PR in GitHub or the MR in GitLab. In GitHub, the test results can be viewed in the *Checks* tab. In GitLab, the test results will show up in the *Pipelines* tab. In both cases, comments will be created once the integration tests finish running, showing the results of the most recent test run.
+The test results will also be available from the PR in GitHub or the MR in GitLab. In GitHub, the test results can be viewed in the *Checks* tab. In GitLab, the test results will show up in the *Pipelines* tab. In both cases, comments will be created once the integration tests finish running, showing the results of the most recent test run. The report table includes a *Note* column that displays the contents of the `note` field from each task's TEST_OUTPUT, when present.
+
+If a test finishes with a `WARNING` outcome, the integration service reports it as passed with a distinct status to each git provider. On GitHub, check runs display with a `neutral` conclusion and a "Warning" title. On GitLab, the commit status is reported as `success`. On Forgejo, the commit status is reported as `warning`. In all cases, the summary message indicates the test "has warning(s)" rather than a standard pass.
