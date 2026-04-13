@@ -35,6 +35,8 @@ For every build, Hermeto generates a software bill of materials (SBOM) where all
 
 |xref:generic[generic]
 |`N/A`
+
+include::partial${context}-prefetch-experimental-rows.adoc[]
 |===
 
 == Procedure
@@ -372,6 +374,8 @@ Refer to the link:https://hermetoproject.github.io/hermeto/generic/#example[gene
 
 include::partial${context}-prefetch-hermeto-note.adoc[]
 ====
+
+include::partial${context}-prefetch-experimental.adoc[]
 
 == [[netrc]]Creating the netrc secret
 
