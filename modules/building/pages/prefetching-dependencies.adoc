@@ -373,6 +373,50 @@ Refer to the link:https://hermetoproject.github.io/hermeto/generic/#example[gene
 include::partial${context}-prefetch-hermeto-note.adoc[]
 ====
 
+== [[permissive-mode]]Enabling permissive mode for `prefetch-dependencies`
+
+By default, Hermeto runs in *strict mode*, which enforces that all dependencies are fully resolved and locked before the prefetch. This prevents arbitrary code execution and ensures reproducible builds. However, strict mode can cause prefetch failures in certain cases — for example, when a PyPI dependency includes a Rust extension with an outdated `Cargo.lock` file.
+
+To handle such cases, Hermeto supports a *permissive mode* that relaxes some of these security restrictions. When permissive mode is enabled, Hermeto will not fail the prefetch due to issues such as an outdated or missing `Cargo.lock` file for a Rust extension dependency.
+
+[WARNING]
+====
+Enabling permissive mode reduces the strictness of the prefetch validation. This may result in less accurate SBOMs and reduced build reproducibility. Use this option only when necessary and be aware of the security trade-offs.
+====
+
+=== When to use permissive mode
+
+Consider enabling permissive mode when:
+
+* A PyPI dependency contains a Rust extension whose `Cargo.lock` file is outdated or missing, causing the prefetch to fail in strict mode.
+* You have confirmed the dependency is trustworthy and the prefetch failure is due to a known limitation rather than a security concern.
+
+=== How to enable permissive mode
+
+To enable permissive mode, set the `flags` parameter to `["hermetic-prefetch-permissive"]` in the `prefetch-input` value of your PipelineRun YAML:
+
+[source,yaml]
+----
+spec:
+  params:
+    ...
+    - name: prefetch-input
+      value: '{"type": "pip", "path": ".", "flags": ["hermetic-prefetch-permissive"]}' <1>
+----
+<1> The `flags` field accepts a JSON array. The `"hermetic-prefetch-permissive"` flag instructs Hermeto to relax its strict validation during the prefetch step. This can be combined with other `prefetch-input` parameters such as `requirements_files` or `allow_binary`.
+
+You can also use permissive mode with multiple package managers specified as a JSON array:
+
+[source,yaml]
+----
+spec:
+  params:
+    ...
+    - name: prefetch-input
+      value: '[{"type": "pip", "path": ".", "flags": ["hermetic-prefetch-permissive"]}, {"type": "gomod", "path": "."}]' <1>
+----
+<1> When specifying multiple package managers, the `flags` field applies per entry. Only the entries that require permissive mode need to include the flag.
+
 == [[netrc]]Creating the netrc secret
 
 The `prefetch-dependencies` task supports link:https://everything.curl.dev/usingcurl/netrc.html[.netrc] files for authentication.
