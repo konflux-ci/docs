@@ -6,9 +6,13 @@ containing all results from the task.
 
 == TEST_OUTPUT
 
-Each tekton task in build pipelinerun provides TEST_OUTPUT result [json] that sumarizes its outcome. It's then being evaluated by Conforma team whether the product can be released or not.
+Each Tekton task in a build PipelineRun provides a TEST_OUTPUT result (JSON) that summarizes its outcome. It is then evaluated by the Conforma team to determine whether the product can be released.
 
-This result type can be also used in integration test pipelines and tasks where it can be parsed by the integration service when deciding the outcome of the integration test. This means you can use it to fail individual test tasks by emitting this result instead of failing the task and stopping the entire pipeline. With this approach it is possible to run multiple tests within the same pipeline and pass or fail them individually.
+This result type can also be used in integration test pipelines and tasks where it can be parsed by the integration service when deciding the outcome of the integration test. This means you can use it to fail individual test tasks by emitting this result instead of failing the task and stopping the entire pipeline. With this approach it is possible to run multiple tests within the same pipeline and pass or fail them individually.
+
+The `result` field in TEST_OUTPUT supports the following values: `SUCCESS`, `FAILURE`, `ERROR`, and `WARNING`. If at least one task produces a `WARNING` outcome and no tasks produce `FAILURE` or `ERROR`, the overall integration test outcome is `WARNING`. This outcome is treated as passed, but the integration service reports it with a "passed with warnings" message to git providers.
+
+The `note` field is an optional string that provides additional context about the test outcome. When present, the note is displayed in the *Note* column of the test report table posted to git provider pull or merge requests.
 
 == SCAN_OUTPUT
 
