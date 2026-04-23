@@ -1,6 +1,6 @@
 = Creating a release plan
 
-A ReleasePlan (RP) CR is created for a specific Application. It defines the the process to release a specific Application Snapshot in a target tenant namespace, whether automatic releases are enabled, as well as additional data to pass to a corresponding RPA.
+A ReleasePlan (RP) CR is created for a specific Application. It defines the process to release a specific Application Snapshot in a target tenant namespace, whether automatic releases are enabled, as well as additional data to pass to a corresponding RPA.
 
 == Creating a `ReleasePlan` object
 
