@@ -80,6 +80,13 @@ Refer to the link:https://hermetoproject.github.io/hermeto/usage[hermetic build 
 include::partial${context}-prefetch-hermeto-note.adoc[]
 ====
 
+[NOTE]
+====
+To enhance security guarantees and to speed up artifacts retrieval dependencies collected during the prefetch stage could be downloaded through an artifact registry proxy performing some additional security checks on the packages. If present such proxy will be configured on the cluster level and in most cases will be completely transparent to the users, they will not need to change their task definitions. In rare cases when a user is sure that they need to bypass the proxy they could set `enable-package-registry-proxy` to `false` for their pipeline.
+
+Since they perform security analysis on packages they serve such proxies could block malicious or vulnerable packages. The exact way of conveying this to a user will depend on an artifact proxy in use, some of the popular ones (for example, Sonatype Nexus) will respond with HTTP 403 error which will be clearly visible in the prefetch task logs. Such failures usually cannot be handled by users on their own and should be delegated to proxy maintainers.
+====
+
 == Verification
 * From the {ProductName} *Applications* view, go to *Activity > Pipeline runs*.
 ** Go to the pipeline run with *Build* in the *Type* column and confirm that the `prefetch-dependencies` stage displays a green checkmark. This indicates that the build process successfully fetched all dependencies.
