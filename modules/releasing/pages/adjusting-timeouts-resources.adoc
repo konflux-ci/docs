@@ -1,4 +1,5 @@
 = Adjusting timeouts and resources
+:description: Extending release PipelineRun timeouts and TaskRun compute resources.
 
 When a Release Pipeline is executed through a PipelineRun, the Pipeline will run until a timeout is reached. This timeout is usually an hour and will make the Release Pipeline fail if it doesn't finish on time.
 

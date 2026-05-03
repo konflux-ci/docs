@@ -1,4 +1,5 @@
 = Dependency Management Support Matrix
+:description: Matrix of supported dependency managers, versions, and known limitations.
 
 This page details the compatibility, support and implementation limitations
 of certain managers. It is intended to supply xref:mintmaker:user.adoc#available-managers[the list of currently supported managers].

@@ -1,4 +1,5 @@
 = Accessing Pulp content
+:description: Accessing uploaded artifacts through the Pulp API and credentials.
 
 When your namespace has a Pulp controller configured (via a xref:building:pulp-access.adoc[PulpAccessRequest]), access to uploaded content requires the credentials and configuration that the controller provides.
 

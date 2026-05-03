@@ -1,4 +1,5 @@
 = Jenkins
+:description: Triggering external Jenkins jobs from a Konflux integration test.
 
 In this guide, you'll learn how to xref:testing:integration/adding.adoc[add a custom integration test] in {ProductName} that triggers a link:https://www.jenkins.io/[jenkins] job in a jenkins instance outside of konflux using the jenkins link:https://www.jenkins.io/doc/book/using/remote-access-api/[remote access API].
 

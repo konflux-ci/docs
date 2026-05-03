@@ -1,4 +1,5 @@
 = Pattern: Evolving Build Pipeline Management in {ProductName}
+:description: Evolving from embedded pipeline specs to shared local and remote Tekton pipelines.
 
 This pattern outlines a common evolution in managing Tekton build pipelines within {ProductName}. It begins with the initial setup provided by {ProductName}, progresses to local in-repository pipeline definition for customization and reuse within a single repository, and can further evolve to sharing customized pipelines across multiple repositories using Git-based references.
 

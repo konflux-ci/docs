@@ -1,4 +1,5 @@
 = Konflux Kubernetes APIs
+:description: Index of Konflux custom resource API specifications.
 
 Below are the Kubernetes API extensions added by Konflux.
 

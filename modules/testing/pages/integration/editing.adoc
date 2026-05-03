@@ -1,4 +1,5 @@
 = Editing integration tests
+:description: Updating integration test Git refs, paths, parameters, and release settings.
 
 Once you have xref:./adding.adoc[added] an Integration Test Scenario to {ProductName}, you may want to change the configurations for it. 
 

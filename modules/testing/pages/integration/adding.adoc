@@ -1,4 +1,5 @@
 = Adding an integration test
+:description: Registering an integration test scenario pointing at a Git pipeline definition.
 
 In {ProductName}, you can add integration tests to verify that the individual components of your application integrate correctly, forming a complete and functional application. {ProductName} runs these integration tests on the container images of components before their release.
 

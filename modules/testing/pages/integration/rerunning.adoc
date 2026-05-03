@@ -1,4 +1,5 @@
 = Retriggering Integration Tests
+:description: Re-triggering integration tests by labeling snapshots with run selectors.
 
 Integration test(s) for a given snapshot can be re-triggered by adding the `test.appstudio.openshift.io/run` label to the snapshot.
 

@@ -1,4 +1,5 @@
 = Creating a custom integration test
+:description: Authoring a custom Tekton integration pipeline and publishing it from Git.
 
 In {ProductName}, you can create your own integration tests to run on all components of a given application before they are deployed.
 

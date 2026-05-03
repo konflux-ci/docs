@@ -1,4 +1,5 @@
 = Accessing Private Repositories
+:description: Linking registry and Git secrets for private integration pipelines.
 
 == Accessing Images in Private Repositories
 

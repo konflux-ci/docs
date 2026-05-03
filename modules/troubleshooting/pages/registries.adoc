@@ -1,4 +1,5 @@
 = Troubleshooting Registry Issues
+:description: Debugging Tekton registry auth wiring and push or pull errors.
 
 == Failed to push or pull image
 

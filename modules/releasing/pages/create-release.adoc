@@ -1,4 +1,5 @@
 = Creating a release
+:description: Creating a Release CR to promote a snapshot through an approved ReleasePlan.
 
 A `Release` object informs Konflux that an Application's
 xref:testing:page$integration/snapshots/index.adoc[Snapshot] is ready to be released, in accordiance

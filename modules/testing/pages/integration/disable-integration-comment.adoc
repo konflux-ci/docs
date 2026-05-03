@@ -1,4 +1,5 @@
 = Disabling Integration Test Comments on GitLab Merge Requests
+:description: Suppressing GitLab MR comments via component annotations.
 
 In {ProductName}, when a Merge Request (MR) is committed and integration test are triggered, if the GitLab source control secret has api, read_repository and write_repository scopes, the Integration service creates a commitStatus for the commit on the MR. The integration test status includes information about whether the tests are pending, triggered, passed or failed for each component involved in the MR.
 

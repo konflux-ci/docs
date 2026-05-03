@@ -1,4 +1,5 @@
 = Pattern: Achieving Label and Tag Parity for Versioning
+:description: Keeping OCI version labels and image tags in sync from shared Git parameters.
 
 This pattern describes how to configure your {ProductName} build pipeline to ensure parity between a version label (e.g., `org.opencontainers.image.version`) on your container image and a human-readable image tag. This enhances image traceability and makes it easier for users and tools to identify image versions consistently.
 

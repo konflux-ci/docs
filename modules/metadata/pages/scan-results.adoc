@@ -1,4 +1,5 @@
 = Inspecting scan results
+:description: Fetching SARIF scan artifacts attached to images via the OCI referrers API.
 
 While you can inspect your scan results in the logs of your taskruns, it may be more convenient to work with those scan results as structured data. To support this, most {ProductName} scanning tasks produce results in the link:https://docs.oasis-open.org/sarif/sarif/[sarif format] and attach those results to the artifact using the link:https://github.com/oras-project/artifacts-spec/blob/main/manifest-referrers-api.md[OCI referrers api].
 

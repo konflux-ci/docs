@@ -1,4 +1,5 @@
 = Maintaining valid image references before a release
+:description: Mapping release targets so nudges rewrite digests for post-release registries.
 
 When images are xref:releasing:index.adoc[released] they will usually be copied to another image repository. If any build-time image references are used within component (for example, xref:end-to-end:building-olm.adoc[OLM bundles]) any references will be invalid after releasing. To surmount this, {ProductName} enables your xref:building:component-nudges.adoc[component nudges] to be updated with image references which will be valid after release.
 

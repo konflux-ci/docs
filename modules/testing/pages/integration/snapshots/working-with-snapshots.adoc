@@ -1,4 +1,5 @@
 = Working with Snapshots
+:description: Creating and verifying kubectl-defined manual snapshots.
 
 == Manual Snapshots
 

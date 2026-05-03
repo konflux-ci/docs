@@ -1,4 +1,5 @@
 = Building Tekton tasks as bundles in {ProductName}
+:description: Onboarding Tekton task catalog repos to produce bundle images on Konflux.
 
 This document provides a step-by-step guide on how to onboard your Tekton tasks to {ProductName}, enabling their integration into your build pipelines.
 

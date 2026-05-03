@@ -1,4 +1,5 @@
 = Pattern: Centralizing Tekton Pipeline Definitions in Your Repository
+:description: Extracting one Pipeline manifest referenced by multiple PipelineRuns in a repo.
 
 This pattern describes how to extract a common Tekton `Pipeline` definition into a local file within your application's Git repository (e.g., `.tekton/build-pipeline.yaml`). Your `PipelineRun` files can then reference this local pipeline, promoting consistency, simplifying maintenance, and enabling version control of the pipeline logic alongside your application code.
 

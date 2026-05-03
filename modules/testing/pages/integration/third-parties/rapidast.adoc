@@ -1,4 +1,5 @@
 = RapiDAST
+:description: Running dynamic application security testing (DAST) with RapiDAST.
 
 link:https://github.com/RedHatProductSecurity/rapidast[RapiDAST] is a tool for performing dynamic application security testing (DAST) on _running_ applications.
 

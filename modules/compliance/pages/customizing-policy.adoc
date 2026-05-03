@@ -1,4 +1,5 @@
 = Customizing Policy
+:description: Waiving or adjusting Conforma policies when builds cannot satisfy default rules.
 
 A Conforma Policy defines which checks are performed by Conforma during integration tests and
 release. If Conforma reports violations, the best course of action, in most cases, is to adjust the build

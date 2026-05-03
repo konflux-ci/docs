@@ -1,4 +1,5 @@
 = Preventing redundant builds
+:description: Tuning PaC on-cel-expression so PRs rebuild only affected components.
 
 {ProductName} rebuilds the component when new pull requests (PRs) include changes to that component. This behavior helps you identify any issues the PR might cause before merging it. 
 

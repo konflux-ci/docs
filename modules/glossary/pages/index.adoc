@@ -1,4 +1,5 @@
 = Glossary of terms related to {ProductName}
+:description: Definitions of Konflux terminology from pipelines through tenants and PAC.
 :icons: font
 :source-highlighter: highlightjs
 

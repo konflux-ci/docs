@@ -1,4 +1,5 @@
 = Inspecting provenance and attestations
+:description: SLSA L3 supply-chain transparency and how to inspect build metadata.
 
 We are committed to providing exceptional security with {ProductName}. We harden the build platform, we provide transparency into the build process, and we expose the composition of artifacts.
 

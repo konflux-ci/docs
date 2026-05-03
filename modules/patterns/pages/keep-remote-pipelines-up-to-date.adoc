@@ -1,4 +1,5 @@
 = Maintaining remote Tekton pipelines
+:description: Hosting shared pipelines in Git and resolving them from component repos.
 
 [IMPORTANT]
 ====

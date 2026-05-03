@@ -1,4 +1,5 @@
 = Releasing an application
+:description: Development versus managed-environment roles in Konflux release workflows.
 :icons: font
 :numbered:
 :source-highlighter: highlightjs

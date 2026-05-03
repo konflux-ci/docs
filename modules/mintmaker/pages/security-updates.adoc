@@ -1,4 +1,5 @@
 = Security updates
+:description: CVE-titled security update PRs generated automatically by MintMaker.
 
 Beginning March 2025 MintMaker provides security updates for container images
 and xref:mintmaker:rpm-lockfile.adoc[RPM lockfiles]. In their nature, the security updates are like regular dependency updates, but with included information

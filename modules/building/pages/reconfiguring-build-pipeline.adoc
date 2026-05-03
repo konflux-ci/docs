@@ -1,4 +1,5 @@
 = Reconfiguring the build pipeline
+:description: Resetting or switching a component's build pipeline to a newer definition.
 
 After you have created a component {ProductName}, you may find yourself in a situation where you want to reset your build pipeline to the latest version. For instance:
 

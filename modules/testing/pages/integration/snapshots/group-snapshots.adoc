@@ -1,4 +1,5 @@
 = Creating a group snapshot
+:description: Coordinating linked PR branches into group snapshots across components.
 
 In {ProductName}, the integration service provides extra `group` snapshot to allow users to submit multiple related pull/merge requests under one application to their repos, have them tested together and have the CI results posted back to pull/merge requests, along with the component snapshot created for each component.
 

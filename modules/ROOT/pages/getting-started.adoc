@@ -1,4 +1,5 @@
 = Getting started with {ProductName}
+:description: Key concepts: namespaces, pipelines, and tenant workflows on Konflux.
 
 Adopting new platforms is always challenging.
 While we aim to make use of industry-standard terminology and processes, we may need to introduce additional concepts.

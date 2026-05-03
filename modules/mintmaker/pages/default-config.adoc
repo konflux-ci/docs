@@ -1,4 +1,5 @@
 = Default configuration
+:description: Backend default Renovate presets and branch policies applied by MintMaker.
 
 MintMaker applies a set of default options for all repositories on backend.
 The configuration file can be found https://github.com/konflux-ci/mintmaker/blob/main/config/renovate/renovate.json[here].

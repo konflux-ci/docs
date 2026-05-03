@@ -1,5 +1,6 @@
 * xref:index.adoc[Reference]
 ** xref:sample-repositories.adoc[Sample repositories]
+** xref:llms-txt.adoc[LLM-friendly documentation (llms.txt)]
 ** xref:kube-apis/index.adoc[Konflux Kubernetes APIs]
 *** xref:kube-apis/application-api.adoc#k8s-api-github-com-konflux-ci-application-api-api-v1alpha1-application[Application]
 *** xref:kube-apis/application-api.adoc#k8s-api-github-com-konflux-ci-application-api-api-v1alpha1-component[Component]

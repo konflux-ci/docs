@@ -1,4 +1,5 @@
 = Running user scripts on the build pipeline
+:description: Running custom scripts before the image build step in trusted-artifact pipelines.
 
 This document contains instructions for how to extend the build pipeline of a component to run a script before building the component container.
 

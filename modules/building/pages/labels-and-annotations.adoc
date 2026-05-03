@@ -1,4 +1,5 @@
 = Labels and annotations
+:description: Adding dynamic OCI labels and annotations to images from pipeline parameters.
 
 {ProductName} allows applying dynamic metadata to images derived from properties and params of the build pipeline. The labelling is supported directly by the `LABELS` and `ANNOTATIONS` parameters of the *build-container* tasks. A supporting *generate-labels* task can optionally be used to produce some dynamic labels.
 

@@ -1,5 +1,6 @@
 [[custom-tags]]
 = Using custom tags
+:description: Configuring extra image tags through labels, parameters, or dynamic metadata.
 
 {ProductName} build pipelines allow you to apply multiple custom tags to your container images. This tagging is handled by separate `apply-tags` task. The custom tags can be configured in three ways:
 

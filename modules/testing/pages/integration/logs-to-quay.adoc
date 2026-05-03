@@ -1,4 +1,5 @@
 = Export Pipeline Logs to Quay
+:description: Archiving full PipelineRun logs to the image registry with export-pipeline-logs.
 
 Use the `export-pipeline-logs` task to gather all execution logs from a completed Tekton PipelineRun and package them into a compressed `tar.gz` artifact.
 

@@ -1,4 +1,5 @@
 = Applying task migrations
+:description: Running the pipeline migration tool when automatic task migrations are needed.
 
 {ProductName} allows task owners to write migrations to bring pipeline changes
 to users. Generally, users do not need to care about how the migrations are

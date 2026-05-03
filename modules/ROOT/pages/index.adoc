@@ -1,4 +1,5 @@
 = Why {ProductName}?
+:description: Konflux's value proposition and key platform capabilities.
 
 include::partial${context}-why-konflux.adoc[]
 

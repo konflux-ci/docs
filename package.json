@@ -11,6 +11,7 @@
   "scripts": {
     "api-gen": "./hack/gen-api-docs.sh",
     "build": "antora generate --clean --fetch antora-playbook.yml",
+    "generate-llms-txt": "bash hack/generate-llms-txt.sh public/llms.txt",
     "preview:netlify": "netlify deploy --dir public",
     "lint:docs": "./hack/vale-check.sh",
     "lint:docs:errors": "./hack/vale-check.sh --minAlertLevel=error",

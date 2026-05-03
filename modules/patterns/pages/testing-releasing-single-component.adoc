@@ -1,4 +1,5 @@
 = Testing and Releasing a Single Component
+:description: Isolating Conforma and release gating per component within an application.
 
 By default, {ProductName} treats applications as a set of dependent components. A example would be frontend and backend
 components. A user may typically want to build, test, and release these components together

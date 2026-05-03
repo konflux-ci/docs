@@ -1,4 +1,5 @@
 = Troubleshooting Releases
+:description: Diagnosing release signature failures and related pipeline problems.
 
 == Release fails because of signature check
 

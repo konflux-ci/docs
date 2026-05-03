@@ -1,4 +1,5 @@
 = Deleting applications and components
+:description: Removing applications or components and the consequences for images and snapshots.
 
 You can delete a component or application if you are a user with the {ProductName} admin role.
 

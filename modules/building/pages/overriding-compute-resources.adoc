@@ -1,4 +1,5 @@
 = Overriding compute resources
+:description: Overriding Tekton CPU and memory limits per task in PipelineRun specs.
 
 _For background on compute resources, see link:https://tekton.dev/docs/pipelines/compute-resources/[Compute Resources in Tekton]._
 
