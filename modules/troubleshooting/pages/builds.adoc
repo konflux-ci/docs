@@ -154,5 +154,10 @@ chmod +x update-tekton-task-bundles.sh
 
 <1> Install the link:https://github.com/konflux-ci/pipeline-migration-tool[pipeline-migration-tool].
 
+[NOTE]
+====
+For troubleshooting issues related to Components and component provisioning, see xref:components.adoc[Troubleshooting Components].
+====
+
 include::partial${context}-builds.adoc[]
 include::partial${context}-pipelinerun-pending.adoc[]

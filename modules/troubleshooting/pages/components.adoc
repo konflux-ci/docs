@@ -1,0 +1,272 @@
+= Troubleshooting Components
+
+== Component Stuck in Provisioning
+
+=== Symptom
+
+Component shows `build.appstudio.openshift.io/request: configure-pac` annotation but never completes provisioning.
+
+=== Possible Causes
+
+* Component `spec.containerImage` is not set, either by the developer or the xref:installing:enabling-builds.adoc#enable-image-controller[Image Controller] if it is deployed on your Konflux instance.
+
+=== Debugging Steps
+
+. Check the component status:
+
++
+[source,bash]
+----
+kubectl get component <component-name> -o yaml | grep -A10 "annotations:"
+----
+
++
+Look for the `build.appstudio.openshift.io/status` annotation to see error details.
+
+. If your Konflux instance has the xref:installing:enabling-builds.adoc#enable-image-controller[Image Controller] deployed, check if the `ImageRepository` exists:
+
++
+[source,bash]
+----
+kubectl get imagerepository <component-name> -o yaml
+----
+
++
+If this object does exist, ensure that its `annotations` and `labels`  are set with the following values:
+
++
+[source,yaml]
+----
+metadata:
+  annotations:
+    image-controller.appstudio.redhat.com/update-component-image: 'true'
+  labels:
+    appstudio.redhat.com/application: <application-name>
+    appstudio.redhat.com/component: <component-name>
+----
+
+. Verify that `.spec.containerImage` is set on the Component:
+
++
+[source,bash]
+----
+kubectl get component <component-name> -o jsonpath='{.spec.containerImage}'
+----
+
+=== Solutions
+
+. **Set the Component ContainerImage**
+
++
+Set the container image for the `Component` if your Konflux instances does not have the xref:installing:enabling-builds.adoc#enable-image-controller[Image Controller] enabled:
+
++
+[source,bash]
+----
+kubectl patch component <component-name> --type=merge -p '{"spec":{"containerImage":"quay.io/your-org/your-repo"}}'
+----
+
++
+[NOTE]
+You must provide image registry credentials if you are manually setting the component's container image.
+
+. **Set the `ImageRepository` Annotations and Labels**
+
++
+If your Konflux cluster does have the Image Controller deployed, set the correct `annotations` and `labels` on Component's associated `ImageRepository` object:
+
++
+[source,yaml]
+----
+metadata:
+  annotations:
+    image-controller.appstudio.redhat.com/update-component-image: 'true'
+  labels:
+    appstudio.redhat.com/application: <application-name>
+    appstudio.redhat.com/component: <component-name>
+----
+
+== PipelineRun Not Created After Push Event
+
+=== Symptom
+
+You push code to your repository, but no PipelineRun is created.
+
+=== Possible Causes
+
+* **Component not onboarded** - Webhook not configured, GitHub App not installed, or PaC Repository CR missing
+* **Invalid PipelineRun YAML** - Broken YAML syntax or validation errors in PipelineRun definitions
+* **Rate limits** - Git provider API rate limits exceeded
+
+=== Debugging Steps
+
+. Check the component status to see if it was properly onboarded:
+
++
+[source,bash]
+----
+kubectl get component <component-name> -o yaml | grep -A10 "annotations:"
+----
+
++
+Look for the `build.appstudio.openshift.io/status` annotation to see error details.
+
+. Check if the Pipelines as Code `Repository` object exists:
+
++
+[source,bash]
+----
+kubectl get repository -n <namespace>
+----
+
++
+[NOTE]
+This command will return all `Repository` objects in your namespace. You
+will need to inspect individual records to identify the appropriate object and status.
+
+. Verify `PipelineRun`` definitions exist in your source code repository:
+
++
+[source,bash]
+----
+ls .tekton/
+----
+
++
+You should see YAML files containing PipelineRun definitions. During onboarding, these are typically named `<component-name>-on-push.yaml` and `<component-name>-on-pull-request.yaml`, but any valid filename can be used.
+
+=== Solutions
+
+. **Review Component Status:**
+
++
+The Component may not have completed the `Repository` object provisioning. Check component status for root causes and actions to take:
+
++
+[source,bash]
+----
+kubectl get component <component-name> -o yaml | grep "build.appstudio.openshift.io/status"
+----
+
+. **Re-onboard the `Component`:**
+
++
+Re-trigger the `PipelineRun` pull request by adding the `configure-pac` annotation to the `Component`:
+
++
+[source,bash]
+----
+kubectl annotate component <component-name> build.appstudio.openshift.io/request=configure-pac
+----
+
+. **Check Repository Credentials:**
+
++
+For repositories not using the GitHub App, ensure git credentials are configured and re-provision the component.
+
++
+See xref:building:creating-gitlab.adoc[Onboarding from GitLab] or xref:building:creating-forgejo.adoc[Onboarding from Forgejo] for more information.
+
+== Component Cannot Be Deleted
+
+=== Symptom
+
+You try to delete a Component, but it remains in `Terminating` state.
+
+=== Possible Causes
+
+* **Finalizers not removed** - Component has finalizers that prevent deletion
+* **Dependent resources exist** - Resources owned by the Component still exist
+* **Controller not running** - Build Service controller is not processing the deletion
+
+=== Debugging Steps
+
+. Check component finalizers:
+
++
+[source,bash]
+----
+kubectl get component <component-name> -o jsonpath='{.metadata.finalizers}'
+----
+
++
+Common finalizers:
+
++
+* `pac.component.appstudio.openshift.io/finalizer` - Set by Build Service during PaC provisioning
+
+
+. Check for owned resources:
+
++
+[source,bash]
+----
+kubectl get repository -n <namespace> -o yaml
+kubectl get imagerepository -n <namespace> -o yaml
+----
+
++
+[NOTE]
+These commands will return all `Repository` and `ImageRepository` objects in your namespace. You
+will need to inspect individual records to identify the appropriate object and status.
+
+=== Solutions
+
+. **Wait for Finalizers to Process**
+
++
+Wait for the Build Service controller to process the deletion. If the controller is not running, the finalizers won't be removed automatically.
+
+. **Remove Component Finalizers**
+
++
+[CAUTION]
+====
+Forcing deletion by removing finalizers can leave orphaned resources in your cluster. Only do this if you understand the implications and have verified that related controllers are not running.
+====
+
++
+If the `Component` object is not deleted after a sufficient period of time (at least one hour), you can remove all finalizers and force deletion.
+
++
+[source,bash]
+----
+kubectl patch component <component-name> -p '{"metadata":{"finalizers":[]}}' --type=merge
+----
+
+== Component Image Repository Issues
+
+=== Symptom
+
+Component is created but `.spec.containerImage` is never populated, or ImageRepository creation fails.
+
+=== Possible Causes
+
+* **Image Controller not running** - Image Controller deployment is not healthy
+* **Quay credentials missing** - Registry credentials are not configured
+* **Invalid repository name** - Component or namespace name contains invalid characters
+
+=== Debugging Steps
+
+Check ImageRepository status:
+
+[source,bash]
+----
+kubectl get imagerepository -o yaml
+----
+
+[NOTE]
+This will return all configured `ImageRepositories` in your namespace. You will need to inspect
+individual records to identify the appropriate object and status.
+
+=== Solutions
+
+. **Check Image Name**
+
++
+Ensure component and namespace names follow Kubernetes naming conventions (lowercase alphanumeric characters, hyphens, and dots only).
+
+. **Increase Registry Quota**
+
++
+Contact your registry administrator to increase quota limits, or delete unused image repositories.
