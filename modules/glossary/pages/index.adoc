@@ -25,7 +25,7 @@
 
 [[its]]IntegrationTestScenario (ITS):: A Kubernetes resource that contains metadata for running an integration test including a reference to the Tekton pipeline. The integration service uses the ITS to trigger tests on an application with a new or updated component
 
-[[managed-tenant-namespace]]managed tenant namespace:: A {ProductName} tenant namespace whose primary purpose is to restrict access to release pipelines and the secrets required to run them. Access to these release pipelines are defined by the creation of Releases, their ReleasePlan, and the matching ReleasePlanAdmission. Manages tenant namespaces are generally not used for running build pipelines.
+[[managed-namespace]]managed namespace:: A {ProductName} namespace (sometimes called a managed tenant namespace) whose primary purpose is to restrict access to release pipelines and the secrets required to run them. Access to these release pipelines is defined by the creation of Releases, their ReleasePlan, and the matching ReleasePlanAdmission. Managed namespaces are generally not used for running build pipelines.
 
 [[pac]]pipelines as code:: A practice that defines pipelines by using source code in Git. Pipelines as Code is also the name of link:https://pipelinesascode.com[a subsystem] that executes those pipelines.
 

@@ -1,0 +1,147 @@
+= Trust and security model
+:description: How {ProductName} secures the software supply chain through build isolation, namespace separation, and policy-gated releases.
+
+{ProductName} secures the software supply chain through layered defenses, from isolated builds to policy-gated releases.
+Each layer addresses a specific class of link:https://slsa.dev/spec/v1.1/threats-overview[supply chain threat].
+Together, they guarantee that artifacts reaching production came from known sources, went through known processes, and received approval from an independent party.
+
+== Layered trust
+
+{ProductName} builds trust through six layers, each reinforcing the one below it:
+
+[cols="2,3"]
+|===
+|Layer |Purpose
+
+|*Kubernetes + Tekton*
+|Namespace isolation, RBAC, and ephemeral pod execution form the foundation. Builds run in containers that cannot persist state or influence other builds.
+
+|*Trusted tasks*
+|Build pipelines reference Tekton tasks from digest-pinned bundles. Policy verifies that every task came from an approved source and that required tasks ran. See xref:building:using-trusted-artifacts.adoc[Using trusted artifacts] for how trust is established at the task level.
+
+|*Trusted artifacts*
+|Intermediate data passes between tasks as immutable OCI artifacts addressed by content digest, not through shared volumes. Tampering changes the digest and breaks the chain. Developers can add custom tasks to their pipelines without undermining trust in the build output. See xref:building:using-trusted-artifacts.adoc[Using trusted artifacts] for details.
+
+|*Observer-generated attestations*
+|link:https://tekton.dev/docs/chains/[Tekton Chains] watches completed builds and generates link:https://slsa.dev/spec/v1.0/provenance[SLSA provenance] independently. The signing key lives in a separate namespace that build pods cannot reach. Builds cannot forge their own provenance.
+
+|*Policy engine*
+|link:https://conforma.dev[Conforma] evaluates signed attestations against policy rules. Violations appear as pull request feedback during development and block releases at the gate. Developers iterate toward compliance before release.
+
+|*Release service*
+|The release service gates access to production registries. It runs the release pipeline in a managed namespace under a separate team's control and enforces policy before pushing artifacts.
+|===
+
+The rest of this page explains how these layers work: build isolation, release approval, and the policy that connects them.
+
+== Security without friction
+
+Build platforms face a fundamental tension: security teams need control over artifact production and release, but locking down every pipeline step slows developers and discourages adoption.
+
+{ProductName} resolves this tension by separating *what is verified* from *what developers control*.
+Developers own their build pipelines.
+The definitions live in their Git repositories, and developers can add tasks, change parameters, and xref:building:customizing-the-build.adoc[customize their builds] freely.
+The platform records what happened in observer-generated attestations and verifies the record against policy before allowing a release.
+
+In practice:
+
+* Without waiting for platform team approval, developers can add linters, swap scanners, inline task definitions, or experiment with custom tasks.
+* Security teams define policy rules specifying what a releasable build looks like: which tasks must be present, which bundles are approved, what vulnerabilities are acceptable.
+* Policy violations appear as pull request feedback during development, so developers learn what must change before they attempt a release.
+
+The platform enforces security requirements at release time, but developers get guidance early and retain control of their daily workflow.
+
+== Build isolation
+
+When you xref:building:creating.adoc[create a component], {ProductName} sets up build pipelines that run in your tenant namespace.
+Each build runs in an ephemeral pod, isolated from other builds and from the platform's signing infrastructure.
+
+After a build completes, link:https://tekton.dev/docs/chains/[Tekton Chains] observes the result and generates SLSA provenance, signing it with a key that build pods cannot access.
+Chains runs in its own namespace; builds cannot influence the provenance or reach the signing material.
+
+Signing alone leaves a gap.
+Tekton Chains signs whatever artifacts tasks claim to produce, including artifacts from compromised tasks.
+A malicious task could pull a pre-built image from an attacker's registry, report it as a build output via link:https://tekton.dev/docs/chains/slsa-provenance/#type-hinting[type hinting], and receive valid signed provenance.
+Signed provenance proves who attested, not that the attestation is correct.
+{ProductName} verifies build provenance against policy before releasing; see xref:metadata:index.adoc[Inspecting provenance and attestations] for how {ProductName} meets the link:https://slsa.dev/spec/v1.0/levels#build-l3[SLSA Build Level 3] requirements.
+
+== Tenant and managed namespaces
+
+{ProductName} separates work into two types of Kubernetes namespaces, and a different team controls each:
+
+* A *xref:glossary:index.adoc#tenant-namespace[tenant namespace]* is where developers create applications, build components, and run tests. Developers have xref:glossary:index.adoc#tenant-namespace[role-based access] and can read secrets stored there.
+
+* A *xref:glossary:index.adoc#managed-namespace[managed namespace]* is where release pipelines execute. It holds the release pipeline definitions, the xref:compliance:index.adoc[Conforma policies] that gate releases, and the credentials for signing and pushing artifacts to production registries. A separate team (typically SREs or release engineers) controls this namespace.
+
+This separation forms a security boundary.
+A developer with admin access in their tenant namespace could extract any secrets stored there, then push unvalidated content directly.
+Placing release credentials, pipelines, and policies in a namespace that a separate team controls forces content through policy validation before it reaches production.
+
+== Release trust boundary
+
+Developers control building and testing.
+Releasing pushes content outside {ProductName} and requires independent approval.
+
+{ProductName} enforces this through a two-sided agreement:
+
+. The developer creates a xref:releasing:create-release-plan.adoc[ReleasePlan] in their tenant namespace, declaring which application to release and to which managed namespace.
+. The managed environment owner creates a xref:releasing:create-release-plan-admission.adoc[ReleasePlanAdmission] in the managed namespace, specifying the release pipeline and the xref:compliance:index.adoc[Conforma policy] that must pass.
+
+Both resources must match before any release pipeline can execute.
+The developer cannot choose the pipeline or policy; the managed environment owner can initiate a release only when the developer expresses intent.
+
+When a developer creates a xref:releasing:create-release.adoc[Release], the release service verifies the match and runs the release pipeline in the managed namespace.
+That pipeline validates the snapshot against the Conforma policy before pushing artifacts.
+If any component in the snapshot fails, the release service blocks the entire release and publishes nothing.
+
+For the full release workflow, see xref:releasing:index.adoc[Releasing an application].
+
+== Policy enforcement
+
+The xref:compliance:index.adoc[Conforma] policy check runs as part of the release pipeline in the managed namespace.
+It evaluates the xref:metadata:index.adoc[signed provenance] attached to each artifact in the snapshot.
+The rules come from the EnterpriseContractPolicy (ECP) custom resource in the managed namespace.
+
+Policy rules can verify:
+
+* That all build tasks came from approved, digest-pinned bundles
+* That SLSA provenance is complete and properly signed
+* That no disallowed packages or known vulnerabilities are present
+* That organizational requirements (such as release schedules or required labels) are met
+
+The same policy engine also runs during development as an xref:testing:index.adoc[integration test].
+Violations appear as pull request feedback, so developers iterate toward compliance before attempting a release.
+
+The managed environment owner defines and maintains these rules, and they apply to every release.
+See xref:compliance:index.adoc[Conforma policies] for configuration details.
+
+== Personas and trust boundaries
+
+{ProductName} users generally fall into two roles that map directly to the trust boundaries above:
+
+[cols="1,1,2"]
+|===
+|Role |Namespace |Release responsibilities
+
+|Developer
+|Tenant
+|Creates applications and components, runs builds and tests, creates ReleasePlans and Releases
+
+|Platform engineer / SRE
+|Managed
+|Defines release pipelines and Conforma policies, creates ReleasePlanAdmissions, manages signing keys and push credentials
+|===
+
+Separating roles keeps the person who produces an artifact apart from the person who approves its release.
+
+NOTE: Release configuration resources are available only through `kubectl` or a GitOps-based workflow. See xref:releasing:index.adoc[Releasing an application] for details.
+
+== Additional resources
+
+* xref:releasing:index.adoc[Releasing an application]
+* xref:metadata:index.adoc[Inspecting provenance and attestations]
+* xref:compliance:index.adoc[Conforma policies]
+* xref:building:customizing-the-build.adoc[Customizing the build pipeline]
+* xref:glossary:index.adoc[Glossary]
+* link:https://konflux-ci.dev/architecture/[{ProductName} architecture]
+* link:https://slsa.dev/spec/v1.1/threats-overview[SLSA threat model]
