@@ -1,4 +1,5 @@
 = OpenShift CI
+:description: Integrating with OpenShift CI through ProwJobs or ephemeral-cluster tasks.
 
 The OpenShift CI platform provides two ways through which a {ProductName} pipeline can interact with it.
 

@@ -1,4 +1,5 @@
 = Re-trigger a release manually
+:description: Re-triggering a release by creating a new Release CR with the same spec.
 
 `Release` objects create workloads with a finite lifecycle. Once created, a `Release` object's `spec` field cannot be modified.
 To "re-trigger" a release, create a new instance of the desired `Release` object using the same values in the `spec` field.

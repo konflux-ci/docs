@@ -1,4 +1,5 @@
 = Using Red Hat activation keys to access subscription content
+:description: Using Red Hat activation-key secrets for entitled RPM builds.
 
 Most Red Hat software requires a subscription to access. Activation keys are the preferred method for using Red Hat subscriptions with Konflux builds and are supported by the all types of container builds, including hermetic builds using the prefetch-dependencies task.
 

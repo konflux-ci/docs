@@ -1,4 +1,5 @@
 = Enabling caching proxy for builds
+:description: Enabling Squid-backed HTTP proxy caching for faster container layer pulls.
 
 {ProductName} supports HTTP proxy caching to improve build performance. When enabled, container build operations can use a Squid HTTP proxy to cache container image layers, reducing build times for subsequent builds.
 

@@ -1,4 +1,5 @@
 = Enabling a Snyk task
+:description: Enabling Snyk SAST by wiring a token secret into the build pipeline.
 
 The Snyk test is available to run at build time in the default pipelines, but it requires additional configuration to enable. This procedural example illustrates a build-time test that requires the configuration of a custom secret.
 

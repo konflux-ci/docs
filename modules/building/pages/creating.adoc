@@ -1,4 +1,5 @@
 = Creating applications and components
+:description: How to create applications and components through the UI or kubectl.
 
 Create applications and components using the {ProductName} UI or `kubectl`.
 

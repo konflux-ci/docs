@@ -1,4 +1,5 @@
 = Build-time tests
+:description: Default build-time security and quality Tekton tasks that run automatically.
 
 This document covers the build-time tests that {ProductName} runs as part of its component build pipeline. These build-time tests automatically check all application images to inform you if they're up-to-date, correctly formatted, and protected from security vulnerabilities.
 

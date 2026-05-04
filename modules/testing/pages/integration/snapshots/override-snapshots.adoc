@@ -1,4 +1,5 @@
 = Creating an override snapshot
+:description: Resetting Global Candidate Lists with labeled override snapshots.
 
 In {ProductName}, the integration service provides users with the ability to reset their component's Global Candidate List to a desired state with a manually created `override` snapshot which can then be a candidate for further promotion (release) if it passes all integration tests.
 

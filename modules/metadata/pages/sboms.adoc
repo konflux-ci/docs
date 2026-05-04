@@ -1,4 +1,5 @@
 = Inspecting artifact SBOMs
+:description: Build-time and release-time SBOMs: how they are generated and how to retrieve them.
 
 A software bill of materials (SBOM) provides greater transparency for your software supply chain. {ProductName} provides link:https://www.cisa.gov/sites/default/files/2023-04/sbom-types-document-508c.pdf[build SBOMs], which list all the software libraries that a component uses. Those libraries can enable specific functionality or facilitate development.
 

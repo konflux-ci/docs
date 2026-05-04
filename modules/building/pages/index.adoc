@@ -1,4 +1,5 @@
 = Configuring your builds
+:description: How build pipelines work with attestations and where to customize build setup.
 
 When creating a component, {ProductName} will push a Tekton PipelineRun to your component's source repository. This pipeline is yours to customize as needed for building your component and Tekton Chains will record the customizations in a detailed signed in-toto provenance attestation. This provenance enables Conforma to xref:compliance:index.adoc[manage compliance] to ensure the artifact's integrity and compliance with specific policies.
 

@@ -1,4 +1,5 @@
 = Onboarding a component from Forgejo
+:description: Onboarding a component from a Forgejo repository using access tokens and secrets.
 
 Create components from Forgejo repositories using the {ProductName} UI or `kubectl`.
 

@@ -1,0 +1,129 @@
+= LLM-friendly documentation (llms.txt)
+:description: The published llms.txt index and MCP tooling for AI coding assistants.
+
+{ProductName} publishes an https://llmstxt.org/[llms.txt] file — a structured
+index that lets Large Language Models discover and consume the documentation at
+inference time. The file is automatically regenerated on every documentation build,
+so it always reflects the current state of the docs.
+
+*Published at:* https://konflux-ci.dev/docs/llms.txt
+
+== What is llms.txt?
+
+`llms.txt` is a lightweight specification for providing LLM-readable content on
+websites. It is a Markdown file containing a title, a short description, and a
+categorised list of links to documentation pages. AI coding assistants and
+MCP-enabled IDEs can read this file to find relevant documentation without
+scraping HTML.
+
+== Using with an MCP server (mcpdoc)
+
+https://github.com/langchain-ai/mcpdoc[mcpdoc] is an open-source MCP server
+purpose-built for serving `llms.txt` files. It exposes two tools to MCP host
+applications (Cursor, Windsurf, Claude Code/Desktop):
+
+* *`list_doc_sources`* — lists available documentation sources.
+* *`fetch_docs`* — fetches content from URLs found in the `llms.txt` file.
+
+=== {ProductName} llms.txt URLs
+
+Use the following names and URLs when configuring mcpdoc. You can add one or both
+depending on the documentation you need:
+
+[cols="1,2",options="header"]
+|===
+| Name | URL
+
+| `Konflux Documentation`
+| `https://konflux-ci.dev/docs/llms.txt`
+
+| `Konflux Operator And Administrator Documentation`
+| `https://konflux-ci.dev/konflux-ci/llms.txt`
+|===
+
+=== Quick start (Cursor example)
+
+Open *Cursor Settings > MCP* to edit your `~/.cursor/mcp.json`, then add:
+
+[source,json]
+----
+{
+  "mcpServers": {
+    "konflux-docs": {
+      "command": "uvx",
+      "args": [
+        "--from",
+        "mcpdoc",
+        "mcpdoc",
+        "--urls",
+        "Konflux Documentation:https://konflux-ci.dev/docs/llms.txt",
+        "Konflux Operator And Administrator Documentation:https://konflux-ci.dev/konflux-ci/llms.txt",
+        "--transport",
+        "stdio"
+      ]
+    }
+  }
+}
+----
+
+For best results, add a rule to your Cursor *User Rules* (Settings > Rules):
+
+[source,text]
+----
+For ANY question about Konflux — builds, testing, releases, compliance, or
+installation — use the konflux-docs MCP server:
+1. Call list_doc_sources to see available llms.txt files
+2. Call fetch_docs to read the llms.txt index
+3. Identify URLs relevant to the question
+4. Call fetch_docs on those URLs
+5. Use the retrieved content to answer
+----
+
+=== Other IDEs and clients
+
+mcpdoc supports Cursor, Windsurf, Claude Code, and Claude Desktop. For setup
+instructions for each client, see the
+https://github.com/langchain-ai/mcpdoc?tab=readme-ov-file#quickstart[mcpdoc Quickstart guide].
+The configuration is the same across clients — only the `--urls` value is
+{ProductName}-specific:
+
+[source,text]
+----
+Konflux Documentation:https://konflux-ci.dev/docs/llms.txt
+Konflux Operator And Administrator Documentation:https://konflux-ci.dev/konflux-ci/llms.txt
+----
+
+=== Testing with the MCP Inspector
+
+Start mcpdoc in SSE mode:
+
+[source,bash]
+----
+uvx --from mcpdoc mcpdoc \
+    --urls "Konflux Documentation:https://konflux-ci.dev/docs/llms.txt" \
+    --transport sse \
+    --port 8082 \
+    --host localhost
+----
+
+Then launch the https://modelcontextprotocol.io/docs/tools/inspector[MCP Inspector]:
+
+[source,bash]
+----
+npx @modelcontextprotocol/inspector
+----
+
+In the Inspector UI, set the transport to *SSE*, enter `http://localhost:8082/sse`,
+and click *Connect*. Use the *Tools* tab to call `list_doc_sources` and
+`fetch_docs`.
+
+== How llms.txt is generated
+
+The file is produced by `hack/generate-llms-txt.sh`, which scans the Antora
+content tree and extracts each page's title and introductory paragraph from the
+AsciiDoc source files. It uses the `nav.adoc` files to determine page ordering and
+section structure.
+
+The script runs automatically as part of the CI build pipeline, so any change to
+the documentation — new pages, updated titles, restructured navigation — is
+reflected in `llms.txt` on the next deploy.

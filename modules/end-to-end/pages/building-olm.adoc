@@ -1,4 +1,5 @@
 = Building an Operator Lifecycle Manager (OLM) Operator in {ProductName}
+:description: Building OLM operators, bundles, and file-based catalogs end to end.
 
 If you are developing an application that aligns with the link:https://operatorframework.io/[Operator Framework], and managing it with link:https://olm.operatorframework.io/docs/[Operator Lifecycle Manager (OLM)], you can build that application in {ProductName}. We refer to such applications as OLM Operators.
 

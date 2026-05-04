@@ -1,4 +1,5 @@
 = Managing compliance with Conforma
+:description: Conforma integration tests and attestation-based policy enforcement.
 
 Conforma is an artifact verifier and customizable policy checker. By default, {ProductName} adds Conforma as an integration test to each new application. Conforma then keeps your software supply chain secure and ensures container images comply with your organization's policies. It does this by verifying the security and provenance of builds created through {ProductName}.
 

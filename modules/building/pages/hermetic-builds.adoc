@@ -1,4 +1,5 @@
 = Enabling hermetic builds
+:description: Configuring network-isolated builds and tying them to dependency prefetching.
 
 A hermetic build is a secure, self-contained build process that doesn't depend on anything outside of the build environment. This means that it does not have network access, is not vulnerable to external influences, and cannot fetch dependencies at run time. Instead, you must declare all required resources and dependencies in your build definition. 
 

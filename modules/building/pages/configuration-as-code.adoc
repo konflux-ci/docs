@@ -1,4 +1,5 @@
 = Configuring Applications and Components as Code with Kustomize
+:description: Modeling applications and components with Kustomize for repeatable configuration.
 
 If you need to define a large application with many components, easily duplicate or update components, or ensure consistent component and application states, consider configuring your {ProductName} applications and components as code using Kustomize. This document provides an overview of a basic application and component configuration that can be replicated and duplicated using Kustomize bases and overlays.
 

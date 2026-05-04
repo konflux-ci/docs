@@ -1,4 +1,5 @@
 = Running Build Pipelines
+:description: Triggering pre-merge and post-merge builds through Pipelines as Code.
 :page-aliases: rerunning.adoc
 
 Konflux uses xref:ROOT:getting-started.adoc#pipelines-as-code-pac[Pipelines as Code] (PaC) to run

@@ -66,6 +66,9 @@ jobs:
       - name: Generate website
         run: npm ci && npm run build
 
+      - name: Generate llms.txt
+        run: npm run generate-llms-txt
+
       - name: Setup Pages
         uses: actions/configure-pages@v6
 

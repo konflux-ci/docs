@@ -1,4 +1,5 @@
 = Choosing when to run certain Integration Tests
+:description: Selecting IntegrationTestScenario contexts for PRs, pushes, overrides, and groups.
 
 Integration test scenarios can be configured to run in only certain cases (referred to as contexts in further text).
 Examples include running the integration test pipelines only in case of Pull Requests, or running them only for builds of specific components.

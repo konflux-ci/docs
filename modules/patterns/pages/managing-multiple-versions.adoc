@@ -1,4 +1,5 @@
 = Managing multiple software versions
+:description: Using Project CRDs to template parallel software version streams.
 
 NOTE: The Project Controller here is considered *experimental*. API and support may change in the future.
 

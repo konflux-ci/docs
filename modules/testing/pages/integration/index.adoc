@@ -1,4 +1,5 @@
 = Integration tests
+:description: How integration tests, snapshots, and the Global Candidate List work together.
 
 This document covers the integration tests that {ProductName} triggers after component build pipelines. 
 

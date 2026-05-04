@@ -1,4 +1,5 @@
 = Scheduled builds with CronJobs
+:description: Scheduling default-branch push pipelines with Kubernetes CronJobs.
 
 The core principle is to create a `CronJob` that triggers a push pipeline using *the latest commit from the component's default branch*.
 

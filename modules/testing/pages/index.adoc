@@ -1,4 +1,5 @@
 = Testing your components and applications
+:description: Overview of build-time, custom, and integration testing on Konflux.
 
 You can ensure that your applications are stable, secure, compliant, and mutually compatible by implementing tests for {ProductName} to run on their components. There are currently 3 types of tests in {ProductName}:
 

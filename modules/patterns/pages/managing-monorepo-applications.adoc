@@ -1,4 +1,5 @@
 = Managing Monorepo Applications
+:description: Tuning monorepo triggers, submodules, tests, and releases on Konflux.
 
 In most cases, {ProductName} applications consist of multiple components each with its own repository.
 However, there are legitimate use-cases where users need to keep multiple components within the same repository.

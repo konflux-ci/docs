@@ -1,4 +1,5 @@
 = Building Binaries in {ProductName}
+:description: Containerfile patterns for compiling binaries as Konflux-managed artifacts.
 
 This guide provides guidelines on how to build binaries within {ProductName}.
 

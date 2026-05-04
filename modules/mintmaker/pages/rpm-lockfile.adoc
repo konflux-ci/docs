@@ -1,4 +1,5 @@
 = RPM lockfiles
+:description: Automating RPM lockfile refresh through MintMaker's RPM extension.
 
 == Introduction
 

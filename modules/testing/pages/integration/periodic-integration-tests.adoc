@@ -1,4 +1,5 @@
 = Triggering Periodic Integration Tests
+:description: Running integration tests on a schedule via CronJobs and snapshot labeling.
 
 In {ProductName}, you can run integration tests on a schedule using Kubernetes CronJobs.
 

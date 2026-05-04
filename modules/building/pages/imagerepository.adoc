@@ -1,4 +1,5 @@
 = Customizing ImageRepository
+:description: Adjusting ImageRepository visibility, credentials rotation, and Quay settings.
 
 == Changing repository visibility
 In the ImageRepository change `spec.image.visibility` to `private`(default) or `public` according what you want,

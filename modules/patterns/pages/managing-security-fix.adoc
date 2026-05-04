@@ -1,4 +1,5 @@
 = Managing a security fix
+:description: Using private mirrors and tenants to develop and ship embargoed security fixes.
 
 Sometimes, you need to address an **embargoed security issue** in your application. So as not to disclose aspects of the security vulnerability prematurely, you will want to prepare a fix in private or with a limited set of collaborators. This document guides you on how to make a private copy of your Git repository and clone your application to a private tenant namespace where you can prepare a fix and invite other collaborators only on a need-to-know basis, so that you can control who is aware of the issue while you develop the fix.
 

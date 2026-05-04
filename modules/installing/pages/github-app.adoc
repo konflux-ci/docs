@@ -1,4 +1,5 @@
 = GitHub App
+:description: Why and how the Konflux GitHub App powers Pipelines as Code integration.
 
 A *GitHub App* is a tool that extends GitHub's functionality. It can do things on GitHub like open issues, comment on pull requests, manage projects, etc.
 

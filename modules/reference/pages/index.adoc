@@ -1,4 +1,5 @@
 = Reference
+:description: Pointers to sample repositories, Kubernetes APIs, and other reference material.
 
 == Sample repositories
 

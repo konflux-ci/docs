@@ -1,4 +1,5 @@
 = Getting Access to Pulp Storage
+:description: Requesting Pulp domains and secrets for non-OCI artifact storage.
 
 Pulp is the artifact storage system for non-container artifacts, including RPMs, Python wheels, Go modules, and generic files. Container images are stored in Quay, while all other build artifacts are stored in Pulp.
 

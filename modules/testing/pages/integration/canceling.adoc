@@ -1,4 +1,5 @@
 = Canceling Integration pipelineRuns
+:description: Manual cancellation and automatic supersession when snapshots refresh.
 
 == How do I cancel the previous pipelineRun and which will be canceled?
 

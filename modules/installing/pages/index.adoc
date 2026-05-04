@@ -1,4 +1,5 @@
 = Installing {ProductName}
+:description: Installation paths for UI-based and manifest-based onboarding to Konflux.
 
 {ProductName} offers a comprehensive solution that fortifies your software supply chain against emerging threats. By providing detailed insights into the composition and construction of your software, {ProductName} enables proactive identification and mitigation of vulnerabilities.
 

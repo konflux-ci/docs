@@ -1,4 +1,5 @@
 = Debugging Integration Tests
+:description: Finding failed integration PipelineRuns via activity views and logs.
 
 In case of an integration test scenario failing, there are several steps to take in order to debug the issue before rerunning the test in question. These steps are outlined below.
 

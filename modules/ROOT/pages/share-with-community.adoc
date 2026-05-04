@@ -1,4 +1,5 @@
 = Share Tenant with the Community
+:description: Granting all authenticated Konflux users read-only access to your tenant namespace.
 
 As a tenant admin, you may want to give visibility on your project to the Konflux users outside your team.
 

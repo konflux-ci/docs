@@ -1,4 +1,5 @@
 = Policy Evaluations
+:description: Locating which policies are bound to integration tests and release admissions.
 
 In {ProductName}, there are two places where Conforma Policies are used by default,
 integration tests and release pipelines.

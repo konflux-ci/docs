@@ -1,4 +1,5 @@
 = Building upstream projects with git submodules
+:description: Syncing upstream code into downstream repos using Git submodules and automation.
 
 This document outlines a basic guide for synchronizing changes between an upstream and downstream repository using Git submodules.
 

@@ -1,4 +1,5 @@
 = Standardized outputs
+:description: TEST_OUTPUT, SCAN_OUTPUT, and other structured Tekton result formats.
 
 Konflux is using standardized outputs in various places, this part of docs will provide more detail information about it.
 Each one of the results described below is rendered in the UI, you simply click on task name and panel with details is showed

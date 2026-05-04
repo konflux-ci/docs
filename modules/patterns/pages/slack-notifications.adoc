@@ -1,4 +1,5 @@
 = Slack Notifications
+:description: Sending Slack webhook alerts from pipeline finally blocks.
 
 We live in slack. You may find it helpful to route notifications there from your pipelines.
 

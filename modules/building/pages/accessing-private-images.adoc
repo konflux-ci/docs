@@ -1,4 +1,5 @@
 = Accessing private image repositories
+:description: RBAC and proxy URLs for pulling private tenant component images.
 
 When the image repository visibility is set to `private` (the default), you need to authenticate before you can pull images. Konflux provides an RBAC image proxy that controls access based on your permissions.
 

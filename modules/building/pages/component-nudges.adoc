@@ -1,4 +1,5 @@
 = Defining component relationships
+:description: Cross-component relationships so digest updates open automatic PRs.
 
 When a tenant namespace includes multiple components, their repositories might contain references to image builds of another component. For example, an application might include multiple child components that, using a Dockerfile `FROM` clause, reference the image build of a common parent. Or, a component might reference image builds from another application altogether. OpenShift operators, for example, often have references to several components across applications.
 

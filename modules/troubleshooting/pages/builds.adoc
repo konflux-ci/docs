@@ -1,4 +1,5 @@
 = Troubleshooting Builds
+:description: Diagnosing and fixing common build failures such as disk, network, and workspace issues.
 
 == No space left on device
 

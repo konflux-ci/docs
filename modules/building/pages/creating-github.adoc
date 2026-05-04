@@ -1,4 +1,5 @@
 = Onboarding a component from GitHub
+:description: Onboarding a component from a GitHub repository using the GitHub App.
 
 Create components from GitHub repositories using the {ProductName} UI or `kubectl`.
 

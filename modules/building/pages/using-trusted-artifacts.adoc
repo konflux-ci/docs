@@ -1,4 +1,5 @@
 = Using Trusted Artifacts
+:description: Using Trusted Artifacts to securely share data between pipeline tasks.
 
 In order to retain the integrity of the build process, {ProductName} provides two modes of
 operation. The first is by ensuring that every Task in the build Pipeline is

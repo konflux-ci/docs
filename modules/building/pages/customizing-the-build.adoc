@@ -1,4 +1,5 @@
 = Customizing the build pipeline
+:description: Customizing PipelineRun parameters, timeouts, and tasks under .tekton.
 
 To meet your specific needs, you can customize the way that {ProductName} builds components. For instance:
 

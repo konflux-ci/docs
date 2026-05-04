@@ -1,4 +1,5 @@
 = Onboarding a component from GitLab
+:description: Onboarding a component from a GitLab repository using access tokens and secrets.
 
 Create components from GitLab repositories using the {ProductName} UI or `kubectl`.
 

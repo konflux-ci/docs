@@ -1,4 +1,5 @@
 = Discovering the associated metadata
+:description: Using cosign and jq to list OCI referrers and metadata for built images.
 
 .Prerequisites
 

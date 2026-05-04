@@ -1,4 +1,5 @@
 = Snapshots
+:description: Snapshots as immutable component image sets for testing and releasing.
 
 // Optional: Define context for cross-references if needed within the module structure
 // :context: snapshots

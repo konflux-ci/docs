@@ -1,4 +1,5 @@
 = Passing buildah arguments
+:description: Supplying build arguments to buildah via BUILD_ARGS_FILE in PipelineRuns.
 
 It is possible to link:https://github.com/containers/buildah/blob/main/docs/buildah-build.1.md[pass arguments to buildah] which is used to build container images in {ProductName}.
 

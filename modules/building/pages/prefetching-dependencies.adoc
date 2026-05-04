@@ -1,4 +1,5 @@
 = Prefetching package manager dependencies for hermetic builds
+:description: Prefetching package manager dependencies with Hermeto for reproducible hermetic builds.
 
 In {ProductName}, you can run a hermetic build by restricting network access to the build; but without network access, a build will not be able to fetch component dependencies from remote repositories, and might fail. To avoid that, {ProductName} can prefetch dependencies for your hermetic builds using link:https://hermetoproject.github.io/hermeto[Hermeto].
 

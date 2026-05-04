@@ -1,4 +1,5 @@
 = GitHub Merge Queues
+:description: Configuring Konflux PR pipelines to work with GitHub merge queues.
 
 This document contains instructions for how to configure GitHub link:https://docs.github.com/en/repositories/configuring-branches-and-merges-in-your-repository/configuring-pull-request-merges/managing-a-merge-queue[merge queues] with {ProductName}.
 

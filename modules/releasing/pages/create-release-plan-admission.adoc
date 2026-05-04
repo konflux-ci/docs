@@ -1,4 +1,5 @@
 = Creating a release plan admission
+:description: Defining ReleasePlanAdmission CRs with pipelines and policy in managed namespaces.
 
 A ReleasePlanAdmission (RPA) CR exists within a managed tenant namespace. It defines the specific pipeline to run and a given xref:compliance:index.adoc[Conforma] Policy which needs to pass for the Snapshot before that pipeline can proceed.
 

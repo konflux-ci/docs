@@ -1,4 +1,5 @@
 = Collectors
+:description: Using collector scripts to fetch dynamic data into release status early.
 
 The release process with {ProductName} is well-structured, and the documentation provides clear examples of how to supply data to the `Release`, `ReleasePlan`, or `ReleasePlanAdmission` resources for use within the release workflow.
 
