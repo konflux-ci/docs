@@ -21,7 +21,7 @@ If the repository is private, be sure to have a Secret in your {ProductName} ten
 
 .*Procedures*
 
-. Add Tekton Pipelines and Tasks in the repository. A suggested repository structure would be:
+. Add Tekton Pipelines and Tasks in the repository. Here is a suggested repository structure:
 
 +
 [source,shell]
@@ -29,13 +29,13 @@ If the repository is private, be sure to have a Secret in your {ProductName} ten
 .
 ├── .tekton
 │   ├── <repository-name>-pipelines-pull-request.yaml <.>
-│   └── <repository-name>-pipelines-push.yaml <.>
-├── pipelines
-│   ├── remote-pipeline1.yaml
-│   └── remote-pipeline2.yaml
-├── tasks
-│   ├── remote-task1.yaml
-│   └── remote-task2.yaml
+│   ├── <repository-name>-pipelines-push.yaml <.>
+│   ├── pipelines
+│   │   ├── remote-pipeline1.yaml
+│   │   └── remote-pipeline2.yaml
+│   └── tasks
+│       ├── remote-task1.yaml
+│       └── remote-task2.yaml
 └── renovate.json <.>
 ----
 
@@ -44,9 +44,27 @@ If the repository is private, be sure to have a Secret in your {ProductName} ten
 <.> Used by {ProductName} to monitor pushes.
 <.> Renovate/MintMaker configuration.
 
+Use link:https://pipelinesascode.com/docs/guides/pipeline-resolution/[Pipelines as Code's resolver] with this structure to reference pipelines and tasks with a simple *pipelineRef*:
+
+[source,yaml]
+----
+apiVersion: tekton.dev/v1
+kind: PipelineRun
+metadata: ... <.>
+spec:
+  pipelineRef:
+    name: pipeline-1 <.>
+----
+
+<.> Omitted for brevity. No additional annotations are required to reference the pipeline or task if they exist in the `+.tekton+` directory.
+<.> Specify the name of the pipeline. Note: this is the pipeline's `+metadata.name+`, not the filename.
+
+This has the added benefits of faster resolution and fewer API requests than other pipeline resolution methods because Pipelines as Code already parses the Pipelines and Tasks from the `+.tekton+` directory when looking for PipelineRuns to match.
+
 === Use git resolver
 
-To start referencing a remote Pipeline from a PipelineRun using a *git resolver*, replace *pipelineSpec* with *pipelineRef*:
+Use the *git resolver* to reference a pipeline that exists in another repository.
+To start referencing a remote Pipeline from a PipelineRun by using the *git resolver*, replace *pipelineSpec* with *pipelineRef*:
 
 [source,yaml]
 ----
