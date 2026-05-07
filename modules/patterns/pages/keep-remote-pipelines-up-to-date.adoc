@@ -63,6 +63,11 @@ This has the added benefits of faster resolution and fewer API requests than oth
 
 === Use git resolver
 
+[WARNING]
+====
+Do not use the git resolver to reference pipelines and tasks that are already in the `+.tekton+` directory of the same repository. Pipelines as Code automatically resolves resources from this directory, so using the git resolver for them is unnecessary and results in additional API requests.
+====
+
 Use the *git resolver* to reference a pipeline that exists in another repository.
 To start referencing a remote Pipeline from a PipelineRun by using the *git resolver*, replace *pipelineSpec* with *pipelineRef*:
 
