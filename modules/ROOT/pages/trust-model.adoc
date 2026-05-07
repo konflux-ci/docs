@@ -2,7 +2,7 @@
 :description: How {ProductName} secures the software supply chain through build isolation, namespace separation, and policy-gated releases.
 
 {ProductName} secures the software supply chain through layered defenses, from isolated builds to policy-gated releases.
-Each layer addresses a specific class of link:https://slsa.dev/spec/v1.2/threats-overview[supply chain threat].
+Each layer addresses a specific class of link:https://slsa.dev/spec/latest/threats-overview[supply chain threat].
 Together, they provide verifiable evidence that artifacts reaching production came from known sources, went through known processes, and received approval from an independent party.
 
 == Layered trust
@@ -23,7 +23,7 @@ Together, they provide verifiable evidence that artifacts reaching production ca
 |Intermediate data passes between tasks as immutable OCI artifacts addressed by content digest, not through shared volumes. Tampering changes the digest and breaks the chain. Developers can add custom tasks to their pipelines without undermining trust in the build output. See xref:building:using-trusted-artifacts.adoc[Using trusted artifacts] for details.
 
 |*Observer-generated attestations*
-|link:https://tekton.dev/docs/chains/[Tekton Chains] watches completed builds and generates link:https://slsa.dev/spec/v1.2/provenance[SLSA provenance] independently. The signing key lives in a separate namespace that build pods cannot reach. Builds cannot forge their own provenance.
+|link:https://tekton.dev/docs/chains/[Tekton Chains] watches completed builds and generates link:https://slsa.dev/spec/latest/provenance[SLSA provenance] independently. The signing key lives in a separate namespace that build pods cannot reach. Builds cannot forge their own provenance.
 
 |*Policy engine*
 |link:https://conforma.dev[Conforma] evaluates signed attestations against policy rules. Violations appear as pull request feedback during development and block releases at the gate. Developers iterate toward compliance before release.
@@ -32,9 +32,9 @@ Together, they provide verifiable evidence that artifacts reaching production ca
 |The release service gates access to production registries. It runs the release pipeline in a managed namespace under a separate team's control and enforces policy before pushing artifacts.
 |===
 
-No single layer maps to a specific link:https://slsa.dev/spec/v1.2/build-requirements#build-levels[SLSA Build Level]; the levels emerge from the combination.
-Kubernetes pod isolation and observer-generated attestations achieve link:https://slsa.dev/spec/v1.2/build-requirements#provenance-authentic[Build L2] (hosted, signed provenance).
-Trusted tasks strengthen the isolation guarantee by verifying that only approved, unmodified tasks ran in the build, which is what elevates the result to link:https://slsa.dev/spec/v1.2/build-requirements#isolated[Build L3].
+No single layer maps to a specific link:https://slsa.dev/spec/latest/build-requirements#build-levels[SLSA Build Level]; the levels emerge from the combination.
+Kubernetes pod isolation and observer-generated attestations achieve link:https://slsa.dev/spec/latest/build-requirements#provenance-authentic[Build L2] (hosted, signed provenance).
+Trusted tasks strengthen the isolation guarantee by verifying that only approved, unmodified tasks ran in the build, which is what elevates the result to link:https://slsa.dev/spec/latest/build-requirements#isolated[Build L3].
 
 The rest of this page explains how these layers work: build isolation, release approval, and the policy that connects them.
 
@@ -67,13 +67,13 @@ Signing alone leaves a gap.
 Tekton Chains signs whatever artifacts tasks claim to produce, including artifacts from compromised tasks.
 A malicious task could pull a pre-built image from an attacker's registry, report it as a build output via link:https://tekton.dev/docs/chains/slsa-provenance/#type-hinting[type hinting], and receive valid signed provenance.
 Signed provenance proves who attested, not that the attestation is correct.
-{ProductName} verifies build provenance against policy before releasing; see xref:metadata:index.adoc[Inspecting provenance and attestations] for how {ProductName} meets the link:https://slsa.dev/spec/v1.2/build-requirements#isolated[SLSA Build Level 3] requirements.
+{ProductName} verifies build provenance against policy before releasing; see xref:metadata:index.adoc[Inspecting provenance and attestations] for how {ProductName} meets the link:https://slsa.dev/spec/latest/build-requirements#isolated[SLSA Build Level 3] requirements.
 
 == Tenant and managed namespaces
 
 {ProductName} separates work into two types of Kubernetes namespaces, and a different team controls each:
 
-* A *xref:glossary:index.adoc#tenant-namespace[tenant namespace]* is where developers create applications, build components, and run tests. Developers have xref:glossary:index.adoc#tenant-namespace[role-based access] and can read secrets stored there.
+* A *xref:glossary:index.adoc#tenant-namespace[tenant namespace]* is where developers create applications, build components, and run tests. Developers have link:https://konflux-ci.dev/architecture/ADR/0011-roles-and-permissions.html[role-based access] and can read secrets stored there.
 
 * A *xref:glossary:index.adoc#managed-namespace[managed namespace]* is where release pipelines execute. It holds the release pipeline definitions, the xref:compliance:index.adoc[Conforma policies] that gate releases, and the credentials for signing and pushing artifacts to production registries. A separate team (typically SREs or release engineers) controls this namespace.
 
@@ -148,4 +148,4 @@ NOTE: Release configuration resources are available only through `kubectl` or a 
 * xref:building:customizing-the-build.adoc[Customizing the build pipeline]
 * xref:glossary:index.adoc[Glossary]
 * link:https://konflux-ci.dev/architecture/[{ProductName} architecture]
-* link:https://slsa.dev/spec/v1.2/threats-overview[SLSA threat model]
+* link:https://slsa.dev/spec/latest/threats-overview[SLSA threat model]
