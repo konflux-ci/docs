@@ -318,7 +318,7 @@ enabled = 1
 [source,bash]
 ----
 dnf install -y pip skopeo
-pip install --user https://github.com/konflux-ci/rpm-lockfile-prototype/archive/refs/tags/v0.13.1.tar.gz
+pip install --user https://github.com/konflux-ci/rpm-lockfile-prototype/archive/refs/tags/$(curl -s "https://api.github.com/repos/konflux-ci/rpm-lockfile-prototype/releases/latest" | jq -r '.tag_name').tar.gz
 ----
 
 NOTE: You can find the latest version of `+rpm-lockfile-prototype+` on https://github.com/konflux-ci/rpm-lockfile-prototype[GitHub], or viewing the repository https://github.com/konflux-ci/rpm-lockfile-prototype/tags[tags].
