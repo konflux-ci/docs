@@ -317,7 +317,7 @@ enabled = 1
 --
 [source,bash]
 ----
-dnf install -y pip skopeo
+dnf install -y pip skopeo jq
 pip install --user https://github.com/konflux-ci/rpm-lockfile-prototype/archive/refs/tags/$(curl -s "https://api.github.com/repos/konflux-ci/rpm-lockfile-prototype/releases/latest" | jq -r '.tag_name').tar.gz
 ----
 
