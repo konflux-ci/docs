@@ -209,7 +209,7 @@ enabled managers is available below.
 
 |*Continuous Integration* |`tekton`, +++<del>+++`azure-pipelines`,
 `bitbucket-pipelines`, `bitrise`, `buildkite`, `circleci`, `cloudbuild`,
-`droneci`, `github-actions`+++</del>+++, `gitlabci`, `gitlabci-include`, +++<del>+++`jenkins`,
+`droneci`+++</del>+++, `github-actions`, `gitlabci`, `gitlabci-include`, +++<del>+++`jenkins`,
 `travis`, `velaci`, `woodpecker`+++</del>+++
 
 |*Custom Managers* |`regex`
