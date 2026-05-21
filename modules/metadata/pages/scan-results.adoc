@@ -5,7 +5,7 @@ While you can inspect your scan results in the logs of your taskruns, it may be 
 
 == Pre-requisites
 
-* Get a local copy of the `oras` command line tool. You can extract it from the link:https://quay.io/konflux-ci/oras[quay.io/konflux-ci/oras:latest] image built by the konflux project, or download the binary from an link:https://github.com/oras-project/oras/releases[upstream release].
+* Get a local copy of the `oras` command line tool (version 1.3.0 or later). You can extract it from the link:https://quay.io/konflux-ci/oras[quay.io/konflux-ci/oras:latest] image built by the konflux project, or download the binary from an link:https://github.com/oras-project/oras/releases[upstream release].
 * To see the scan results, you need to find the image for a xref:building:creating.adoc#finding-the-built-image[recently completed build pipeline] and export that value to the IMAGE environment variable, like `IMAGE=quay.io/konflux-fedora/ralph-tenant/nethack:ee7464add193e84aa75e32b253415f1fe01f627e`
 
 Note, other tools are gaining support for working with non-image OCI artifacts, including link:https://docs.podman.io/en/latest/markdown/podman-artifact.1.html[podman].
@@ -31,7 +31,10 @@ And, you can format that as json so that you can work with it with tools like `j
 --
 ❯ oras discover --format json $IMAGE
 {
-  "manifests": [
+  "reference": "quay.io/konflux-fedora/ralph-tenant/nethack@sha256:391c5670843d655d8f5d374aafe6367a6f450a10d2d95ebc123f65fe1479813f",
+  "mediaType": "application/vnd.oci.image.manifest.v1+json",
+  "digest": "sha256:391c5670843d655d8f5d374aafe6367a6f450a10d2d95ebc123f65fe1479813f",
+  "referrers": [
     {
       "reference": "quay.io/konflux-fedora/ralph-tenant/nethack@sha256:023d791628821f1fe429ce54495f2289b8ab59e990a8fd51e5499586b03d283a",
       "mediaType": "application/vnd.oci.image.manifest.v1+json",
@@ -72,7 +75,7 @@ You can use the following command to download all sarif files associated with yo
 
 [source]
 --
-❯ for sarif_file in $(oras discover --format json $IMAGE | jq -r '.manifests[] | select(.artifactType == "application/sarif+json") | .reference'); do
+❯ for sarif_file in $(oras discover --format json $IMAGE | jq -r '.referrers[] | select(.artifactType == "application/sarif+json") | .reference'); do
 	oras pull $sarif_file;
 done
 
