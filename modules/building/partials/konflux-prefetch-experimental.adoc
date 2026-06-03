@@ -1,2 +1,63 @@
 // This partial is referenced by building/pages/prefetching-dependencies.adoc
 // Add below sections to explain the use of experimental Hermeto package managers.
+
+== [[maven]]Enabling prefetch builds for `maven` _(experimental)_
+
+WARNING: Maven support in Hermeto is experimental and may change without prior notice.
+
+Hermeto supports Maven by reading a `lockfile.json` file in the project directory. To generate this file, use the link:https://github.com/chains-project/maven-lockfile[Maven Lockfile] plugin, which records resolved dependencies, plugins, and parent POM graphs. Hermeto downloads those artifacts into a local Maven repository layout and writes Maven settings so the build can run offline against that cache only.
+
+.Prerequisites
+* You have a `pom.xml` file in your repository.
+* You have link:https://maven.apache.org/[Apache Maven] installed locally.
+
+=== Generating the lockfile
+
+Generate a `lockfile.json` that includes both dependencies and Maven plugins, with SHA-512 checksums computed locally:
+
+[source,bash]
+----
+mvn io.github.chains-project:maven-lockfile:generate \
+  -DincludeMavenPlugins=true \ <1>
+  -DchecksumAlgorithm=SHA-512 \ <2>
+  -DchecksumMode=local <3>
+----
+<1> Include all Maven build plugins and their transitive dependencies in the lockfile. This ensures that plugin artifacts are also prefetched and available during hermetic builds.
+<2> Use the SHA-512 algorithm for checksum computation to ensure post-quantum cryptography readiness.
+<3> Compute checksums locally from artifacts in your local Maven repository (`.m2`), rather than downloading pre-computed checksums from remote repositories.
+
+This produces a `lockfile.json` file in the root of your project. Commit this file to your repository.
+
+=== Validating the lockfile
+
+After generating the lockfile, validate it to confirm that all dependencies resolve correctly:
+
+[source,bash]
+----
+mvn io.github.chains-project:maven-lockfile:validate
+----
+
+=== Configuring the pipeline
+
+. Go to the `.tekton` directory and find the `.yaml` files related to the `*pull request*` and `*push*` processes.
+. Add the following parameter in both `.yaml` files:
+
++
+[source,yaml]
+----
+spec:
+  params:
+    ...
+    - name: prefetch-input
+      value: '{"type": "x-maven", "path": "."}' <1>
+----
+<1> The type for Maven is `x-maven` because this feature is experimental. The `path` value points to the directory containing your `lockfile.json`.
+
+=== [[maven-walkthrough]]`maven` walkthrough
+
+[IMPORTANT]
+====
+Refer to the link:https://hermetoproject.github.io/hermeto/usage[Hermeto usage documentation] for more detail on configuration and usage.
+
+include::partial${context}-prefetch-hermeto-note.adoc[]
+====
