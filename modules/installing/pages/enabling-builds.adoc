@@ -79,7 +79,7 @@ _Uses `buildah` to create a multi-platform container image leveraging link:https
 
 This pipeline is ideal for building and verifying xref:end-to-end:building-olm.adoc#building-the-file-based-catalog[file-based catalogs].
 
-_Uses `buildah` to create a container image. Its build-time tests are limited to verifying the included catalog and not to scanning the image itself. (link:https://quay.io/repository/konflux-ci/tekton-catalog/pipeline-fbc-builder?tab=tags[quay.io link], link:https://github.com/konflux-ci/build-definitions/blob/main/pipelines/fbc-builder/README.md[parameter documentation])_
+_Uses `buildah` to create a container image. Its build-time tests are limited to verifying the included catalog, such as ensuring `olm.bundle` image references are digest-pinned, and not to scanning the image itself. (link:https://quay.io/repository/konflux-ci/tekton-catalog/pipeline-fbc-builder?tab=tags[quay.io link], link:https://github.com/konflux-ci/build-definitions/blob/main/pipelines/fbc-builder/README.md[parameter documentation])_
 
 ==== _tekton-bundle-builder-oci-ta_ [[tekton-bundle-builder-oci-ta]]
 

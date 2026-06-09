@@ -154,5 +154,32 @@ chmod +x update-tekton-task-bundles.sh
 
 <1> Install the link:https://github.com/konflux-ci/pipeline-migration-tool[pipeline-migration-tool].
 
+== FBC validation fails due to unpinned image references
+
+The `validate-fbc` task in the `fbc-builder` pipeline checks all `olm.bundle` image references in your file-based catalog (FBC) fragment. If any reference uses a tag instead of a digest, the task fails.
+
+To fix this, pin every image reference by digest. For example, replace a tag-based reference:
+
+[source,text]
+----
+registry.example.com/my-operator-bundle:v1.0
+----
+
+with a digest-pinned reference:
+
+[source,text]
+----
+registry.example.com/my-operator-bundle@sha256:abc123...
+----
+
+To look up the digest for a tagged image, run:
+
+[source,bash]
+----
+skopeo inspect --no-tags docker://registry.example.com/my-operator-bundle:v1.0 | jq -r '.Digest'
+----
+
+To keep digests up to date automatically, configure xref:building:component-nudges.adoc[component nudges]. For more details on building FBC components, see xref:end-to-end:building-olm.adoc[Building an OLM Operator].
+
 include::partial${context}-builds.adoc[]
 include::partial${context}-pipelinerun-pending.adoc[]
