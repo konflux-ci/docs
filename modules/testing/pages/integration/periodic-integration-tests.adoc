@@ -22,48 +22,7 @@ If the Integration Test is designed to only run periodically rather than during 
 
 This procedure details how to grant the necessary snapshot access to a ServiceAccount, which is required to run periodic Integration Tests. It assumes you have an integration test created and a ServiceAccount available in your tenant namespace.
 
-. Identify an Existing Role (Recommended)
-* Check for an existing `Role` or `ClusterRole` that already has permissions to create snapshots.
-* Many environments have roles with broad access (e.g., a `ClusterRole` with `verbs: ["*"]`). Examine the roles available and compare to the example below to ensure the correct permissions are available within the role.
-
-. If No Existing Role, Create a New Role and RoleBinding
-
-If you cannot use an existing role with snapshot permissions, a *tenant administrator* must manually create a new `Role` and `RoleBinding`, as outlined in the example.
-
-[source,yaml]
----
-kind: Role
-apiVersion: rbac.authorization.k8s.io/v1
-metadata:
-  name: periodic-jobs-role
-  namespace: default-tenant
-rules:
-  - verbs:
-      - get
-      - watch
-      - list
-      - update
-      - patch
-    apiGroups:
-      - appstudio.redhat.com
-    resources:
-      - snapshots
----
-kind: RoleBinding
-apiVersion: rbac.authorization.k8s.io/v1
-metadata:
-  name: periodic-jobs-rolebinding
-  namespace: default-tenant
-subjects:
-  - kind: ServiceAccount
-    name: default-tenant
-    namespace:
-roleRef:
-  kind: Role
-  name: periodic-jobs-role
-  apiGroup: rbac.authorization.k8s.io
----
-
+include::partial$integration/periodic-integration-tests-rbac.adoc[]
 
 [start=3]
 
