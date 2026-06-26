@@ -22,9 +22,7 @@ If the Integration Test is designed to only run periodically rather than during 
 
 This procedure details how to grant the necessary snapshot access to a ServiceAccount, which is required to run periodic Integration Tests. It assumes you have an integration test created and a ServiceAccount available in your tenant namespace.
 
-include::partial$integration/periodic-integration-tests-rbac.adoc[]
-
-[start=3]
+include::partial$integration/{context}-periodic-integration-tests-rbac.adoc[]
 
 . Create a CronJob that will trigger a Periodic Integration Test scenario via snaphot labels.
 
