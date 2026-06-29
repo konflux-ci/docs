@@ -174,7 +174,7 @@ spec:
     params:
         -   ...
         -   name: prefetch-input
-            value: '{"type": "pip", "path": ".", "allow_binary": true}'
+            value: '{"type": "pip", "path": ".", "binary": {"packages": "cryptography", "py_version": 314}}'
 ----
 
 Note that you don't need to generate a `requirements-build.txt` file as described in the section above in case the prefetching of wheels is enabled.
