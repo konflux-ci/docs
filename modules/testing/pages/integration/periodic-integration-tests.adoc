@@ -20,7 +20,7 @@ If the Integration Test is designed to only run periodically rather than during 
 
 === Procedure with example
 
-This procedure details how to grant the necessary snapshot access to a ServiceAccount, which is required to run periodic Integration Tests. It assumes you have an integration test created and a ServiceAccount available in your tenant namespace.
+This procedure details how to grant the necessary snapshot access to a ServiceAccount, which is required to run periodic Integration Tests. It assumes you have an integration test created and the `periodic-jobs-runner` ServiceAccount available in your tenant namespace.
 
 include::partial$integration/{context}-periodic-integration-tests-rbac.adoc[]
 
@@ -93,8 +93,8 @@ spec:
 
                   echo "[INFO] Integration Service E2E tests successfully triggered!"
           restartPolicy: Never <.>
-          serviceAccountName: default
-          serviceAccount: default
+          serviceAccountName: periodic-jobs-runner
+          serviceAccount: periodic-jobs-runner
 ----
 <1> The name of the tenant.
 <2> The Integration Test name to be triggered by the CronJob.
