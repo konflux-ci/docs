@@ -32,8 +32,8 @@ metadata:
   namespace: default-tenant
 subjects:
   - kind: ServiceAccount
-    name: default-tenant
-    namespace:
+    name: periodic-jobs-runner
+    namespace: default-tenant
 roleRef:
   kind: Role
   name: periodic-jobs-role
