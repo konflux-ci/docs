@@ -57,6 +57,12 @@ NOTE: If you want to update the references in your CSV to match where the operan
 . In your new application, xref:building:/creating.adoc[add a new component] for your FBC. Be sure to select the file-based catalog pipeline and to specify the correct path to the catalog's Containerfile within its git repository.
 
 +
+[IMPORTANT]
+====
+The `validate-fbc` task in the `fbc-builder` pipeline enforces that all `olm.bundle` image references in your FBC fragment are pinned by digest (for example, `@sha256:abcdef...`) and come from `registry.redhat.io` or `registry.stage.redhat.io`. Tag-based references or references from other registries cause the build to fail. Pinning by digest ensures immutability, supply-chain integrity, and compatibility with disconnected installations. To keep digests up to date automatically, use xref:building:component-nudges.adoc[component nudges].
+====
+
++
 NOTE: If the Containerfile populates the cache, the image produced with a FBC fragment can be used as a link:https://olm.operatorframework.io/docs/concepts/crds/catalogsource/[CatalogSource]. You can use *opm* to generate the cache in the final stage of your Containerfile.
 
 +

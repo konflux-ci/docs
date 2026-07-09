@@ -154,5 +154,37 @@ chmod +x update-tekton-task-bundles.sh
 
 <1> Install the link:https://github.com/konflux-ci/pipeline-migration-tool[pipeline-migration-tool].
 
+== FBC validation fails due to invalid bundle image references
+
+The `validate-fbc` task in the `fbc-builder` pipeline checks all `olm.bundle` image references in your file-based catalog (FBC) fragment. The task enforces two rules:
+
+* Every `olm.bundle` image reference must be pinned by digest (`@sha256:...`).
+* Every `olm.bundle` image reference must come from `registry.redhat.io` or `registry.stage.redhat.io`.
+
+Violations produce one of the following error messages:
+
+[source,text]
+----
+!FAILURE! - The following olm.bundle image references are not digest-pinned:
+  registry.redhat.io/my-operator-bundle:v1.0
+----
+
+[source,text]
+----
+!FAILURE! - The following olm.bundle image references are not from registry.redhat.io or registry.stage.redhat.io:
+  quay.io/my-org/my-operator-bundle@sha256:abc123...
+----
+
+To fix digest-pinning failures, replace tag-based references with digest-pinned references. To look up the digest for a tagged image, run:
+
+[source,bash]
+----
+skopeo inspect --no-tags docker://registry.redhat.io/my-operator-bundle:v1.0 | jq -r '.Digest'
+----
+
+To fix registry failures, ensure all bundle image references point to `registry.redhat.io` or `registry.stage.redhat.io`.
+
+To keep digests up to date automatically, configure xref:building:component-nudges.adoc[component nudges]. For more details on building FBC components, see xref:end-to-end:building-olm.adoc[Building an OLM Operator].
+
 include::partial${context}-builds.adoc[]
 include::partial${context}-pipelinerun-pending.adoc[]
