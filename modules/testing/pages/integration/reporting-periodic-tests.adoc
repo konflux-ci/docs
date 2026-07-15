@@ -1,0 +1,381 @@
+= Generating Weekly Reports for Periodic Integration Tests
+
+In {ProductName}, generate automated weekly reports of periodic integration test results using the `reporting.yaml` pipeline. This pipeline is triggered via a Kubernetes CronJob and aggregates test results from the past week, sending formatted email reports to stakeholders.
+
+== Overview
+
+The reporting pipeline collects PipelineRun results from your configured periodic tests, aggregates their status, and sends an HTML email report to specified stakeholders. The pipeline uses KubeArchive to query historical test runs and formats the results into an easy-to-read weekly summary.
+
+== Prerequisites
+
+Before setting up the weekly reporting pipeline, ensure you have:
+
+* Periodic integration tests already configured and running on a schedule
+* Access to create CronJobs in your tenant namespace
+* SMTP credentials configured for sending email reports
+* A ServiceAccount with permissions to query PipelineRuns
+
+== Required Secrets
+
+The reporting pipeline requires the following secrets to be configured in your tenant namespace:
+
+[start=1]
+. *my-secret*
++
+This secret contains the {ProductName} API token used to authenticate with the cluster using your ServiceAccount and query PipelineRuns from KubeArchive.
++
+[source,yaml]
+----
+apiVersion: v1
+kind: Secret
+metadata:
+  name: weekly-report-secret
+  namespace: <your-tenant-namespace>
+type: Opaque
+stringData:
+  konflux-token: <your-konflux-api-token>
+----
++
+To obtain the token: Use your service account token with appropriate RBAC permissions to access PipelineRuns across the namespace.
++
+[source,yaml]
+----
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: weekly-report-sa
+  namespace: <your-tenant-namespace>
+type: Opaque
+secrets:
+  - name: weekly-report-secret
+imagePullSecrets:
+  - name: weekly-report-secret
+----
++
+Create the associated Role:
++
+[source,yaml]
+----
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: weekly-report-sa-role
+  namespace: <your-tenant-namespace>
+rules:
+  - verbs:
+    - get
+    - list
+    - watch
+    - create
+    apiGroups:
+      - tekton.dev
+    resources:
+      - pipelineruns
+----
++
+Create a RoleBinding to link the Role to the ServiceAccount:
++
+[source,yaml]
+----
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: weekly-report-sa-role-binding
+  namespace: <your-tenant-namespace>
+subjects:
+  - kind: ServiceAccount
+    name: weekly-report-sa
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: weekly-report-sa-role
+----
++
+[start=2]
+. *gwsa-email-account*
++
+This secret contains SMTP credentials for sending email reports via Gmail.
++
+[source,yaml]
+----
+apiVersion: v1
+kind: Secret
+metadata:
+  name: gwsa-email-account
+  namespace: <your-tenant-namespace>
+type: Opaque
+stringData:
+  username: <your-smtp-username>
+  password: <your-smtp-password>
+----
++
+To obtain credentials: request your Google workspace adminitrators for a GWSA or use your own account and generate an app-specific password. Visit link:https://myaccount.google.com/apppasswords[Google App Passwords] to create a password for this application. Note that you must set up 2FA (two-factor authentication) on the account before you can access link:https://myaccount.google.com/apppasswords[Google App Passwords].
+
+== Pipeline Parameters
+
+The reporting pipeline accepts the following input parameters:
+
+[start=1]
+. *namespace*
++
+The Kubernetes namespace where the periodic PipelineRuns are executed.
++
+Default: `'<your-tenant-namespace>'`
++
+To customize: Specify the namespace where your periodic integration tests run.
+
+[start=2]
+. *application*
++
+The name of the {ProductName} application associated with the periodic tests.
++
+Default: `'<your-application>'`
++
+To obtain: List applications in your namespace using `kubectl get applications -n <namespace>` and identify the application running your periodic tests, or use {ProductName}'s UI.
+
+[start=3]
+. *tests-names*
++
+An array of test name prefixes to check (the PipelineRun name prefixes for your periodic tests).
++
+Type: array
++
+Default: `['<your-periodic-integration-tests-1>', '<your-periodic-integration-tests-2>']`
++
+To customize: Identify the name prefixes of your periodic integration test PipelineRuns. Each entry should be a prefix that matches your periodic test PipelineRun names.
+
+[start=4]
+. *tests-times*
++
+An array of scheduled run times for the tests (must correspond to the order in `tests-names`).
++
+Type: array
++
+Default: `['3:00 AM', '0:00 AM']`
++
+To customize: Specify the times your periodic tests are scheduled to run. The pipeline uses these times to filter and match PipelineRuns that executed at approximately these times (±2 minutes). The order must match the order of test names in the `tests-names` parameter. You can get this value from your periodic integration tests CronJob.
+
+[start=5]
+. *stakeholder-emails*
++
+A comma-separated list of email addresses to receive the weekly report.
++
+Default: `'team@example.com'`
++
+To customize: Provide a comma-separated string of stakeholder email addresses (e.g., `'team@example.com,manager@example.com'`).
+
+[start=6]
+. *subject*
++
+The subject line for the weekly email report.
++
+Type: string
++
+Default: `'Weekly konflux test reporting'`
++
+To customize: Provide a descriptive subject line for your weekly reports.
+
+[start=7]
+. *KONFLUX_UI_URL*
++
+The URL for your Konflux UI instance.
++
+Type: string
++
+Default: `'https://konflux-ui.apps.stone-prd-rh01.pg1f.p1.openshiftapps.com'`
++
+To customize: If using a different Konflux environment, provide the appropriate UI URL for generating log links in the report.
+
+[start=8]
+. *SMTP_SERVER*
++
+SMTP server to be used for sending the email.
++
+Type: string
++
+Default: `'smtp.gmail.com:587'`
++
+To customize: If using a different SMTP server, provide the server address and port in the format `server:port`.
+
+== Creating the Reporting Integration Test Scenario
+
+Before you can trigger the reporting pipeline via CronJob, you need to create the reporting integration test scenario in your {ProductName} application. This defines the actual pipeline that will collect and email test results.
+
+Create a file named `reporting.yaml` in your `.tekton/integration-tests/reporting/` directory with the following content:
+
+[source,yaml]
+----
+include::{context}example$reporting.yaml[]
+----
+<1> The pipeline name - must match the test name used when triggering via CronJob.
+<2> Namespace where the pipelineRuns are run (customize to your tenant namespace).
+<3> Name of application where the tests run (customize to your application).
+<4> List of test names to check - add or modify entries to match your periodic test names.
+<5> List of scheduled run times for the tests (corresponding to tests-names).
+<6> Comma-separated list of email addresses to send the report to.
+<7> Subject of the email.
+<8> URL for your konflux UI instance.
+<9> SMTP server to be used for sending the email.
+<10> Secret containing the Konflux API token for accessing PipelineRuns.
+<11> Secret containing SMTP credentials for sending email reports.
+
+This pipeline definition includes:
+
+* A single task that combines test result collection and email reporting
+* Support for multiple tests via array parameters (`tests-names` and `tests-times`)
+* Integration with KubeArchive to query historical PipelineRuns
+* HTML and plain-text email formatting with color-coded status indicators
+* Automatic filtering of test runs based on scheduled times (±2 minutes)
+
+After creating this file, commit it to your repository. Then, follow the xref:testing:integration/creating.adoc#customize-pipelinerun-definition[Customize PipelineRun Definition] guide to create an integration test that points to your newly created reporting.yaml file.
+
+== Procedure
+
+To set up automated weekly reporting for your periodic integration tests, complete the following steps:
+
+. Ensure all required secrets are created in your tenant namespace (see <<Required Secrets>>).
+
+. Ensure the reporting integration test scenario is created and registered in your application (see <<Creating the Reporting Integration Test Scenario>>).
+
+. Create a CronJob that triggers the reporting pipeline weekly.
++
+The following CronJob example is configured to run every Monday at 9:00 AM UTC:
++
+[source,yaml]
+----
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: weekly-test-report
+  namespace: <your-tenant-namespace> <1>
+spec:
+  schedule: '0 9 * * 1' <2>
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          containers:
+            - name: trigger-reporting-pipeline
+              image: 'quay.io/konflux-ci/appstudio-utils:latest'
+              imagePullPolicy: Always
+              command:
+                - /bin/bash
+                - '-c'
+              args:
+                - |
+                  #!/bin/bash
+                  set -euo pipefail
+
+                  export KONFLUX_SCENARIO_NAME="weekly-reporting" <3>
+                  export KONFLUX_TENANT_NAME=<your-tenant-namespace> <4>
+                  export KONFLUX_APPLICATION_NAME=<your-application> <5>
+                  export KONFLUX_COMPONENT_NAME=<your-component> <6>
+
+                  echo -e "[INFO] Fetching latest snapshot from ${KONFLUX_TENANT_NAME} related to push events."
+
+                  LATEST_SNAPSHOT=$(kubectl get snapshots -n "${KONFLUX_TENANT_NAME}" -o json | \
+                      jq --arg application "$KONFLUX_APPLICATION_NAME" --arg component "$KONFLUX_COMPONENT_NAME" -r '
+                          .items
+                          | map(select(
+                              .metadata.labels."appstudio.openshift.io/application" == $application and
+                              .metadata.labels."appstudio.openshift.io/component" == $component and
+                              .metadata.labels."pac.test.appstudio.openshift.io/event-type" == "push" and
+                              (.status.conditions // [] | map(select(
+                                  .type == "AutoReleased" and
+                                  .reason == "AutoReleased" and
+                                  .status == "True"
+                                  ))
+                              | length > 0)
+                              ))
+                          | sort_by(.metadata.creationTimestamp) | last | .metadata.name')
+
+                  if [[ -z "${LATEST_SNAPSHOT}" || "${LATEST_SNAPSHOT}" == "null" ]]; then
+                    echo -e "[ERROR] No valid snapshot found. The job will not be triggered."
+                    exit 1
+                  fi
+
+                  echo -e "[INFO] Triggering test scenario ${KONFLUX_SCENARIO_NAME} from snapshot ${LATEST_SNAPSHOT}."
+
+                  kubectl -n "${KONFLUX_TENANT_NAME}" label snapshot "${LATEST_SNAPSHOT}" test.appstudio.openshift.io/run="${KONFLUX_SCENARIO_NAME}"
+
+                  echo "[INFO] Integration Service E2E tests successfully triggered!"
+          restartPolicy: Never <7>
+          serviceAccount: default <8>
+----
++
+<1> Your tenant namespace where the reporting pipeline runs.
+<2> Cron schedule for weekly reports (every Monday at 9:00 AM UTC). Adjust as needed.
+<3> The name of the weekly tests reporting pipeline.
+<4> The namespace parameter for the reporting pipeline.
+<5> The application name parameter for the reporting pipeline.
+<6> A component name used to retrieve the SNAPSHOT. Any component in your application will work.
+<7> Restart policy ensures the job doesn't retry on failure.
+<8> ServiceAccount to trigger the CronJob. Use the ServiceAccount created for xref:periodic-integration-tests.adoc[your periodic integration tests].
+
+[start=4]
+. Monitor the CronJob execution:
++
+[source,bash]
+----
+kubectl get cronjobs -n <your-tenant-namespace>
+kubectl get jobs -n <your-tenant-namespace>
+----
+
+[start=5]
+. Check the reporting pipeline execution:
++
+[source,bash]
+----
+kubectl get pipelineruns -n <your-tenant-namespace> | grep weekly-reporting
+----
+
+[start=6]
+. Verify email delivery by checking stakeholder inboxes for the weekly report.
+
+== Report Contents
+
+The weekly email report includes:
+
+* *Test Summary*: Each configured test with its scheduled run time
+* *PipelineRun Results*: Status (SUCCEEDED, FAILED, RUNNING, UNKNOWN) for each test run found in the past week
+* *Timestamps*: Creation time for each test run
+* *Log Links*: Direct links to view detailed logs in the Konflux UI
+
+The report is sent in HTML format with color-coded status indicators (green for success, red for failure, blue for running) for easy visualization.
+
+== Troubleshooting
+
+If the weekly report is not being sent:
+
+. Check the integration test associated with the reporting pipeline in {ProductName}'s UI, head to PipelineRuns and check the status and logs of the PipelineRuns.
+If this is empty, and the time and date of the previously defined cron has passed, then there is an issue triggering the pipeline itself.
+
+. Verify the CronJob is running:
++
+[source,bash]
+----
+kubectl describe cronjob weekly-test-report -n <your-tenant-namespace>
+----
+
+. Check the Job logs:
++
+[source,bash]
+----
+kubectl logs -n <your-tenant-namespace> -l job-name=<job-name>
+----
+
+. Verify secrets exist and contain valid credentials:
++
+[source,bash]
+----
+kubectl get secret <your-konflux-token-secret> -n <your-tenant-namespace>
+kubectl get secret <your-email-account-secret> -n <your-tenant-namespace>
+----
+
+. Ensure the reporting integration test is properly configured in your {ProductName} application.
+
+. Check that PipelineRuns are being archived and accessible via KubeArchive.
+
+. Verify that the test name prefixes in `tests-names` accurately match your periodic test PipelineRun names.
+
+. Confirm that the scheduled times in `tests-times` align with when your periodic tests actually run (the pipeline searches for runs within ±2 minutes of the specified time).
