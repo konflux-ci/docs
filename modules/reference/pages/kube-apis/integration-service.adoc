@@ -1043,8 +1043,8 @@ TestGraphNode represents a node in the test serialization graph
 |===
 | Field | Description | Default | Validation
 | *`name`* __string__ | Name is the name of the IntegrationTestScenario + |  | 
-| *`onFail`* __string__ | OnFail defines how to behave if this IntegrationTestScenario fails. +
-Options: "run" (default) - continue running dependent tests, "skip" - skip dependent tests + | run | Enum: [run skip] +
+| *`failFast`* __string__ | FailFast defines how to behave if this IntegrationTestScenario fails. +
+Options: "false" (default) - continue running dependent tests, "true" - skip dependent tests + | run | Enum: [true false] +
 
 |===
 
