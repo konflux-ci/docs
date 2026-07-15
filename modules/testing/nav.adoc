@@ -5,6 +5,7 @@
 *** xref:integration/adding.adoc[Adding an integration test]
 *** xref:integration/creating.adoc[Creating a custom integration test]
 *** xref:integration/editing.adoc[Editing integration tests]
+*** xref:integration/order.adoc[Specifying order of integration tests]
 *** xref:integration/debugging.adoc[Debugging an integration test]
 *** xref:integration/rerunning.adoc[Rerunning an integration test]
 *** xref:integration/canceling.adoc[Canceling an integration test]

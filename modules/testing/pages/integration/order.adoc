@@ -1,0 +1,145 @@
+= Specifying order of integration tests
+:description: Use the component group model in {ProductName} to define the order of integration test scenarios. Specify the exact order of execution for your integration tests.
+
+Refer to the following examples for inspiration. These examples assume you have multiple integration tests created.
+
+TestGraph is the struct (*map[string][]TestGraphNode*) that holds such information. Each node of the TestGraph must contain Name of the integration test scenario and have optional attribute *failFast*.
+
+*failFast* describes how to behave if integration test fails.
+
+.Options: 
+*"false"* (default) - continues running dependent tests, *"true"* - skips dependent tests
+
+[IMPORTANT]
+====
+Your integration tests are not required to be contained within testGraph by default. You need to specify them under testGraph only in case you want to run them in specific order.
+
+====
+
+All examples will be based on the same component group, which goes like this:
+
+[source,yaml]
+---
+apiVersion: appstudio.redhat.com/v1beta2
+kind: ComponentGroup
+metadata:
+  labels:
+    app.kubernetes.io/name: componentgroup-v2
+  name: componentgroup-sample-v2
+spec:
+  components:
+    - name: first-component
+      componentVersion:
+        name: "main"
+    - name: second-component
+      componentBranch:
+        name: "v1"
+        revision: "v1branch"
+        context: "components/second-component"
+    - name: python-component
+      componentBranch:
+        name: "3.12.4"
+  dependents:
+    - child-cg
+---
+
+== Example #1 - All parallel
+
+You have N (three in this case) number of tests that don't require any specific order to run.
+This is the simplest case, you don't have to define anything at all, when you don't specify TestGraph
+struct, all of your integration tests will run in parallel.
+
+== Example #2 - Sequence
+
+[source,yaml]
+---
+apiVersion: appstudio.redhat.com/v1beta2
+kind: ComponentGroup
+metadata:
+  labels:
+    app.kubernetes.io/name: componentgroup-v2
+  name: componentgroup-sample-v2
+spec:
+  components:
+    - name: first-component
+      componentVersion:
+        name: "main"
+    - name: second-component
+      componentBranch:
+        name: "v1"
+        revision: "v1branch"
+        context: "components/second-component"
+    - name: python-component
+      componentBranch:
+        name: "3.12.4"
+  dependents:
+    - child-cg
+  testGraph:
+    final-step:
+      - name: first-step
+        failFast: false
+      - name: second-step
+    second-step:
+      - name: dast-test
+        failFast: true
+    first-step:
+      - name: clamav-scan
+    independent
+---
+
+This is the order of integration tests execution according to the testGraph definition above:
+
+. clamav-scan - in case clamav-scan fails, second-step follows execution with the rest of the chain. There is also *independent* integration test, that runs also first, not dependent on anything.
+. first-step
+. dast-test - in case dast-test fails, the whole chain ends there, no other tests are going to be executed.
+. second-step
+. summary
+. final-step
+
+== Example #3 - Depending order
+
+[source,yaml]
+---
+apiVersion: appstudio.redhat.com/v1beta2
+kind: ComponentGroup
+metadata:
+  labels:
+    app.kubernetes.io/name: componentgroup-v2
+  name: componentgroup-sample-v2
+spec:
+  components:
+    - name: first-component
+      componentVersion:
+        name: "main"
+    - name: second-component
+      componentBranch:
+        name: "v1"
+        revision: "v1branch"
+        context: "components/second-component"
+    - name: python-component
+      componentBranch:
+        name: "3.12.4"
+  dependents:
+    - child-cg
+  testGraph:
+    verify:
+      - name: clamav-scan
+      - name: dast-tests
+        failFast: false
+      - name: operator-scorecard
+    e2e-test:
+      - name: clamav-scan
+        failFast: true
+    operator-scorecard:
+      - name: deployment
+        failFast: false
+---
+
+In this graph the tests will be executed in following order:
+. clamav-scan, dast-tests, deployment will be executed in parallel.
+. clamav-scan for e2e tests is triggered, once finished successfully e2e-tests are executed.
+. after clamav-scan, dast-tests, operator-scorecard finishes, verify is executed.
+
+Let's presume there is one more integration test(Test-x) within component group, but it is not mentioned in testGraph. This will lead to *Test-x* being triggered the usual way: at the same time as the *clamav-scan*, meaning if you don't include your integration tests in testGraph, it will be triggered automatically after successfull snapshot creation.
+
+NOTE: In case that dast-tests fail, the chain continues the execution by following integration tests, same logic applies for deployment. In case that clamav-scan for e2e-test fails, the whole chain is terminated and no more tests will be run.
