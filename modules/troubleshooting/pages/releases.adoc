@@ -3,13 +3,10 @@
 
 == Release fails because of signature check
 
-- Check if push pipeline has `chains.tekton.dev/signed=failed` annotation.
-- That means that it failed on chains.
-- If chains is failing with `POST https://quay.io/v2/image-path/blobs/uploads/: UNAUTHORIZED: access to the requested resource is not authorized; map[]`.
-- Since build was successful, problem is with component specific service account `build-pipeline-$COMPONENT_NAME`
-  which has in `imagePullSecrets` section some wrongly added pull secrets for registry.
-- In imagePullSecrets should be only `appstudio-pipeline-dockercfg-*` secret which provides access to
-  pipeline/task bundles.
+- Check if the push PipelineRun has the `chains.tekton.dev/signed=failed` annotation. This indicates that Chains failed to sign the image.
+- If Chains fails with `POST https://quay.io/v2/image-path/blobs/uploads/: UNAUTHORIZED`, the problem is with the registry push credentials available to `cosign`.
+- Verify that the correct push secret for the target registry is linked in the `secrets` section of the ServiceAccount (`build-pipeline-$COMPONENT_NAME`). See xref:registries.adoc#check-if-the-secret-is-linked-to-the-service-account[Check if the secret is linked to a service account] for instructions.
+- For more details on how registry authentication works in Tekton, see xref:registries.adoc#_failed_to_push_or_pull_image[Failed to push or pull image].
 
 include::partial${context}-releases.adoc[]
 include::partial${context}-pipelinerun-pending.adoc[]
