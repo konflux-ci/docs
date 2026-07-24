@@ -1,0 +1,105 @@
+= Skipping auto-release for superseded Snapshots
+:description: How {ProductName} skips auto-release when an older push Snapshot is superseded by a newer build for the same component.
+
+When auto-release is enabled for an Application or ComponentGroup, {ProductName} creates `Release` resources for Snapshots that pass their required integration tests.
+If multiple push builds for the same component finish out of order, an older Snapshot can complete testing after a newer build already exists.
+To avoid promoting a stale build, the integration service skips auto-release for that older Snapshot and records that it was superseded.
+
+This behavior applies to *push* (non-pull-request) component Snapshots that are eligible for auto-release.
+It is separate from xref:testing:integration/canceling.adoc[automatic cancellation of integration PipelineRuns] for pull request Snapshots.
+
+== When a Snapshot is considered superseded
+
+During auto-release processing, the integration service compares the current Snapshot against other *push* component Snapshots for the same component within the same Application or ComponentGroup.
+A Snapshot is treated as superseded when both of the following are true:
+
+* The Snapshot does *not* have the `test.appstudio.openshift.io/ignore-supersession` annotation set to `true`.
+* At least one other push component Snapshot for the same component has a later build PipelineRun start time.
+
+The comparison uses the `test.appstudio.openshift.io/pipelinerunstarttime` annotation on each Snapshot (the start time of the build PipelineRun that produced the Snapshot).
+Timestamps are normalized so values recorded in seconds or milliseconds are compared consistently.
+
+[NOTE]
+====
+If the Snapshot has no component label, or has no build start-time annotation, the service cannot determine supersession and does not skip auto-release for that reason.
+====
+
+== What happens when a Snapshot is superseded
+When a Snapshot is superseded and there is at least one `ReleasePlan` with auto-release enabled:
+
+* The service does *not* create `Release` resources for that Snapshot.
+* The Snapshot is still marked with the `AutoReleased` status condition set to `True`.
+* The condition message is set to `Released in newer Snapshot`.
+
+That status makes it clear that auto-release was considered and intentionally skipped because a newer build superseded the Snapshot.
+
+Example `AutoReleased` condition for a superseded Snapshot:
+
+[source,yaml]
+----
+status:
+  conditions:
+    - type: AutoReleased
+      status: "True"
+      reason: AutoReleased
+      message: Released in newer Snapshot
+----
+
+When the Snapshot is *not* superseded, the service creates any missing `Release` resources and sets the `AutoReleased` message to `The Snapshot was auto-released`.
+
+== Overriding supersession
+
+In case you may want older Snapshots to be auto-released even when a newer push Snapshot exists for the same component,
+you will need to ensure that your Snapshots have the annotation `test.appstudio.openshift.io/ignore-supersession=true`.
+This is best achieved by adding the above annotation to the component build PipelineRun definitions in your repository.
+
+=== Procedure
+
+Add the following annotation to the component's build PipelineRun definition in the `.tekton/` directory of the component repository:
+
+[source,yaml]
+----
+  apiVersion: tekton.dev/v1
+  kind: PipelineRun
+  metadata:
+    name: build-pipelinerun-name
+    annotations:
+      test.appstudio.openshift.io/ignore-supersession: "true"   # <-- add this
+      ...
+  spec:
+    ...
+----
+
+Once merged, this annotation gets propagated automatically from every build PipelineRun to its Snapshot, ensuring all builds — including concurrent ones across different branches — are auto-released without manual intervention.
+
+In order to confirm the annotation is present on newly created Snapshots, you can check any Snapshots which were created for that component:
+
+[source,terminal]
+----
+$ kubectl get snapshot <snapshot-name> -n <tenant-namespace> \
+  -o jsonpath='{.metadata.annotations.test\.appstudio\.openshift\.io/ignore-supersession}{"\n"}'
+----
+
+The output should be `true`.
+
+In order to confirm the Snapshot was auto-released without the superseded message:
+
+[source,terminal]
+----
+$ kubectl get snapshot <snapshot-name> -n <tenant-namespace> -o yaml \
+  | yq '.status.conditions.[] | select(.type == "AutoReleased")'
+----
+
+Expected values include `status: "True"` and a message other than `Released in newer Snapshot` (typically `The Snapshot was auto-released`).
+
+[IMPORTANT]
+====
+Only use `test.appstudio.openshift.io/ignore-supersession=true` when you intentionally want to release *every* Snapshot for every build of your component.
+Leaving the annotation unset is the recommended default so {ProductName} continues to prefer the newest successful push build for each component.
+====
+
+== Additional resources
+* For an overview of Snapshots and how they are created, see xref:testing:integration/snapshots/index.adoc[Snapshots].
+* For checking Snapshot test and auto-release status, see xref:testing:integration/snapshots/working-with-snapshots.adoc[Working with Snapshots].
+* For configuring automatic Releases, see xref:releasing:create-release-plan.adoc[Creating a ReleasePlan].
+* For cancellation of obsolete pull request integration tests, see xref:testing:integration/canceling.adoc[Canceling an integration test].
