@@ -90,9 +90,18 @@ See xref:testing:integration/snapshots/index.adoc#quotas-and-garbage-collection[
 
 == Auto-release logic
 
-The `release.appstudio.openshift.io/auto-release` label controls whether a Release should automatically be created once a push snapshot
+The `release.appstudio.openshift.io/auto-release` label controls whether a Release should automatically be created once a *push* snapshot
 passes all required tests. The value of the label should be a https://cel.dev/[CEL expression]. This gives users fine-grained control over
-whether their snapshots are auto-released. Konflux also supports custom functions for common use-cases. There is a table of custom
+whether their snapshots are auto-released. Note that `true` value is accepted and means that a *push* Snapshot should be auto-released in all cases unless it is superseded by a newer Snapshot.
+
+[NOTE]
+====
+If multiple push builds for the same component finish out of order, an older Snapshot can complete testing after a newer build already exists.
+To avoid promoting a stale build, the integration service by default skips auto-release for that older Snapshot and records that it was superseded. See more about this functionality at the xref:testing:integration/snapshots/snapshot-supersession.adoc[Skipping auto-release for superseded Snapshots] page.
+====
+
+
+{ProductName} also supports custom functions for common use-cases. There is a table of custom
 functions below. To request others, please reach out to the Konflux integration service team.
 
 [cols="1,1"]
