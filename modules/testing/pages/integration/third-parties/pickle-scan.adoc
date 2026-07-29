@@ -1,0 +1,28 @@
+= Picklescan
+:description: Scanning AI and ML model content for malicious pickle files with picklescan.
+
+The `pickle-scan` task uses link:https://github.com/mmaitre314/picklescan[picklescan] to scan AI and ML model content for malicious pickle files.
+Python pickle serialization is common for model weights and related artifacts, and unsafe pickle data can execute arbitrary code when loaded.
+
+== Intended users
+
+This scan is aimed at teams that release AI or ML models in {ProductName}, especially models that ship pickle-serialized Python content.
+Other teams can adopt it if their components include similar artifacts.
+
+== How the scan runs
+
+Use the `pickle-scan` or `pickle-scan-oci-ta` Tekton task in a pipeline that tests your model content.
+Some model workflows already include the task so the scan runs for those components without extra setup.
+
+The task produces a xref:testing:integration/standardized-outputs.adoc[TEST_OUTPUT] result that summarizes the outcome.
+By default it also attaches a pickle scan report to the image under test.
+
+NOTE: Picklescan findings do not gate a release by default.
+If you want release gating, include Picklescan in your xref:compliance:index.adoc[Conforma] policy.
+
+[role="_additional-resources"]
+== Additional resources
+
+* link:https://github.com/mmaitre314/picklescan[picklescan]
+* xref:testing:integration/creating.adoc[Creating a custom integration test]
+* xref:compliance:index.adoc[Managing compliance with Conforma]
