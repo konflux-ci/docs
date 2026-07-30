@@ -11,7 +11,7 @@ Other teams can adopt it if their components include similar artifacts.
 
 == How the scan runs
 
-Use the `pickle-scan` or `pickle-scan-oci-ta` Tekton task in a pipeline that tests your model content.
+Use the link:https://github.com/konflux-ci/konflux-test-tasks/tree/main/task/pickle-scan/0.1[pickle-scan] or link:https://github.com/konflux-ci/konflux-test-tasks/tree/main/task/pickle-scan-oci-ta/0.1[pickle-scan-oci-ta] Tekton task in a pipeline that tests your model content.
 Some model workflows already include the task so the scan runs for those components without extra setup.
 
 The task produces a xref:testing:integration/standardized-outputs.adoc[TEST_OUTPUT] result that summarizes the outcome.
