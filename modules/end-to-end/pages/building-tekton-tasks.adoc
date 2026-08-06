@@ -178,7 +178,6 @@ To trigger releases manually, set `auto-release` to `"false"` in the ReleasePlan
 The release process for bundles includes both the release of Tekton tasks as bundles and updating the list of trusted-tasks OCI artifacts.
 
 This list is used to notify the Conforma policies of your trusted tasks.
-As a preparation for the release, choose a repository path in your public registry organization to hold this artifact.
 
 include::partial${context}-building-tekton-tasks-release-structure.adoc[]
 
@@ -206,66 +205,9 @@ spec:
 
 * xref:releasing:create-release-plan-admission.adoc[ReleasePlanAdmission] in your managed namespace.
 
-Example:
-[source,yaml]
-----
-apiVersion: appstudio.redhat.com/v1alpha1
-kind: ReleasePlanAdmission
-metadata:
-  name: my-tasks
-  namespace: rhtap-releng-tenant
-  labels:
-    release.appstudio.openshift.io/block-releases: 'false'
-    pp.engineering.redhat.com/business-unit: application-developer
-spec:
-  applications:
-    - my-tasks
-  policy: tekton-bundle-standard
-  origin: my-tasks-tenant
-  data:
-    releaseNotes:
-      product_name: My-Tasks
-      product_version: "0.1"
-    mapping:
-      registrySecret: <Secret to your registry organization> <1>
-      defaults:
-        public: true
-        pushSourceContainer: false <2>
-      components:
-        - name: echo
-          repository: "quay.io/konflux-ci/my-team-tasks/task-echo"
-          tags:
-            - "{{ oci_version }}"
-            - "{{ oci_version }}-{{ timestamp }}"
-    pyxis:
-      secret: pyxis-prod-secret
-      server: production
-    intention: production
-  pipeline:
-    pipelineRef:
-      resolver: git
-      params:
-        - name: url
-          value: "https://github.com/konflux-ci/release-service-catalog.git"
-        - name: revision
-          value: production
-        - name: pathInRepo
-          value: "pipelines/managed/push-tekton-task-bundles-to-external-registry/push-tekton-task-bundles-to-external-registry.yaml"
-    serviceAccountName: konflux-ci-servicerelease-sa
-    timeouts:
-      pipeline: "4h0m0s"
-      tasks: 4h0m0s
-----
+include::partial${context}-building-tekton-tasks-rpa-example.adoc[]
 
-<1> Use `registrySecret` to provide a secret for the release pipeline to make image repositories public. To skip this operation, assign an empty string `""`.
-
-<2> Set `pushSourceContainer` to `false` to prevent releasing source container images. The source image build is irrelevant to a Tekton bundle build.
-
-[NOTE]
-====
-* Map your components (tasks) to the release repository.
-* Use the *pipelines/managed/push-tekton-task-bundles-to-external-registry/push-tekton-task-bundles-to-external-registry.yaml* pipeline to push the bundles to a registry.
-====
+include::partial${context}-building-tekton-tasks-release-note.adoc[]
 
 These resources are required for managing and approving the release of Tekton task bundles.
 
@@ -281,63 +223,9 @@ To get your bundle as a YAML file task definition, run:
 tkn bundle list <task's repository url> -o yaml
 ----
 
-Example:
-
-[source,bash]
-----
-tkn bundle list quay.io/konflux-ci/my-team-tasks/task-echo:0.1@sha256:d9a056f1ec3e6a8f60347a91f142ec90a54a324cc7fde3e37336ae35a1521234 -o yaml
-----
-
-
-To get the list of trusted tasks, run:
-
-[source,bash]
-----
-oras pull <release repository>/data-acceptable-bundles:latest
-----
-
-Example:
-[source,bash]
-----
-oras pull quay.io/konflux-ci/my-team-tasks/data-acceptable-bundles:latest
-----
-The command extracts the list of trusted tasks to data/data/trusted_tekton_tasks.yml in your working directory.
+include::partial${context}-building-tekton-tasks-post-actions.adoc[]
 
 
 == Use onboarded tasks as trusted tasks
 
-To use the onboarded tasks and let Conforma identify them as trusted tasks, update the policies and add the new trusted data sources.
-Use the data-acceptable-bundles OCI artifact that was created or updated during the release process.
-
-Example of a policy that adds *quay.io/konflux-ci/my-team-tasks/data-acceptable-bundles:latest* as a trusted source:
-
-[source,yaml]
-----
-apiVersion: appstudio.redhat.com/v1alpha1
-kind: EnterpriseContractPolicy
-metadata:
-  name: default
-  namespace: enterprise-contract-service
-spec:
-  description: Conforma policy with the addition of
-  oci::quay.io/konflux-ci/my-team-tasks/data-acceptable-bundles:latest as another data source
-  name: Default
-  publicKey: k8s://openshift-pipelines/public-key
-  sources:
-  - config:
-      exclude: []
-      include:
-      - '@slsa3'
-    data:
-    - oci::quay.io/konflux-ci/tekton-catalog/data-acceptable-bundles:latest
-    - github.com/release-engineering/rhtap-ec-policy//data
-    - oci::quay.io/konflux-ci/my-team-tasks/data-acceptable-bundles:latest
-    name: Default
-    policy:
-    - oci::quay.io/enterprise-contract/ec-release-policy:git-fe45153@sha256:94b62b263b947a762b08d5aa2715f37ff3ba25ff7462850dba9d9a8eec1b4c49
-----
-
-After completing all the steps above you should now have:
-
-* A task released as a bundle in your release repository.
-* An OCI artifact named *data-acceptable-bundles* in your release repository, containing a SHA reference of the latest task release as a trusted task. All previous versions of the task appear with the `expires_on` parameter.
+include::partial${context}-building-tekton-tasks-trusted-tasks.adoc[]
