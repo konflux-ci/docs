@@ -1,4 +1,5 @@
 // Generated documentation. Please do not edit.
+// NOTE: The appstudio.redhat.com/v1beta2 section (NudgeConfig) below is manually maintained.
 :anchor_prefix: k8s-api
 
 [id="reference"]
@@ -6,6 +7,7 @@
 
 .Packages
 - xref:{anchor_prefix}-appstudio-redhat-com-v1alpha1[$$appstudio.redhat.com/v1alpha1$$]
+- xref:{anchor_prefix}-appstudio-redhat-com-v1beta2[$$appstudio.redhat.com/v1beta2$$]
 
 
 [id="{anchor_prefix}-appstudio-redhat-com-v1alpha1"]
@@ -556,9 +558,9 @@ Optional. + |  |
 | *`skipGitOpsResourceGeneration`* __boolean__ | Whether or not to bypass the generation of GitOps resources for the Component. Defaults to false. +
 Optional. +
 !!! Will be removed when we remove old model + |  |
-| *`build-nudges-ref`* __string array__ | The list of components to be nudged by this components build upon a successful result. +
-Optional. +
-!!! Will be removed when we remove old model + |  |
+| *`build-nudges-ref`* __string array__ | *Deprecated.* Use xref:{anchor_prefix}-appstudio-redhat-com-v1beta2-nudgeconfig[$$NudgeConfig$$] instead. +
+The list of components to be nudged by this component's build upon a successful result. +
+Optional. + |  |
 | *`actions`* __xref:{anchor_prefix}-github-com-konflux-ci-application-api-api-v1alpha1-componentactions[$$ComponentActions$$]__ | Specific actions that will be processed by the controller and then removed from 'spec.actions'. +
 Used for triggering builds or creating pipeline configuration PRs. +
 Optional. + |  |
@@ -605,8 +607,8 @@ Example: 41fbdb124775323f58fd5ce93c70bb7d79c20650. +
 | *`lastPromotedImage`* __string__ | The last digest image component promoted with. +
 Example: quay.io/someorg/somerepository@sha256:5ca85b7f7b9da18a9c4101e81ee1d9bac35ac2b0b0221908ff7389204660a262. +
 !!! Will be removed when we remove old model SHOULD this be in version specific section?? + |  |
-| *`build-nudged-by`* __string array__ | The list of names of Components whose builds nudge this resource (their spec.build-nudges-ref[] references this component) +
-!!! Will be removed when we remove old model + |  |
+| *`build-nudged-by`* __string array__ | *Deprecated.* The list of names of Components whose builds nudge this resource. +
+Populated from the legacy `spec.build-nudges-ref` field. Use xref:{anchor_prefix}-appstudio-redhat-com-v1beta2-nudgeconfig[$$NudgeConfig$$] instead. + |  |
 | *`repository-settings`* __xref:{anchor_prefix}-github-com-konflux-ci-application-api-api-v1alpha1-repositorysettings[$$RepositorySettings$$]__ | Identifies which additional settings are used for the Repository CR. + |  |
 | *`message`* __string__ | General error message, not specific to any version (version-specific errors are in versions[].message). +
 Example: "spec.containerImage is not set" or "GitHub App is not installed". + |  |
@@ -856,6 +858,124 @@ Required. + |  |
 Optional. + |  |
 | *`github-app-token-scope-repos`* __string array__ | When specified, will add values to `github_app_token_scope_repos` in the Repository CR +
 Optional. + |  |
+|===
+
+
+[id="{anchor_prefix}-appstudio-redhat-com-v1beta2"]
+=== appstudio.redhat.com/v1beta2
+
+Package v1beta2 contains API Schema definitions for the appstudio v1beta2 API group
+
+.Resource Types
+- xref:{anchor_prefix}-appstudio-redhat-com-v1beta2-nudgeconfig[$$NudgeConfig$$]
+
+
+[id="{anchor_prefix}-appstudio-redhat-com-v1beta2-nudgeconfig"]
+==== NudgeConfig
+
+NudgeConfig is a namespace-scoped singleton resource that declares component nudging relationships.
+Exactly one `NudgeConfig` named `nudge-config` may exist per namespace.
+Structural and singleton constraints are enforced by the API server; cycle detection and Component existence are enforced by a validating webhook.
+
+See xref:building:component-nudges.adoc[Defining component relationships] for usage instructions.
+
+.Appears In:
+****
+- xref:{anchor_prefix}-appstudio-redhat-com-v1beta2-nudgeconfiglist[$$NudgeConfigList$$]
+****
+
+[cols="20a,50a,15a,15a", options="header"]
+|===
+| Field | Description | Default | Validation
+| *`apiVersion`* __string__ | `appstudio.redhat.com/v1beta2` | |
+| *`kind`* __string__ | `NudgeConfig` | |
+| *`metadata`* __link:https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.3/#objectmeta-v1-meta[$$ObjectMeta$$]__ | Refer to Kubernetes API documentation for fields of `metadata`. The `metadata.name` must be `nudge-config`. | |
+| *`spec`* __xref:{anchor_prefix}-appstudio-redhat-com-v1beta2-nudgeconfigspec[$$NudgeConfigSpec$$]__ | | |
+| *`status`* __xref:{anchor_prefix}-appstudio-redhat-com-v1beta2-nudgeconfigstatus[$$NudgeConfigStatus$$]__ | | |
+|===
+
+
+[id="{anchor_prefix}-appstudio-redhat-com-v1beta2-nudgeconfigspec"]
+==== NudgeConfigSpec
+
+NudgeConfigSpec defines the desired nudging relationships between components.
+
+.Appears In:
+****
+- xref:{anchor_prefix}-appstudio-redhat-com-v1beta2-nudgeconfig[$$NudgeConfig$$]
+****
+
+[cols="20a,50a,15a,15a", options="header"]
+|===
+| Field | Description | Default | Validation
+| *`nudges`* __xref:{anchor_prefix}-appstudio-redhat-com-v1beta2-nudgerelationship[$$NudgeRelationship$$] array__ | The list of component nudge relationships. +
+Optional. + | | MaxItems: 256
+|===
+
+
+[id="{anchor_prefix}-appstudio-redhat-com-v1beta2-nudgerelationship"]
+==== NudgeRelationship
+
+NudgeRelationship defines a single nudge from one component to another.
+
+.Appears In:
+****
+- xref:{anchor_prefix}-appstudio-redhat-com-v1beta2-nudgeconfigspec[$$NudgeConfigSpec$$]
+****
+
+[cols="20a,50a,15a,15a", options="header"]
+|===
+| Field | Description | Default | Validation
+| *`from`* __string__ | The source component name. A successful push build of this component triggers the nudge. +
+Required. + | | MinLength: 1 +
+MaxLength: 63 +
+Pattern: `^[a-z0-9]([-a-z0-9]*[a-z0-9])?$`
+| *`to`* __string__ | The target component name. This component's repository receives the automated pull request. +
+Required. + | | MinLength: 1 +
+MaxLength: 63 +
+Pattern: `^[a-z0-9]([-a-z0-9]*[a-z0-9])?$`
+| *`mode`* __xref:{anchor_prefix}-appstudio-redhat-com-v1beta2-nudgemodetype[$$NudgeModeType$$]__ | When the nudge is triggered. `immediate` triggers on build success; `validated` triggers after integration tests pass. +
+Optional. + | `immediate` | Enum: `immediate`, `validated`
+|===
+
+
+[id="{anchor_prefix}-appstudio-redhat-com-v1beta2-nudgemodetype"]
+==== NudgeModeType
+
+_Underlying type:_ _string_
+
+NudgeModeType defines when a nudge is triggered.
+
+.Appears In:
+****
+- xref:{anchor_prefix}-appstudio-redhat-com-v1beta2-nudgerelationship[$$NudgeRelationship$$]
+****
+
+[cols="20a,50a", options="header"]
+|===
+| Value | Description
+| `immediate` | Trigger the nudge as soon as the source component build succeeds.
+| `validated` | Trigger the nudge only after integration tests pass for the source component.
+|===
+
+
+[id="{anchor_prefix}-appstudio-redhat-com-v1beta2-nudgeconfigstatus"]
+==== NudgeConfigStatus
+
+NudgeConfigStatus defines the observed state of NudgeConfig.
+
+.Appears In:
+****
+- xref:{anchor_prefix}-appstudio-redhat-com-v1beta2-nudgeconfig[$$NudgeConfig$$]
+****
+
+[cols="20a,50a,15a,15a", options="header"]
+|===
+| Field | Description | Default | Validation
+| *`conditions`* __link:https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.3/#condition-v1-meta[$$Condition$$] array__ | Conditions represent the latest available observations of the NudgeConfig's state. Includes a `StaleReferences` condition that is set to `True` when any `from` or `to` component no longer exists in the namespace. +
+Optional. + | |
+| *`lastValidationTime`* __link:https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.3/#time-v1-meta[$$Time$$]__ | Timestamp of the last successful validation of the nudge graph. +
+Optional. + | |
 |===
 
 
