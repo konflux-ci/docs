@@ -1,0 +1,54 @@
+Example:
+[source,yaml]
+----
+apiVersion: appstudio.redhat.com/v1alpha1
+kind: ReleasePlanAdmission
+metadata:
+  name: my-tasks
+  namespace: rhtap-releng-tenant
+  labels:
+    release.appstudio.openshift.io/block-releases: 'false'
+    pp.engineering.redhat.com/business-unit: application-developer
+spec:
+  applications:
+    - my-tasks
+  policy: tekton-bundle-standard
+  origin: my-tasks-tenant
+  data:
+    releaseNotes:
+      product_name: My-Tasks
+      product_version: "0.1"
+    mapping:
+      registrySecret: <Secret to your registry organization> <1>
+      defaults:
+        public: true
+        pushSourceContainer: false <2>
+      components:
+        - name: echo
+          repository: "quay.io/konflux-ci/my-team-tasks/task-echo"
+          tags:
+            - "{{ oci_version }}"
+            - "{{ oci_version }}-{{ timestamp }}"
+    pyxis:
+      secret: pyxis-prod-secret
+      server: production
+    intention: production
+  pipeline:
+    pipelineRef:
+      resolver: git
+      params:
+        - name: url
+          value: "https://github.com/konflux-ci/release-service-catalog.git"
+        - name: revision
+          value: production
+        - name: pathInRepo
+          value: "pipelines/managed/push-tekton-task-bundles-to-external-registry/push-tekton-task-bundles-to-external-registry.yaml"
+    serviceAccountName: konflux-ci-servicerelease-sa
+    timeouts:
+      pipeline: "4h0m0s"
+      tasks: 4h0m0s
+----
+
+<1> Use `registrySecret` to provide a secret for the release pipeline to make image repositories public. To skip this operation, assign an empty string `""`.
+
+<2> Set `pushSourceContainer` to `false` to prevent releasing source container images. The source image build is irrelevant to a Tekton bundle build.

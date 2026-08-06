@@ -1,0 +1,36 @@
+To use the onboarded tasks and let Conforma identify them as trusted tasks, update the policies and add the new trusted data sources.
+Use the data-acceptable-bundles OCI artifact that was created or updated during the release process.
+
+Example of a policy that adds *quay.io/konflux-ci/my-team-tasks/data-acceptable-bundles:latest* as a trusted source:
+
+[source,yaml]
+----
+apiVersion: appstudio.redhat.com/v1alpha1
+kind: EnterpriseContractPolicy
+metadata:
+  name: default
+  namespace: enterprise-contract-service
+spec:
+  description: >-
+    Conforma policy with the addition of
+    oci::quay.io/konflux-ci/my-team-tasks/data-acceptable-bundles:latest as another data source
+  name: Default
+  publicKey: k8s://openshift-pipelines/public-key
+  sources:
+  - config:
+      exclude: []
+      include:
+      - '@slsa3'
+    data:
+    - oci::quay.io/konflux-ci/tekton-catalog/data-acceptable-bundles:latest
+    - github.com/release-engineering/rhtap-ec-policy//data
+    - oci::quay.io/konflux-ci/my-team-tasks/data-acceptable-bundles:latest
+    name: Default
+    policy:
+    - oci::quay.io/enterprise-contract/ec-release-policy:git-fe45153@sha256:94b62b263b947a762b08d5aa2715f37ff3ba25ff7462850dba9d9a8eec1b4c49
+----
+
+After completing all the steps above you should now have:
+
+* A task released as a bundle in your release repository.
+* An OCI artifact named *data-acceptable-bundles* in your release repository, containing a SHA reference of the latest task release as a trusted task. All previous versions of the task appear with the `expires_on` parameter.

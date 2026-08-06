@@ -1,0 +1,21 @@
+Example:
+
+[source,bash]
+----
+tkn bundle list quay.io/konflux-ci/my-team-tasks/task-echo:0.1@sha256:d9a056f1ec3e6a8f60347a91f142ec90a54a324cc7fde3e37336ae35a1521234 -o yaml
+----
+
+
+To get the list of trusted tasks, run:
+
+[source,bash]
+----
+oras pull <release repository>/data-acceptable-bundles:latest
+----
+
+Example:
+[source,bash]
+----
+oras pull quay.io/konflux-ci/my-team-tasks/data-acceptable-bundles:latest
+----
+The command extracts the list of trusted tasks to data/data/trusted_tekton_tasks.yml in your working directory.

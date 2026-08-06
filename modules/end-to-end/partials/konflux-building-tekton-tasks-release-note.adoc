@@ -1,0 +1,5 @@
+[NOTE]
+====
+* Map your components (tasks) to the release repository.
+* Use the *pipelines/managed/push-tekton-task-bundles-to-external-registry/push-tekton-task-bundles-to-external-registry.yaml* pipeline to push the bundles to a registry and update the list of trusted tasks.
+====
