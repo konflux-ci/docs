@@ -1,0 +1,32 @@
+= Task documentation
+:description: Reference of Tekton tasks from the konflux-ci/build-pipeline-tasks repository.
+
+// Generated documentation. Please do not edit.
+// Run: npm run task-gen
+
+This page lists Tekton tasks defined in
+link:https://github.com/konflux-ci/build-pipeline-tasks/tree/main/task[build-pipeline-tasks/task].
+
+[cols="2,3", options="header"]
+|===
+| Task | Documentation
+| `apply-tags` | link:https://github.com/konflux-ci/build-pipeline-tasks/blob/main/task/apply-tags/README.md[View documentation]
+| `build-image-index-min` | link:https://github.com/konflux-ci/build-pipeline-tasks/blob/main/task/build-image-index-min/README.md[View documentation]
+| `build-image-index` | link:https://github.com/konflux-ci/build-pipeline-tasks/blob/main/task/build-image-index/README.md[View documentation]
+| `buildah-oci-ta-min` | link:https://github.com/konflux-ci/build-pipeline-tasks/blob/main/task/buildah-oci-ta-min/README.md[View documentation]
+| `buildah-oci-ta` | link:https://github.com/konflux-ci/build-pipeline-tasks/blob/main/task/buildah-oci-ta/README.md[View documentation]
+| `buildah-remote-oci-ta` | link:https://github.com/konflux-ci/build-pipeline-tasks/blob/main/task/buildah-remote-oci-ta/README.md[View documentation]
+| `buildah-remote` | link:https://github.com/konflux-ci/build-pipeline-tasks/blob/main/task/buildah-remote/README.md[View documentation]
+| `buildah` | link:https://github.com/konflux-ci/build-pipeline-tasks/blob/main/task/buildah/README.md[View documentation]
+| `git-clone-oci-ta-min` | link:https://github.com/konflux-ci/build-pipeline-tasks/blob/main/task/git-clone-oci-ta-min/README.md[View documentation]
+| `git-clone-oci-ta` | link:https://github.com/konflux-ci/build-pipeline-tasks/blob/main/task/git-clone-oci-ta/README.md[View documentation]
+| `git-clone` | link:https://github.com/konflux-ci/build-pipeline-tasks/blob/main/task/git-clone/README.md[View documentation]
+| `init` | link:https://github.com/konflux-ci/build-pipeline-tasks/blob/main/task/init/README.md[View documentation]
+| `prefetch-dependencies-oci-ta-min` | link:https://github.com/konflux-ci/build-pipeline-tasks/blob/main/task/prefetch-dependencies-oci-ta-min/README.md[View documentation]
+| `prefetch-dependencies-oci-ta` | link:https://github.com/konflux-ci/build-pipeline-tasks/blob/main/task/prefetch-dependencies-oci-ta/README.md[View documentation]
+| `prefetch-dependencies` | link:https://github.com/konflux-ci/build-pipeline-tasks/blob/main/task/prefetch-dependencies/README.md[View documentation]
+| `push-dockerfile-oci-ta` | link:https://github.com/konflux-ci/build-pipeline-tasks/blob/main/task/push-dockerfile-oci-ta/README.md[View documentation]
+| `push-dockerfile` | link:https://github.com/konflux-ci/build-pipeline-tasks/blob/main/task/push-dockerfile/README.md[View documentation]
+| `source-build-oci-ta` | link:https://github.com/konflux-ci/build-pipeline-tasks/blob/main/task/source-build-oci-ta/README.md[View documentation]
+| `source-build` | link:https://github.com/konflux-ci/build-pipeline-tasks/blob/main/task/source-build/README.md[View documentation]
+|===

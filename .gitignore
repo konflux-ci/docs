@@ -44,5 +44,9 @@ deploy.json
 
 api-gen/src
 
+# Source downloaded to generate task documentation
+
+task-docs-gen/src
+
 # Netlify local cache
 .netlify

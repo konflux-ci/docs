@@ -10,6 +10,7 @@
   },
   "scripts": {
     "api-gen": "./hack/gen-api-docs.sh",
+    "task-gen": "./hack/gen-task-docs.sh",
     "build": "antora generate --clean --fetch antora-playbook.yml",
     "generate-llms-txt": "bash hack/generate-llms-txt.sh public/llms.txt",
     "preview:netlify": "netlify deploy --dir public",

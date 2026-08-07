@@ -1,0 +1,66 @@
+# Copyright 2026 Red Hat, Inc.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#      http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+#
+# SPDX-License-Identifier: Apache-2.0
+
+---
+name: Task documentation
+
+'on':
+  schedule:
+    - cron: '0 6 * * 5' # Friday 06:00 UTC
+  workflow_dispatch:
+  pull_request:
+    paths:
+      - 'hack/gen-task-docs.sh'
+      - 'modules/building/pages/task-documentation.adoc'
+      - '.github/workflows/task-documentation.yaml'
+
+jobs:
+  check:
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Regenerate task documentation
+        run: bash hack/gen-task-docs.sh
+
+      - name: Fail if generated page is out of date
+        run: |
+          if ! git diff --exit-code -- modules/building/pages/task-documentation.adoc; then
+            echo "::error::task-documentation.adoc is out of date. Run: npm run task-gen"
+            exit 1
+          fi
+
+  update:
+    if: github.event_name != 'pull_request'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Generate task documentation
+        run: bash hack/gen-task-docs.sh
+
+      - uses: peter-evans/create-pull-request@v7
+        with:
+          commit-message: 'docs: update task documentation'
+          branch: chore/update-task-docs
+          delete-branch: true
+          title: 'docs: update task documentation'
+          body: Automated update from build-pipeline-tasks.
+          add-paths: modules/building/pages/task-documentation.adoc
