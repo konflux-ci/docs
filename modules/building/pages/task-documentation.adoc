@@ -1,40 +1,32 @@
 = Task documentation
-:description: Reference of Tekton tasks from the konflux-ci/build-definitions repository.
+:description: Reference of Tekton tasks from the konflux-ci/build-pipeline-tasks repository.
 
 // Generated documentation. Please do not edit.
 // Run: npm run task-gen
 
 This page lists Tekton tasks defined in
-link:https://github.com/konflux-ci/build-definitions/tree/main/task[build-definitions/task].
+link:https://github.com/konflux-ci/build-pipeline-tasks/tree/main/task[build-pipeline-tasks/task].
 
-[cols="2,1,3", options="header"]
+[cols="2,3", options="header"]
 |===
-| Task | Version | Documentation
-| `build-helm-chart-oci-ta` | 0.3 | link:https://github.com/konflux-ci/build-definitions/blob/main/task/build-helm-chart-oci-ta/0.3/README.md[View documentation]
-| `build-maven-zip-oci-ta` | 0.1 | link:https://github.com/konflux-ci/build-definitions/blob/main/task/build-maven-zip-oci-ta/0.1/README.md[View documentation]
-| `build-maven-zip` | 0.1 | link:https://github.com/konflux-ci/build-definitions/blob/main/task/build-maven-zip/0.1/README.md[View documentation]
-| `build-paketo-builder-oci-ta` | 0.2 | link:https://github.com/konflux-ci/build-definitions/blob/main/task/build-paketo-builder-oci-ta/0.2/README.md[View documentation]
-| `build-vm-image` | 0.3 | link:https://github.com/konflux-ci/build-definitions/blob/main/task/build-vm-image/0.3/README.md[View documentation]
-| `eaas-provision-space` | 0.1 | link:https://github.com/konflux-ci/build-definitions/blob/main/task/eaas-provision-space/0.1/README.md[View documentation]
-| `ecosystem-cert-preflight-checks` | 0.2 | link:https://github.com/konflux-ci/build-definitions/blob/main/task/ecosystem-cert-preflight-checks/0.2/README.md[View documentation]
-| `generate-labels` | 0.1 | link:https://github.com/konflux-ci/build-definitions/blob/main/task/generate-labels/0.1/README.md[View documentation]
-| `modelcar-oci-ta` | 0.1 | link:https://github.com/konflux-ci/build-definitions/blob/main/task/modelcar-oci-ta/0.1/README.md[View documentation]
-| `oci-copy-oci-ta` | 0.2 | link:https://github.com/konflux-ci/build-definitions/blob/main/task/oci-copy-oci-ta/0.2/README.md[View documentation]
-| `oci-copy` | 0.2 | link:https://github.com/konflux-ci/build-definitions/blob/main/task/oci-copy/0.2/README.md[View documentation]
-| `operator-sdk-generate-bundle` | 0.1 | link:https://github.com/konflux-ci/build-definitions/blob/main/task/operator-sdk-generate-bundle/0.1/README.md[View documentation]
-| `opm-get-bundle-version` | 0.1 | link:https://github.com/konflux-ci/build-definitions/blob/main/task/opm-get-bundle-version/0.1/README.md[View documentation]
-| `opm-render-bundles` | 0.1 | link:https://github.com/konflux-ci/build-definitions/blob/main/task/opm-render-bundles/0.1/README.md[View documentation]
-| `package-operator-package-oci-ta` | 0.1 | link:https://github.com/konflux-ci/build-definitions/blob/main/task/package-operator-package-oci-ta/0.1/README.md[View documentation]
-| `package-operator-package` | 0.1 | link:https://github.com/konflux-ci/build-definitions/blob/main/task/package-operator-package/0.1/README.md[View documentation]
-| `pnc-prebuild-git-clone-oci-ta` | 0.2 | link:https://github.com/konflux-ci/build-definitions/blob/main/task/pnc-prebuild-git-clone-oci-ta/0.2/README.md[View documentation]
-| `run-script-oci-ta` | 0.1 | link:https://github.com/konflux-ci/build-definitions/blob/main/task/run-script-oci-ta/0.1/README.md[View documentation]
-| `sbom-json-check` | 0.2 | link:https://github.com/konflux-ci/build-definitions/blob/main/task/sbom-json-check/0.2/README.md[View documentation]
-| `show-sbom` | 0.3 | link:https://github.com/konflux-ci/build-definitions/blob/main/task/show-sbom/0.3/README.md[View documentation]
-| `slack-webhook-notification-oci-ta` | 0.1 | link:https://github.com/konflux-ci/build-definitions/blob/main/task/slack-webhook-notification-oci-ta/0.1/README.md[View documentation]
-| `slack-webhook-notification` | 0.1 | link:https://github.com/konflux-ci/build-definitions/blob/main/task/slack-webhook-notification/0.1/README.md[View documentation]
-| `summary` | 0.4 | link:https://github.com/konflux-ci/build-definitions/blob/main/task/summary/0.4/README.md[View documentation]
-| `tkn-bundle-oci-ta` | 0.2 | link:https://github.com/konflux-ci/build-definitions/blob/main/task/tkn-bundle-oci-ta/0.2/README.md[View documentation]
-| `tkn-bundle` | 0.2 | link:https://github.com/konflux-ci/build-definitions/blob/main/task/tkn-bundle/0.2/README.md[View documentation]
-| `update-infra-deployments` | 0.1 | link:https://github.com/konflux-ci/build-definitions/blob/main/task/update-infra-deployments/0.1/README.md[View documentation]
-| `verify-source` | 0.1 | link:https://github.com/konflux-ci/build-definitions/blob/main/task/verify-source/0.1/README.md[View documentation]
+| Task | Documentation
+| `apply-tags` | link:https://github.com/konflux-ci/build-pipeline-tasks/blob/main/task/apply-tags/README.md[View documentation]
+| `build-image-index-min` | link:https://github.com/konflux-ci/build-pipeline-tasks/blob/main/task/build-image-index-min/README.md[View documentation]
+| `build-image-index` | link:https://github.com/konflux-ci/build-pipeline-tasks/blob/main/task/build-image-index/README.md[View documentation]
+| `buildah-oci-ta-min` | link:https://github.com/konflux-ci/build-pipeline-tasks/blob/main/task/buildah-oci-ta-min/README.md[View documentation]
+| `buildah-oci-ta` | link:https://github.com/konflux-ci/build-pipeline-tasks/blob/main/task/buildah-oci-ta/README.md[View documentation]
+| `buildah-remote-oci-ta` | link:https://github.com/konflux-ci/build-pipeline-tasks/blob/main/task/buildah-remote-oci-ta/README.md[View documentation]
+| `buildah-remote` | link:https://github.com/konflux-ci/build-pipeline-tasks/blob/main/task/buildah-remote/README.md[View documentation]
+| `buildah` | link:https://github.com/konflux-ci/build-pipeline-tasks/blob/main/task/buildah/README.md[View documentation]
+| `git-clone-oci-ta-min` | link:https://github.com/konflux-ci/build-pipeline-tasks/blob/main/task/git-clone-oci-ta-min/README.md[View documentation]
+| `git-clone-oci-ta` | link:https://github.com/konflux-ci/build-pipeline-tasks/blob/main/task/git-clone-oci-ta/README.md[View documentation]
+| `git-clone` | link:https://github.com/konflux-ci/build-pipeline-tasks/blob/main/task/git-clone/README.md[View documentation]
+| `init` | link:https://github.com/konflux-ci/build-pipeline-tasks/blob/main/task/init/README.md[View documentation]
+| `prefetch-dependencies-oci-ta-min` | link:https://github.com/konflux-ci/build-pipeline-tasks/blob/main/task/prefetch-dependencies-oci-ta-min/README.md[View documentation]
+| `prefetch-dependencies-oci-ta` | link:https://github.com/konflux-ci/build-pipeline-tasks/blob/main/task/prefetch-dependencies-oci-ta/README.md[View documentation]
+| `prefetch-dependencies` | link:https://github.com/konflux-ci/build-pipeline-tasks/blob/main/task/prefetch-dependencies/README.md[View documentation]
+| `push-dockerfile-oci-ta` | link:https://github.com/konflux-ci/build-pipeline-tasks/blob/main/task/push-dockerfile-oci-ta/README.md[View documentation]
+| `push-dockerfile` | link:https://github.com/konflux-ci/build-pipeline-tasks/blob/main/task/push-dockerfile/README.md[View documentation]
+| `source-build-oci-ta` | link:https://github.com/konflux-ci/build-pipeline-tasks/blob/main/task/source-build-oci-ta/README.md[View documentation]
+| `source-build` | link:https://github.com/konflux-ci/build-pipeline-tasks/blob/main/task/source-build/README.md[View documentation]
 |===

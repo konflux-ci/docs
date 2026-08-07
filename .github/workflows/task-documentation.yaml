@@ -62,5 +62,5 @@ jobs:
           branch: chore/update-task-docs
           delete-branch: true
           title: 'docs: update task documentation'
-          body: Automated update from build-definitions.
+          body: Automated update from build-pipeline-tasks.
           add-paths: modules/building/pages/task-documentation.adoc
