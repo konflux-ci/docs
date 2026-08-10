@@ -15,4 +15,4 @@ The CVE data is provided by Red Hat. The https://github.com/konflux-ci/mintmaker
 and includes CVE data up to 120 days old.
 
 A community tool https://github.com/os-observability/konflux-opentelemetry/tree/main/tools/image-cve-check[image-cve-check] was created, which can help to check
-for active CVEs in images built on Konflux and verify if a CVE was fixed by the updated RPM package in in the lock file.
+for active CVEs in images built on Konflux and verify if a CVE was fixed by the updated RPM package in the lock file.
