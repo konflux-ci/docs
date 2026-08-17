@@ -13,6 +13,7 @@
 *** xref:imagerepository.adoc[Customizing ImageRepository]
 *** xref:labels-and-annotations.adoc[Using labels and annotations]
 *** xref:build-with-args.adoc[Passing buildah arguments]
+*** xref:task-documentation.adoc[Task documentation]
 ** Secrets
 *** xref:secrets/index.adoc[Creating secrets for your builds]
 **** xref:secrets/creating-task-input-secrets.adoc[Creating task input secrets]
