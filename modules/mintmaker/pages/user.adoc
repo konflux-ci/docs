@@ -196,7 +196,7 @@ enabled managers is available below.
 [cols="20,80%",options="header"]
 |===
 |*Category* |*Enabled Managers*
-|*Ansible* |+++<del>+++`ansible`, `ansible-galaxy`+++</del>+++
+|*Ansible* |`ansible`, `ansible-galaxy`
 
 |*Batect* |+++<del>+++`batect`, `batect-wrapper`+++</del>+++
 
@@ -228,8 +228,8 @@ enabled managers is available below.
 |*Helm* |`helm-requirements`, `helm-values`, `helmfile`, `helmsman`,
 `helmv3`
 
-|*Infrastructure as Code* |+++<del>+++`ansible`, `ansible-galaxy`,
-`bicep`, `crossplane`, `puppet`+++</del>+++, `terraform`, `terragrunt`
+|*Infrastructure as Code* |`ansible`, `ansible-galaxy`,
++++<del>+++`bicep`, `crossplane`, `puppet`+++</del>+++, `terraform`, `terragrunt`
 
 |*Java* |`deps-edn`, `gradle`, `gradle-wrapper`,
 `kotlin-script`, `leiningen`, `maven`, `maven-wrapper`, `sbt`,
