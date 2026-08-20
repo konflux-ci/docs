@@ -184,9 +184,13 @@ Note that you don't need to generate a `requirements-build.txt` file as describe
 
 === [[custom-index-servers]]Prefetching `pip` dependencies from custom index servers
 
+You can configure Hermeto to download `pip` packages from a custom index server instead of the default PyPI index. Two approaches are available:
+
+* Specify `--index-url` directly in your `requirements.txt` file(s).
+* Set the `pip-index-url` parameter on the `prefetch-dependencies` task.
+
 Hermeto supports pip's link:https://pip.pypa.io/en/stable/cli/pip_install/#install-index-url[--index-url] option.
-You can add this option to your `requirements.txt` file(s), instructing Hermeto to download packages from the specified
-index server. For example:
+Add this option to your `requirements.txt` file(s) to instruct Hermeto to download packages from a specified index server. For example:
 
 [source,text]
 ----
@@ -197,6 +201,37 @@ requests==2.32.2 \
 
 # ...other packages
 ----
+
+As an alternative, set the `pip-index-url` parameter on the `prefetch-dependencies` task. This approach configures the index URL at the pipeline level without modifying your requirements files.
+
+.Procedure
+
+. In your `.tekton/` PipelineRun files, in the `.spec.pipelineSpec.tasks` section, find the entry with `name: prefetch-dependencies`. Add the `pip-index-url` parameter to the list of parameters:
+
++
+[source,yaml]
+----
+    tasks:
+      # ...
+      - name: prefetch-dependencies
+        params:
+          # ...existing params
+          - name: pip-index-url
+            value: "https://example.pypi.org/simple/"
+        # ...
+----
+
+NOTE: The `pip-index-url` parameter sets the `PIP_INDEX_URL` environment variable in the Hermeto container. When left empty (the default), Hermeto uses the standard PyPI index.
+
+When determining which index server to use, Hermeto applies the following precedence:
+
+. `--index-url` specified in `requirements.txt` (highest priority)
+. `pip-index-url` task parameter (sets `PIP_INDEX_URL`)
+. The default PyPI index (`https://pypi.org/simple/`)
+
+This precedence is per requirements file. If file A contains `--index-url` and file B does not, Hermeto uses the file's `--index-url` for A and falls back to `PIP_INDEX_URL` (or the default) for B.
+
+TIP: Use `--index-url` in your `requirements.txt` when the index is tightly coupled to the listed packages. Use the `pip-index-url` task parameter when the index URL is an infrastructure concern that varies between environments or when you prefer not to hardcode it in your requirements files.
 
 WARNING: Do not include credentials in the index URL. If needed, provide authentication through a `.netrc` file (as described xref:netrc[below]).
 For more pip-specific details on netrc files, review the link:https://pip.pypa.io/en/stable/topics/authentication/#netrc-support[pip documentation for netrc support].
