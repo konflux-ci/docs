@@ -231,7 +231,7 @@ When determining which index server to use, Hermeto applies the following preced
 
 This precedence is per requirements file. If file A contains `--index-url` and file B does not, Hermeto uses the file's `--index-url` for A and falls back to `PIP_INDEX_URL` (or the default) for B.
 
-TIP: Use `--index-url` in your `requirements.txt` when the index is tightly coupled to the listed packages. Use the `pip-index-url` task parameter when the index URL is an infrastructure concern that varies between environments or when you prefer not to hardcode it in your requirements files.
+TIP: Use `--index-url` in your `requirements.txt` when the index is tightly coupled to the listed packages. Use the `pip-index-url` task parameter when the index URL is an infrastructure concern that varies between environments or when you prefer not to hard code it in your requirements files.
 
 WARNING: Do not include credentials in the index URL. If needed, provide authentication through a `.netrc` file (as described xref:netrc[below]).
 For more pip-specific details on netrc files, review the link:https://pip.pypa.io/en/stable/topics/authentication/#netrc-support[pip documentation for netrc support].
