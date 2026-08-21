@@ -184,10 +184,11 @@ Note that you don't need to generate a `requirements-build.txt` file as describe
 
 === [[custom-index-servers]]Prefetching `pip` dependencies from custom index servers
 
-You can configure Hermeto to download `pip` packages from a custom index server instead of the default PyPI index. Two approaches are available:
+You can configure Hermeto to download `pip` packages from a custom index server instead of the default PyPI index. Three approaches are available:
 
 * Specify `--index-url` directly in your `requirements.txt` file(s).
 * Set the `pip-index-url` parameter on the `prefetch-dependencies` task.
+* Use the `resolve-index-url` task to automatically read the index URL from your base image.
 
 Hermeto supports pip's link:https://pip.pypa.io/en/stable/cli/pip_install/#install-index-url[--index-url] option.
 Add this option to your `requirements.txt` file(s) to instruct Hermeto to download packages from a specified index server. For example:
@@ -223,15 +224,57 @@ As an alternative, set the `pip-index-url` parameter on the `prefetch-dependenci
 
 NOTE: The `pip-index-url` parameter sets the `PIP_INDEX_URL` environment variable in the Hermeto container. When left empty (the default), Hermeto uses the standard PyPI index.
 
+If your base image carries a package index URL label, you can resolve it automatically instead of hard coding the URL. For example, AIPCC base images set the `com.redhat.aiplatform.index_url` label with the RHAI index URL. The `resolve-index-url` task reads this label and passes the value to `prefetch-dependencies`.
+
+.Procedure
+
+. Add the `resolve-index-url` task to your pipeline definition between `clone-repository` and `prefetch-dependencies`. Pass the resolved result as the `pip-index-url` parameter:
+
++
+[source,yaml]
+----
+    - name: resolve-index-url
+      params:
+        - name: DOCKERFILE
+          value: $(params.dockerfile)
+        - name: CONTEXT
+          value: $(params.path-context)
+        - name: BUILD_ARGS_FILE
+          value: $(params.build-args-file)
+        - name: BUILD_ARGS
+          value: $(params.build-args)
+      runAfter:
+        - clone-repository
+      taskRef:
+        name: resolve-index-url
+
+    - name: prefetch-dependencies
+      params:
+        - name: pip-index-url
+          value: $(tasks.resolve-index-url.results.pip-index-url)
+        # ...other existing params
+      runAfter:
+        - resolve-index-url
+----
+
+NOTE: The `resolve-index-url` task parses your Containerfile, resolves the `FROM` base image reference using your build arguments, and reads the label via `skopeo inspect`. If the base image does not carry the label, the task emits an empty string and `prefetch-dependencies` falls back to the standard PyPI index.
+
 When determining which index server to use, Hermeto applies the following precedence:
 
 . `--index-url` specified in `requirements.txt` (highest priority)
 . `pip-index-url` task parameter (sets `PIP_INDEX_URL`)
 . The default PyPI index (`https://pypi.org/simple/`)
 
+The `resolve-index-url` task sets `pip-index-url` automatically, so it follows the same precedence — an `--index-url` in your requirements file still takes priority over the resolved value.
+
 This precedence is per requirements file. If file A contains `--index-url` and file B does not, Hermeto uses the file's `--index-url` for A and falls back to `PIP_INDEX_URL` (or the default) for B.
 
-TIP: Use `--index-url` in your `requirements.txt` when the index is tightly coupled to the listed packages. Use the `pip-index-url` task parameter when the index URL is an infrastructure concern that varies between environments or when you prefer not to hard code it in your requirements files.
+[TIP]
+====
+* Use `resolve-index-url` when building on base images that carry the index URL label — it avoids all hard coding and automatically picks up index version changes.
+* Use `pip-index-url` as a manual override when the base image has no label.
+* Use `--index-url` in `requirements.txt` when the index is tightly coupled to specific packages in that file.
+====
 
 WARNING: Do not include credentials in the index URL. If needed, provide authentication through a `.netrc` file (as described xref:netrc[below]).
 For more pip-specific details on netrc files, review the link:https://pip.pypa.io/en/stable/topics/authentication/#netrc-support[pip documentation for netrc support].
