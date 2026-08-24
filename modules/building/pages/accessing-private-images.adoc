@@ -1,7 +1,7 @@
 = Accessing private image repositories
 :description: RBAC and proxy URLs for pulling private tenant component images.
 
-When the image repository visibility is set to `private` (the default), you need to authenticate before you can pull images. Konflux provides an RBAC image proxy that controls access based on your permissions.
+When the image repository visibility is set to `private` (the default), you need to authenticate before you can pull images. {ProductName} provides an RBAC image proxy that controls access based on your permissions.
 
 == Who can pull images and access scope
 
@@ -11,39 +11,15 @@ Access to pull images is controlled at the *tenant level* through Kubernetes RBA
 * Image path format: `proxy_host/redhat-user-workloads(-stage)/tenant/component:tag`
 * Without the required RBAC permissions, image pulls will fail
 
-Tenant maintainers should manage `Role` and `RoleBinding` resources to grant users, groups or service accounts the permission to read `ImageRepository` resources for pulling images.
+To grant this access, a tenant maintainer creates a `Role` that permits reading `ImageRepository` resources, then binds that role to a subject with a `RoleBinding`:
 
-[source,yaml]
-----
-apiVersion: rbac.authorization.k8s.io/v1
-kind: Role
-metadata:
-  name: repo-viewer
-  namespace: <your-namespace>
-rules:
-  - apiGroups:
-      - appstudio.redhat.com
-    resources:
-      - imagerepositories
-    verbs:
-      - get
-      - watch
-      - list
----
-apiVersion: rbac.authorization.k8s.io/v1
-kind: RoleBinding
-metadata:
-  name: repo-viewer
-  namespace: <your-namespace>
-roleRef:
-  apiGroup: rbac.authorization.k8s.io
-  kind: Role
-  name: repo-viewer
-subjects:
-  - apiGroup: rbac.authorization.k8s.io
-    kind: Group
-    name: <your-group>
-----
+* *Service account* (recommended for automation): bind the role to a `ServiceAccount` for CI/CD pipelines and other external systems. See xref:#granting-pull-access-with-a-service-account[Granting pull access with a service account].
+* *User* (for local development): bind the role to an individual `User` so a person can pull images with their own token. See xref:#getting-registry-login-credentials-via-the-ui[Getting registry login credentials via the UI].
+
+[NOTE]
+====
+Tenant administrators cannot create new custom `Group` objects, because groups are managed by the identity provider. You can still bind the `Role` to an existing group, such as `system:authenticated`, but for most cases bind it to a `ServiceAccount` (for automation) or a `User` (for local development).
+====
 
 == Token types and scope
 
@@ -60,33 +36,55 @@ subjects:
 ** Do not expire (valid until the secret is deleted)
 ** Best for automated systems and CI/CD pipelines
 
-== Getting registry login credentials via UI
+[#finding-your-proxy-url]
+== Finding your proxy URL
 
-To access private images locally:
+The examples on this page use `image-rbac-proxy.apps.example.com` as a placeholder. Replace it with the RBAC image proxy hostname for the cluster that hosts your tenant. The hostname follows this pattern:
 
-. Navigate to the *Component details* page for your component
-. In the *Registry login information* section, copy and run the `podman login` command in your terminal:
+[source,text]
+----
+image-rbac-proxy.apps.<cluster-domain>
+----
+
+For example, on the `stone-prod-p02` cluster the proxy hostname is:
+
+[source,text]
+----
+image-rbac-proxy.apps.stone-prod-p02.hjvn.p1.openshiftapps.com
+----
+
+The proxy hostname matches the domain of the {ProductName} instance you use, so the login command shown in the UI is always the authoritative source for your cluster. To find the exact hostname:
+
+. Open the *Component details* page for any of your components in the {ProductName} UI.
+. In the *Registry login information* section, read the `podman login` command. The host in that command is the proxy hostname for your cluster.
+. Copy the private image path shown for the component. It begins with the same proxy hostname.
+
+[#granting-pull-access-with-a-service-account]
+== Granting pull access with a service account
+
+For automated access from external systems such as Testing Farm or CI/CD pipelines, grant a service account permission to pull images. Create the following objects in this order, because each object depends on the ones before it: the `Secret` and the `RoleBinding` both reference the `ServiceAccount`, so the service account must exist first.
+
+. Create a `Role` that permits reading `ImageRepository` resources:
 +
-[source,bash]
+[source,yaml]
 ----
-podman login -u unused image-rbac-proxy.apps.example.com
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: repo-viewer
+  namespace: <your-namespace>
+rules:
+  - apiGroups:
+      - appstudio.redhat.com
+    resources:
+      - imagerepositories
+    verbs:
+      - get
+      - watch
+      - list
 ----
-. Click the OAuth URL link to get your authentication token
-. Paste the token when prompted for password
-. Copy the private image path from the UI and pull the image:
-+
-[source,bash]
-----
-podman pull image-rbac-proxy.apps.example.com/redhat-user-workloads/my-tenant/my-app:b153d64
-----
-+
-NOTE: The image path includes the proxy host (e.g., `image-rbac-proxy.apps.example.com`) which enforces access control. You must use this proxy URL, not a direct registry URL.
 
-== Using service accounts for external systems
-
-For automated access in external systems like Testing Farm or CI/CD pipelines:
-
-. Create a service account:
+. Create a `ServiceAccount`:
 +
 [source,yaml]
 ----
@@ -97,7 +95,7 @@ metadata:
   namespace: <your-namespace>
 ----
 
-. Create a service account token secret:
+. Create a `Secret` that holds a non-expiring token for the service account. The `kubernetes.io/service-account.name` annotation must reference the service account created in the previous step:
 +
 [source,yaml]
 ----
@@ -109,6 +107,25 @@ metadata:
   annotations:
     kubernetes.io/service-account.name: external-puller
 type: kubernetes.io/service-account-token
+----
+
+. Create a `RoleBinding` that binds the `Role` to the `ServiceAccount`:
++
+[source,yaml]
+----
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: repo-viewer
+  namespace: <your-namespace>
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: repo-viewer
+subjects:
+  - kind: ServiceAccount
+    name: external-puller
+    namespace: <your-namespace>
 ----
 
 . Get the service account token from the secret:
@@ -133,4 +150,48 @@ Then pull images:
 podman pull image-rbac-proxy.apps.example.com/redhat-user-workloads/my-tenant/my-app:b153d64
 ----
 
+NOTE: Replace `image-rbac-proxy.apps.example.com` with your cluster's proxy hostname. See xref:#finding-your-proxy-url[Finding your proxy URL].
+
 NOTE: If a token is compromised, delete the secret to revoke the token, then create a new one. The username must match the service account name.
+
+[#getting-registry-login-credentials-via-the-ui]
+== Getting registry login credentials via the UI
+
+To access private images locally with your own user token:
+
+. Ask a tenant maintainer to bind the pull `Role` to your user. This uses the same `Role` shown in xref:#granting-pull-access-with-a-service-account[Granting pull access with a service account], with a `User` subject instead of a `ServiceAccount`:
++
+[source,yaml]
+----
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: repo-viewer-user
+  namespace: <your-namespace>
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: repo-viewer
+subjects:
+  - apiGroup: rbac.authorization.k8s.io
+    kind: User
+    name: <your-username>
+----
+
+. Navigate to the *Component details* page for your component
+. In the *Registry login information* section, copy and run the `podman login` command in your terminal:
++
+[source,bash]
+----
+podman login -u unused image-rbac-proxy.apps.example.com
+----
+. Click the OAuth URL link to get your authentication token
+. Paste the token when prompted for password
+. Copy the private image path from the UI and pull the image:
++
+[source,bash]
+----
+podman pull image-rbac-proxy.apps.example.com/redhat-user-workloads/my-tenant/my-app:b153d64
+----
++
+NOTE: The image path includes the proxy host (e.g., `image-rbac-proxy.apps.example.com`) which enforces access control. You must use this proxy URL, not a direct registry URL. Replace it with your cluster's proxy hostname; see xref:#finding-your-proxy-url[Finding your proxy URL].
