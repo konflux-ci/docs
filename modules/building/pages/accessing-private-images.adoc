@@ -55,9 +55,21 @@ subjects:
 ** Best for local development and manual testing
 
 * *Service account tokens*:
-** Any Konflux user who has permission to create secrets in a namespace can create a service account token in that namespace
+** Tokens are only issued to a maximum of three service accounts per namespace, named according to the pattern `konflux-bot-[0-2]` (e.g. `konflux-bot-0`, `konflux-bot-1`, or `konflux-bot-2`)
+** Any Konflux user who has permission to create service accounts in a namespace can create a `konflux-bot-[0-2]` service account
+** Only ClusterRoles of the pattern `konflux-*-bot-actions` can be assigned to the service accounts, and  when assigning roles, service accounts should follow the principle of least privilege
+***  The following roles are available: 
+**** link:https://github.com/redhat-appstudio/infra-deployments/blob/main/components/konflux-rbac/production/base/konflux-releaser-bot-actions.yaml[konflux-releaser-bot-actions]
+**** link:https://github.com/redhat-appstudio/infra-deployments/blob/main/components/konflux-rbac/production/base/konflux-builder-bot-actions.yaml[konflux-builder-bot-actions]
+**** link:https://github.com/redhat-appstudio/infra-deployments/blob/main/components/konflux-rbac/production/base/konflux-externalpuller-bot-actions.yaml[konflux-externalpuller-bot-actions]
+**** link:https://github.com/redhat-appstudio/infra-deployments/blob/main/components/konflux-rbac/production/base/konflux-integrationtest-bot-actions.yaml[konflux-integrationtest-bot-actions]
+**** link:https://github.com/redhat-appstudio/infra-deployments/blob/main/components/konflux-rbac/production/base/konflux-model-bot-actions.yaml[konflux-model-bot-actions]
+**** link:https://github.com/redhat-appstudio/infra-deployments/blob/main/components/konflux-rbac/production/base/konflux-viewer-bot-actions.yaml[konflux-viewer-bot-actions]
+** Only users with the role `konflux-admin-user-actions` can mint tokens. Assuming an SA named `konflux-bot-0`, tokens can then be minted with 
+[source, bash]
+oc create token konflux-bot-0 -n <your-namespace> --duration=8760h
+** `--duration` must be specified and can be any value up to 1 year (8760 hours). Users are encouraged to specify the shortest feasible duration
 ** Can authenticate against both the proxy AND the OpenShift API (works like a regular OpenShift service account)
-** Do not expire (valid until the secret is deleted)
 ** Best for automated systems and CI/CD pipelines
 
 == Getting registry login credentials via UI
@@ -93,36 +105,22 @@ For automated access in external systems like Testing Farm or CI/CD pipelines:
 apiVersion: v1
 kind: ServiceAccount
 metadata:
-  name: external-puller
+  name: konflux-bot-0 # can be any number 0-9
   namespace: <your-namespace>
 ----
 
-. Create a service account token secret:
-+
-[source,yaml]
-----
-apiVersion: v1
-kind: Secret
-metadata:
-  name: external-puller-token
-  namespace: <your-namespace>
-  annotations:
-    kubernetes.io/service-account.name: external-puller
-type: kubernetes.io/service-account-token
-----
-
-. Get the service account token from the secret:
+. Create a service account token:
 +
 [source,bash]
 ----
-kubectl get secret external-puller-token -n <your-namespace> -o jsonpath='{.data.token}' | base64 -d
+oc create token konflux-bot-0 -n <your-namespace> --duration=8760h
 ----
 
 . Use the token to authenticate to the registry in your external system:
 +
 [source,bash]
 ----
-podman login -u external-puller image-rbac-proxy.apps.example.com
+podman login -u konflux-bot-0 image-rbac-proxy.apps.example.com
 # When prompted for password, paste the service account token
 ----
 +
