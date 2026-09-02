@@ -33,13 +33,17 @@ pipeline:
 
 IMPORTANT: Tekton enforces a restriction on the pipeline timeout—it must be greater than or equal to the sum of the timeouts for tasks and finally.
 
+IMPORTANT: If your Pipeline is configured for xref:managed-pipeline-retries.adoc[automatic retries] any `timeouts`
+you set in your RPA for the Managed Pipeline become the base that is increased by the mitigation increment on each
+retry, instead of the default.
+
 == Adjust resources
 
 Release Pipelines are configured with default CPU and memory values for each Task and Step. These defaults are based on testing with typical workloads and are
 refined over time using user feedback. However, some Releases contain a larger than average number of Components, which can cause certain Tasks or
 Steps to exceed the default resources and fail, often due to `OOMKilled` errors.
 
-Increasing resources globally for every user would waste cluster resources, so {ProductName} 
+Increasing resources globally for every user would waste cluster resources, so {ProductName}
 supports per Release resource overrides using `taskRunSpecs`.
 
 NOTE: {ProductName} is exploring future improvements to make resource allocation more dynamic,
@@ -47,14 +51,18 @@ for example by tuning defaults based on the number of Components.
 
 == Understand taskRunSpecs
 
-`taskRunSpecs` allow you to override compute resources *at runtime* for a specific Task or Step without 
-modifying the underlying Pipeline or Task definitions. They are defined in the `pipeline` section of 
+`taskRunSpecs` allow you to override compute resources *at runtime* for a specific Task or Step without
+modifying the underlying Pipeline or Task definitions. They are defined in the `pipeline` section of
 a `ReleasePlanAdmission` and apply to any Release execution that uses the `ReleasePlanAdmission`.
 
 Use `taskRunSpecs` when:
 
 * A Task fails with `OOMKilled` errors
 * The Release has an unusually large number of Components
+
+IMPORTANT: If your Pipeline is configured for xref:managed-pipeline-retries.adoc[automatic retries] any
+`computeResources` you set in your RPA for the Managed Pipeline become the base that is multiplied by the
+mitigation multiplier on each retry, instead of the default.
 
 == Task-level vs Step-level overrides
 
@@ -107,7 +115,7 @@ Releases use pipelines stored in the https://github.com/konflux-ci/release-servi
 
 === Find the `pipelineTaskName`
 
-Open the Pipeline definition in the repository on the specified branch at the 
+Open the Pipeline definition in the repository on the specified branch at the
 `pathInRepo` location and inspect the `tasks` section.
 
 [source,yaml]
@@ -198,7 +206,7 @@ spec:
 === Step-level override example (recommended)
 
 The following example shows a `ReleasePlanAdmission` with a step-level
-resource override. Only the `validate` Step in the `verify-conforma` Task will 
+resource override. Only the `validate` Step in the `verify-conforma` Task will
 receive the override resources. Other Steps will keep their default compute resources.
 
 [source,yaml]

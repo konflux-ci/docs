@@ -4,5 +4,6 @@
 ** xref:create-release.adoc[Creating a release]
 ** xref:retrigger-release.adoc[Re-trigger a release manually]
 ** xref:tenant-release-pipelines.adoc[Tenant Release Pipelines]
+** xref:managed-pipeline-retries.adoc[Managed pipeline automatic retries]
 ** xref:adjusting-timeouts-resources.adoc[Adjusting timeouts and resources]
 ** xref:using-collectors.adoc[Using collectors]
