@@ -1,0 +1,126 @@
+= Managed pipeline automatic retries
+:description: Automatic retries for Managed Pipelines and how to check and override retry behavior on a ReleasePlanAdmission.
+
+A Managed Pipeline can fail for reasons that have nothing to do with the content being released, such as a Task
+running out of memory. Re-running the Pipeline with more memory or more time is often enough for the Release to
+succeed. {ProductName} does this automatically. When a Managed Pipeline fails for these reasons, it retries the
+Pipeline multiplying memory or increasing timeouts for the retry attempt.
+
+Automatic retries are managed by {ProductName} and are not user defined. From your ReleasePlanAdmission (RPA) you
+can check whether retries are active for your Managed Pipeline and adjust how many retries are allowed.
+
+== Check if your pipeline is configured for retries
+
+Check your RPA's status to see whether retries are active for your Managed Pipeline:
+
+[source,shell]
+----
+$ kubectl get releaseplanadmission <rpa-name> -n <managed-tenant-namespace> -o yaml
+----
+
+Look for the `retryInfo` field under `status`:
+
+[source,yaml]
+----
+status:
+  retryInfo:
+    enabled: true <.>
+    maxRetries: 3 <.>
+    reason: retries enabled by policy <.>
+----
+
+<.> Whether automatic retries are active for this RPA's Managed Pipeline.
+<.> The number of retry attempts that will be made after the initial Pipeline fails.
+<.> A short explanation of the result, for example `pipeline not configured for retries`, `retries disabled by RPA
+pipeline override`, or `disabled by tag: <tag>` when a tag on the release is blocking retries.
+
+If retries aren't configured for the Managed Pipeline, `retryInfo` will show:
+
+[source,yaml]
+----
+status:
+  retryInfo:
+    enabled: false
+    reason: pipeline not configured for retries
+----
+
+You can also see the outcome of each attempt on the `Release` CR itself, under `status.managedPipelineAttempts`.
+Every attempt records which PipelineRun ran. If it failed it also includes the failure reason, mitigations,
+and the last Task and Step that were running.
+
+== Understand which failures trigger a retry
+
+Not every failure is retried. Retrying a genuine error is unlikely to make a Release succeed. {ProductName}
+only retries a Managed Pipeline for failures that can be fixed with more resources or time. The following
+failure reasons trigger a retry:
+
+* `OOMKill`: A Task or Step was killed for exceeding its memory limit.
+* `PipelineRunTimeout`: The overall PipelineRun didn't finish within its timeout.
+* `TaskRunTimeout`: An individual TaskRun didn't finish within its timeout.
+
+An `Error` failure is never retried automatically.
+
+== Override the retry count
+
+If your Pipeline is configured for retries, you can override how many attempts are allowed by setting `maxRetries`
+on the `pipeline` field of your RPA:
+
+[source,yaml]
+----
+apiVersion: appstudio.redhat.com/v1alpha1
+kind: ReleasePlanAdmission
+metadata:
+  name: <rpa-name>
+  namespace: <managed-tenant-namespace>
+spec:
+  applications:
+    - demo-app
+  data: <key>
+  origin: <dev-tenant-namespace>
+  pipeline:
+    pipelineRef:
+      resolver: git
+      params:
+        - name: url
+          value: "<url-to-repo>.git"
+        - name: revision
+          value: <revision>
+        - name: pathInRepo
+          value: "<path-to-your-pipeline>"
+    serviceAccountName: release-service-account
+    maxRetries: 5 <.>
+  policy: <policy>
+----
+
+<.> Overrides the default retry count for this RPA. Set it higher to allow more attempts or set it to `0` to
+disable automatic retries.
+
+IMPORTANT: `maxRetries` only has an effect on a Pipeline that {ProductName} already retries.
+
+== Retries can adjust resources and timeouts
+
+Retrying a failed attempt with the same resources or timeouts usually produces the same failure. To give the retry
+a chance of succeeding, {ProductName} applies mitigations to the failing Pipeline or Task on each attempt:
+
+* After an `OOMKill`, the Task or Step's memory request and limit are increased by a configured multiplier, up to a
+maximum.
+* After a `PipelineRunTimeout` or `TaskRunTimeout`, the relevant timeout is increased by a configured increment, up
+to a maximum.
+
+Mitigations are managed by {ProductName} and are not user defined.
+
+== Understand what the mitigation multiplies
+
+A mitigation multiplies or increments whatever resources or timeout the failed attempt ran with, not the Catalog's
+default. If you've overridden a Task or Step's `computeResources` using `taskRunSpecs` (See
+xref:adjusting-timeouts-resources.adoc[Adjusting timeouts and resources]), that override is the starting point for
+the next retry's mitigation. The same applies to timeouts you've set on the Pipeline.
+
+IMPORTANT: Mitigations accumulate. Each retry builds on the *previous* attempt's not the original, so
+resources or timeouts keep growing until the Release succeeds or the configured maximum is reached.
+
+== Tags that disable retries
+
+A Pipeline configured for retries can also skip retries when specific tags appear in the Release data, for example
+a `{{ incrementer }}` tag. When one of these tags is present retries are skipped for that release. The RPA's `status.retryInfo.reason`
+will read `disabled by tag: <tag>` when this happens.
