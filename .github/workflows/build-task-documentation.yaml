@@ -1,0 +1,27 @@
+---
+name: Build Tasks documentation
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # uses v7.0.1
+
+      - name: Generate build tasks documentation
+        run: bash hack/gen-build-tasks-docs.sh
+
+      - uses: peter-evans/create-pull-request@5f6978faf089d4d20b00c7766989d076bb2fc7f1 #uses v8.1.1
+        with:
+          commit-message: 'docs: update build tasks documentation'
+          branch: chore/update-task-docs
+          delete-branch: true
+          title: 'docs: update build tasks documentation'
+          body: Automated update from container-build-catalog.
+          add-paths: modules/building/pages/task-documentation.adoc
