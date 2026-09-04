@@ -29,6 +29,9 @@
 /modules/metadata/pages/sboms.adoc  			@konflux-ci/the-collective
 /modules/metadata/partials/sbom*.adoc  			@konflux-ci/the-collective
 
+# Scan Results
+/modules/metadata/pages/scan-results.adoc  			@sfowl @swillis0221
+
 # Vanguard
 /modules/patterns/pages/managing-multiple-versions.adoc			@konflux-ci/vanguard
 
