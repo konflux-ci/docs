@@ -1,0 +1,169 @@
+= ComponentGroups
+:description: How Components are grouped together to be tested and released
+
+Components are often packaged together with other components so they can be deployed, tested, and released. {ProductName} uses an abstraction called `ComponentGroups` to manage that grouping. ComponentGroups are composed of one or more Components or other ComponentGroups. ComponentGroups are also used to define the order in which IntegrationTestScenarios for that ComponentGroup are run.
+
+== Examples
+
+=== Minimal Example
+
+Below is an example of a basic ComponentGroup. For users migrating from Applications without using additional features, this is how their ComponentGroup will look. 
+
+NOTE: The `status.globalCandidateList` field is populated by the integration service and cannot be updated by the user except via xref:testing:integration/snapshots/override-snapshots.adoc[Override Snapshots].
+
+[source,yaml]
+----
+---
+apiVersion: appstudio.redhat.com/v1beta2
+kind: ComponentGroup
+metadata:
+  name: componentgroup-sample-minimal
+spec:
+  components:
+    - name: first-component <.>
+      componentVersion:
+        name: "main" <.>
+    - name: second-component
+      componentVersion:
+        name: "v1"
+    - name: third-component
+      componentVersion:
+        name: "main"
+status:
+  globalCandidateList: <.>
+    - name: first-component
+      version: main
+      lastPromotedImage: quay.io/sampleorg/first-component@sha256:1b29...
+      lastPromotedCommit: 6a7c81802e785aa869f82301afe61f4e9775772b
+      lastPromotedBuildTime: "2025-08-13T12:00:00Z"
+      url: https://github.com/konflux-ci/integration-examples
+    - name: second-component
+      version: "v1"
+      lastPromotedImage: quay.io/sampleorg/second-component@sha256:ae32...
+      lastPromotedCommit: 1359836353b8e249f2fbceba47d82751d7dab902
+      lastPromotedBuildTime: "2025-08-13T05:13:25Z"
+      url: https://github.com/konflux-ci/integration-examples
+      # third-component has not been promoted yet and therefore has not been added to the GCL
+----
+<.> The name of the Component
+<.> The Component Version. A Component can have multiple versions, but only builds for the matching version will create Snapshots for this ComponentGroup
+<.> The list of the most recent build for each ComponentVersion. See <<gcl,Global Candidate List>>
+
+=== Full Example
+
+Below is an example ComponentGroup that leverages all of the optional ComponentGroup features
+
+[source,yaml]
+----
+apiVersion: appstudio.redhat.com/v1beta2
+kind: ComponentGroup
+metadata:
+  name: componentgroup-sample
+spec:
+  components:
+    - name: first-component
+      # used to match build PLRs. Will attempt to match
+      # `build.konflux-ci.dev/version` annotation to name field. Will fall back
+      # on matching `target_branch` and `context_dir` annotations to revision
+      # and context fields if the revision and context fields are set
+      componentVersion:
+        name: "main"
+    - name: second-component
+      kind: component <.>
+      componentVersion: <.>
+        name: "v1"
+        revision: "v1branch"
+        context: "components/second-component"
+    - name: python-component
+      componentVersion:
+        name: "3.12.4"
+    - name: child-cg
+      kind: componentGroup
+  testGraph:
+    # in this graph clamav-scan, dast-tests, and deployment would run first
+    # e2e-test would start when clamav-scan finishes
+    # verify would run after clamav-scan, dast-tests,
+    # and operator-scorecard finish
+    verify:
+      - name: clamav-scan
+      - name: dast-tests
+        failFast: true
+      - name: operator-scorecard
+    e2e-test:
+      - name: clamav-scan
+        failFast: false
+    operator-scorecard: <.>
+      - name: deployment
+        failFast: true
+status:
+  globalCandidateList:
+    - name: first-component
+      version: main
+      lastPromotedImage: quay.io/sampleorg/first-component@sha256:1b29...
+      lastPromotedCommit: 6a7c81802e785aa869f82301afe61f4e9775772b
+      lastPromotedBuildTime: "2025-08-13T12:00:00Z"
+      url: https://github.com/konflux-ci/integration-examples
+    - name: second-component
+      version: "v1"
+      lastPromotedImage: quay.io/sampleorg/second-component@sha256:ae32...
+      lastPromotedCommit: 1359836353b8e249f2fbceba47d82751d7dab902
+      lastPromotedBuildTime: "2025-08-13T05:13:25Z"
+      url: https://github.com/konflux-ci/integration-examples
+      # python-component has not been promoted yet and therefore has not been added to the GCL
+----
+<.> The kind item in the spec.Components list can be `component` (default) or `componentGroup`. For more information, see <<nesting,ComponentGroup Nesting>>
+<.> ComponentVersion should only be set if kind is `component`
+<.> The operator-scorecard IntegrationTestScenario runs after the deployment IntegrationTestScenario and does not run if the deployment IntegrationTestScenario fails. See xref:testing:integration/component-groups/nesting.adoc[ComponentGroup Nesting]
+
+[[gcl]]
+== Global Candidate List
+
+The Global Candidate List, or GCL, is {ProductName}'s mechanism for retaining the latest known good version of each Component. When the integration service creates a Snapshot, it gathers the list of most up-to-date Component images from the GCL, then replaces one or more of those images with the new images that are being tested. The GCL is ComponentGroup-specific and is stored in the status field of each ComponentGroup. 
+
+[source,yaml]
+----
+apiVersion: appstudio.redhat.com/v1beta2
+kind: ComponentGroup
+spec:
+  components:
+    - name: componentA
+      componentVersion:
+        name: v1.2.3
+    - name: componentB
+      componentVersion:
+        name: v1
+    - name: componentC
+      componentVersion:
+        name: main
+status:
+  globalCandidateList:
+    - name: componentA
+      version: v1.2.3
+      lastPromotedImage: "quay.io/sampleorg/component-a@sha256:1b29.."
+      lastPromotedCommit: "6a7c81802e785aa869f82301afe61f4e9775772b"
+      lastPromotedBuildTime: "2025-08-13T12:00:00Z"
+    - name: componentC
+      version: main
+      lastPromotedImage: "quay.io/sampleorg/component-b@sha256:ae32..."
+      lastPromotedCommit: "1359836353b8e249f2fbceba47d82751d7dab902"
+      lastPromotedBuildTime: "2025-08-13T05:13:25Z"
+----
+
+ComponentVersions that have not had an on-push PipelineRun complete since the creation of the ComponentGroup will not have an entry in that ComponentGroup's GCL. When the integration service builds a Snapshot, if there is no GCL entry for a ComponentVersion *and* the ComponentVersion was not built in the PLR that triggered the Snapshot, then the ComponentVersion will be omitted from the Snapshot.
+
+When an on-push build PipelineRun completes, the integration service will find each ComponentGroup to which the ComponentVersion corresponding to that PipelineRun belongs. It will then update the GCL entry for that ComponentVersion in every ComponentGroup. GCL entries can also be updated manually by creating an xref:testing:integration/snapshots/override-snapshots.adoc[Override Snapshot].
+
+[[nesting]]
+== ComponentGroup Nesting
+
+The ComponentGroup's `spec.components` field can contain references to other ComponentGroups. The ComponentVersions in the child ComponentGroups will be used to build Snapshots for the parent ComponentGroups. For more information, see xref:testing:integration/component-groups/nesting.adoc[ComponentGroup Nesting].
+
+== Test Ordering
+
+The ComponentGroup contains a `spec.testGraph` field that is used to define the order in which IntegrationTestScenarios for the ComponentGroup are run. For more information, see xref:testing:integration/order.adoc[Ordering Integration Tests].
+
+== Differences between ComponentGroups and Applications
+
+The ComponentGroup CRD in {ProductName} has superseded the Application CRD. This was done in order to give users more power over how their Components are tested and released. In the Application model, Components belonged to a single Application. Their application was defined in the Component's `spec.application` field, which limited the Component to a single Application. In the ComponentGroup model, ComponentGroups contain a list of Components which make up the ComponentGroup. Because of this, one Component can be part of many Component groups.
+
+ComponentGroups are also fully decoupled from the Component CRD. In the Application model, a completed build PipelineRun contains a `component` label that must point to a real Component CR in the Namespace. With ComponentGroups, the `component` label and `version` annotation simply need to match a ComponentVersion from the ComponentGroup in order for a Snapshot to be created. Although this was done for stability reasons, it also gives users the ability to test things in Konflux that were not built in Konflux by applying an appropriately annotated PipelineRun to the cluster.

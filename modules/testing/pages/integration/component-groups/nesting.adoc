@@ -1,0 +1,101 @@
+= ComponentGroup Nesting
+:description: Learn how to nest ComponentGroups inside other ComponentGroups to manage complex component dependencies.
+
+ComponentGroups can include other ComponentGroups in their `spec.components` lists. To do so, the entry must have the `kind` field set to `ComponentGroup` (case-insensitive). If the `kind` field is not set the integration service will treat the entry like a Component. ComponentGroups, unlike Components, do not have a version. All Components and ComponentGroups in the `spec.components` field must belong to the same Namespace as the parent ComponentGroup.
+
+[source,yaml]
+----
+apiVersion: konflux-ci.dev/v1beta2
+kind: ComponentGroup
+metadata:
+  name: childGroup1
+spec:
+  components:
+    - name: componentA
+      componentVersion:
+        name: v1.2.3
+    - name: componentB
+      kind: component
+      componentVersion:
+        name: v1
+---
+apiVersion: konflux-ci.dev/v1beta2
+kind: ComponentGroup
+metadata:
+  name: childGroup2
+spec:
+  components:
+    - name: componentC
+      componentVersion:
+        name: v1.2.3
+    - name: grandchildGroup
+      kind: componentGroup
+---
+apiVersion: konflux-ci.dev/v1beta2
+kind: ComponentGroup
+metadata:
+  name: grandchildGroup
+spec:
+  components:
+    - name: componentD
+      kind: component
+      componentVersion:
+        name: v1
+---
+apiVersion: konflux-ci.dev/v1beta2
+kind: ComponentGroup
+metadata:
+  name: parentGroup
+spec:
+  components:
+    - name: componentE
+      componentVersion:
+        name: main
+    - name: childGroup1
+      kind: componentGroup
+    - name: childGroup2
+      kind: componentGroup
+----
+
+== Snapshot Composition
+
+When a Component belonging to a ComponentGroup is built, the integration service will gather all ComponentVersions for the ComponentGroup itself as well as its children. The result will be a flattened set of ComponentVersions and their corresponding images. For example, if `componentE` is built in the example above, the snapshot for `parentGroup` will contain:
+* componentA (from childGroup1 GCL)
+* componentB (from childGroup1 GCL)
+* componentC (from childGroup2 GCL)
+* componentD (from grandchildGroup GCL)
+* componentE (from build PLR)
+
+=== Global Candidate List
+
+The Global Candidate List for a ComponentVersion only contains entries for the _Components_ in the ComponentGroup. GCL images for the child ComponentGroups are stored in the children.
+
+== Creating Parent Snapshots
+
+When a snapshot for a ComponentGroup is created, the integration service checks if that ComponentGroup belongs to any other ComponentGroups. If so, it creates snapshots for those ComponentGroups as well. The integration service does this so that all configurations of the ComponentVersion are tested.
+
+For example, if `componentD` from the example above is built, then a Snapshot will be created for `grandChildGroup`. The integration service will see this Snapshot and create a snapshot for `childGroup2` that contains
+- componentC (from childGroup2 GCL)
+- componentD (from build PLR)
+
+Once that Snapshot is created, the integration service will see the new Snapshot and create a Snapshot for `parentGroup` that contains the following images:
+* componentA (from childGroup1 GCL)
+* componentB (from childGroup1 GCL)
+* componentC (from childGroup2 GCL)
+* componentD (from build PLR)
+* componentE (from parentGroup GCL)
+
+== Conflicting Images
+
+A set of ComponentGroups that nest inside one another can be represented as a Directed Acyclic Graph. It is possible for a ComponentVersion to belong to multiple ComponentGroups that both belong to the same dependency graph. *Users should avoid this whenever possible as it can result in conflicts when creating Snapshots.* When the integration service processes an on-push build PLR, it updates the GCL for all ComponentGroups that contain the corresponding ComponentVersion. Those GCL entries should always remain in sync. However, they can be out of sync during Snapshot creation for two reasons.
+
+1. A race condition in Konflux results in a Snapshot being created for a nested ComponentGroup while that ComponentGroup graph is being updated.
+2. A user creates an override Snapshot for one ComponentGroup but not another. This will update all GCL images for the first ComponentGroup and the images will diverge. When an on-push pipeline finishes for the shared ComponentVersion, both Global Candidate Lists will be updated and will be aligned again. *Users should avoid using override Snapshots except where absolutely necessary.*
+
+If the GCL images remain in sync, conflicts will not occur.
+
+If conflicts do occur, the integration service follows the following principles.
+
+* Parent GCL images take priority over child GCL images
+* Newly updated images take priority over GCL images
+* The behavior for ComponentVersions with differing GCL images for two children of a parent ComponentGroup is undefined.
