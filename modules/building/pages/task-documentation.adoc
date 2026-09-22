@@ -27,6 +27,9 @@ link:https://github.com/konflux-ci/container-build-catalog/tree/main/task[contai
 | `prefetch-dependencies` | link:https://github.com/konflux-ci/container-build-catalog/blob/main/task/prefetch-dependencies/README.md[Task README]
 | `push-dockerfile-oci-ta` | link:https://github.com/konflux-ci/container-build-catalog/blob/main/task/push-dockerfile-oci-ta/README.md[Task README]
 | `push-dockerfile` | link:https://github.com/konflux-ci/container-build-catalog/blob/main/task/push-dockerfile/README.md[Task README]
+| `run-script-oci-ta` | link:https://github.com/konflux-ci/container-build-catalog/blob/main/task/run-script-oci-ta/README.md[Task README]
 | `source-build-oci-ta` | link:https://github.com/konflux-ci/container-build-catalog/blob/main/task/source-build-oci-ta/README.md[Task README]
 | `source-build` | link:https://github.com/konflux-ci/container-build-catalog/blob/main/task/source-build/README.md[Task README]
+| `tkn-bundle-oci-ta` | link:https://github.com/konflux-ci/container-build-catalog/blob/main/task/tkn-bundle-oci-ta/README.md[Task README]
+| `tkn-bundle` | link:https://github.com/konflux-ci/container-build-catalog/blob/main/task/tkn-bundle/README.md[Task README]
 |===
