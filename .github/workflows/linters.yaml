@@ -12,7 +12,7 @@ jobs:
       pull-requests: write
     steps:
       - name: Checkout
-        uses: actions/checkout@v7
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           fetch-depth: 0  # Required to get file changes
       
@@ -34,7 +34,7 @@ jobs:
       
       - name: Vale Linter
         if: steps.changed-files.outputs.any_changed == 'true'
-        uses: errata-ai/vale-action@reviewdog
+        uses: errata-ai/vale-action@518a9136acc6e6668ce7c00d367051e0941e87ff # v3.0.0
         with:
           vale_flags: "--minAlertLevel=error"
           files: ${{ steps.changed-files.outputs.files }}
