@@ -26,13 +26,18 @@ status:
   retryInfo:
     enabled: true <.>
     maxRetries: 3 <.>
+    disablingTags: <.>
+      - '.*\{\{\s*incrementer\s*\}\}.*'
     reason: retries enabled by policy <.>
 ----
 
 <.> Whether automatic retries are active for this RPA's Managed Pipeline.
 <.> The number of retry attempts that will be made after the initial Pipeline fails.
+<.> The tag patterns that disable retries when they match a tag in the Release, ReleasePlan or ReleasePlanAdmission
+data. See <<tags-that-disable-retries>>.
 <.> A short explanation of the result, for example `pipeline not configured for retries`, `retries disabled by RPA
-pipeline override`, or `disabled by tag: <tag>` when a tag on the release is blocking retries.
+pipeline override`, or `disabled by ReleasePlan or ReleasePlanAdmission tag(s): <tags>` when a tag is blocking
+retries.
 
 If retries aren't configured for the Managed Pipeline, `retryInfo` will show:
 
@@ -44,9 +49,53 @@ status:
     reason: pipeline not configured for retries
 ----
 
-You can also see the outcome of each attempt on the `Release` CR itself, under `status.managedPipelineAttempts`.
-Every attempt records which PipelineRun ran. If it failed it also includes the failure reason, mitigations,
-and the last Task and Step that were running.
+== Check the attempts on the Release
+
+You can see the status of each attempt on the `Release` CR itself, under `status.managedPipelineAttempts`.
+Every attempt records which PipelineRun ran. If it failed it also includes the failure reason and the last Task
+and Step that were running.
+
+When an attempt fails for a retriable reason, the next attempt records the `mitigation` that was applied to it:
+
+[source,yaml]
+----
+status:
+  managedPipelineAttempts:
+    - failureReason: <.>
+      lastTask: <.>
+      lastStep: <.>
+      pipelineRun: rhtap-releng-tenant/managed-qd8pz
+      status: Failed
+    - mitigation: <.>
+        memoryRequest: 400Mi
+        memoryLimit: 400Mi
+      pipelineRun: rhtap-releng-tenant/managed-x7kf2
+      status: Succeeded
+----
+
+<.> The failure reason for this attempt, such as `OOMKill`, `PipelineRunTimeout`, or `TaskRunTimeout`. A retriable
+reason triggers a retry.
+<.> The last Task that was running when the attempt failed.
+<.> The last Step that was running when the attempt failed.
+<.> The mitigation applied to the retry, such as an multipily memory or an increased timeout.
+
+If a retry was skipped because a tag on the Release matched a disabling tag, the attempt records
+`retryDisabledReason` instead of retrying (see <<tags-that-disable-retries>>):
+
+[source,yaml]
+----
+status:
+  managedPipelineAttempts:
+    - failureReason: <.>
+      lastTask: verify-access-to-resources
+      lastStep: verify-access-to-resources
+      pipelineRun: rhtap-releng-tenant/managed-qd8pz
+      retryDisabledReason: 'disabled by Release tag(s): v1.0.0-{{ incrementer }}' <.>
+      status: Failed
+----
+
+<.> The failure reason was retriable, so the attempt would normally be retried.
+<.> The tag on the Release CR that matched a disabling tag and stopped the retry.
 
 == Understand which failures trigger a retry
 
@@ -121,6 +170,24 @@ resources or timeouts keep growing until the Release succeeds or the configured 
 
 == Tags that disable retries
 
-A Pipeline configured for retries can also skip retries when specific tags appear in the Release data, for example
-a `{{ incrementer }}` tag. When one of these tags is present retries are skipped for that release. The RPA's `status.retryInfo.reason`
-will read `disabled by tag: <tag>` when this happens.
+A Pipeline configured for retries can still skip retries when specific tags appear in your release data. This is
+useful for tags that should never be retried, such as an unresolved template variable like `{{ incrementer }}`
+that would push a different image tag on every attempt.
+
+The tags that disable retries are configured by {ProductName} and matched against the tags in your data. Each
+configured tag can be either a static tag or a regular expression:
+
+* A static tag, such as `{{ incrementer }}`, matches that exact tag.
+* A regular expression matches any tag that fits the pattern. For example, `.*\{\{\s*incrementer\s*\}\}.*` matches
+both `{{ incrementer }}` and `v1.0.0-{{ incrementer }}`.
+
+{ProductName} checks for disabling tags in two places:
+
+* Tags in your *ReleasePlan* or *ReleasePlanAdmission* data disable retries for the Managed Pipeline entirely. When
+this happens the RPA's `status.retryInfo.enabled` is `false` and `status.retryInfo.reason` reads `disabled by
+ReleasePlan or ReleasePlanAdmission tag(s): <tags>`.
+* Tags in an individual *Release* data are checked when its Managed Pipeline fails for a retriable reason and would
+otherwise be retried. A matching tag skips the retry for that Release only, and the attempt records
+`retryDisabledReason: disabled by Release tag(s): <tags>`.
+
+When more than one tag matches, all matching tags are listed, separated by commas.
