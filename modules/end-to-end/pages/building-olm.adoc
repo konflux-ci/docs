@@ -40,7 +40,7 @@ In order to enable your operator to be installed in disconnected environments, i
 
 . In the {ProductName} UI, in your OLM Operator's application, go to the *Components* tab and copy the URL for the Operator's container image. The URL should include `sha256:`.
 . Using your preferred text editor, in the git repo for your OLM Operator, open the CSV file for your bundle. In that file, update the image reference to the Operator to be the URL you just copied. Commit this change.
-. In the {ProductName} UI, follow the instructions in xref:building:/component-nudges.adoc[this document] to define the relationship between the Operator and the bundle. The Operator nudges the bundle.
+. Follow the instructions in xref:building:component-nudges.adoc[Defining component relationships] to configure the Operator to nudge the bundle.
 . (Optional) For any Operands with image references in your bundle's CSV, you can repeat this same basic process:
 .. Add the Operands as components in {ProductName}.
 .. Wait for the first build of those components to finish.
