@@ -19,6 +19,7 @@
 **** xref:secrets/creating-task-input-secrets.adoc[Creating task input secrets]
 **** xref:secrets/creating-registry-pull-secrets.adoc[Creating registry pull secrets]
 **** xref:secrets/creating-scm-secrets.adoc[Creating source control management secrets]
+**** xref:secrets/verifying-scm-secrets.adoc[Verifying source control management secrets]
 **** xref:secrets/referencing-secrets-in-containerfile.adoc[Referencing Secrets in a Containerfile]
 **** xref:secrets/secrets-from-external-vaults.adoc[Secrets from external vaults]
 ** Build optimization
