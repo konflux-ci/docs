@@ -195,3 +195,85 @@ podman pull image-rbac-proxy.apps.example.com/redhat-user-workloads/my-tenant/my
 ----
 +
 NOTE: The image path includes the proxy host (e.g., `image-rbac-proxy.apps.example.com`) which enforces access control. You must use this proxy URL, not a direct registry URL. Replace it with your cluster's proxy hostname; see xref:#finding-your-proxy-url[Finding your proxy URL].
+
+[#using-quay-image-references-for-local-development]
+== Using Quay image references for local development
+
+For local development, you can configure Podman to route pulls for `quay.io/redhat-user-workloads` and `quay.io/redhat-user-workloads-stage` through the RBAC image proxy. This configuration lets you continue to use existing Quay image references in Podman commands, Containerfiles, and Dockerfiles without changing them.
+
+Before you begin, ensure that a tenant maintainer has granted your user permission to pull images, as described in xref:#getting-registry-login-credentials-via-the-ui[Getting registry login credentials via the UI]. You also need `podman`, `xdg-open`, and `keyctl` installed on your Linux system.
+
+. Add the following configuration to `~/.config/containers/registries.conf`:
++
+[source,toml]
+----
+[[registry]]
+prefix = "quay.io/redhat-user-workloads"
+location = "quay.io/redhat-user-workloads"
+
+[[registry.mirror]]
+location = "image-rbac-proxy.apps.example.com/redhat-user-workloads"
+
+[[registry]]
+prefix = "quay.io/redhat-user-workloads-stage"
+location = "quay.io/redhat-user-workloads-stage"
+
+[[registry.mirror]]
+location = "image-rbac-proxy.apps.example.com/redhat-user-workloads-stage"
+----
++
+Replace `image-rbac-proxy.apps.example.com` with your cluster's proxy hostname. See xref:#finding-your-proxy-url[Finding your proxy URL]. Podman now tries the proxy mirror first whenever you pull an image from either Quay organization. If the proxy mirror cannot provide the image, Podman falls back to Quay. For a private image, this fallback succeeds only if you are also authenticated and authorized directly by Quay.
+
+. Add the following function to your Bash configuration, such as `~/.bashrc`:
++
+[source,bash]
+----
+function image_proxy_login {
+  local _proxy="image-rbac-proxy.apps.example.com"
+  local _key_name="image_proxy_token:${_proxy}"
+  local _key_id
+  local _token
+
+  _key_id=$(keyctl search @s user "${_key_name}" 2>/dev/null)
+
+  if [ -n "${_key_id}" ]; then
+    echo "Already logged into ${_proxy}"
+    return
+  fi
+
+  echo "Logging into ${_proxy}..."
+  xdg-open "https://${_proxy}/oauth" 2>/dev/null
+  echo -n "Paste token from browser: "
+  read -rs _token
+  echo
+
+  if ! echo -n "${_token}" | podman login "${_proxy}" -u unused --password-stdin; then
+    echo "Login failed" >&2
+    return 1
+  fi
+
+  _key_id=$(echo -n "${_token}" | keyctl padd user "${_key_name}" @s)
+  keyctl timeout "${_key_id}" $((8 * 3600))
+}
+----
++
+Replace `image-rbac-proxy.apps.example.com` with the same proxy hostname that you used in `registries.conf`.
+
+. Reload your Bash configuration and run the helper:
++
+[source,bash]
+----
+source ~/.bashrc
+image_proxy_login
+----
++
+The helper opens the proxy's OAuth page, prompts you for the displayed token, and logs Podman into the proxy. After a successful login, it stores the token in your session keyring for eight hours so that repeated calls do not prompt you to authenticate again. The key name includes the proxy hostname so that changing clusters triggers a new login.
+
+. Pull the image by using its original Quay reference:
++
+[source,bash]
+----
+podman pull quay.io/redhat-user-workloads/my-tenant/my-app:b153d64
+----
++
+When the proxy mirror provides the image, it verifies your tenant-level RBAC permissions.
