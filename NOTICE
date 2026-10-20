@@ -1,0 +1,25 @@
+Konflux Documentation
+Copyright Red Hat and the collected contributors to Konflux
+
+This product is licensed under the Apache License, Version 2.0 (see LICENSE).
+
+---------------------------------------------------------------------------
+Third-party notices
+---------------------------------------------------------------------------
+
+Font Awesome 4.7.0
+Copyright (c) 2012-2016 Dave Gandy (http://fontawesome.io)
+
+This repository vendors Font Awesome 4.7.0 under
+antora-lunr-ui/font-awesome-4.7.0/. Those files are not licensed under the
+Apache License 2.0 that applies to the rest of this repository.
+
+- The Font Awesome font files (antora-lunr-ui/font-awesome-4.7.0/fonts/) are
+  licensed under the SIL Open Font License, Version 1.1. See
+  antora-lunr-ui/font-awesome-4.7.0/OFL.txt.
+- The Font Awesome CSS, LESS, and Sass files
+  (antora-lunr-ui/font-awesome-4.7.0/css/, less/, and scss/) are licensed
+  under the MIT License. See antora-lunr-ui/font-awesome-4.7.0/MIT-LICENSE.txt.
+
+DRAFT: This NOTICE is a draft for legal review. Adjust wording as needed once
+the preferred attribution format is confirmed.

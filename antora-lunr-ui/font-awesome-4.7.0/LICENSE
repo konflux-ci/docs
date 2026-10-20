@@ -1,0 +1,18 @@
+Font Awesome 4.7.0
+==================
+
+Font Awesome by Dave Gandy - http://fontawesome.io
+
+This directory vendors Font Awesome 4.7.0 for use by the Konflux documentation UI.
+
+License summary
+---------------
+
+- Font files in fonts/ are licensed under the SIL Open Font License, Version 1.1.
+  See OFL.txt in this directory.
+- CSS, LESS, and Sass files in css/, less/, and scss/ are licensed under the MIT License.
+  See MIT-LICENSE.txt in this directory.
+
+These materials are third-party content and are not licensed under the Apache License
+2.0 that applies to the rest of the konflux-ci/docs repository. See the repository
+root NOTICE file.
