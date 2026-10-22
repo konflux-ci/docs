@@ -162,6 +162,10 @@ The ComponentGroup's `spec.components` field can contain references to other Com
 
 The ComponentGroup contains a `spec.testGraph` field that is used to define the order in which IntegrationTestScenarios for the ComponentGroup are run. For more information, see xref:testing:integration/order.adoc[Ordering Integration Tests].
 
+== Nudging
+
+A Component can nudge another Component so that its image digest reference is updated automatically after a successful build. Nudging is configured in a namespace-wide `NudgeConfig` resource and is independent of ComponentGroups: a nudge can connect Components from different ComponentGroups. For more information, see xref:testing:integration/component-groups/nudging.adoc[Nudging components].
+
 == Differences between ComponentGroups and Applications
 
 The ComponentGroup CRD in {ProductName} has superseded the Application CRD. This was done in order to give users more power over how their Components are tested and released. In the Application model, Components belonged to a single Application. Their application was defined in the Component's `spec.application` field, which limited the Component to a single Application. In the ComponentGroup model, ComponentGroups contain a list of Components which make up the ComponentGroup. Because of this, one Component can be part of many Component groups.

@@ -13,40 +13,14 @@ When a component's repository contains a digest reference to another component's
 If image digests point to an architecture-specific link:https://github.com/opencontainers/image-spec/blob/main/manifest.md[Image Manifest], nudging updates the digest to a matching architecture. For nudging to update to an link:https://github.com/opencontainers/image-spec/blob/main/image-index.md[Image Index], the current digest must already point to an Image Index.
 ====
 
-== In the UI
+== Interfaces
 
-.Procedure
-
-To define the relationships between components in a tenant namespace, complete the following steps in the {ProductName} UI:
+Nudging is implemented in the integration service, which reads a `NudgeConfig` resource in your namespace. You define component relationships in the CLI, as described in <<In the CLI>>.
 
 [NOTE]
 ====
-Currently, applications with only one component do not have the option to define relationships in the UI. To achieve the same result for single-component applications, define the relationship in the CLI.
+Defining component relationships in the {ProductName} console is not available yet. Console support is planned; use the CLI procedure below until it is available.
 ====
-
-. Navigate to your application.
-. On any tab, use the *Actions* drop-down menu to select *Define component relationships*.
-.. Alternatively, go to the *Components* tab and select *Define component relationships*.
-. In the *Component relationships* window, select one component from the *Select a component* drop-down menu.
-. Select *Nudges* or *Is nudged by*, depending on the relationship you want to define.
-+
-[NOTE]
-====
-Component A _nudges_ Component B (or Component B _is nudged by_ Component A) if Component B contains a reference, by image digest, to a build of Component A. After successful push builds of Component A, nudging updates the image digest that Component B references.
-====
-. Use the remaining drop-down menu to choose the related components.
-. To define multiple relationships, select *Add another component relationship*.
-. Select *Save relationships*.
-
-.Verification
-
-* Go to the *Components* tab, select a component, and scroll to *Show related components*.
-* Push a commit to the nudging component. When the build completes, a pull request should appear in the nudged component's repository containing the new image digest.
-
-.Troubleshooting
-
-* If you do not see the relationship, redefine it and make sure to select *Save relationships*.
-* Ensure that the existing references in the component repositories are correct.
 
 == In the CLI
 
@@ -191,6 +165,7 @@ metadata:
 
 This annotation supports a comma-separated list of link:https://docs.renovatebot.com/string-pattern-matching/[regex or glob patterns].
 
+[[customizing-nudging-prs]]
 == Customizing nudging PRs
 
 Nudging uses link:https://docs.renovatebot.com/[Renovate] to open pull requests. You can customize its behavior with a ConfigMap in your namespace.

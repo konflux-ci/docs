@@ -1,0 +1,275 @@
+= Nudging components
+:description: Automatically update image digest references in downstream components after a successful build.
+
+Component A _nudges_ Component B when Component B's repository pins Component A's image by digest. After each successful push build of Component A, {ProductName} updates that digest in Component B's repository to the image just built.
+
+Nudge relationships are declared in a `NudgeConfig` resource. Each namespace has exactly one, always named `nudge-config`, and the integration service reads it on every successful push build. Creating or updating the resource takes effect for subsequent builds.
+
+[NOTE]
+====
+Nudging is implemented in the integration service and is configured through the CLI. Defining component relationships in the {ProductName} console is not available yet. Console support is planned; use the CLI procedure in this page until it is available.
+====
+
+[NOTE]
+====
+Nudging is independent of ComponentGroups and Snapshots. A `NudgeConfig` is namespace-wide and keyed by Component name, so a nudge works the same way whether or not the Components belong to a ComponentGroup.
+====
+
+== How nudging works
+
+. A push build of Component A finishes successfully.
+. The integration service reads `nudge-config` in the namespace and selects the `immediate` relationships whose `from` field is Component A.
+. The integration service loads the target Components from the `to` fields.
+. The integration service reads the image URL and digest from the build PipelineRun.
+. The integration service resolves registry credentials from the build service account, and source control credentials for each target repository.
+. The integration service creates a Renovate PipelineRun in the namespace.
+. Renovate opens a pull request in each target repository. The pull request has the `konflux-nudge` label and contains the replaced digest.
+
+Only successful push builds trigger nudging. Pull request builds, manual PipelineRun triggers, and builds from `gh-readonly-queue/*` branches do not nudge.
+
+== Prerequisites
+
+* You have completed the steps in the xref:ROOT:getting-started.adoc#getting-started-with-the-cli[Getting started in the CLI] page.
+* The `from` and `to` Components exist in the same namespace as the `NudgeConfig`.
+* The downstream repository pins the upstream image by digest, using `image@sha256:...` rather than a tag.
+* {ProductName} can authenticate to the downstream repository. The integration service tries the GitHub App configured in the `pipelines-as-code-secret` first, and then falls back to the token in a Pipelines as Code `Repository` custom resource that matches the Component's repository URL.
+
+Nudging pull requests are created by the GitHub App that Pipelines as Code uses. When the integration service falls back to a `Repository` custom resource, the author is that resource's `user` field, or `red-hat-konflux` when the field is empty.
+
+== Defining a nudge relationship
+
+. Create a file named `nudge-config.yaml`:
+
++
+[source,yaml]
+----
+apiVersion: appstudio.redhat.com/v1beta2
+kind: NudgeConfig
+metadata:
+  name: nudge-config              # <1>
+  namespace: <your-namespace>
+spec:
+  nudges:
+    - from: component-sample      # <2>
+      to: component-downstream    # <3>
+      mode: immediate             # <4>
+----
+<1> The name must always be `nudge-config`. There is exactly one `NudgeConfig` per namespace.
+<2> The Component whose successful push build triggers the update.
+<3> The Component whose repository receives the pull request.
+<4> Optional. `immediate` is the only enforced mode and the default, so you can omit this field.
+
+. To define several relationships, add more entries under `spec.nudges`:
+
++
+[source,yaml]
+----
+spec:
+  nudges:
+    - from: component-sample
+      to: component-bundle
+    - from: component-sample
+      to: component-catalog
+----
+
+. Apply the resource:
+
++
+[source,bash]
+----
+kubectl apply -f nudge-config.yaml
+----
+
+.Verification
+
+* Confirm that the resource was created:
+
++
+[source,bash]
+----
+kubectl get nudgeconfig nudge-config -n <your-namespace> -o yaml
+----
+
+* Push a commit to the nudging Component. When the build completes, a pull request appears in the nudged Component's repository with the new image digest.
+
+.Editing relationships
+
+To add or remove a relationship, edit the resource directly:
+
+[source,bash]
+----
+kubectl edit nudgeconfig nudge-config -n <your-namespace>
+----
+
+Adding an entry takes effect on the next push build of the `from` Component. Removing an entry stops that relationship. To remove all relationships, delete the resource:
+
+[source,bash]
+----
+kubectl delete nudgeconfig nudge-config -n <your-namespace>
+----
+
+For more information about the validation rules that the API server and the webhook enforce, see xref:building:component-nudges.adoc[Defining component relationships].
+
+== Nudging and ComponentGroups
+
+|===
+|Behavior |Detail
+
+|Scope
+|A `NudgeConfig` is namespace-wide and keyed by Component name. It is not part of a ComponentGroup.
+
+|ComponentGroup boundaries
+|A relationship can connect Components from different ComponentGroups.
+
+|ComponentVersions
+|Nudging does not read ComponentVersions. It uses the Component name and the digest from the build that triggered it.
+
+|Snapshots
+|Nudging and Snapshot creation are independent. A pull request opened by nudging leads to a normal build in the target repository, and that build can create or update Snapshots in the usual way.
+
+|===
+
+== What gets updated
+
+Only the output image of the source build is replaced. The integration service uses the `IMAGE_URL` and `IMAGE_DIGEST` results of the build PipelineRun.
+
+By default, {ProductName} scans Dockerfiles, Containerfiles, and YAML files. To change which files are scanned for a specific build, add the `build.appstudio.openshift.io/build-nudge-files` annotation to the push PipelineRun definition:
+
+[source,yaml]
+----
+metadata:
+  annotations:
+    build.appstudio.openshift.io/build-nudge-files: ".*Dockerfile.*, .*.yaml, .*Containerfile.*"
+----
+
+The annotation accepts a comma-separated list of link:https://docs.renovatebot.com/string-pattern-matching/[regular expression or glob patterns].
+
+Nudging pull requests are created on a branch named `konflux/component-updates/<nudged-component>-<nudging-component>`. If several nudges target the same repository and branch, add the following annotation to the *nudging* (source) Component to consolidate them into a single pull request on the branch `konflux/component-updates/<nudging-component>`:
+
+[source,yaml]
+----
+metadata:
+  annotations:
+    build.appstudio.openshift.io/build-nudge-simple-branch: 'true'
+----
+
+[CAUTION]
+====
+If image digests point to an architecture-specific link:https://github.com/opencontainers/image-spec/blob/main/manifest.md[Image Manifest], nudging updates the digest to a matching architecture. For nudging to update to an link:https://github.com/opencontainers/image-spec/blob/main/image-index.md[Image Index], the current digest must already point to an Image Index.
+====
+
+== Customising the pull request
+
+Nudging uses link:https://docs.renovatebot.com/[Renovate] to open pull requests. You can customise labels, automerge behavior, commit messages, and file matching with a ConfigMap. For the available options and the namespace-wide and per-component scopes, see xref:building:component-nudges.adoc#customizing-nudging-prs[Customizing nudging pull requests].
+
+== Verifying a nudge ran
+
+. Find the successful build PipelineRun of the nudging Component:
+
++
+[source,bash]
+----
+kubectl get pipelinerun -n <your-namespace> \
+  -l appstudio.openshift.io/component=<nudging-component> \
+  --sort-by=.metadata.creationTimestamp
+----
+
+. Check whether the integration service processed the build for nudging:
+
++
+[source,bash]
+----
+kubectl get pipelinerun <build-pipelinerun> -n <your-namespace> \
+  -o jsonpath='{.metadata.annotations.test\.appstudio\.openshift\.io/component-nudge-processed}'
+----
+
++
+The annotation value is a comma-separated list of the Components that were nudged, or one of the skip reasons described in <<Troubleshooting>>.
+
+. List the nudge PipelineRuns in the namespace:
+
++
+[source,bash]
+----
+kubectl get pipelinerun -n <your-namespace> -l build.konflux-ci.dev/type=nudge
+----
+
++
+The nudge PipelineRun is named `renovate-pipeline-<suffix>`. Its annotations record the source Component, the source commit, the image, and the target Components.
+
+. Check the target repository for a pull request labeled `konflux-nudge`.
+
+[[troubleshooting]]
+== Troubleshooting
+
+[cols="1,1,1"]
+|===
+|Symptom |Likely cause |Fix
+
+|The build PipelineRun has no `component-nudge-processed` annotation
+|The build is still running, or it is not a push build.
+|Wait for the build to finish. Only successful push builds are nudged.
+
+|The annotation value is `no-matching-edges`
+|No `immediate` relationship has a `from` field that matches the built Component name.
+|Check the Component name and the `from` values in `nudge-config`.
+
+|The annotation value is `no-valid-targets`
+|Every Component listed in the `to` fields is missing from the namespace.
+|Create the missing Components, or correct the `to` values.
+
+|The annotation value is `build-result-error`
+|The build PipelineRun has no `IMAGE_URL` or `IMAGE_DIGEST` result.
+|Check the build pipeline output. Nudging needs both results.
+
+|The annotation value is `credentials-error`
+|The integration service cannot read registry credentials from the build service account.
+|Link the registry secret to the service account's `secrets` field.
+
+|The annotation value is `no-credentials`
+|No GitHub App is configured, and no `Repository` custom resource with a token matches the target repository URL.
+|Configure the GitHub App in `pipelines-as-code-secret`, or create a `Repository` custom resource for the target repository.
+
+|The annotation lists fewer Components than expected
+|The missing targets could not be resolved to credentials.
+|Resolve credentials for the missing Components. The remaining targets were still nudged.
+
+|The annotation is missing and the source Component was deleted
+|The integration service cannot load the source Component, so it skips nudging without writing an annotation.
+|This is expected. No action is required.
+
+|The nudge PipelineRun failed
+|Renovate could not open the pull request, for example because of repository rate limits or a branch protection rule.
+|Read the logs of the `renovate` task in the nudge PipelineRun.
+
+|`StaleReferences` is `True` in `NudgeConfig` status
+|One or more Components referenced in `spec.nudges` were deleted.
+|Remove the affected entries, or recreate the Components.
+
+|`kubectl apply` is rejected
+|The `NudgeConfig` contains a self-nudge, a duplicate `(from, to)` pair, a cycle, or a reference to a Component that does not exist.
+|Correct the entries. For missing Components, the error reads `NudgeConfig references non-existent Component(s) in namespace "<your-namespace>"`.
+|===
+
+== Limits and known behavior
+
+* `spec.nudges` accepts a maximum of 360 entries.
+* Each namespace has a single `NudgeConfig` named `nudge-config`.
+* The integration service does not retry a build after it skips nudging. The skip reason stays on the build PipelineRun.
+* The `StaleReferences` condition refreshes only when a later push build succeeds and the integration service updates the `NudgeConfig` status.
+* The integration service does not check whether the Renovate PipelineRun succeeded or whether Renovate opened the pull request.
+
+== Not yet supported
+
+[NOTE]
+====
+The `NudgeConfig` schema also accepts `mode: validated`, `gatingGroup`, `spec.batchDefaults`, and `spec.targetConfig`. The integration service does not enforce these fields yet. Do not rely on them. The webhook warns when `spec.batchDefaults` is set: `spec.batchDefaults is reserved; integration-service does not apply these defaults yet.`
+====
+
+[role="_additional-resources"]
+== Additional resources
+
+* For the full `NudgeConfig` reference and validation rules, see xref:building:component-nudges.adoc[Defining component relationships].
+* For the `konflux-nudge` label used by MintMaker, see xref:mintmaker:default-config.adoc[Default configuration].
+* To update Component images manually, see xref:testing:integration/snapshots/override-snapshots.adoc[Creating an override snapshot].
+* For an overview of ComponentGroups, see xref:testing:integration/component-groups/index.adoc[ComponentGroups].
