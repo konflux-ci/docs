@@ -303,6 +303,35 @@ link:https://github.com/konflux-ci/integration-examples/blob/main/tasks/test_met
 link:https://github.com/konflux-ci/integration-examples/blob/main/pipelines/integration_resolver_pipeline_pass_metadata.yaml[example integration pipeline]
 which uses the information from that task's results to influence its workflow.
 
+== Checking out a specific commit in a task
+
+Integration tests often need the source code at the exact commit that {ProductName} built, for example to run a test suite stored in the component repository. The commit is available in the `SNAPSHOT` parameter as `.components[].source.git.revision`.
+
+If the source is consumed by several tasks in the pipeline, use the `git-clone` task with a shared workspace. If you only need the source within a single step, you can check it out inline. In that case, do not use the following pattern:
+
+[source,bash]
+----
+# Unreliable: fails if the commit is not reachable from a branch or tag
+git clone "${GIT_URL}" source
+cd source
+git checkout "${GIT_REVISION}"
+----
+
+`git clone` downloads only the objects that are reachable from branches and tags. The commit under test is not always reachable from them, for example when a pull request branch was force-pushed, when the branch was deleted after merge, or when the commit exists only in a fork. In those cases, the object is missing from the clone and the checkout fails with `fatal: unable to read tree (<sha>)` and exit code 128.
+
+Instead, fetch the commit explicitly by its SHA:
+
+[source,bash]
+----
+git init -q source
+cd source
+git remote add origin "${GIT_URL}"
+git fetch -q --depth 1 origin "${GIT_REVISION}"
+git checkout -q FETCH_HEAD
+----
+
+GitHub serves a commit that is requested by its SHA even if no branch or tag points to it, including commits from forks of the repository. A shallow fetch of a single commit is also faster than a full clone.
+
 == Timeouts
 
 Setting custom timeouts can be done as described in the `Timeouts` section of xref:./editing.adoc[editing a custom integration test] guide.
