@@ -40,6 +40,7 @@ antora:
   extensions:
   - '@antora/collector-extension'
   - '@antora/lunr-extension'
+  - ./antora-extensions/publish-license-files.js
 
 urls:
     html_extension_style: indexify # For consistency with pages indexed by search engines, see https://docs.antora.org/antora/latest/playbook/urls-html-extension-style/
