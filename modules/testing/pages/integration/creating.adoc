@@ -215,6 +215,79 @@ spec:
         value: pipelineruns/integration_pipelinerun_pass.yaml
 ---
 
+[#service-account-of-the-integration-pipelinerun]
+== Service account of the integration PipelineRun
+
+{ProductName} chooses the service account of an integration PipelineRun in this order:
+
+. If the pipelineRun definition of the integration test scenario sets `spec.taskRunTemplate.serviceAccountName` (a `tekton.dev/v1` PipelineRun), the PipelineRun keeps that service account.
+. Otherwise, a PipelineRun for a component snapshot uses the `its-pipeline-<component-name>` service account of the component under test, when that service account can be used.
+. Otherwise, the PipelineRun uses the `konflux-integration-runner` service account. This covers every other snapshot, such as a group snapshot or an override snapshot.
+
+Before {ProductName} creates a PipelineRun that uses `its-pipeline-<component-name>`, it links the push secret of the component to that service account. This is the push secret that the builds of the component already use. It also links the secrets that are linked to `konflux-integration-runner`, so the PipelineRun has the registry credentials that you added there. See xref:testing:integration/accessing-private-repositories.adoc[Accessing Private Repositories].
+
+When `its-pipeline-<component-name>` cannot be used for one of the reasons below, a PipelineRun for a component snapshot uses `konflux-integration-runner` instead. The tests still run. {ProductName} sets the `test.appstudio.openshift.io/service-account-fallback` annotation on the PipelineRun. Its value is the reason:
+
+* `account-missing`: the component has a push secret, but the `its-pipeline-<component-name>` service account does not exist.
+* `no-push-secret`: {ProductName} found no push secret to link to the service account, for example because no ImageRepository of the component has a push secret yet.
+
+{ProductName} names the annotation `integration.konflux-ci.dev/service-account-fallback` instead on a PipelineRun whose labels use the `integration.konflux-ci.dev/` prefix, for example `integration.konflux-ci.dev/scenario`.
+
+[#roles-bound-to-konflux-integration-runner]
+== Roles that you bound to konflux-integration-runner
+
+If you created a RoleBinding that gives `konflux-integration-runner` a Role, for example so that a test can create Jobs, the `its-pipeline-<component-name>` service account does not have that Role. A test for a component snapshot that needs the Role then fails with a `forbidden` error.
+
+To find such RoleBindings in your namespace, run:
+
+[source,bash]
+----
+$ kubectl get rolebindings -n <namespace> -o wide | grep konflux-integration-runner
+----
+
+You can handle this in one of two ways.
+
+=== Keep the test on konflux-integration-runner
+
+Set `resourceKind` to `pipelinerun` in the integration test scenario, as described in the section "Customize pipelineRun definition" on this page, and name `konflux-integration-runner` in the pipelineRun definition. Use a `tekton.dev/v1` PipelineRun and set the service account under `spec.taskRunTemplate`:
+
+[source,yaml]
+----
+apiVersion: tekton.dev/v1
+kind: PipelineRun
+spec:
+  taskRunTemplate:
+    serviceAccountName: konflux-integration-runner
+  pipelineRef:
+    resolver: git
+    params:
+      - name: url
+        value: https://github.com/my-org/my-repo
+      - name: revision
+        value: main
+      - name: pathInRepo
+        value: pipelines/my-integration-test.yaml
+----
+
+{ProductName} reads the service account only from `spec.taskRunTemplate.serviceAccountName`. It ignores a `spec.serviceAccountName` field. Do not set a `SNAPSHOT` parameter in the pipelineRun definition, because {ProductName} adds it.
+
+=== Give the Role to its-pipeline-<component-name>
+
+Add the service account of each component as a subject of your RoleBinding. Keep `konflux-integration-runner` as a subject, because PipelineRuns for other snapshots, and PipelineRuns that fall back, still use it.
+
+[source,yaml]
+----
+subjects:
+  - kind: ServiceAccount
+    name: konflux-integration-runner
+    namespace: <namespace>
+  - kind: ServiceAccount
+    name: its-pipeline-<component-name>
+    namespace: <namespace>
+----
+
+You need one subject for each component. When you add a component, add its service account to the RoleBinding as well.
+
 == Passing snapshot parameters by name
 
 The parameter value of a Tekton task has a size limit. If a snapshot contains a large list of `snapshotComponents`, a Tekton task that uses the `Snapshot` parameter might fail with an `argument list too long` error.
@@ -243,6 +316,12 @@ When you create a custom integration test, {ProductName} automatically adds cert
 Parameters:
 
 * *`SNAPSHOT`*: contains the snapshot of the whole application as a JSON string. This JSON string provides useful information about the test, such as which components {ProductName} is testing, and what git repository and commit {ProductName} is using to build those components. For information about snapshot JSON string, see link:https://github.com/konflux-ci/integration-examples/blob/main/examples/snapshot_json_string_example[an example snapshot JSON string].
+
+* *`image-url`*: contains the image repository of the component under test, without a tag or digest. For example, `quay.io/my-org/my-component`.
+
+* *`image-digest`*: contains the digest of the image of the component under test. For example, `sha256:0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef`.
+
+{ProductName} adds `image-url` and `image-digest` only to the PipelineRun for a component snapshot, and only when the snapshot holds an image with a digest for that component. If the integration test scenario or its pipelineRun definition already sets a parameter named `image-url` or `image-digest`, {ProductName} keeps that value. This applies to each of the two parameters on its own.
 
 Labels:
 

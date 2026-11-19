@@ -35,3 +35,12 @@ image::testfailed.png[role="border" alt="Test Failed"]
 +
 image::successfulretest.png[role="border alt="Successful Retest"]
 
+== Checking the service account of a test
+
+An integration PipelineRun for a component snapshot normally uses the `its-pipeline-<component-name>` service account. To see which service account a PipelineRun used, run `kubectl get pipelinerun <pipelinerun-name> -o yaml` and read `spec.taskRunTemplate.serviceAccountName`. The annotations are under `metadata.annotations`.
+
+If the PipelineRun used `konflux-integration-runner` and has the `test.appstudio.openshift.io/service-account-fallback` or `integration.konflux-ci.dev/service-account-fallback` annotation, the value of the annotation is the reason. For the values, see xref:testing:integration/creating.adoc#service-account-of-the-integration-pipelinerun[Service account of the integration PipelineRun].
+
+The annotation is set only when {ProductName} replaced `its-pipeline-<component-name>` with `konflux-integration-runner`. It does not explain other failures.
+
+If the PipelineRun used `its-pipeline-<component-name>` and the test failed with a `forbidden` error, a Role that you bound to `konflux-integration-runner` might not be bound to the service account of the component. See xref:testing:integration/creating.adoc#roles-bound-to-konflux-integration-runner[Roles that you bound to konflux-integration-runner].
