@@ -71,7 +71,7 @@ $ tkn pipelinerun describe integration-pipelinerun-jfrdb
 [Expected labels in the output]
 Name:              integration-pipelinerun-jfrdb
 Namespace:         default
-Service Account:   $APPLICATION_NAME-pull
+Service Account:   konflux-integration-runner
 Labels:
 ...
  appstudio.openshift.io/snapshot=snapshot-sample
