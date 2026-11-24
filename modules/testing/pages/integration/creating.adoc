@@ -432,8 +432,8 @@ Before {ProductName} runs an integration test, the Tekton link:https://tekton.de
 
 Tekton stops any resolution that exceeds its global limit (`default-maximum-resolution-timeout`). The Tekton default is 1 minute, and cluster administrators can set a different limit. If the clone does not finish within this time, the integration PipelineRun fails before any task starts.
 
-* Use clone mode when your pipeline is in a small repository, such as a repository that holds only Tekton definitions.
-* Use SCM API mode when your pipeline is in a large repository, such as your application repository, or when your test fails with the `resolution took longer than global timeout` error.
+* Use clone mode when your pipeline is in a small repository, such as a repository that holds only Tekton definitions. In clone mode, the resolver clones the `url` over HTTPS; for a public repository, it needs no access token. A separate branch of a large repository does not help, because the resolver first clones the default branch of the repository.
+* Use SCM API mode when your pipeline is in a large repository, such as your application repository, or when your test fails with the `resolution took longer than global timeout` error. This mode needs an access token. Renew the token before it expires.
 
 The following example fetches the pipeline from a GitLab repository in SCM API mode:
 
