@@ -50,10 +50,7 @@ To see the full status, run `kubectl get pipelinerun <pipelinerun-name> -o yaml`
 To fix it:
 
 . Rerun the test. If the Git server is slow only for a short time, the rerun succeeds. See xref:testing:integration/rerunning.adoc[Rerunning an integration test].
-. If the error persists, switch the test to SCM API mode, or move the pipeline to a small repository that holds only Tekton definitions. To switch to SCM API mode:
-.. Create an access token and store it in a secret in your namespace. See xref:building:secrets/creating-scm-secrets.adoc[Creating source control management secrets].
-.. In `spec.resolverRef.params`, replace the `url` parameter with the SCM API parameters. See xref:testing:integration/creating.adoc#switching-to-scm-api-mode[Switching an existing test to SCM API mode].
-.. Rerun the test.
+. If the error persists, switch the test to SCM API mode, or move the pipeline to a small repository that holds only Tekton definitions. To switch, follow xref:testing:integration/creating.adoc#switching-to-scm-api-mode[Switching an existing test to SCM API mode].
 
 == Checking the service account of a test
 

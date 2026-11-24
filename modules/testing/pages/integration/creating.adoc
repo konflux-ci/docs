@@ -463,7 +463,7 @@ spec:
 <.> Name of the secret in your namespace that stores the access token.
 <.> Key in the `data` section of that secret that holds the token.
 
-If you omit `scmType`, the resolver uses `github`, unless your cluster sets a different default. For a GitHub repository, set `scmType` to `github` and `serverURL` to `+https://github.com+`.
+If you omit `scmType`, the resolver uses `github`, unless your cluster sets a different default. For a GitHub repository, you can omit `scmType` or set it to `github`, and set `serverURL` to `+https://github.com+`.
 
 [#switching-to-scm-api-mode]
 === Switching an existing test to SCM API mode
