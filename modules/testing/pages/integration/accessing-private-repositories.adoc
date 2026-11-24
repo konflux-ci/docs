@@ -19,6 +19,8 @@ Integration Test Scenarios point to their corresponding pipeline with a link:htt
 
 Once this is done, the Resolver should be updated with the fields `token` and `tokenKey`, which provide the name of the secret and the key within the `data` section of that secret in which the access token is stored.
 
+With these parameters, the resolver fetches only the pipeline file through the Git provider API instead of cloning the repository. This approach also helps if your public repository is large. See xref:testing:integration/creating.adoc#choosing-how-the-pipeline-is-fetched[Choosing how {ProductName} fetches your pipeline].
+
 === Example of Resolver in IntegrationTestScenario
 
 [source,yaml]

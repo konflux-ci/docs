@@ -411,6 +411,59 @@ git checkout -q FETCH_HEAD
 
 GitHub serves a commit that is requested by its SHA even if no branch or tag points to it, including commits from forks of the repository. A shallow fetch of a single commit is also faster than a full clone.
 
+[#choosing-how-the-pipeline-is-fetched]
+== Choosing how {ProductName} fetches your pipeline
+
+Before {ProductName} runs an integration test, the Tekton link:https://tekton.dev/docs/pipelines/git-resolver/[git resolver] fetches your pipeline definition from Git. The parameters in `resolverRef` select the mode:
+
+[cols="1,2,2",options="header"]
+|===
+| Mode | Parameters | What the resolver downloads
+
+| Clone
+| `url`, `revision`, `pathInRepo`
+| The repository at `revision`. The larger the repository, the longer the clone takes.
+
+| SCM API
+| `scmType`, `serverURL`, `org`, `repo`, `revision`, `pathInRepo`, `token`, `tokenKey`
+| Only the file at `pathInRepo`, through the GitHub or GitLab API. This mode needs an access token stored in a secret.
+|===
+
+Tekton stops any resolution that exceeds its global limit (`default-maximum-resolution-timeout`). The Tekton default is 1 minute, and cluster administrators can set a different limit. The git resolver `fetch-timeout` setting cannot extend this limit. If the clone does not finish within this time, the integration PipelineRun fails before any task starts.
+
+* Use clone mode when your pipeline is in a small repository, such as a repository that holds only Tekton definitions.
+* Use SCM API mode when your pipeline is in a large repository, such as your application repository.
+
+The following example fetches the pipeline from a GitLab repository in SCM API mode:
+
+[source,yaml]
+----
+spec:
+  resolverRef:
+    resolver: git
+    params:
+      - name: scmType
+        value: gitlab
+      - name: serverURL
+        value: https://gitlab.com
+      - name: org
+        value: my-group
+      - name: repo
+        value: my-application
+      - name: revision
+        value: main
+      - name: pathInRepo
+        value: .tekton/integration-test.yaml
+      - name: token
+        value: my-gitlab-token-secret <.>
+      - name: tokenKey
+        value: password <.>
+----
+<.> Name of the secret in your namespace that stores the access token.
+<.> Key in the `data` section of that secret that holds the token.
+
+For a GitHub repository, set `scmType` to `github` and `serverURL` to `+https://github.com+`. To create the secret, see xref:testing:integration/accessing-private-repositories.adoc#accessing-pipelines-and-tasks-in-private-git-repositories[Accessing pipelines and tasks in private Git repositories].
+
 == Timeouts
 
 Setting custom timeouts can be done as described in the `Timeouts` section of xref:./editing.adoc[editing a custom integration test] guide.

@@ -35,6 +35,23 @@ image::testfailed.png[role="border" alt="Test Failed"]
 +
 image::successfulretest.png[role="border alt="Successful Retest"]
 
+[#resolution-took-longer-than-global-timeout]
+== Test fails with "resolution took longer than global timeout"
+
+The integration PipelineRun fails before any task starts, and its status shows an error such as the following:
+
+----
+resolver failed to get Pipeline : error requesting remote resource:
+resolution took longer than global timeout of 1m0s
+----
+
+The duration in the message is the resolution limit of your cluster. The git resolver did not fetch your pipeline definition within this limit. This usually happens in clone mode, when the pipeline is in a large repository or the Git server responds slowly.
+
+To fix it:
+
+. Rerun the test. If the Git server is slow only for a short time, the rerun succeeds. See xref:testing:integration/rerunning.adoc[Rerunning an integration test].
+. If the error persists, switch `resolverRef` to SCM API mode or move the pipeline to a smaller repository. See xref:testing:integration/creating.adoc#choosing-how-the-pipeline-is-fetched[Choosing how {ProductName} fetches your pipeline].
+
 == Checking the service account of a test
 
 An integration PipelineRun for a component snapshot normally uses the `its-pipeline-<component-name>` service account. To see which service account a PipelineRun used, run `kubectl get pipelinerun <pipelinerun-name> -o yaml` and read `spec.taskRunTemplate.serviceAccountName`. The annotations are under `metadata.annotations`.
