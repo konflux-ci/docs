@@ -42,10 +42,10 @@ The integration PipelineRun fails before any task starts, so it has no task logs
 
 ----
 resolver failed to get Pipeline : error requesting remote resource:
-resolution took longer than global timeout of 1m0s
+resolution took longer than global timeout of XmYs
 ----
 
-To see the full status, run `kubectl get pipelinerun <pipelinerun-name> -o yaml` and read `status.conditions`. The duration in the message is the resolution limit of your cluster. The git resolver did not fetch your pipeline definition within this limit. This usually happens in clone mode, when the pipeline is in a large repository or the Git server responds slowly.
+To see the full status, run `kubectl get pipelinerun <pipelinerun-name> -o yaml` and read `status.conditions`. `XmYs` is the resolution limit of your cluster, for example `1m0s`. The git resolver did not fetch your pipeline definition within this limit. This usually happens in clone mode, when the pipeline is in a large repository or the Git server responds slowly.
 
 To fix it:
 
