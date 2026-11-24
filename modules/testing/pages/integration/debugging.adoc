@@ -38,19 +38,22 @@ image::successfulretest.png[role="border alt="Successful Retest"]
 [#resolution-took-longer-than-global-timeout]
 == Test fails with "resolution took longer than global timeout"
 
-The integration PipelineRun fails before any task starts, and its status shows an error such as the following:
+The integration PipelineRun fails before any task starts, so it has no task logs. Its status has the reason `CouldntGetPipeline` and an error such as the following:
 
 ----
 resolver failed to get Pipeline : error requesting remote resource:
 resolution took longer than global timeout of 1m0s
 ----
 
-The duration in the message is the resolution limit of your cluster. The git resolver did not fetch your pipeline definition within this limit. This usually happens in clone mode, when the pipeline is in a large repository or the Git server responds slowly.
+To see the full status, run `kubectl get pipelinerun <pipelinerun-name> -o yaml` and read `status.conditions`. The duration in the message is the resolution limit of your cluster. The git resolver did not fetch your pipeline definition within this limit. This usually happens in clone mode, when the pipeline is in a large repository or the Git server responds slowly.
 
 To fix it:
 
 . Rerun the test. If the Git server is slow only for a short time, the rerun succeeds. See xref:testing:integration/rerunning.adoc[Rerunning an integration test].
-. If the error persists, switch `resolverRef` to SCM API mode or move the pipeline to a smaller repository. See xref:testing:integration/creating.adoc#choosing-how-the-pipeline-is-fetched[Choosing how {ProductName} fetches your pipeline].
+. If the error persists, switch the test to SCM API mode, or move the pipeline to a small repository that holds only Tekton definitions. To switch to SCM API mode:
+.. Create an access token and store it in a secret in your namespace. See xref:building:secrets/creating-scm-secrets.adoc[Creating source control management secrets].
+.. In `spec.resolverRef.params`, replace the `url` parameter with the SCM API parameters. See xref:testing:integration/creating.adoc#switching-to-scm-api-mode[Switching an existing test to SCM API mode].
+.. Rerun the test.
 
 == Checking the service account of a test
 
